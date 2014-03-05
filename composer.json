@@ -19,7 +19,12 @@
         "sensio/framework-extra-bundle": "~3.0",
         "sensio/generator-bundle": "~2.3",
         "incenteev/composer-parameter-handler": "~2.0",
-        "friendsofsymfony/jsrouting-bundle": "@stable"
+        "friendsofsymfony/jsrouting-bundle": "@stable",
+        "stof/doctrine-extensions-bundle": "@stable",
+        "knplabs/knp-menu": "2.0.*@dev",
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "jms/serializer-bundle": "dev-master",
+        "friendsofsymfony/user-bundle": "@stable"
     },
     "scripts": {
         "post-install-cmd": [
