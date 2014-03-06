@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+            new BCC\CronManagerBundle\BCCCronManagerBundle(),
             //new FOS\UserBundle\FOSUserBundle(),
         );
 
