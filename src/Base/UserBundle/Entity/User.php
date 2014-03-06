@@ -120,14 +120,11 @@ class User extends BaseUser
     }
 
     public function setEmail($email){
-        parent::setEmail($email);
-        parent::setUsername($email);
-
-        if (empty($this->name)) $this->setName($this->getName());
+        $this->email = $email;
     }
 
     public function setUsername($name){
-        $this->username = $this->email;
+        $this->username = $name;
     }
 
     /**

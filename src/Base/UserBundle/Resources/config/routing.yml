@@ -55,10 +55,10 @@ fos_user_change_password:
     defaults:  { _controller: FOSUserBundle:ChangePassword:changePassword }
     requirements: { _method: GET|POST }
 
-fos_user_profile_show:
-    path: /profile
-    defaults:  { _controller: FOSUserBundle:Profile:show }
-    requirements: { _method: GET }
+#fos_user_profile_show:
+#    path: /profile.html
+#    defaults:  { _controller: FOSUserBundle:Profile:show }
+#    requirements: { _method: GET }
 
 fos_user_profile_edit:
     path: /profile/edit.html

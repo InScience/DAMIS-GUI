@@ -1,0 +1,30 @@
+parameters:
+    base.user_registration.class: Base\UserBundle\Form\Type\RegistrationFormType
+    base.user_resetting.class: Base\UserBundle\Form\Type\ResettingFormType
+    base.user_change_password.class: Base\UserBundle\Form\Type\ChangePasswordFormType
+    base.user_profile.class: Base\UserBundle\Form\Type\ProfileFormType
+
+services:
+    base.user_registration:
+        class: "%base.user_registration.class%"
+        arguments: [%fos_user.model.user.class%]
+        tags:
+            - { name: form.type, alias: base_user_registration }
+
+    base.user_resetting:
+        class: "%base.user_resetting.class%"
+        arguments: [%fos_user.model.user.class%]
+        tags:
+            - { name: form.type, alias: base_user_resetting }
+
+    base.user_change_password:
+        class: "%base.user_change_password.class%"
+        arguments: [%fos_user.model.user.class%, "@service_container"]
+        tags:
+            - { name: form.type, alias: base_user_change_password }
+
+    base.user_profile:
+        class: "%base.user_profile.class%"
+        arguments: [%fos_user.model.user.class%, "@service_container"]
+        tags:
+            - { name: form.type, alias: base_user_profile }
