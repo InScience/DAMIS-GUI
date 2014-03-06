@@ -1,3 +1,8 @@
+base_user:
+    resource: "@BaseUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 base_main:
     resource: "@BaseMainBundle/Controller/"
     type:     annotation
@@ -9,3 +14,7 @@ fos_js_routing:
 BCCCronManagerBundle:
     resource: "@BCCCronManagerBundle/Resources/config/routing.xml"
     prefix:   /cron
+
+base_user:
+    resource: "@BaseUserBundle/Resources/config/routing.yml"
+    prefix: /

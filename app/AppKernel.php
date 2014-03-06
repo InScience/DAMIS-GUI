@@ -20,8 +20,9 @@ class AppKernel extends Kernel
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new BCC\CronManagerBundle\BCCCronManagerBundle(),
-            //new FOS\UserBundle\FOSUserBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Base\MainBundle\BaseMainBundle(),
+            new Base\UserBundle\BaseUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
