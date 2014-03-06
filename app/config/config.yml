@@ -20,7 +20,7 @@ framework:
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
-        cookie_domain: .damis
+        cookie_domain: "%project_domain%"
         # handler_id set to null will use default session handler from php.ini
         # if commented, sessions will be storred in cache folders
         #handler_id:  ~
@@ -96,8 +96,8 @@ fos_user:
     resetting:
         email:
             from_email:
-                address:        info@damis.lt
-                sender_name:    DAMIS
+                address:        "info@%project%.lt"
+                sender_name:    "%project%"
         form:
             type: base_user_resetting
     registration:
@@ -106,4 +106,4 @@ fos_user:
 
 twig:
     globals:
-        project: "DAMIS"
+        project: "%project%"
