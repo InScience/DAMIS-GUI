@@ -72,6 +72,8 @@ swiftmailer:
 stof_doctrine_extensions:
         default_locale: en_us
         translation_fallback: true
+        uploadable:
+            validate_writable_directory: false
         orm:
             default:
                 timestampable: true
@@ -83,3 +85,7 @@ stof_doctrine_extensions:
 #    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
 #    firewall_name: main
 #    user_class: NaujosKnygos\UserBundle\Entity\User
+
+twig:
+    globals:
+        project: "DAMIS"

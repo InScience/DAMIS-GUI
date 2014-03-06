@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new BCC\CronManagerBundle\BCCCronManagerBundle(),
             //new FOS\UserBundle\FOSUserBundle(),
+            new Base\MainBundle\BaseMainBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
