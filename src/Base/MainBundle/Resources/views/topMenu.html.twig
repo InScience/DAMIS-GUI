@@ -1,7 +1,25 @@
 <ul class="nav navbar-nav">
-    <li class="active"><a href="#">Home</a></li>
-    <li><a href="#about">About</a></li>
+    {% if app.user and is_granted("IS_AUTHENTICATED_REMEMBERED") or is_granted("IS_AUTHENTICATED_FULLY") %}
+    {% else %}
+    {% endif %}
 </ul>
+
 <ul class="nav navbar-nav navbar-right">
-    <li><a href="#register">Register</a></li>
+{% if app.user and is_granted("IS_AUTHENTICATED_REMEMBERED") or is_granted("IS_AUTHENTICATED_FULLY") %}
+    <li class="dropdown">
+        <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ 'layout.user'|trans({}, 'FOSUserBundle') }} <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'profile.title'|trans({}, 'FOSUserBundle') }}</a></li>
+            <li><a href="{{ path('fos_user_change_password') }}">{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }}</a></li>
+            <li class="divider"></li>
+            <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.link'|trans({}, 'FOSUserBundle') }}</a></li>
+        </ul>
+    </li>
+
+{% else %}
+    <li><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
+    <li><a href="{{ path('fos_user_registration_register') }}">{{ 'layout.register'|trans({}, 'FOSUserBundle') }}</a></li>
+{% endif %}
 </ul>
+
+
