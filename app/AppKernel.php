@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Base\MainBundle\BaseMainBundle(),
             new Base\UserBundle\BaseUserBundle(),
+            new Damis\EntitiesBundle\DamisEntitiesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
