@@ -96,7 +96,7 @@ fos_user:
     resetting:
         email:
             from_email:
-                address:        "info@%project%.lt"
+                address:        "%project_email%"
                 sender_name:    "%project%"
         form:
             type: base_user_resetting

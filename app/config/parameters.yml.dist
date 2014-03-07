@@ -12,4 +12,6 @@ parameters:
     locale: lt_LT
     secret: f781fb4417d6d72748d4747219dca7ca
     database_path: null
-    project: DAMIS
+    project: SOMETHING
+    project_domain: .something
+    project_email: info@something.lt
