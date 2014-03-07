@@ -26,7 +26,8 @@
         "jms/serializer-bundle": "dev-master",
         "friendsofsymfony/user-bundle": "@stable",
         "leafo/lessphp": "dev-master",
-        "bcc/cron-manager-bundle": "v2.4.0"
+        "bcc/cron-manager-bundle": "v2.4.0",
+        "knplabs/knp-menu-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
