@@ -58,7 +58,7 @@ registration:
 
 # Password resetting
 resetting:
-    link: Pamiršote slaptažodį?
+    forgot: Pamiršote slaptažodį?
     password_already_requested: Slaptažodis šitam naudotojui jau buvo prašytas pakeisti per pastarąsias 24 valandas.
     check_email: Buvo išsiūstas el. paštas adresu %email%. Jame rasite nuorodą kurią paspaudus galėsite pakeisti savo slaptažodi.
     request:

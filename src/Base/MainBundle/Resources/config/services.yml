@@ -1,0 +1,6 @@
+services:
+    base_locale.locale_listener:
+        class: Base\MainBundle\EventListener\LocaleListener
+        arguments: ["%kernel.default_locale%"]
+        tags:
+            - { name: kernel.event_subscriber }
