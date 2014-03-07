@@ -88,11 +88,11 @@ class Experiment
     private $experimentstatusid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Damisuser
+     * @var \Base\UserBundle\Entity\User
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Damisuser")
+     * @ORM\ManyToOne(targetEntity="Base\UserBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="UserID", referencedColumnName="UserID")
+     *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
      * })
      */
     private $userid;
@@ -115,7 +115,7 @@ class Experiment
     /**
      * Get experimentname
      *
-     * @return string 
+     * @return string
      */
     public function getExperimentname()
     {
@@ -138,7 +138,7 @@ class Experiment
     /**
      * Get experimentmaxduration
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getExperimentmaxduration()
     {
@@ -161,7 +161,7 @@ class Experiment
     /**
      * Get expermentstart
      *
-     * @return integer 
+     * @return integer
      */
     public function getExpermentstart()
     {
@@ -184,7 +184,7 @@ class Experiment
     /**
      * Get experimentfinish
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentfinish()
     {
@@ -207,7 +207,7 @@ class Experiment
     /**
      * Get experimentusecpu
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentusecpu()
     {
@@ -230,7 +230,7 @@ class Experiment
     /**
      * Get experimentuseprimarymemory
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentuseprimarymemory()
     {
@@ -253,7 +253,7 @@ class Experiment
     /**
      * Get experimentusesecmemory
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentusesecmemory()
     {
@@ -276,7 +276,7 @@ class Experiment
     /**
      * Get experimentguidata
      *
-     * @return string 
+     * @return string
      */
     public function getExperimentguidata()
     {
@@ -286,7 +286,7 @@ class Experiment
     /**
      * Get experimentid
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentid()
     {
@@ -309,7 +309,7 @@ class Experiment
     /**
      * Get experimentstatusid
      *
-     * @return \Damis\EntitiesBundle\Entity\Experimentstatus 
+     * @return \Damis\EntitiesBundle\Entity\Experimentstatus
      */
     public function getExperimentstatusid()
     {
@@ -319,10 +319,10 @@ class Experiment
     /**
      * Set userid
      *
-     * @param \Damis\EntitiesBundle\Entity\Damisuser $userid
+     * @param \Base\UserBundle\Entity\User $userid
      * @return Experiment
      */
-    public function setUserid(\Damis\EntitiesBundle\Entity\Damisuser $userid = null)
+    public function setUserid(\Base\UserBundle\Entity\User $userid = null)
     {
         $this->userid = $userid;
 
@@ -332,7 +332,7 @@ class Experiment
     /**
      * Get userid
      *
-     * @return \Damis\EntitiesBundle\Entity\Damisuser 
+     * @return \Base\UserBundle\Entity\User
      */
     public function getUserid()
     {

@@ -64,11 +64,11 @@ class Dataset
     private $datasetid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Damisuser
+     * @var \Base\UserBundle\Entity\User
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Damisuser")
+     * @ORM\ManyToOne(targetEntity="Base\UserBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="UserID", referencedColumnName="UserID")
+     *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
      * })
      */
     private $userid;
@@ -91,7 +91,7 @@ class Dataset
     /**
      * Get datasetismidas
      *
-     * @return integer 
+     * @return integer
      */
     public function getDatasetismidas()
     {
@@ -114,7 +114,7 @@ class Dataset
     /**
      * Get datasettitle
      *
-     * @return string 
+     * @return string
      */
     public function getDatasettitle()
     {
@@ -137,7 +137,7 @@ class Dataset
     /**
      * Get datasetcreated
      *
-     * @return integer 
+     * @return integer
      */
     public function getDatasetcreated()
     {
@@ -160,7 +160,7 @@ class Dataset
     /**
      * Get datsetfileppath
      *
-     * @return string 
+     * @return string
      */
     public function getDatsetfileppath()
     {
@@ -183,7 +183,7 @@ class Dataset
     /**
      * Get datasetupdated
      *
-     * @return integer 
+     * @return integer
      */
     public function getDatasetupdated()
     {
@@ -206,7 +206,7 @@ class Dataset
     /**
      * Get datasetdescription
      *
-     * @return string 
+     * @return string
      */
     public function getDatasetdescription()
     {
@@ -216,7 +216,7 @@ class Dataset
     /**
      * Get datasetid
      *
-     * @return integer 
+     * @return integer
      */
     public function getDatasetid()
     {
@@ -226,10 +226,10 @@ class Dataset
     /**
      * Set userid
      *
-     * @param \Damis\EntitiesBundle\Entity\Damisuser $userid
+     * @param \Base\UserBundle\Entity\User $userid
      * @return Dataset
      */
-    public function setUserid(\Damis\EntitiesBundle\Entity\Damisuser $userid = null)
+    public function setUserid(\Base\UserBundle\Entity\User $userid = null)
     {
         $this->userid = $userid;
 
@@ -239,7 +239,7 @@ class Dataset
     /**
      * Get userid
      *
-     * @return \Damis\EntitiesBundle\Entity\Damisuser 
+     * @return \Base\UserBundle\Entity\User
      */
     public function getUserid()
     {
