@@ -1,0 +1,1 @@
+php app/console doctrine:schema:create --dump-sql > sql/sql_structure.sql
