@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new Base\UserBundle\BaseUserBundle(),
             new Damis\EntitiesBundle\DamisEntitiesBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
