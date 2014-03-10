@@ -86,6 +86,8 @@ layout:
     register: Register
     user: User
     logged_in_as: Logged in as %username%
+    admin: Admin
+    users: Users
 
 # Form field labels
 form:

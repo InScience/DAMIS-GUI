@@ -86,6 +86,8 @@ layout:
     register: Registruotis
     user: Vartotojas
     logged_in_as: Prisijungęs kaip %username%
+    admin: Administravimas
+    users: Vartotojai
 
 # Form field labels
 form:
