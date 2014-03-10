@@ -84,9 +84,9 @@ class Parameter
     private $parameterconnectiontypeid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Component
+     * @var \Damis\ExperimentBundle\Entity\Component
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Component")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Component")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ComponentID", referencedColumnName="ComponentID")
      * })

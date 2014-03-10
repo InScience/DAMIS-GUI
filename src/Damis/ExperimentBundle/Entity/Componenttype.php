@@ -1,6 +1,6 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\ExperimentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

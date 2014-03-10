@@ -1,6 +1,6 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\ExperimentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -80,7 +80,7 @@ class Component
     /**
      * @var \Damis\ExperimentBundle\Entity\Cluster
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Cluster")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Cluster")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ClusterID", referencedColumnName="ClusterID")
      * })
@@ -88,9 +88,9 @@ class Component
     private $clusterid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Componenttype
+     * @var \Damis\ExperimentBundle\Entity\Componenttype
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Componenttype")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Componenttype")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ComponentTypeID", referencedColumnName="ComponentTypeID")
      * })
