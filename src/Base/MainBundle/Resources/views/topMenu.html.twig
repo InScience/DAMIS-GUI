@@ -9,6 +9,8 @@
     <li class="dropdown">
         <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ 'layout.user'|trans({}, 'FOSUserBundle') }} <b class="caret"></b></a>
         <ul class="dropdown-menu">
+            <li class="dropdown-header">{{ app.user.publicName }}</li>
+            <li class="divider"></li>
             <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'profile.title'|trans({}, 'FOSUserBundle') }}</a></li>
             <li><a href="{{ path('fos_user_change_password') }}">{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }}</a></li>
             <li class="divider"></li>

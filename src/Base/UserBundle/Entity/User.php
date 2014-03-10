@@ -172,4 +172,9 @@ class User extends BaseUser
 
         return $this;
     }
+
+    public function getPublicName(){
+        if ($this->getNameSurname()) return $this->getNameSurname();
+            else return $this->getUsername();
+    }
 }
