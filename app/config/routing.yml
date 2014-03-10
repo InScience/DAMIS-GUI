@@ -1,7 +1,7 @@
-damis_experiment:
-    resource: "@DamisExperimentBundle/Controller/"
-    type:     annotation
-    prefix:   /
+#damis_experiment:
+#    resource: "@DamisExperimentBundle/Controller/"
+#    type:     annotation
+#    prefix:   /
 
 base_user:
     resource: "@BaseUserBundle/Controller/"
@@ -20,6 +20,6 @@ BCCCronManagerBundle:
     resource: "@BCCCronManagerBundle/Resources/config/routing.xml"
     prefix:   /cron
 
-base_user:
+base_user_fos:
     resource: "@BaseUserBundle/Resources/config/routing.yml"
     prefix: /

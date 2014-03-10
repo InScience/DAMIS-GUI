@@ -28,7 +28,8 @@
         "leafo/lessphp": "dev-master",
         "bcc/cron-manager-bundle": "v2.4.0",
         "knplabs/knp-menu-bundle": "dev-master",
-        "doctrine/doctrine-fixtures-bundle": "dev-master"
+        "doctrine/doctrine-fixtures-bundle": "dev-master",
+        "apy/datagrid-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

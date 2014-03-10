@@ -57,3 +57,5 @@ security:
         - { path: ^/reset-password, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/profile, role: ROLE_USER }
+
+        - { path: ^/users, role: ROLE_ADMIN }

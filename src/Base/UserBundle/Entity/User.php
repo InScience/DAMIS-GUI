@@ -5,12 +5,14 @@ namespace Base\UserBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use APY\DataGridBundle\Grid\Mapping as GRID;
 
 /**
  * User
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="Base\UserBundle\Entity\UserRepository")
+ * @GRID\Source(columns="id, registeredAt, name, surname, email, username")
  */
 class User extends BaseUser
 {
