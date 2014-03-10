@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new Damis\EntitiesBundle\DamisEntitiesBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new Damis\ExperimentBundle\DamisExperimentBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

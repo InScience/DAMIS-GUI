@@ -1,3 +1,8 @@
+damis_experiment:
+    resource: "@DamisExperimentBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 base_user:
     resource: "@BaseUserBundle/Controller/"
     type:     annotation
