@@ -92,6 +92,8 @@ form:
     group_name: "Group name"
     username: "Username"
     email: "Email"
+    name: "Name"
+    surname: "Surname"
     current_password: "Current password"
     password: "Password"
     password_confirmation: "Verification"

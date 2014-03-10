@@ -92,6 +92,8 @@ form:
     group_name: "Grupės vardas"
     username: "Naudotojas"
     email: "El. paštas"
+    name: "Vardas"
+    surname: "Pavardė"
     current_password: "Dabartinis slaptažodis"
     password: "Slaptažodis"
     password_confirmation: "Patvirtinti"
