@@ -1,0 +1,28 @@
+{% extends 'BaseMainBundle::layout.html.twig' %}
+
+{% block body %}
+    <div id="workflow-editor-container">
+        <div id="toolbox-container">
+            <ul class="nav nav-tabs" id="cluster-tabs">
+                {% for cluster in clusters %}
+                <li id="cluster-{{ cluster.getId }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
+                    <a href="#">MII Cluster</a>
+                    <span>
+                        <i class="component-tooltip cluster-tooltip icon-info-sign" data-placement="bottom"
+                           data-content="{{ cluster.getDesciption }}" style="cursor: pointer">
+                            <span style="display: none;">Cluster information</span>
+                        </i>
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@DamisExperimentBundle/Resources/public/js/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

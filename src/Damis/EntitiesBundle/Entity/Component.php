@@ -78,7 +78,7 @@ class Component
     private $componentid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Cluster
+     * @var \Damis\ExperimentBundle\Entity\Cluster
      *
      * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Cluster")
      * @ORM\JoinColumns({
