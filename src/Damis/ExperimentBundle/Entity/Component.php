@@ -2,6 +2,8 @@
 
 namespace Damis\ExperimentBundle\Entity;
 
+use Damis\EntitiesBundle\Entity\Cluster;
+use Damis\EntitiesBundle\Entity\ComponentType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,56 +19,56 @@ class Component
      *
      * @ORM\Column(name="ComponentName", type="string", length=80, nullable=false)
      */
-    private $componentname;
+    private $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentIcon", type="string", length=255, nullable=false)
      */
-    private $componenticon;
+    private $icon;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentWSDLRunHost", type="string", length=255, nullable=false)
      */
-    private $componentwsdlrunhost;
+    private $wsdlRunHost;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=false)
      */
-    private $componentwsdlcallfunction;
+    private $wsdlCallFunction;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentDescription", type="string", length=500, nullable=true)
      */
-    private $componentdescription;
+    private $description;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentAltDescription", type="string", length=80, nullable=true)
      */
-    private $componentaltdescription;
+    private $altDescription;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentLabelLT", type="string", length=255, nullable=true)
      */
-    private $componentlabellt;
+    private $labelLt;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentLabelEN", type="string", length=255, nullable=true)
      */
-    private $componentlabelen;
+    private $labelEn;
 
     /**
      * @var integer
@@ -75,7 +77,7 @@ class Component
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $componentid;
+    private $id;
 
     /**
      * @var \Damis\ExperimentBundle\Entity\Cluster
@@ -85,257 +87,257 @@ class Component
      *   @ORM\JoinColumn(name="ClusterID", referencedColumnName="ClusterID")
      * })
      */
-    private $clusterid;
+    private $clusterId;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\Componenttype
+     * @var \Damis\ExperimentBundle\Entity\ComponentType
      *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Componenttype")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\ComponentType")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ComponentTypeID", referencedColumnName="ComponentTypeID")
      * })
      */
-    private $componenttypeid;
+    private $typeId;
 
 
 
     /**
-     * Set componentname
+     * Set name
      *
-     * @param string $componentname
+     * @param string $name
      * @return Component
      */
-    public function setComponentname($componentname)
+    public function setName($name)
     {
-        $this->componentname = $componentname;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get componentname
+     * Get name
      *
      * @return string 
      */
-    public function getComponentname()
+    public function getName()
     {
-        return $this->componentname;
+        return $this->name;
     }
 
     /**
-     * Set componenticon
+         * Set icon
      *
-     * @param string $componenticon
+     * @param string $icon
      * @return Component
      */
-    public function setComponenticon($componenticon)
+    public function setIcon($icon)
     {
-        $this->componenticon = $componenticon;
+        $this->icon = $icon;
 
         return $this;
     }
 
     /**
-     * Get componenticon
+     * Get icon
      *
      * @return string 
      */
-    public function getComponenticon()
+    public function getIcon()
     {
-        return $this->componenticon;
+        return $this->icon;
     }
 
     /**
-     * Set componentwsdlrunhost
+     * Set wsdlRunHost
      *
-     * @param string $componentwsdlrunhost
+     * @param string $wsdlRunHost
      * @return Component
      */
-    public function setComponentwsdlrunhost($componentwsdlrunhost)
+    public function setWsdlRunHost($wsdlRunHost)
     {
-        $this->componentwsdlrunhost = $componentwsdlrunhost;
+        $this->wsdlRunHost = $wsdlRunHost;
 
         return $this;
     }
 
     /**
-     * Get componentwsdlrunhost
+     * Get wsdlRunHost
      *
      * @return string 
      */
-    public function getComponentwsdlrunhost()
+    public function getWsdlRunHost()
     {
-        return $this->componentwsdlrunhost;
+        return $this->wsdlRunHost;
     }
 
     /**
-     * Set componentwsdlcallfunction
+     * Set wsdlCallFunction
      *
-     * @param string $componentwsdlcallfunction
+     * @param string $wsdlCallFunction
      * @return Component
      */
-    public function setComponentwsdlcallfunction($componentwsdlcallfunction)
+    public function setWsdlCallFunction($wsdlCallFunction)
     {
-        $this->componentwsdlcallfunction = $componentwsdlcallfunction;
+        $this->wsdlCallFunction = $wsdlCallFunction;
 
         return $this;
     }
 
     /**
-     * Get componentwsdlcallfunction
+     * Get wsdlCallFunction
      *
      * @return string 
      */
-    public function getComponentwsdlcallfunction()
+    public function getWsdlCallFunction()
     {
-        return $this->componentwsdlcallfunction;
+        return $this->wsdlCallFunction;
     }
 
     /**
-     * Set componentdescription
+     * Set description
      *
-     * @param string $componentdescription
+     * @param string $description
      * @return Component
      */
-    public function setComponentdescription($componentdescription)
+    public function setDescription($description)
     {
-        $this->componentdescription = $componentdescription;
+        $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get componentdescription
+     * Get description
      *
      * @return string 
      */
-    public function getComponentdescription()
+    public function getDescription()
     {
-        return $this->componentdescription;
+        return $this->description;
     }
 
     /**
-     * Set componentaltdescription
+     * Set altDescription
      *
-     * @param string $componentaltdescription
+     * @param string $altDescription
      * @return Component
      */
-    public function setComponentaltdescription($componentaltdescription)
+    public function setAltDescription($altDescription)
     {
-        $this->componentaltdescription = $componentaltdescription;
+        $this->altDescription = $altDescription;
 
         return $this;
     }
 
     /**
-     * Get componentaltdescription
+     * Get altDescription
      *
      * @return string 
      */
-    public function getComponentaltdescription()
+    public function getAltDescription()
     {
-        return $this->componentaltdescription;
+        return $this->altDescription;
     }
 
     /**
-     * Set componentlabellt
+     * Set labelLt
      *
-     * @param string $componentlabellt
+     * @param string $labelLt
      * @return Component
      */
-    public function setComponentlabellt($componentlabellt)
+    public function setLabelLt($labelLt)
     {
-        $this->componentlabellt = $componentlabellt;
+        $this->labelLt = $labelLt;
 
         return $this;
     }
 
     /**
-     * Get componentlabellt
+     * Get labelLt
      *
      * @return string 
      */
-    public function getComponentlabellt()
+    public function getLabelLt()
     {
-        return $this->componentlabellt;
+        return $this->labelLt;
     }
 
     /**
-     * Set componentlabelen
+     * Set labelEn
      *
-     * @param string $componentlabelen
+     * @param string $labelEn
      * @return Component
      */
-    public function setComponentlabelen($componentlabelen)
+    public function setLabelEn($labelEn)
     {
-        $this->componentlabelen = $componentlabelen;
+        $this->labelEn = $labelEn;
 
         return $this;
     }
 
     /**
-     * Get componentlabelen
+     * Get labelEn
      *
      * @return string 
      */
-    public function getComponentlabelen()
+    public function getLabelEn()
     {
-        return $this->componentlabelen;
+        return $this->labelEn;
     }
 
     /**
-     * Get componentid
+     * Get id
      *
      * @return integer 
      */
-    public function getComponentid()
+    public function getId()
     {
-        return $this->componentid;
+        return $this->id;
     }
 
     /**
-     * Set clusterid
+     * Set clusterId
      *
-     * @param \Damis\EntitiesBundle\Entity\Cluster $clusterid
+     * @param Cluster $clusterId
      * @return Component
      */
-    public function setClusterid(\Damis\EntitiesBundle\Entity\Cluster $clusterid = null)
+    public function setClusterId(Cluster $clusterId = null)
     {
-        $this->clusterid = $clusterid;
+        $this->clusterId = $clusterId;
 
         return $this;
     }
 
     /**
-     * Get clusterid
+     * Get clusterId
      *
-     * @return \Damis\EntitiesBundle\Entity\Cluster 
+     * @return Cluster
      */
-    public function getClusterid()
+    public function getClusterId()
     {
-        return $this->clusterid;
+        return $this->clusterId;
     }
 
     /**
-     * Set componenttypeid
+     * Set typeId
      *
-     * @param \Damis\EntitiesBundle\Entity\Componenttype $componenttypeid
+     * @param ComponentType $typeId
      * @return Component
      */
-    public function setComponenttypeid(\Damis\EntitiesBundle\Entity\Componenttype $componenttypeid = null)
+    public function setTypeId(ComponentType $typeId = null)
     {
-        $this->componenttypeid = $componenttypeid;
+        $this->typeId = $typeId;
 
         return $this;
     }
 
     /**
-     * Get componenttypeid
+     * Get typeId
      *
-     * @return \Damis\EntitiesBundle\Entity\Componenttype 
+     * @return ComponentType
      */
-    public function getComponenttypeid()
+    public function getTypeId()
     {
-        return $this->componenttypeid;
+        return $this->typeId;
     }
 }
