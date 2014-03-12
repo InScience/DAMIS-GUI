@@ -7,7 +7,7 @@
 <ul class="nav navbar-nav navbar-right">
 {% if app.user and is_granted("IS_AUTHENTICATED_REMEMBERED") or is_granted("IS_AUTHENTICATED_FULLY") %}
     <li class="dropdown">
-        <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ 'layout.user'|trans({}, 'FOSUserBundle') }} <b class="caret"></b></a>
+        <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-user"></span> <b class="caret"></b></a>
         <ul class="dropdown-menu">
             <li class="dropdown-header">{{ app.user.publicName }}</li>
             <li class="divider"></li>
@@ -19,7 +19,7 @@
     </li>
     {% if app.user and is_granted("ROLE_ADMIN") %}
         <li class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ 'layout.admin'|trans({}, 'FOSUserBundle') }} <b class="caret"></b></a>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="{{ path('users') }}">{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</a></li>
             </ul>
