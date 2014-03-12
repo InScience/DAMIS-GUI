@@ -1,3 +1,8 @@
+damis_datasets:
+    resource: "@DamisDatasetsBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 damis_experiment:
     resource: "@DamisExperimentBundle/Controller/"
     type:     annotation
