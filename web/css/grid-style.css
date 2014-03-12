@@ -84,3 +84,50 @@
     list-style-type: none;
     padding: 0px;
 }
+
+
+.pagerfanta {
+    border-radius: 4px;
+    display: inline-block;
+    margin: 20px 0;
+    padding-left: 0;
+}
+
+nav {
+    text-align: center;
+}
+nav a, nav span, nav .dots {
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    color: #428BCA;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: #EEEEEE;
+    border-color: #DDDDDD;
+    color: #2A6496;
+}
+
+nav .current {
+    background-color: #428BCA;
+    border-color: #428BCA;
+    color: #FFFFFF;
+    cursor: default;
+    z-index: 2;
+}
+
+nav .disabled {
+    background-color: #FFFFFF;
+    border-color: #DDDDDD;
+    color: #999999;
+    cursor: not-allowed;
+}
