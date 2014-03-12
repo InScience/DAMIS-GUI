@@ -1,0 +1,45 @@
+{% extends 'NaujosKnygosStaticBundle::layout.html.twig' %}
+
+{% block body -%}
+<div id="main_body">
+    <div class="main_container">
+        <div class="main_container_info">
+            {% set menuItem = knp_menu_get('NaujosKnygosBreadcrumsBundle:Builder:mainMenu', [], { 'route' : app.request.attributes.get('_route')}) %}
+            {{ include ('NaujosKnygosBreadcrumsBundle:Breadcrums:breadcrums.html.twig') }}
+
+            <div class="main_add_form">
+                <form action="{{ path('page_create') }}" method="post" {{ form_enctype(form) }}>
+                    <table class="form">
+                        <tbody>
+                        <tr>
+                            <td>{{ 'UserPublishers.Title' | trans({}, 'FOSUserBundle') }}</td>
+                            <td>{{ form_widget(form.name) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'UserPublishers.Type' | trans({}, 'FOSUserBundle') }}</td>
+                            <td>{{ form_widget(form.type) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'UserPublishers.Text' | trans({}, 'FOSUserBundle') }}</td>
+                            <td>{{ form_widget(form.text) }}</td>
+                        </tr>
+                        <tr>
+                            <td> {{ form_widget(form._token)}}</td>
+                        </tr>
+                        <tr>
+                            <td><input type="submit" value="{{'Create' | trans({}, 'ItemBundle') }}"></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/naujosknygositem/js/tinymce_textarea.js') }}" type="text/javascript"></script>
+{% endblock %}
