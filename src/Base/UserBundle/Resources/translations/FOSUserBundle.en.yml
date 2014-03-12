@@ -96,6 +96,7 @@ form:
     email: "Email"
     name: "Name"
     surname: "Surname"
+    role: "Roles"
     current_password: "Current password"
     password: "Password"
     password_confirmation: "Verification"

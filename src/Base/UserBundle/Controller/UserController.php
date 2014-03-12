@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Base\UserBundle\Entity\User;
 use Base\UserBundle\Form\UserType;
 use APY\DataGridBundle\Grid\Source\Entity;
+use APY\DataGridBundle\Grid\Action\RowAction;
+use APY\DataGridBundle\Grid\Column\ActionsColumn;
 
 /**
  * User controller.
@@ -23,15 +25,56 @@ class UserController extends Controller
      * Lists all User entities.
      *
      * @Route("/", name="users")
-     * @Method("GET")
      */
     public function indexAction()
     {
         $source = new Entity('BaseUserBundle:User');
 
+        /* @var $grid \APY\DataGridBundle\Grid\Grid */
         $grid = $this->get('grid');
 
         $grid->setSource($source);
+        $grid->setLimits(25);
+        $grid->setNoResultMessage($this->get('translator')->trans('No data'));
+
+        //custom colums config
+        $grid->hideColumns('id');
+
+        /* @var $column \APY\DataGridBundle\Grid\Column\Column */
+        $column = $grid->getColumn('name');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setTitle($this->get('translator')->trans('form.name', array(), 'FOSUserBundle'));
+
+        $column = $grid->getColumn('surname');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setTitle($this->get('translator')->trans('form.surname', array(), 'FOSUserBundle'));
+
+        $column = $grid->getColumn('username');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setTitle($this->get('translator')->trans('form.username', array(), 'FOSUserBundle'));
+
+        $column = $grid->getColumn('email');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setTitle($this->get('translator')->trans('form.email', array(), 'FOSUserBundle'));
+
+        $column = $grid->getColumn('roles');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setTitle($this->get('translator')->trans('form.role', array(), 'FOSUserBundle'));
+
+        //add actions column
+        $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'user_edit');
+        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
+        $grid->addColumn($actionsColumn2);
 
         return $grid->getGridResponse('BaseUserBundle::User\index.html.twig');
     }

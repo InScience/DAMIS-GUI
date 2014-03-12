@@ -1,7 +1,7 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block body -%}
-    <h1>User list</h1>
+    <h1>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h1>
 
     {{ grid(grid) }}
 {% endblock %}

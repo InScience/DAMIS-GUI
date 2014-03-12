@@ -96,6 +96,7 @@ form:
     email: "El. paštas"
     name: "Vardas"
     surname: "Pavardė"
+    role: "Rolės"
     current_password: "Dabartinis slaptažodis"
     password: "Slaptažodis"
     password_confirmation: "Patvirtinti"
