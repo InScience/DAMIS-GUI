@@ -29,7 +29,8 @@
         "bcc/cron-manager-bundle": "v2.4.0",
         "knplabs/knp-menu-bundle": "dev-master",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
-        "apy/datagrid-bundle": "dev-master"
+        "apy/datagrid-bundle": "dev-master",
+        "liuggio/excelbundle": ">=1.0.4"
     },
     "scripts": {
         "post-install-cmd": [
