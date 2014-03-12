@@ -23,3 +23,8 @@ BCCCronManagerBundle:
 base_user_fos:
     resource: "@BaseUserBundle/Resources/config/routing.yml"
     prefix: /
+
+base_convert:
+    resource: "@BaseConvertBundle/Controller/"
+    type:     annotation
+    prefix:   /
