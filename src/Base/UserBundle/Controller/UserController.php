@@ -70,6 +70,7 @@ class UserController extends Controller
         $column->setOperatorsVisible(false);
         $column->setDefaultOperator('like');
         $column->setTitle($this->get('translator')->trans('form.role', array(), 'FOSUserBundle'));
+        $column->setValues(array('ROLE_ADMIN' => $this->get('translator')->trans('admin.role_admin', array(), 'FOSUserBundle'), 'ROLE_USER' => $this->get('translator')->trans('admin.role_user', array(), 'FOSUserBundle')));
 
         //add actions column
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'user_edit');
@@ -82,7 +83,7 @@ class UserController extends Controller
     /**
      * Displays a form to edit an existing User entity.
      *
-     * @Route("/{id}/edit", name="user_edit")
+     * @Route("/{id}/edit.html", name="user_edit")
      * @Method("GET")
      * @Template()
      */
@@ -97,12 +98,10 @@ class UserController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         );
     }
 
@@ -142,12 +141,13 @@ class UserController extends Controller
             throw $this->createNotFoundException('Unable to find User entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
+
+            $this->container->get('session')->getFlashBag()->set('notice', 'profile.flash.updated');
 
             return $this->redirect($this->generateUrl('user_edit', array('id' => $id)));
         }
@@ -155,50 +155,6 @@ class UserController extends Controller
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         );
-    }
-
-    /**
-     * Deletes a User entity.
-     *
-     * @Route("/{id}", name="user_delete")
-     * @Method("DELETE")
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('BaseUserBundle:User')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find User entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('user'));
-    }
-
-    /**
-     * Creates a form to delete a User entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('user_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
     }
 }

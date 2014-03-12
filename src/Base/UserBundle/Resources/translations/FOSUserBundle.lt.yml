@@ -102,3 +102,9 @@ form:
     password_confirmation: "Patvirtinti"
     new_password: "Naujas slaptažodis"
     new_password_confirmation: "Patvirtinti"
+    locked: "Išjungtas"
+
+admin:
+    edit_user: "Koreguoti vartotoją"
+    role_user: "Vartotojas"
+    role_admin: "Administratorius"

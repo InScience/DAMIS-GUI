@@ -1,16 +1,34 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block body -%}
-    <h1>Users edit</h1>
+    {% include "BaseMainBundle::messages.html.twig" %}
 
-    {{ form(edit_form) }}
+    <form class="form-signin fos_user_profile_edit" role="form" action="{{ path('user_update', { 'id': entity.id }) }}" {{ form_enctype(edit_form) }} method="POST">
+        <h2 class="form-signin-heading">{{ 'admin.edit_user'|trans({}, 'FOSUserBundle') }}</h2>
+        <input type="hidden" name="_method" value="PUT" />
+        {{ form_widget(edit_form._token) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('user') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+        {{ form_errors(edit_form.username) }}
+        {{ form_widget(edit_form.username) }}
+
+        {{ form_errors(edit_form.email) }}
+        {{ form_widget(edit_form.email) }}
+
+        {{ form_errors(edit_form.name) }}
+        {{ form_widget(edit_form.name) }}
+
+        {{ form_errors(edit_form.surname) }}
+        {{ form_widget(edit_form.surname) }}
+
+        {{ form_errors(edit_form.roles) }}
+        {{ form_widget(edit_form.roles) }}
+
+        <div class="checkbox">
+            {{ form_errors(edit_form.locked) }}
+            {{ form_widget(edit_form.locked) }}
+            {{ form_label(edit_form.locked) }}
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'profile.edit.submit'|trans({}, 'FOSUserBundle') }}" >{{ 'profile.edit.submit'|trans({}, 'FOSUserBundle') }}</button>
+    </form>
 {% endblock %}

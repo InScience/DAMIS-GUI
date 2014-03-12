@@ -15,28 +15,29 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username')
-            ->add('usernameCanonical')
-            ->add('email')
-            ->add('emailCanonical')
-            ->add('enabled')
-            ->add('salt')
-            ->add('password')
-            ->add('lastLogin')
-            ->add('locked')
-            ->add('expired')
-            ->add('expiresAt')
-            ->add('confirmationToken')
-            ->add('passwordRequestedAt')
-            ->add('roles')
-            ->add('credentialsExpired')
-            ->add('credentialsExpireAt')
-            ->add('registeredAt')
-            ->add('name')
-            ->add('surname')
+            ->add('name', null, array('label' => 'form.name', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.name'),))
+            ->add('surname', null, array('label' => 'form.surname', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.surname'),))
+            ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.username'),))
+            ->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.email'),))
+            ->add('roles', 'choice', array(
+                'required' => false,
+                'translation_domain' => 'FOSUserBundle',
+                'multiple' => true,
+                'expanded' => true,
+                'choices' => $this->refactorRoles(),
+                'attr' => array('class' => 'checkbox'),
+            ))
+            ->add('locked', null, array('label' => 'form.locked', 'translation_domain' => 'FOSUserBundle', 'required' => false,))
         ;
     }
-    
+
+    private function refactorRoles()
+    {
+        //$result['ROLE_USER'] = 'admin.role_user'; //negalima panaikinti vartotojui tokios roles
+        $result['ROLE_ADMIN'] = 'admin.role_admin';
+        return $result;
+    }
+
     /**
      * @param OptionsResolverInterface $resolver
      */

@@ -102,3 +102,9 @@ form:
     password_confirmation: "Verification"
     new_password: "New password"
     new_password_confirmation: "Verification"
+    locked: "Locked"
+
+admin:
+    edit_user: "Edit user"
+    role_user: "User"
+    role_admin: "Administrator"
