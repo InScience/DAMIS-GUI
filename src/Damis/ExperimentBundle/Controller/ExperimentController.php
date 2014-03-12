@@ -22,8 +22,14 @@ class ExperimentController extends Controller
             ->getRepository('DamisExperimentBundle:Cluster')
             ->findAll();
 
+        $componentsCategories = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:ComponentType')
+            ->findAll();
+
         return [
-            'clusters' => $clusters
+            'clusters' => $clusters,
+            'componentsCategories' => $componentsCategories
         ];
     }
 

@@ -5,8 +5,8 @@
         <div id="toolbox-container">
             <ul class="nav nav-tabs" id="cluster-tabs">
                 {% for cluster in clusters %}
-                <li id="cluster-{{ cluster.getId }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
-                    <a href="#">MII Cluster</a>
+                <li id="cluster-{{ cluster.getClusterId }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
+                    <a href="#">{{ cluster.getClustername }}</a>
                     <span>
                         <i class="component-tooltip cluster-tooltip icon-info-sign" data-placement="bottom"
                            data-content="{{ cluster.getDesciption }}" style="cursor: pointer">
@@ -16,6 +16,24 @@
                 </li>
                 {% endfor %}
             </ul>
+            <div id="toolbox">
+                {% for cluster in clusters %}
+                    <div id="cluster-{{ cluster.getClusterId }}-panel" class="ui-accordion ui-widget ui-helper-reset"
+                         role="tablist" {% if loop.index != 1 %}style="display:none"{% endif %}>
+
+                        {% for category in componentsCategories %}
+                        <h3 class="{% if loop.index == 1 %}first{% endif %} ui-accordion-header ui-helper-reset
+                        ui-state-default ui-accordion-icons ui-corner-all" role="tab"
+                            id="ui-accordion-cluster-{{ cluster.getClusterId }}-panel-header-{{ loop.index0 }}"
+                            aria-controls="ui-accordion-cluster-{{ cluster.getClusterId }}-panel-panel-{{ loop.index0 }}"
+                            aria-selected="false" tabindex="-1">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                            {{ category.getType | trans({}, 'ExperimentBundle') }}
+                        </h3>
+                        {% endfor%}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

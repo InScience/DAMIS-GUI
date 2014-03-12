@@ -5,19 +5,19 @@ namespace Damis\ExperimentBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Componenttype
+ * ComponentType
  *
  * @ORM\Table(name="componenttype", uniqueConstraints={@ORM\UniqueConstraint(name="COMPONENTTYPE_PK", columns={"ComponentTypeID"})})
  * @ORM\Entity
  */
-class Componenttype
+class ComponentType
 {
     /**
      * @var string
      *
      * @ORM\Column(name="ComponentType", type="string", length=80, nullable=false)
      */
-    private $componenttype;
+    private $type;
 
     /**
      * @var integer
@@ -26,40 +26,39 @@ class Componenttype
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $componenttypeid;
-
+    private $id;
 
 
     /**
-     * Set componenttype
+     * Set component type
      *
-     * @param string $componenttype
-     * @return Componenttype
+     * @param $type
+     * @return ComponentType
      */
-    public function setComponenttype($componenttype)
+    public function setType($type)
     {
-        $this->componenttype = $componenttype;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get componenttype
+     * Get component type
      *
      * @return string 
      */
-    public function getComponenttype()
+    public function getType()
     {
-        return $this->componenttype;
+        return $this->type;
     }
 
     /**
-     * Get componenttypeid
+     * Get component type id
      *
      * @return integer 
      */
-    public function getComponenttypeid()
+    public function getId()
     {
-        return $this->componenttypeid;
+        return $this->id;
     }
 }
