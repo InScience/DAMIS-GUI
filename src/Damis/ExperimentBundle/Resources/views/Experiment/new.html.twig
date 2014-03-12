@@ -1,5 +1,10 @@
 {% extends 'BaseMainBundle::layout.html.twig' %}
-
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'bundles/damisexperiment/css/*' filter='cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
 {% block body %}
     <div id="workflow-editor-container">
         <div id="toolbox-container">
@@ -18,19 +23,33 @@
             </ul>
             <div id="toolbox">
                 {% for cluster in clusters %}
-                    <div id="cluster-{{ cluster.getClusterId }}-panel" class="ui-accordion ui-widget ui-helper-reset"
-                         role="tablist" {% if loop.index != 1 %}style="display:none"{% endif %}>
-
+                    <div id="cluster-{{ cluster.getClusterId }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
                         {% for category in componentsCategories %}
-                        <h3 class="{% if loop.index == 1 %}first{% endif %} ui-accordion-header ui-helper-reset
-                        ui-state-default ui-accordion-icons ui-corner-all" role="tab"
-                            id="ui-accordion-cluster-{{ cluster.getClusterId }}-panel-header-{{ loop.index0 }}"
-                            aria-controls="ui-accordion-cluster-{{ cluster.getClusterId }}-panel-panel-{{ loop.index0 }}"
-                            aria-selected="false" tabindex="-1">
-                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
-                            {{ category.getType | trans({}, 'ExperimentBundle') }}
-                        </h3>
-                        {% endfor%}
+                        {% spaceless %}
+                            <h3 {% if loop.index == 1 %}class="first"{% endif %}>
+                                {{ category.getType | trans({}, 'ExperimentBundle') }}
+                            </h3>
+                            <div style="padding: 0;">
+                                <div class="tools-padding">
+                                {% for component in components
+                                    if (component.clusterId == cluster and component.typeId == category) %}
+                                    <div class="prototype-box">
+                                        <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
+                                             width="64px" height="64px" />
+                                        <i style="cursor:pointer; " class="component-tooltip icon-info-sign"
+                                           data-placement="bottom" data-content="Upload file for data analysis"
+                                           data-original-title="" title="">
+                                            <span style="display: none;">Upload New File</span>
+                                        </i>
+                                        <div class="desc">
+                                            <div>Upload New File</div>
+                                        </div><input type="hidden" value="18"></div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        {% endspaceless %}
+                        {% endfor %}
+
                     </div>
                 {% endfor %}
             </div>

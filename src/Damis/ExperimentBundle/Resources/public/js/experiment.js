@@ -1,4 +1,5 @@
 $(function() {
+    // Tabs init
     $("#cluster-tabs li").click(function(){
         $("#cluster-tabs .active").removeClass("active");
         $("#toolbox div[id$=panel]").hide();
@@ -8,4 +9,8 @@ $(function() {
         var activePanel = $("#cluster-"+ clusterId +"-panel");
         activePanel.show();
     });
+
+    $("#toolbox > div").accordion({
+       heightStyle: "content"
+   });
 });

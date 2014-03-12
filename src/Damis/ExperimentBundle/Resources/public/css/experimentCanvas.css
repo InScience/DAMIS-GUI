@@ -1,0 +1,100 @@
+#workflow-editor-container {
+    min-height: 500px;
+}
+
+#toolbox-container {
+    width: 240px; min-height: inherit; float:left;
+}
+
+#cluster-tabs { margin-bottom: 4px; }
+#cluster-tabs li { position: relative; }
+
+#toolbox {
+    width: 240px; min-height: inherit; float:left;
+}
+
+.tools-padding {
+    width: 202px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.component-tooltip {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.ui-accordion .ui-accordion-header.first {margin-top: 0}
+
+#canvas {
+    width:614px; min-height: inherit; float:left; margin-left: 4px; border: 1px solid #ddd; -moz-border-radius:4px; border-radius:4px;
+}
+
+#flowchart-container {
+    position: relative; min-height: inherit;
+}
+
+#buttons-block button {
+    margin: 4px;
+}
+
+.task-box, .prototype-box {
+    opacity:0.8; filter:alpha(opacity=80); width:64px; height:auto; text-align:center; z-index:20; color:black; font-size:10px; line-height: 20px; font-family: Verdana, Arial, sans-serif;
+}
+
+.task-box {
+    position: absolute;
+}
+
+.task-box:hover, .prototype-box:hover {
+    opacity:0.6; filter:alpha(opacity=60);
+}
+
+.task-box.error {
+    border:1px solid #A60000; box-shadow: 2px 2px 19px #D4A3A3; -o-box-shadow: 2px 2px 19px #D4A3A3; -webkit-box-shadow: 2px 2px 19px #D4A3A3; -moz-box-shadow: 2px 2px 19px #D4A3A3; background-color:#eeeeef; color: #A60000;
+}
+
+.task-box.error:hover {
+    box-shadow: 2px 2px 19px #6D2E2E; -o-box-shadow: 2px 2px 19px #6D2E2E; -webkit-box-shadow: 2px 2px 19px #6D2E2E; -moz-box-shadow: 2px 2px 19px #6D2E2E; opacity:0.6; filter:alpha(opacity=60);
+}
+
+.prototype-box { position: relative; /* to be contained inside #toolbar */ display: inline-block; margin-right: 4px; vertical-align: top; padding-bottom: 4px;}
+.prototype-box.last { margin-right: 0px;}
+
+.desc {display: table; word-wrap: break-word; width: 100%;}
+.desc div{max-width:64px;}
+
+/* target endpoint during connection dragging */
+.active-target {
+    border:1px dotted green;
+}
+
+.hover {
+    border:1px dotted red;
+}
+
+._jsPlumb_connector { z-index:4; }
+._jsPlumb_endpoint, .endpointTargetLabel, .endpointSourceLabel{ z-index:21;cursor:pointer; }
+
+.hl { border:3px solid red; }
+#debug { position:absolute; background-color:black; color:red; z-index:5000 }
+
+._jsPlumb_dragging { z-index:4000; }
+
+.aLabel {
+    background-color:white; padding:0.4em; font:12px sans-serif; color:#444; z-index:21; border:1px dotted gray; opacity:0.8; filter:alpha(opacity=80); cursor: pointer;
+}
+
+.aLabel._jsPlumb_hover {
+    background-color:#5C96BC; color:white;	border:1px solid white;
+}
+
+/* Remove button inside task form */
+.delete-row {
+    display: none;
+}
+.endpointTooltip {color:#346789; z-index: 50;}
+
