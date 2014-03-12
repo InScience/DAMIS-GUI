@@ -24,7 +24,7 @@ class UserController extends Controller
     /**
      * Lists all User entities.
      *
-     * @Route("/", name="users")
+     * @Route(".html", name="users")
      */
     public function indexAction()
     {
