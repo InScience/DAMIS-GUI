@@ -3,5 +3,5 @@
 {% block body -%}
     <h1>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h1>
 
-    {{ grid(grid) }}
+    {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
 {% endblock %}

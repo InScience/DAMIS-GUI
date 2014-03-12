@@ -1,50 +1,10 @@
-.grid table
-{
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    color: #555555;
-    font-size: 1em;
-    width: 100%;
-}
-
-.grid td, .grid th
-{
-    border: 1px solid #D4E0EE;
-    padding: 3px 7px 2px 7px;
-}
-.grid th
-{
-    background-color: #E6EDF5;
-    vertical-align: top;
-}
-
-.grid th a {
-    color: #4F76A3;
-    text-decoration: none;
-}
-
-.grid th a.grid-reset {
-    margin-left: 5px;
-    font-weight: normal;
-}
-
-.grid tr.even
-{
-    background-color: #FCFDFE;
-}
-
-.grid tr.odd {
-    background-color: #F7F9FC;
-
-}
-
 .grid_header, .grid_footer {
     margin: 5px 0;
 }
 
 /* Icons for order */
 /* You can find this icons in the images directory of the docuementation */
-th div {
+.grid th div {
     height: 10px;
     width: 20px;
     float: right;
@@ -118,7 +78,7 @@ th div {
 }
 
 .grid-search select, .grid-search .grid-filter-input-query input {
-    width: 150px;
+    width: 100px;
 }
 .grid-row-actions{
     list-style-type: none;

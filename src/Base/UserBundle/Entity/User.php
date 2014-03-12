@@ -12,7 +12,7 @@ use APY\DataGridBundle\Grid\Mapping as GRID;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="Base\UserBundle\Entity\UserRepository")
- * @GRID\Source(columns="id, name, surname, email, username, roles")
+ * @GRID\Source(columns="id, name, surname, email, username, roles, locked")
  */
 class User extends BaseUser
 {

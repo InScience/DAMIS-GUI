@@ -108,3 +108,5 @@ admin:
     edit_user: "Koreguoti vartotoją"
     role_user: "Vartotojas"
     role_admin: "Administratorius"
+    positive: "Taip"
+    negative: "Ne"

@@ -108,3 +108,5 @@ admin:
     edit_user: "Edit user"
     role_user: "User"
     role_admin: "Administrator"
+    positive: "True"
+    negative: "False"

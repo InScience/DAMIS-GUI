@@ -72,6 +72,10 @@ class UserController extends Controller
         $column->setTitle($this->get('translator')->trans('form.role', array(), 'FOSUserBundle'));
         $column->setValues(array('ROLE_ADMIN' => $this->get('translator')->trans('admin.role_admin', array(), 'FOSUserBundle'), 'ROLE_USER' => $this->get('translator')->trans('admin.role_user', array(), 'FOSUserBundle')));
 
+        $column = $grid->getColumn('locked');
+        $column->setTitle($this->get('translator')->trans('form.locked', array(), 'FOSUserBundle'));
+        $column->setValues(array('true' => $this->get('translator')->trans('admin.positive', array(), 'FOSUserBundle'), 'false' => $this->get('translator')->trans('admin.negative', array(), 'FOSUserBundle')));
+
         //add actions column
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'user_edit');
         $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
