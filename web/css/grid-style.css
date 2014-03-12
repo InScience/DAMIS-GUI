@@ -120,3 +120,7 @@ th div {
 .grid-search select, .grid-search .grid-filter-input-query input {
     width: 150px;
 }
+.grid-row-actions{
+    list-style-type: none;
+    padding: 0px;
+}
