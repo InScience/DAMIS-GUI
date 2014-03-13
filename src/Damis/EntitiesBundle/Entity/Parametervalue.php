@@ -39,9 +39,9 @@ class Parametervalue
     private $workflowtaskid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Parameter
+     * @var \Damis\ExperimentBundle\Entity\Parameter
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Parameter")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Parameter")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ParameterID", referencedColumnName="ParameterID")
      * })

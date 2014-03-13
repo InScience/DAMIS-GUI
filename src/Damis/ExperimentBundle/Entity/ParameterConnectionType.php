@@ -1,23 +1,23 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\ExperimentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Parameterconnectiontype
+ * ParameterConnectionType
  *
  * @ORM\Table(name="parameterconnectiontype", uniqueConstraints={@ORM\UniqueConstraint(name="PARAMETERCONNECTIONTYPE_PK", columns={"ParameterConnectionTypeID"})})
  * @ORM\Entity
  */
-class Parameterconnectiontype
+class ParameterConnectionType
 {
     /**
      * @var string
      *
      * @ORM\Column(name="ParameterConnectionType", type="string", length=80, nullable=false)
      */
-    private $parameterconnectiontype;
+    private $type;
 
     /**
      * @var integer
@@ -26,40 +26,40 @@ class Parameterconnectiontype
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $parameterconnectiontypeid;
+    private $id;
 
 
 
     /**
-     * Set parameterconnectiontype
+     * Set type
      *
-     * @param string $parameterconnectiontype
-     * @return Parameterconnectiontype
+     * @param string $type
+     * @return ParameterConnectionType
      */
-    public function setParameterconnectiontype($parameterconnectiontype)
+    public function setType($type)
     {
-        $this->parameterconnectiontype = $parameterconnectiontype;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get parameterconnectiontype
+     * Get type
      *
      * @return string 
      */
-    public function getParameterconnectiontype()
+    public function getType()
     {
-        return $this->parameterconnectiontype;
+        return $this->type;
     }
 
     /**
-     * Get parameterconnectiontypeid
+     * Get id
      *
      * @return integer 
      */
-    public function getParameterconnectiontypeid()
+    public function getId()
     {
-        return $this->parameterconnectiontypeid;
+        return $this->id;
     }
 }
