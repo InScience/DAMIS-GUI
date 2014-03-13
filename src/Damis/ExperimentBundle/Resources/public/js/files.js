@@ -1,7 +1,7 @@
 (function() {
 	window.files = {
 		init: function(componentType, formWindow) {
-			if (componentType == 'UPLOAD FILE') {
+			if (componentType == 1 || componentType == 2) {
 				this.update(formWindow);
 			}
 		},
@@ -119,7 +119,7 @@
 
 		uploadedButtons: function() {
 			var buttons = [{
-				"text": gettext('OK'),
+				"text": 'OK',
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					var fileForm = $(this).find(".dynamic-container");
@@ -140,7 +140,7 @@
 				}
 			},
 			{
-				"text": gettext('Cancel'),
+				"text": 'Cancel',
 				"class": "btn",
 				"click": function(ev) {
                     $(this).find(".toggle-section").hide();
@@ -155,21 +155,21 @@
 		// all buttons of this component dialog
 		allButtons: function() {
 			var buttons = [{
-				"text": gettext('OK'),
+				"text": 'OK',
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					window.files.doUpload($(this));
 				}
 			},
 			{
-				"text": gettext('Cancel'),
+				"text": 'Cancel',
 				"class": "btn",
 				"click": function(ev) {
 					$(this).dialog("close");
 				}
 			}];
 			return buttons;
-		},
+		}
 	}
 })();
 

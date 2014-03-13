@@ -88,9 +88,7 @@
 
             // mapping native components to Ajax urls for dialog rendering
             window.componentFormUrls = {};
-            {% for name, url in component_form_urls %}
-            window.componentFormUrls["{{ name }}"] = "{{ url }}";
-            {% endfor %}
+            window.componentFormUrls['UPLOAD FILE'] = "{{ path('dataset_upload') }}";
 
             window.componentSettings.details = {};
             {% for component in components %}
@@ -105,7 +103,7 @@
             window.experimentForm.params = {
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
                 experimentNewUrl: "{{ path('new_experiment') }}",
-                {#taskFormPrefix: "{{ task_formset.prefix }}"#}
+                taskFormPrefix: "form-111-"
             };
 
             //decide if an empty canvas or a persisted worklow should be
