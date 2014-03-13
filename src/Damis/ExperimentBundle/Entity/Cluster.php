@@ -17,21 +17,21 @@ class Cluster
      *
      * @ORM\Column(name="ClusterName", type="string", length=80, nullable=false)
      */
-    private $clustername;
+    private $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ClusterWorkloadHost", type="string", length=255, nullable=false)
      */
-    private $clusterworkloadhost;
+    private $workloadHost;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ClusterDescription", type="string", length=500, nullable=true)
      */
-    private $clusterdescription;
+    private $description;
 
     /**
      * @var integer
@@ -40,86 +40,86 @@ class Cluster
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $clusterid;
+    private $id;
 
 
 
     /**
-     * Set clustername
+     * Set name
      *
-     * @param string $clustername
+     * @param string $name
      * @return Cluster
      */
-    public function setClustername($clustername)
+    public function setname($name)
     {
-        $this->clustername = $clustername;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get clustername
+     * Get name
      *
      * @return string 
      */
-    public function getClustername()
+    public function getname()
     {
-        return $this->clustername;
+        return $this->name;
     }
 
     /**
-     * Set clusterworkloadhost
+     * Set workloadhost
      *
-     * @param string $clusterworkloadhost
+     * @param string $workloadhost
      * @return Cluster
      */
-    public function setClusterworkloadhost($clusterworkloadhost)
+    public function setWorkloadHost($workloadHost)
     {
-        $this->clusterworkloadhost = $clusterworkloadhost;
+        $this->workloadHost = $workloadHost;
 
         return $this;
     }
 
     /**
-     * Get clusterworkloadhost
+     * Get workloadhost
      *
      * @return string 
      */
-    public function getClusterworkloadhost()
+    public function getWorkloadHost()
     {
-        return $this->clusterworkloadhost;
+        return $this->workloadHost;
     }
 
     /**
-     * Set clusterdescription
+     * Set description
      *
-     * @param string $clusterdescription
+     * @param string $description
      * @return Cluster
      */
-    public function setClusterdescription($clusterdescription)
+    public function setDescription($description)
     {
-        $this->clusterdescription = $clusterdescription;
+        $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get clusterdescription
+     * Get description
      *
      * @return string 
      */
-    public function getClusterdescription()
+    public function getDescription()
     {
-        return $this->clusterdescription;
+        return $this->description;
     }
 
     /**
-     * Get clusterid
+     * Get id
      *
      * @return integer 
      */
-    public function getClusterid()
+    public function getId()
     {
-        return $this->clusterid;
+        return $this->id;
     }
 }

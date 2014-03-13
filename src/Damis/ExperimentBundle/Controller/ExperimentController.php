@@ -40,4 +40,16 @@ class ExperimentController extends Controller
         ];
     }
 
+    /**
+     * Component info
+     *
+     * @Route("/experiment/component_info.html", name="component")
+     * @Template()
+     */
+    public function componentAction()
+    {
+
+        return [];
+    }
+
 }

@@ -1,0 +1,27 @@
+<form id="experiment-form" action="" method="post" autocomplete="off">
+    <div style="display:none">
+    <div class="inline task">
+        <div style="display:none">
+
+            <p>
+                Component:<br/>
+
+                        <span class='component-selection'>
+                            <select id="id_tasks-0-component" name="tasks-0-component">
+                                <option value="" selected="selected">---------</option>
+                                {% for component in components %}
+                                <option value="{{ component.getId }}">{{ component.getName }} </option>
+                                {% endfor %}
+                            </select></span>
+            </p>
+            <a class="add-row" href="javascript:void(0)">
+                <button class="btn">
+                    <i class="icon-plus"></i>
+                    another
+                </button>
+            </a>
+        </div>
+    </div>
+        </div>
+    <div id="task-forms"></div>
+</form>

@@ -13,4 +13,6 @@ $(function() {
     $("#toolbox > div").accordion({
        heightStyle: "content"
    });
+
+
 });
