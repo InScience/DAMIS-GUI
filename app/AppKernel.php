@@ -32,6 +32,7 @@ class AppKernel extends Kernel
             new Base\StaticBundle\BaseStaticBundle(),
             new Damis\DatasetsBundle\DamisDatasetsBundle(),
             new Base\LogBundle\BaseLogBundle(),
+            new Iphp\FileStoreBundle\IphpFileStoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -1,0 +1,45 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
+        <li class="active"><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
+        <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
+    </ul>
+    <div class="row">
+        <div class="col-lg-4" style="margin-top: 20px;">
+            <form role="form" id="createDataset" action="{{ path('datasets_create') }}" method="post" {{ form_enctype(form) }}>
+                <div class="form-group">
+                    {{ form_label(form.title) }}
+                    {{ form_widget(form.title) }}
+                    {{ form_errors(form.title) }}
+                </div>
+
+                <div class="form-group">
+
+                    {{ form_label(form.file) }}
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="input-group">
+                            <div class="form-control uneditable-input"><i class="icon-file fileupload-exists"></i>
+                                <span class="fileupload-preview"></span>
+                            </div>
+                            <div class="input-group-btn">
+                                <a class="btn btn-primary btn-file">
+                                    <span class="fileupload-new">{{ 'Select file' | trans({}, 'DatasetsBundle') }}</span>
+                                    <span class="fileupload-exists">{{ 'Change' | trans({}, 'DatasetsBundle') }}</span>
+                                    {{ form_widget(form.file) }}</a>
+                                <a href="#" class="btn btn-primary fileupload-exists" data-dismiss="fileupload">{{ 'Remove' | trans({}, 'DatasetsBundle') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_errors(form.file) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <button type="submit" class="btn btn-primary">{{ 'Upload dataset' | trans({}, 'DatasetsBundle') }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

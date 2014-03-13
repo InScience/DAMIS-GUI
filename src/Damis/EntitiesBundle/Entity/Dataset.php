@@ -3,15 +3,19 @@
 namespace Damis\EntitiesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
 
 /**
  * Dataset
  *
  * @ORM\Table(name="dataset", uniqueConstraints={@ORM\UniqueConstraint(name="DATASET_PK", columns={"DatasetID"})}, indexes={@ORM\Index(name="FK_DATASET_DAMISUSER", columns={"UserID"})})
+ * @FileStore\Uploadable
  * @ORM\Entity
  */
 class Dataset
 {
+    private $seed = 'dcmaga7v5udgyhj0lwen';
+
     /**
      * @var integer
      *
@@ -46,6 +50,15 @@ class Dataset
      * @ORM\Column(name="DatasetUpdated", type="integer", nullable=true)
      */
     private $datasetupdated;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="file", type="array", nullable=true)
+     * @Assert\File( maxSize="3M")
+     * @FileStore\UploadableField(mapping="dataset")
+     */
+    private $file;
 
     /**
      * @var string
@@ -245,4 +258,44 @@ class Dataset
     {
         return $this->userid;
     }
+
+    /**
+     * Create md5 secured with seed and user id string
+     *
+     * @return string
+     */
+    public function getUserIdMd5(){
+        return md5($this->seed . $this->userid);
+    }
+
+    /**
+     * Create md5 secured with seed and file id string
+     *
+     * @return string
+     */
+    public function getDatasetIdMd5(){
+        return md5($this->datasetid . $this->seed);
+    }
+
+    /**
+     * Set file
+     *
+     * @param array $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file
+     *
+     * @return array
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+
 }

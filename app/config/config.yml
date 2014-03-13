@@ -116,3 +116,18 @@ apy_data_grid:
            previous_message : «
            next_message : »
            proximity: 3
+
+iphp_file_store:
+    mappings:
+        dataset:
+            upload_dir:  %kernel.root_dir%/../web/datasets
+            upload_path: /datasets
+            namer:
+                translit: ~
+                property:
+                    params: { field : datasetIdMd5 }
+            directory_namer:
+                property:
+                    params: { field: userIdMd5 }
+            delete_on_remove: true
+            overwrite_duplicates: true

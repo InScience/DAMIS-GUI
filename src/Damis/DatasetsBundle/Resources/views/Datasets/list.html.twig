@@ -2,7 +2,7 @@
 {% block body %}
     <ul class="nav nav-tabs">
         <li class="active"><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
-        <li><a href="#">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
+        <li><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
 {% endblock %}
