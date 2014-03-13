@@ -29,7 +29,9 @@ class AppKernel extends Kernel
             new Damis\ExperimentBundle\DamisExperimentBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
             new Base\ConvertBundle\BaseConvertBundle(),
+            new Base\StaticBundle\BaseStaticBundle(),
             new Damis\DatasetsBundle\DamisDatasetsBundle(),
+            new Base\LogBundle\BaseLogBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

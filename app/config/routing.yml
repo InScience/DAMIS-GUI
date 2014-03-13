@@ -8,6 +8,11 @@ damis_experiment:
     type:     annotation
     prefix:   /
 
+base_static:
+    resource: "@BaseStaticBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 base_user:
     resource: "@BaseUserBundle/Controller/"
     type:     annotation
