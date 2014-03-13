@@ -85,7 +85,7 @@ class DatasetsController extends Controller
     /**
      * Dataset upload component form
      *
-     * @Route("/datasets/upload.html", name="dataset_upload")
+     * @Route("/upload.html", name="dataset_upload")
      * @Template()
      */
     public function uploadAction()
