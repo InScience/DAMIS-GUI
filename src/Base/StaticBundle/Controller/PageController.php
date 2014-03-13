@@ -37,7 +37,7 @@ class PageController extends Controller
     /**
      * Creates a new Page entity.
      *
-     * @Route("/pages/new.html", name="page_create")
+     * @Route("/pages/", name="page_create")
      * @Method("POST")
      * @Template("BaseStaticBundle:Page:new.html.twig")
      */
@@ -109,7 +109,7 @@ class PageController extends Controller
     /**
      * Finds and displays a Page entity.
      *
-     * @Route("/page/{slug}.html", name="page_show")
+     * @Route("/page/{group}/{slug}.html", name="page_show")
      * @Method("GET")
      * @Template()
      */

@@ -59,3 +59,7 @@ security:
         - { path: ^/profile, role: ROLE_USER }
 
         - { path: ^/users, role: ROLE_ADMIN }
+
+        #static bundle
+        - { path: ^/pages, role: ROLE_ADMIN }
+        - { path: ^/page, role: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -10,13 +10,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="Base\StaticBundle\Entity\PageRepository")
+ * @Gedmo\Loggable(logEntryClass="Base\LogBundle\Entity\EntityLog")
  */
 class Page
 {
-    public static $types = array(
-        0 => '',
-        1 => 'Top menu'
-    );
     /**
      * @var integer
      *
@@ -29,15 +26,28 @@ class Page
     /**
      * @var string
      * @Gedmo\Versioned
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      */
-    private $name;
+    private $title;
 
     /**
-     * @Gedmo\Slug(fields={"name"}, updatable=true)
+     * @Gedmo\Slug(fields={"title"}, updatable=true)
      * @ORM\Column(length=128, unique=true)
      */
     private $slug;
+
+    /**
+     * @var string
+     * @Gedmo\Versioned
+     * @ORM\Column(name="group", type="string", length=255)
+     */
+    private $group;
+
+    /**
+     * @Gedmo\Slug(fields={"group"}, updatable=true)
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $groupSlug;
 
     /**
      * @var string
@@ -54,13 +64,6 @@ class Page
     private $position;
 
     /**
-     * @var integer
-     * @Gedmo\Versioned
-     * @ORM\Column(name="type", type="integer")
-     */
-    private $type;
-
-    /**
      * Get id
      * @return integer
      */
@@ -70,26 +73,26 @@ class Page
     }
 
     /**
-     * Set name
+     * Set title
      *
-     * @param string $name
+     * @param string $title
      * @return Page
      */
-    public function setName($name)
+    public function setTitle($title)
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get title
      *
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
+        return $this->title;
     }
 
     /**
@@ -162,27 +165,31 @@ class Page
     }
 
     /**
-     * @param int $type
+     * @param string $group
      */
-    public function setType($type)
-    {
-        $this->type = $type;
+    public function setGroup($group) {
+        $this->group = $group;
     }
 
     /**
-     * @return int
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Get type name string
-     *
      * @return string
      */
-    public function getTypeName() {
-        return self::$types[$this->type];
+    public function getGroup() {
+        return $this->group;
     }
+
+    /**
+     * @param mixed $groupSlug
+     */
+    public function setGroupSlug($groupSlug) {
+        $this->groupSlug = $groupSlug;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupSlug() {
+        return $this->groupSlug;
+    }
+
 }
