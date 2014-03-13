@@ -1,0 +1,7 @@
+form:
+  create: Create
+  update: Update
+  title: Title
+  group: Group
+  text: Text
+  create_page: Create page

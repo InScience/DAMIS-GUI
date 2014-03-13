@@ -1,0 +1,7 @@
+form:
+  create: Sukurti
+  update: Atnaujinti
+  title: Pavadinimas
+  group: Grupė
+  text: Tekstas
+  create_page: Sukurti puslapį

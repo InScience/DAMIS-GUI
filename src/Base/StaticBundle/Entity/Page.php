@@ -4,6 +4,7 @@ namespace Base\StaticBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use APY\DataGridBundle\Grid\Mapping as GRID;
 
 /**
  * Page
@@ -11,6 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="Base\StaticBundle\Entity\PageRepository")
  * @Gedmo\Loggable(logEntryClass="Base\LogBundle\Entity\EntityLog")
+ * @GRID\Source(columns="id, title, groupName, position")
  */
 class Page
 {
@@ -39,13 +41,13 @@ class Page
     /**
      * @var string
      * @Gedmo\Versioned
-     * @ORM\Column(name="group", type="string", length=255)
+     * @ORM\Column(name="groupName", type="string", length=255, nullable=true)
      */
-    private $group;
+    private $groupName;
 
     /**
-     * @Gedmo\Slug(fields={"group"}, updatable=true)
-     * @ORM\Column(length=128, unique=true)
+     * @Gedmo\Slug(fields={"groupName"}, updatable=true)
+     * @ORM\Column(length=128, unique=true, nullable=true)
      */
     private $groupSlug;
 
@@ -165,20 +167,6 @@ class Page
     }
 
     /**
-     * @param string $group
-     */
-    public function setGroup($group) {
-        $this->group = $group;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroup() {
-        return $this->group;
-    }
-
-    /**
      * @param mixed $groupSlug
      */
     public function setGroupSlug($groupSlug) {
@@ -190,6 +178,20 @@ class Page
      */
     public function getGroupSlug() {
         return $this->groupSlug;
+    }
+
+    /**
+     * @param string $groupName
+     */
+    public function setGroupName($groupName) {
+        $this->groupName = $groupName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupName() {
+        return $this->groupName;
     }
 
 }
