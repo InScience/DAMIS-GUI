@@ -35,7 +35,7 @@
     <li><a href="{{ path('fos_user_registration_register') }}">{{ 'layout.register'|trans({}, 'FOSUserBundle') }}</a></li>
 {% endif %}
 
-{{ render(controller('BaseStaticBundle:Page:staticMenu', {})) }}
+{{ render(controller('BaseStaticBundle:Page:staticMenu', {groupName : 'help'})) }}
 
 <li class="dropdown">
     <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ app.request.locale|trans({}, 'general') }} <b class="caret"></b></a>
