@@ -88,7 +88,6 @@ layout:
     logged_in_as: Prisijungęs kaip %username%
     admin: Administravimas
     users: Vartotojai
-    cron: Cron
 
 # Form field labels
 form:

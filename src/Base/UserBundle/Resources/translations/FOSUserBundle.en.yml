@@ -88,7 +88,6 @@ layout:
     logged_in_as: Logged in as %username%
     admin: Admin
     users: Users
-    cron: Cron
 
 # Form field labels
 form:

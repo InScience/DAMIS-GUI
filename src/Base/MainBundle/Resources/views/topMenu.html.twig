@@ -24,7 +24,8 @@
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="{{ path('users') }}">{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</a></li>
-                <li><a href="{{ path('BCCCronManagerBundle_index') }}">{{ 'layout.cron'|trans({}, 'FOSUserBundle') }}</a></li>
+                <li><a href="{{ path('BCCCronManagerBundle_index') }}">{{ 'cron'|trans({}, 'general') }}</a></li>
+                <li><a href="{{ path('page') }}">{{ 'pages'|trans({}, 'general') }}</a></li>
             </ul>
         </li>
     {% endif %}
