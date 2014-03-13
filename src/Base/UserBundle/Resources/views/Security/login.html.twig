@@ -2,7 +2,7 @@
 
 {% block fos_user_content %}
 
-    {% include "BaseMainBundle::messages.html.twig" %}
+    {% include "BaseUserBundle::messages.html.twig" %}
 
     <form class="form-signin" role="form" action="{{ path("fos_user_security_check") }}" method="post">
         <h2 class="form-signin-heading">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</h2>

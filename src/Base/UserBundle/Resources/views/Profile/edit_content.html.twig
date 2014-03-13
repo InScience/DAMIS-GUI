@@ -1,4 +1,4 @@
-{% include "BaseMainBundle::messages.html.twig" %}
+{% include "BaseUserBundle::messages.html.twig" %}
 
 <form class="form-signin fos_user_profile_edit" role="form" action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST">
     <h2 class="form-signin-heading">{{ 'profile.title'|trans({}, 'FOSUserBundle') }}</h2>

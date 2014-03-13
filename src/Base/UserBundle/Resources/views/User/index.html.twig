@@ -1,6 +1,8 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block body -%}
+    {% include "BaseUserBundle::messages.html.twig" %}
+
     <h1>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h1>
 
     {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
