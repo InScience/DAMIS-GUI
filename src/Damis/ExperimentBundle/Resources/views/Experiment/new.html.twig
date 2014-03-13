@@ -6,59 +6,69 @@
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-    {% include "DamisExperimentBundle::_experiment_form.html.twig" with { components : components } %}
-    <div id="workflow-editor-container">
-        <div id="toolbox-container">
-            <ul class="nav nav-tabs" id="cluster-tabs">
-                {% for cluster in clusters %}
-                <li id="cluster-{{ cluster.id }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
-                    <a href="#">{{ cluster.name }}</a>
-                    <span>
-                        <i class="component-tooltip cluster-tooltip icon-info-sign" data-placement="bottom"
-                           data-content="{{ cluster.desciption }}" style="cursor: pointer">
-                            <span style="display: none;">Cluster information</span>
-                        </i>
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
-            <div id="toolbox">
-                {% for cluster in clusters %}
-                    <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
-                        {% for category in componentsCategories %}
-                        {% spaceless %}
-                            <h3 {% if loop.index == 1 %}class="first"{% endif %}>
-                                {{ category.getType | trans({}, 'ExperimentBundle') }}
-                            </h3>
-                            <div style="padding: 0;">
-                                <div class="tools-padding">
-                                {% for component in components
-                                    if (component.clusterId == cluster and component.typeId == category) %}
-                                    <div class="prototype-box">
-                                        <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
-                                             width="64px" height="64px" />
-                                        <i style="cursor:pointer; " class="component-tooltip icon-info-sign"
-                                           data-placement="bottom" data-content="Upload file for data analysis"
-                                           data-original-title="" title="">
-                                            <span style="display: none;">{{ component.getName }}</span>
-                                        </i>
-                                        <div class="desc">
-                                            <div>{{ component.getName }}</div>
-                                        </div><input type="hidden" value="{{ component.getId }}"></div>
-                                {% endfor %}
+<div class="tabbable">
+    <div class="tab-content">
+        <div>
+        {% include "DamisExperimentBundle::_experiment_form.html.twig" with { components : components } %}
+        <div id="workflow-editor-container">
+            <div id="toolbox-container">
+                <ul class="nav nav-tabs" id="cluster-tabs">
+                    {% for cluster in clusters %}
+                    <li id="cluster-{{ cluster.id }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
+                        <a href="#">{{ cluster.name }}</a>
+                        <span>
+                            <i class="component-tooltip cluster-tooltip icon-info-sign" data-placement="bottom"
+                               data-content="{{ cluster.desciption }}" style="cursor: pointer">
+                                <span style="display: none;">Cluster information</span>
+                            </i>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div id="toolbox">
+                    {% for cluster in clusters %}
+                        <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
+                            {% for category in componentsCategories %}
+                            {% spaceless %}
+                                <h3 {% if loop.index == 1 %}class="first"{% endif %}>
+                                    {{ category.getType | trans({}, 'ExperimentBundle') }}
+                                </h3>
+                                <div style="padding: 0;">
+                                    <div class="tools-padding">
+                                    {% for component in components
+                                        if (component.clusterId == cluster and component.typeId == category) %}
+                                        <div class="prototype-box">
+                                            <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
+                                                 width="64px" height="64px" />
+                                            <i style="cursor:pointer; " class="component-tooltip icon-info-sign"
+                                               data-placement="bottom" data-content="Upload file for data analysis"
+                                               data-original-title="" title="">
+                                                <span style="display: none;">{{ component.getName | trans({}, 'ExperimentBundle') }}</span>
+                                            </i>
+                                            <div class="desc">
+                                                <div>{{ component.getName | trans({}, 'ExperimentBundle') }}</div>
+                                            </div><input type="hidden" value="{{ component.getId }}"></div>
+                                    {% endfor %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% endspaceless %}
-                        {% endfor %}
+                            {% endspaceless %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
 
-                    </div>
-                {% endfor %}
+            <div id="canvas">
+                <div id="flowchart-container" />
             </div>
         </div>
-        <div id="canvas">
-            <div id="flowchart-container" />
+        <div id="buttons-block" class="pull-right">
+            <button class="btn" type="button" id="new-experiment-btn">{{ "New experiment"| trans({}, 'ExperimentBundle')  }}</button>
+            <button class="btn" type="button" id="save-btn">{{ "Save"| trans({}, 'ExperimentBundle')  }}</button>
+            <button class="btn btn-primary" type="button" id="execute-btn">{{"Execute"| trans({}, 'ExperimentBundle')   }}</button>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -95,7 +105,7 @@
             window.experimentForm.params = {
                 parametersUrl:"{{ path('component') }}",
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
-                {#experimentNewUrl: "{% url 'experiment-new' %}",#}
+                experimentNewUrl: "{{ path('new_experiment') }}",
                 {#taskFormPrefix: "{{ task_formset.prefix }}"#}
             };
 

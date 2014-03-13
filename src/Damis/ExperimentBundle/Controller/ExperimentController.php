@@ -52,4 +52,28 @@ class ExperimentController extends Controller
         return [];
     }
 
+    /**
+     * Experiment save
+     *
+     * @Route("/experiment/save.html", name="experiment_save")
+     * @Template()
+     */
+    public function saveAction()
+    {
+
+        return [];
+    }
+
+    /**
+     * Experiment execution
+     *
+     * @Route("/experiment/execute.html", name="experiment_execute")
+     * @Template()
+     */
+    public function executeAction()
+    {
+
+        return [];
+    }
+
 }
