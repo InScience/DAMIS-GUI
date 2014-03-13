@@ -43,13 +43,19 @@ class ExperimentController extends Controller
     /**
      * Component info
      *
-     * @Route("/experiment/component_info.html", name="component")
+     * @Route("/experiment/component/{id}/info.html", name="component", options={"expose" = true})
      * @Template()
      */
-    public function componentAction()
+    public function componentAction($id)
     {
+        $parameters = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Parameter')
+            ->findBy(['component' => $id]);
 
-        return [];
+        return [
+            'paremeters' => $parameters
+        ];
     }
 
     /**

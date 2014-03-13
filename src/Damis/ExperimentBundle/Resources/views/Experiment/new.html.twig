@@ -103,7 +103,6 @@
             {% endfor %}
 
             window.experimentForm.params = {
-                parametersUrl:"{{ path('component') }}",
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
                 experimentNewUrl: "{{ path('new_experiment') }}",
                 {#taskFormPrefix: "{{ task_formset.prefix }}"#}

@@ -83,11 +83,7 @@
 		// Loads parameters for the selected component
 		loadComponentParameters: function(componentInput) {
 			$.ajax({
-				url: parametersUrl,
-				data: {
-					component_id: componentInput.val(),
-					prefix: componentInput.attr('name')
-				},
+				url: Routing.generate('component', {id : componentInput.val()}),
 				context: $(this)
 			}).done(function(resp) {
 				// replace old parameter formset with a new one
