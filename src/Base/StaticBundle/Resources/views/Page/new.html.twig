@@ -1,7 +1,7 @@
 {% extends 'BaseMainBundle::layout.html.twig' %}
 
 {% block body -%}
-    {% include "BaseMainBundle::messages.html.twig" %}
+    {% include "BaseStaticBundle::messages.html.twig" %}
 
     <form class="form-normal" role="form" action="{{ path('page_create') }}" method="post" {{ form_enctype(form) }}>
         <h2 class="form-signin-heading">{{ 'form.create_page'|trans({}, 'StaticBundle') }}</h2>
@@ -13,6 +13,9 @@
 
         {{ form_errors(form.groupName) }}
         {{ form_widget(form.groupName) }}
+
+        {{ form_errors(form.position) }}
+        {{ form_widget(form.position) }}
 
         <div class="tinymce-div">
             {{ form_errors(form.text) }}

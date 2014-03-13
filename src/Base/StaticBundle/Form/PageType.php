@@ -19,6 +19,7 @@ class PageType extends AbstractType
             ->add('title', null, array('label' => 'form.title', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.title'),))
             ->add('groupName', null, array('required' => false, 'label' => 'form.group', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.group'),))
             ->add('text', 'textarea', array('required' => false, 'attr' => array('class' => 'tinymce_textarea form-control')))
+            ->add('position', 'integer', array('label' => 'form.position', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.position'),))
         ;
     }
 

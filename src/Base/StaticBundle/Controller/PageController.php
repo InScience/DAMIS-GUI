@@ -22,7 +22,6 @@ class PageController extends Controller
      * Lists all Page entities.
      *
      * @Route("/pages.html", name="page")
-     * @Method("GET")
      * @Template()
      */
     public function indexAction()
@@ -32,12 +31,37 @@ class PageController extends Controller
         /* @var $grid \APY\DataGridBundle\Grid\Grid */
         $grid = $this->get('grid');
 
+        $tableAlias = $source->getTableAlias();
+        $source->manipulateQuery(
+            function ($query) use ($tableAlias)
+            {
+                $query->resetDQLPart('orderBy');
+                $query->addOrderBy($tableAlias . '.groupName', 'ASC');
+                $query->addOrderBy($tableAlias . '.position', 'ASC');
+            }
+        );
+
         $grid->setSource($source);
         $grid->setLimits(25);
         $grid->setNoResultMessage($this->get('translator')->trans('No data'));
 
         //custom colums config
         $grid->hideColumns('id');
+
+        /* @var $column \APY\DataGridBundle\Grid\Column\Column */
+        $column = $grid->getColumn('title');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setSortable(false);
+        $column->setTitle($this->get('translator')->trans('form.title', array(), 'StaticBundle'));
+
+        $column = $grid->getColumn('groupName');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setSortable(false);
+        $column->setTitle($this->get('translator')->trans('form.group', array(), 'StaticBundle'));
 
         //add actions column
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'page_edit');
@@ -63,7 +87,7 @@ class PageController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $position = $em->getRepository('BaseStaticBundle:Page')->getMaxTextPosition()['max_position']+1;
+            $position = $em->getRepository('BaseStaticBundle:Page')->getMaxTextPosition($entity->getGroupName())['max_position']+1;
             if (empty($position)) $position = 1;
 
             $entity->setPosition($position);
@@ -71,7 +95,7 @@ class PageController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('success', 'Successfully created');
+            $this->get('session')->getFlashBag()->add('notice', 'form.created');
 
             return $this->redirect($this->generateUrl('page'));
         }
@@ -122,7 +146,7 @@ class PageController extends Controller
     /**
      * Finds and displays a Page entity.
      *
-     * @Route("/page/{group}/{slug}.html", name="page_show")
+     * @Route("/page/{slug}.html", name="page_show")
      * @Method("GET")
      * @Template()
      */
@@ -161,12 +185,9 @@ class PageController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        $log = $em->getRepository('BaseLoggingBundle:EntityLog')->getLogEntriesLimit($entity);
-
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'logTable' => $log,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -215,7 +236,7 @@ class PageController extends Controller
 
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('success', 'Successfully edited');
+            $this->get('session')->getFlashBag()->add('notice', 'form.updated');
 
             return $this->redirect($this->generateUrl('page_edit', array('id' => $id)));
         }
@@ -248,7 +269,7 @@ class PageController extends Controller
             $em->remove($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('success', 'Successfully deleted');
+            $this->get('session')->getFlashBag()->add('notice', 'form.deleted');
         }
 
         return $this->redirect($this->generateUrl('page'));
@@ -286,11 +307,9 @@ class PageController extends Controller
             throw $this->createNotFoundException('Unable to find Page entity.');
         }
 
-        $securityContext = $this->get('security.context');
-
         if ($entityText->getPosition() > 1) {
             $newPosition = $entityText->getPosition()-1;
-            $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextUpPosition($newPosition);
+            $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextUpPosition($newPosition, $entityText->getGroupName());
 
             if ($entityTextSwap) {
                 $entityTextSwap->setPosition($entityText->getPosition());
@@ -322,7 +341,7 @@ class PageController extends Controller
         }
 
         $newPosition = $entityText->getPosition()+1;
-        $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextDownPosition($newPosition);
+        $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextDownPosition($newPosition, $entityText->getGroupName());
 
         if ($entityTextSwap) {
             $entityTextSwap->setPosition($entityText->getPosition());
@@ -331,7 +350,6 @@ class PageController extends Controller
             $em->merge($entityText);
             $em->merge($entityTextSwap);
             $em->flush();
-
         }
 
         return $this->redirect($this->generateUrl('page'));

@@ -1,7 +1,13 @@
 form:
   create: Sukurti
-  update: Atnaujinti
+  edit: Atnaujinti
   title: Pavadinimas
   group: Grupė
   text: Tekstas
   create_page: Sukurti puslapį
+  pages: Puslapiai
+  created: Puslapis sukurtas
+  updated: Puslapis atnaujintas
+  delete: Ištrinti
+  deleted: Puslapis ištrintas
+  position: Pozicija

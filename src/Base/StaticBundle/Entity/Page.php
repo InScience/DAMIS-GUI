@@ -12,7 +12,7 @@ use APY\DataGridBundle\Grid\Mapping as GRID;
  * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="Base\StaticBundle\Entity\PageRepository")
  * @Gedmo\Loggable(logEntryClass="Base\LogBundle\Entity\EntityLog")
- * @GRID\Source(columns="id, title, groupName, position")
+ * @GRID\Source(columns="id, title, groupName")
  */
 class Page
 {
@@ -44,12 +44,6 @@ class Page
      * @ORM\Column(name="groupName", type="string", length=255, nullable=true)
      */
     private $groupName;
-
-    /**
-     * @Gedmo\Slug(fields={"groupName"}, updatable=true)
-     * @ORM\Column(length=128, unique=true, nullable=true)
-     */
-    private $groupSlug;
 
     /**
      * @var string
@@ -164,20 +158,6 @@ class Page
     public function getPosition()
     {
         return $this->position;
-    }
-
-    /**
-     * @param mixed $groupSlug
-     */
-    public function setGroupSlug($groupSlug) {
-        $this->groupSlug = $groupSlug;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getGroupSlug() {
-        return $this->groupSlug;
     }
 
     /**

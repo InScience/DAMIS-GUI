@@ -12,33 +12,39 @@ use Doctrine\ORM\EntityRepository;
  */
 class PageRepository extends EntityRepository
 {
-    public function getMaxTextPosition()
+    public function getMaxTextPosition($group)
     {
         $query = $this->createQueryBuilder('p')
-            ->select('max(p.position) as max_position');
+            ->select('max(p.position) as max_position')
+            ->andWhere('p.groupName = :groupName')
+            ->setParameter('groupName', $group);
 
         return $query->getQuery()->getOneOrNullResult();
     }
 
-    public function getNextUpPosition($newPosition)
+    public function getNextUpPosition($newPosition, $group)
     {
         $query = $this->createQueryBuilder('p')
             ->select('p')
             ->andWhere('p.position <= :new_position')
+            ->andWhere('p.groupName = :groupName')
             ->orderBy('p.position', 'DESC')
             ->setParameter('new_position', $newPosition)
+            ->setParameter('groupName', $group)
             ->setMaxResults(1);
 
         return $query->getQuery()->getOneOrNullResult();
     }
 
-    public function getNextDownPosition($newPosition)
+    public function getNextDownPosition($newPosition, $group)
     {
         $query = $this->createQueryBuilder('p')
             ->select('p')
             ->andWhere('p.position >= :new_position')
+            ->andWhere('p.groupName = :groupName')
             ->orderBy('p.position', 'ASC')
             ->setParameter('new_position', $newPosition)
+            ->setParameter('groupName', $group)
             ->setMaxResults(1);
 
         return $query->getQuery()->getOneOrNullResult();

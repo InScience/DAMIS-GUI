@@ -1,64 +1,39 @@
-{% extends 'NaujosKnygosStaticBundle::layout.html.twig' %}
+{% extends 'BaseMainBundle::layout.html.twig' %}
 
 {% block body -%}
-<div id="main_body">
-    <div class="main_container">
-        <div class="main_container_info">
-            {% set menuItem = knp_menu_get('NaujosKnygosBreadcrumsBundle:Builder:mainMenu', [], { 'route' : app.request.attributes.get('_route')}) %}
-            {{ include ('NaujosKnygosBreadcrumsBundle:Breadcrums:breadcrums.html.twig') }}
+    {% include "BaseStaticBundle::messages.html.twig" %}
 
-            {% for flashMessage in app.session.flashbag.get('success') %}
-                <div class="alert alert-success">
-                    {{ flashMessage | trans({}, 'ItemBundle')}}
-                </div>
-            {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('error') %}
-                <div class="alert alert-error">
-                    {{ flashMessage | trans({}, 'ItemBundle')}}
-                </div>
-            {% endfor %}
-            <a style="margin-left:10px;" href="{{ path('page_show', { 'slug': entity.slug }) }}">{{'View' | trans({}, 'WarehouseBundle') }}</a>
-            <div class="main_add_form">
-                <form action="{{ path('page_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
-                    <input type="hidden" name="_method" value="PUT" />
-                    <table class="form">
-                        <tbody>
-                        <tr>
-                            <td>{{ 'UserPublishers.Title' | trans({}, 'FOSUserBundle') }}</td>
-                            <td>{{ form_widget(edit_form.name) }} </td>
-                        </tr>
-                        <tr>
-                            <td>{{ 'UserPublishers.Type' | trans({}, 'FOSUserBundle') }}</td>
-                            <td>{{ form_widget(edit_form.type) }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ 'UserPublishers.Text' | trans({}, 'FOSUserBundle') }}</td>
-                            <td>{{ form_widget(edit_form.text) }} </td>
-                        </tr>
-                        <tr>
-                            <td> {{ form_widget(edit_form._token) }}</td>
-                        </tr>
-                        <tr>
-                            <td><input type="submit" value="{{'Save' | trans({}, 'ItemBundle') }}"></td>
-                            <td><input type="button" value="{{'Delete' | trans({}, 'ItemBundle') }}" class="main_delete"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </form>
+    <form class="form-normal" role="form" action="{{ path('page_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+        <input type="hidden" name="_method" value="PUT" />
 
-                <form action="{{ path('page_delete', { 'id': entity.id }) }}" method="post" id="delete_form">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    {{ form_widget(delete_form) }}
-                </form>
+        {{ form_widget(edit_form._token) }}
 
-                {% include "NaujosKnygosLoggingBundle::showLoggableLog.html.twig" %}
-            </div>
+        {{ form_errors(edit_form.title) }}
+        {{ form_widget(edit_form.title) }}
+
+        {{ form_errors(edit_form.groupName) }}
+        {{ form_widget(edit_form.groupName) }}
+
+        {{ form_errors(edit_form.position) }}
+        {{ form_widget(edit_form.position) }}
+
+        <div class="tinymce-div">
+            {{ form_errors(edit_form.text) }}
+            {{ form_widget(edit_form.text) }}
         </div>
-    </div>
-</div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'form.edit'|trans({}, 'StaticBundle') }}" >{{ 'form.edit'|trans({}, 'StaticBundle') }}</button>
+    </form>
+
+    <form class="form-normal" role="form" action="{{ path('page_delete', { 'id': entity.id }) }}" method="post" id="delete_form">
+        <input type="hidden" name="_method" value="DELETE" />
+        {{ form_widget(delete_form) }}
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'form.delete'|trans({}, 'StaticBundle') }}" >{{ 'form.delete'|trans({}, 'StaticBundle') }}</button>
+    </form>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/naujosknygositem/js/tinymce_textarea.js') }}" type="text/javascript"></script>
+    {% include "BaseMainBundle::jsTinymce.html.twig" %}
 {% endblock %}
