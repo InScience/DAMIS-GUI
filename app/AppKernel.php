@@ -33,6 +33,7 @@ class AppKernel extends Kernel
             new Damis\DatasetsBundle\DamisDatasetsBundle(),
             new Base\LogBundle\BaseLogBundle(),
             new Iphp\FileStoreBundle\IphpFileStoreBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

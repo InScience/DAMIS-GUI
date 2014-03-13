@@ -1,6 +1,6 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\DatasetsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
@@ -9,8 +9,8 @@ use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
  * Dataset
  *
  * @ORM\Table(name="dataset", uniqueConstraints={@ORM\UniqueConstraint(name="DATASET_PK", columns={"DatasetID"})}, indexes={@ORM\Index(name="FK_DATASET_DAMISUSER", columns={"UserID"})})
- * @FileStore\Uploadable
- * @ORM\Entity
+ * @FileStore\Uploadable*
+ * @ORM\Entity(repositoryClass="Damis\DatasetsBundle\Entity\Repository\DatasetRepository")
  */
 class Dataset
 {
@@ -21,35 +21,28 @@ class Dataset
      *
      * @ORM\Column(name="DatasetIsMIDAS", type="integer", nullable=false)
      */
-    private $datasetismidas;
+    private $datasetIsMidas;
 
     /**
      * @var string
      *
      * @ORM\Column(name="DatasetTitle", type="string", length=80, nullable=false)
      */
-    private $datasettitle;
+    private $datasetTitle;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="DatasetCreated", type="integer", nullable=false)
      */
-    private $datasetcreated;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="DatsetFilepPath", type="string", length=255, nullable=false)
-     */
-    private $datsetfileppath;
+    private $datasetCreated;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="DatasetUpdated", type="integer", nullable=true)
      */
-    private $datasetupdated;
+    private $datasetUpdated;
 
     /**
      * @var array
@@ -64,7 +57,7 @@ class Dataset
      *
      * @ORM\Column(name="DatasetDescription", type="string", length=500, nullable=true)
      */
-    private $datasetdescription;
+    private $datasetDescription;
 
     /**
      * @var integer
@@ -73,7 +66,7 @@ class Dataset
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $datasetid;
+    private $datasetId;
 
     /**
      * @var \Base\UserBundle\Entity\User
@@ -83,179 +76,156 @@ class Dataset
      *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
      * })
      */
-    private $userid;
+    private $userId;
 
 
 
     /**
-     * Set datasetismidas
+     * Set datasetIsMidas
      *
-     * @param integer $datasetismidas
+     * @param integer $datasetIsMidas
      * @return Dataset
      */
-    public function setDatasetismidas($datasetismidas)
+    public function setDatasetIsMidas($datasetIsMidas)
     {
-        $this->datasetismidas = $datasetismidas;
+        $this->datasetIsMidas = $datasetIsMidas;
 
         return $this;
     }
 
     /**
-     * Get datasetismidas
+     * Get datasetIsMidas
      *
      * @return integer
      */
-    public function getDatasetismidas()
+    public function getDatasetIsMidas()
     {
-        return $this->datasetismidas;
+        return $this->datasetIsMidas;
     }
 
     /**
-     * Set datasettitle
+     * Set datasetTitle
      *
-     * @param string $datasettitle
+     * @param string $datasetTitle
      * @return Dataset
      */
-    public function setDatasettitle($datasettitle)
+    public function setDatasetTitle($datasetTitle)
     {
-        $this->datasettitle = $datasettitle;
+        $this->datasetTitle = $datasetTitle;
 
         return $this;
     }
 
     /**
-     * Get datasettitle
+     * Get datasetTitle
      *
      * @return string
      */
-    public function getDatasettitle()
+    public function getDatasetTitle()
     {
-        return $this->datasettitle;
+        return $this->datasetTitle;
     }
 
     /**
-     * Set datasetcreated
+     * Set datasetCreated
      *
-     * @param integer $datasetcreated
+     * @param integer $datasetCreated
      * @return Dataset
      */
-    public function setDatasetcreated($datasetcreated)
+    public function setDatasetCreated($datasetCreated)
     {
-        $this->datasetcreated = $datasetcreated;
+        $this->datasetCreated = $datasetCreated;
 
         return $this;
     }
 
     /**
-     * Get datasetcreated
+     * Get datasetCreated
      *
      * @return integer
      */
-    public function getDatasetcreated()
+    public function getDatasetCreated()
     {
-        return $this->datasetcreated;
+        return $this->datasetCreated;
     }
 
     /**
-     * Set datsetfileppath
+     * Set datasetUpdated
      *
-     * @param string $datsetfileppath
+     * @param integer $datasetUpdated
      * @return Dataset
      */
-    public function setDatsetfileppath($datsetfileppath)
+    public function setDatasetUpdated($datasetUpdated)
     {
-        $this->datsetfileppath = $datsetfileppath;
+        $this->datasetUpdated = $datasetUpdated;
 
         return $this;
     }
 
     /**
-     * Get datsetfileppath
+     * Get datasetUpdated
+     *
+     * @return integer
+     */
+    public function getDatasetUpdated()
+    {
+        return $this->datasetUpdated;
+    }
+
+    /**
+     * Set datasetDescription
+     *
+     * @param string $datasetDescription
+     * @return Dataset
+     */
+    public function setDatasetDescription($datasetDescription)
+    {
+        $this->datasetDescription = $datasetDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get datasetDescription
      *
      * @return string
      */
-    public function getDatsetfileppath()
+    public function getDatasetDescription()
     {
-        return $this->datsetfileppath;
+        return $this->datasetDescription;
     }
 
     /**
-     * Set datasetupdated
-     *
-     * @param integer $datasetupdated
-     * @return Dataset
-     */
-    public function setDatasetupdated($datasetupdated)
-    {
-        $this->datasetupdated = $datasetupdated;
-
-        return $this;
-    }
-
-    /**
-     * Get datasetupdated
+     * Get datasetId
      *
      * @return integer
      */
-    public function getDatasetupdated()
+    public function getDatasetId()
     {
-        return $this->datasetupdated;
+        return $this->datasetId;
     }
 
     /**
-     * Set datasetdescription
+     * Set userId
      *
-     * @param string $datasetdescription
+     * @param \Base\UserBundle\Entity\User $userId
      * @return Dataset
      */
-    public function setDatasetdescription($datasetdescription)
+    public function setUserId(\Base\UserBundle\Entity\User $userId = null)
     {
-        $this->datasetdescription = $datasetdescription;
+        $this->userId = $userId;
 
         return $this;
     }
 
     /**
-     * Get datasetdescription
-     *
-     * @return string
-     */
-    public function getDatasetdescription()
-    {
-        return $this->datasetdescription;
-    }
-
-    /**
-     * Get datasetid
-     *
-     * @return integer
-     */
-    public function getDatasetid()
-    {
-        return $this->datasetid;
-    }
-
-    /**
-     * Set userid
-     *
-     * @param \Base\UserBundle\Entity\User $userid
-     * @return Dataset
-     */
-    public function setUserid(\Base\UserBundle\Entity\User $userid = null)
-    {
-        $this->userid = $userid;
-
-        return $this;
-    }
-
-    /**
-     * Get userid
+     * Get userId
      *
      * @return \Base\UserBundle\Entity\User
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->userId;
     }
 
     /**
@@ -264,7 +234,7 @@ class Dataset
      * @return string
      */
     public function getUserIdMd5(){
-        return md5($this->seed . $this->userid);
+        return md5($this->seed . $this->userId);
     }
 
     /**
@@ -273,7 +243,7 @@ class Dataset
      * @return string
      */
     public function getDatasetIdMd5(){
-        return md5($this->datasetid . $this->seed);
+        return md5($this->datasetId . $this->seed);
     }
 
     /**

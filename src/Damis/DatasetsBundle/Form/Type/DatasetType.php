@@ -10,12 +10,12 @@ class DatasetType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-                ->add('title', 'text', array(
+                ->add('datasetTitle', 'text', array(
                     'label' => 'Title',
                     'required' => true,
                     'attr' => array('class' => 'form-control')
                     ))
-                ->add('description', 'textarea', array(
+                ->add('datasetDescription', 'textarea', array(
                     'label' => 'Description',
                     'required' => false,
                     'attr' =>
@@ -26,13 +26,16 @@ class DatasetType extends AbstractType {
                 ->add('file', 'file',
                     array(
                         'label' => 'File',
-                        'attr' => array()
+                        'attr' => array("accept" => "application/octet-stream ,text/csv,
+                            text/tab-separated-values, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                            application/vnd.ms-excel, text/plain"
+                        )
                     ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         $resolver->setDefaults(array(
-            'data_class' => 'Damis\EntitiesBundle\Entity\Dataset',
+            'data_class' => 'Damis\DatasetsBundle\Entity\Dataset',
             'translation_domain' => 'DatasetsBundle'
         ));
     }

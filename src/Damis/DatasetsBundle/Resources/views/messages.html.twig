@@ -1,0 +1,5 @@
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+        {{ flashMessage | trans({}, 'DatasetsBundle')}}
+    </div>
+{% endfor %}

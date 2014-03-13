@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ec197c41624f33f6d7c7e260a11b5141",
+    "hash": "d9f89de394db1830aa74b3f67bb5aad4",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -1665,17 +1665,17 @@
         },
         {
             "name": "knplabs/knp-paginator-bundle",
-            "version": "2.4.0",
+            "version": "dev-master",
             "target-dir": "Knp/Bundle/PaginatorBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
-                "reference": "4202329b4d639c1a03d0007e31a52049d31c591e"
+                "reference": "7ea961c9ef60343a359f513c9fec7fd3bb65ddcb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/4202329b4d639c1a03d0007e31a52049d31c591e",
-                "reference": "4202329b4d639c1a03d0007e31a52049d31c591e",
+                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/7ea961c9ef60343a359f513c9fec7fd3bb65ddcb",
+                "reference": "7ea961c9ef60343a359f513c9fec7fd3bb65ddcb",
                 "shasum": ""
             },
             "require": {
@@ -1687,7 +1687,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3.x-dev"
+                    "dev-master": "2.4.x-dev"
                 }
             },
             "autoload": {
@@ -1720,7 +1720,7 @@
                 "pagination",
                 "paginator"
             ],
-            "time": "2014-01-21 07:26:00"
+            "time": "2014-03-04 08:53:05"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -3108,6 +3108,7 @@
         "friendsofsymfony/jsrouting-bundle": 0,
         "stof/doctrine-extensions-bundle": 0,
         "knplabs/knp-menu": 20,
+        "knplabs/knp-paginator-bundle": 20,
         "jms/serializer-bundle": 20,
         "friendsofsymfony/user-bundle": 0,
         "leafo/lessphp": 20,

@@ -5,4 +5,76 @@
         <li><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
+    {% include "DamisDatasetsBundle::messages.html.twig" %}
+    <div class="row" style="margin-top: 35px;">
+        <div class="col-lg-12">
+            {% if entities | length > 0 %}
+                <table class="table table-hover">
+                    <tr class="active">
+                        <th>
+                            {{ 'Title' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Size' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Created' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Description' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Actions' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Download' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                    </tr>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>
+                                {{ entity.datasetTitle }}
+                            </td>
+                            <td nowrap="nowrap">
+                                {{ entity.file.size|convert_bytes }}
+                            </td>
+                            <td nowrap="nowrap">
+                                {{ entity.datasetCreated | date('Y-m-d')}}
+                            </td>
+                            <td>
+                                {{ entity.datasetDescription }}
+                            </td>
+                            <td>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </a>
+                            </td>
+                            <td nowrap="nowrap">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download CSV file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    CSV
+                                </a>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download ARFF file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    ARFF
+                                </a>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TXT file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    TXT
+                                </a>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TAB file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    TAB
+                                </a>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download XLS file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                    XLS
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="center-paginator">
+        {{ knp_pagination_render(entities) }}
+    </div>
 {% endblock %}

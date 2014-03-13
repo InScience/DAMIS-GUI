@@ -1,0 +1,5 @@
+services:
+    datasets.twig.datasets_extension:
+        class: Damis\DatasetsBundle\Twig\DatasetsExtension
+        tags:
+            - { name: twig.extension }

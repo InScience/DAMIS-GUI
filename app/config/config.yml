@@ -131,3 +131,10 @@ iphp_file_store:
                     params: { field: userIdMd5 }
             delete_on_remove: true
             overwrite_duplicates: true
+
+knp_paginator:
+    page_range: 13
+    default_options:
+        page_name: page
+    template:
+        pagination: BaseStaticBundle:General:paginator.html.twig

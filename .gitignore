@@ -4,6 +4,7 @@ vendor/*
 */cache/*
 web/uploads/*
 web/bundles/*
+web/datasets/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
 

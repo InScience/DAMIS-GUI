@@ -63,3 +63,6 @@ security:
         #static bundle
         - { path: ^/pages, role: ROLE_ADMIN }
         - { path: ^/page, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        #datasets bundle
+        - { path: ^/datasets, role: ROLE_USER }
