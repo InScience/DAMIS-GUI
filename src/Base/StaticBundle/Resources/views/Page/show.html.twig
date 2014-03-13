@@ -1,13 +1,9 @@
-{% extends 'NaujosKnygosStaticBundle::layout.html.twig' %}
+{% extends 'BaseMainBundle::layout.html.twig' %}
 
 {% block body -%}
-    <div class="main_container_info">
-        <div class="main_text">
-            <h1 class="page_title">{{ entity.name }}</h1>
+    <h2 class="form-signin-heading">{{ entity.title }}</h2>
 
-            {% if entity.text %}
-                {{ entity.text|raw }}
-            {% endif %}
-        </div>
-    </div>
+    {% if entity.text %}
+        {{ entity.text|raw }}
+    {% endif %}
 {% endblock %}

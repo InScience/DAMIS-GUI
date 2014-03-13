@@ -7,6 +7,7 @@
 </ul>
 
 <ul class="nav navbar-nav navbar-right">
+
 {% if app.user and is_granted("IS_AUTHENTICATED_REMEMBERED") or is_granted("IS_AUTHENTICATED_FULLY") %}
     <li class="dropdown">
         <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-user"></span> <b class="caret"></b></a>
@@ -33,6 +34,8 @@
     <li><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
     <li><a href="{{ path('fos_user_registration_register') }}">{{ 'layout.register'|trans({}, 'FOSUserBundle') }}</a></li>
 {% endif %}
+
+{{ render(controller('BaseStaticBundle:Page:staticMenu', {})) }}
 
 <li class="dropdown">
     <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ app.request.locale|trans({}, 'general') }} <b class="caret"></b></a>

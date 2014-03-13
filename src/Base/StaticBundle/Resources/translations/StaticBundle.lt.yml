@@ -5,6 +5,7 @@ form:
   group: Grupė
   text: Tekstas
   create_page: Sukurti puslapį
+  edit_page: Redaguoti puslapį
   pages: Puslapiai
   created: Puslapis sukurtas
   updated: Puslapis atnaujintas

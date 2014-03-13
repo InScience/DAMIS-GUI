@@ -1,0 +1,10 @@
+<li class="dropdown">
+    <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-question-sign"></span>  <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        {% for entity in pages %}
+            <li>
+                <a href="{{ path('page_show', { 'slug': entity.slug }) }}">{{ entity.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</li>

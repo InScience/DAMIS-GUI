@@ -5,6 +5,7 @@
 
     <form class="form-normal" role="form" action="{{ path('page_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
         <input type="hidden" name="_method" value="PUT" />
+        <h2 class="form-signin-heading">{{ 'form.edit_page'|trans({}, 'StaticBundle') }}</h2>
 
         {{ form_widget(edit_form._token) }}
 

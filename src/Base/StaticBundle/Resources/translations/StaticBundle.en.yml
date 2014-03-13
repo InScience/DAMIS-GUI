@@ -5,6 +5,7 @@ form:
   group: Group
   text: Text
   create_page: Create page
+  edit_page: Edit page
   pages: Pages
   created: Page created
   updated: Page updated
