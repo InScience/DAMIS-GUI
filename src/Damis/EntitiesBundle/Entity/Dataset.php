@@ -55,7 +55,6 @@ class Dataset
      * @var array
      *
      * @ORM\Column(name="file", type="array", nullable=true)
-     * @Assert\File( maxSize="3M")
      * @FileStore\UploadableField(mapping="dataset")
      */
     private $file;
