@@ -2,8 +2,8 @@
 
 namespace Damis\ExperimentBundle\Entity;
 
-use Damis\EntitiesBundle\Entity\Cluster;
-use Damis\EntitiesBundle\Entity\ComponentType;
+use Damis\ExperimentBundle\Entity\Cluster;
+use Damis\ExperimentBundle\Entity\ComponentType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -117,7 +117,7 @@ class Component
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -140,7 +140,7 @@ class Component
     /**
      * Get icon
      *
-     * @return string 
+     * @return string
      */
     public function getIcon()
     {
@@ -163,7 +163,7 @@ class Component
     /**
      * Get wsdlRunHost
      *
-     * @return string 
+     * @return string
      */
     public function getWsdlRunHost()
     {
@@ -186,7 +186,7 @@ class Component
     /**
      * Get wsdlCallFunction
      *
-     * @return string 
+     * @return string
      */
     public function getWsdlCallFunction()
     {
@@ -209,7 +209,7 @@ class Component
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -232,7 +232,7 @@ class Component
     /**
      * Get altDescription
      *
-     * @return string 
+     * @return string
      */
     public function getAltDescription()
     {
@@ -255,7 +255,7 @@ class Component
     /**
      * Get labelLt
      *
-     * @return string 
+     * @return string
      */
     public function getLabelLt()
     {
@@ -278,7 +278,7 @@ class Component
     /**
      * Get labelEn
      *
-     * @return string 
+     * @return string
      */
     public function getLabelEn()
     {
@@ -288,7 +288,7 @@ class Component
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
