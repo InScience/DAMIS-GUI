@@ -13,3 +13,8 @@ INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
 INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConnectionTypeID`) VALUES
 ('INPUT_CONNECTION', 1),
 ('OUTPUT_CONNECTION', 2);
+
+
+INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`, `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`, `ParameterConnectionTypeID`, `ComponentID`) VALUES
+('', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1),
+('', 0, NULL, NULL, NULL, NULL, 2, NULL, 2, 2);
