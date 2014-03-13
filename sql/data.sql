@@ -9,3 +9,7 @@ INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
 ('Dimension reduction', 4),
 ('Classification, grouping', 5),
 ('View results', 6);
+
+INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConnectionTypeID`) VALUES
+('INPUT_CONNECTION', 1),
+('OUTPUT_CONNECTION', 2);

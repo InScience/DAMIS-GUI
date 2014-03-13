@@ -54,7 +54,7 @@ class ExperimentController extends Controller
             ->findBy(['component' => $id]);
 
         return [
-            'paremeters' => $parameters
+            'parameters' => $parameters
         ];
     }
 

@@ -1,3 +1,9 @@
 {% block body %}
-    {% include "DamisExperimentBundle::_experiment_component.html.twig" %}
+    ====================
+    {% for parameter in parameters %}
+        {% if parameter.connectionType != null %}
+            {% include "DamisExperimentBundle::_experiment_connection.html.twig"
+                with {type : parameter.connectionType} %}
+        {% endif %}
+    {% endfor %}
 {% endblock %}
