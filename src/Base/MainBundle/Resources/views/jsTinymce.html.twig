@@ -1,0 +1,31 @@
+<script type="text/javascript">
+
+    tinymce.init({
+        browser_spellcheck:true,
+        selector: "textarea.tinymce_textarea",
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+            "searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "table contextmenu directionality emoticons template textcolor paste textcolor"
+        ],
+        toolbar1: " bold italic underline | undo redo | bullist numlist | link unlink table code",
+        fix_table_elements: true,
+        valid_styles : { '*' : 'margin, padding, align' },
+        entity_encoding: "raw",
+        statusbar: false,
+        theme: 'modern',
+
+    {% if app.request.locale == 'en_US' %}
+        language: 'en',
+    {% else %}
+        language: 'lt',
+    {% endif %}
+
+        menubar: false,
+        toolbar_items_size: 'small',
+        width: "568px",
+        height: "300px",
+        body_class: "tinymce_body"
+    });
+
+</script>
