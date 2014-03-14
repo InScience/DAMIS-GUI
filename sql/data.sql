@@ -14,6 +14,10 @@ INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConn
 ('INPUT_CONNECTION', 1),
 ('OUTPUT_CONNECTION', 2);
 
+INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost`, `ComponentWSDLCallFunction`, `ComponentDescription`, `ComponentAltDescription`, `ComponentLabelLT`, `ComponentLabelEN`, `ComponentID`, `ClusterID`, `ComponentTypeID`) VALUES
+('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1),
+('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1);
+
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`, `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`, `ParameterConnectionTypeID`, `ComponentID`) VALUES
 ('', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1),
