@@ -1,6 +1,6 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\ExperimentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,7 +46,7 @@ class Experimentstatus
     /**
      * Get experimentstatus
      *
-     * @return string 
+     * @return string
      */
     public function getExperimentstatus()
     {
@@ -56,7 +56,7 @@ class Experimentstatus
     /**
      * Get experimentstatusid
      *
-     * @return integer 
+     * @return integer
      */
     public function getExperimentstatusid()
     {

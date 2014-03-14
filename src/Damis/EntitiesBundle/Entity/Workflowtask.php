@@ -29,9 +29,9 @@ class Workflowtask
     private $workflowtaskid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Experiment
+     * @var \Damis\ExperimentBundle\Entity\Experiment
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Experiment")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experiment")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ExperimentID", referencedColumnName="ExperimentID")
      * })
@@ -56,7 +56,7 @@ class Workflowtask
     /**
      * Get workflowtaskisrunning
      *
-     * @return integer 
+     * @return integer
      */
     public function getWorkflowtaskisrunning()
     {
@@ -66,7 +66,7 @@ class Workflowtask
     /**
      * Get workflowtaskid
      *
-     * @return integer 
+     * @return integer
      */
     public function getWorkflowtaskid()
     {
@@ -76,10 +76,10 @@ class Workflowtask
     /**
      * Set experimentid
      *
-     * @param \Damis\EntitiesBundle\Entity\Experiment $experimentid
+     * @param \Damis\ExperimentBundle\Entity\Experiment $experimentid
      * @return Workflowtask
      */
-    public function setExperimentid(\Damis\EntitiesBundle\Entity\Experiment $experimentid = null)
+    public function setExperimentid(\Damis\ExperimentBundle\Entity\Experiment $experimentid = null)
     {
         $this->experimentid = $experimentid;
 
@@ -89,7 +89,7 @@ class Workflowtask
     /**
      * Get experimentid
      *
-     * @return \Damis\EntitiesBundle\Entity\Experiment 
+     * @return \Damis\ExperimentBundle\Entity\Experiment
      */
     public function getExperimentid()
     {

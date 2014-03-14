@@ -1,5 +1,6 @@
 <ul class="nav navbar-nav">
     {% if app.user and is_granted("IS_AUTHENTICATED_REMEMBERED") or is_granted("IS_AUTHENTICATED_FULLY") %}
+        <li><a href="{{ path('new_experiment') }}">{{ 'Create experiment' | trans({}, 'ExperimentBundle') }}</a></li>
         <li><a href="{{ path('new_experiment') }}">{{ 'Experiments' | trans({}, 'ExperimentBundle') }}</a></li>
         <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
     {% else %}

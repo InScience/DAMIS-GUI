@@ -1,6 +1,6 @@
 <?php
 
-namespace Damis\EntitiesBundle\Entity;
+namespace Damis\ExperimentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -78,9 +78,9 @@ class Experiment
     private $experimentid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Experimentstatus
+     * @var \Damis\ExperimentBundle\Entity\Experimentstatus
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Experimentstatus")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experimentstatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ExperimentStatusID", referencedColumnName="ExperimentStatusID")
      * })
@@ -296,10 +296,10 @@ class Experiment
     /**
      * Set experimentstatusid
      *
-     * @param \Damis\EntitiesBundle\Entity\Experimentstatus $experimentstatusid
+     * @param \Damis\ExperimentBundle\Entity\Experimentstatus $experimentstatusid
      * @return Experiment
      */
-    public function setExperimentstatusid(\Damis\EntitiesBundle\Entity\Experimentstatus $experimentstatusid = null)
+    public function setExperimentstatusid(\Damis\ExperimentBundle\Entity\Experimentstatus $experimentstatusid = null)
     {
         $this->experimentstatusid = $experimentstatusid;
 
@@ -309,7 +309,7 @@ class Experiment
     /**
      * Get experimentstatusid
      *
-     * @return \Damis\EntitiesBundle\Entity\Experimentstatus
+     * @return \Damis\ExperimentBundle\Entity\Experimentstatus
      */
     public function getExperimentstatusid()
     {
