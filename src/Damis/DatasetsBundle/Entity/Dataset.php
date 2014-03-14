@@ -238,6 +238,15 @@ class Dataset
     }
 
     /**
+     * Create md5 secured with seed and user id string + dataset subatalog
+     *
+     * @return string
+     */
+    public function getUserIdMd5Dateset(){
+        return $this->getUserIdMd5()."/dataset";
+    }
+
+    /**
      * Create md5 secured with seed and file id string
      *
      * @return string
