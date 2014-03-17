@@ -76,6 +76,13 @@ class Page
     private $updated;
 
     /**
+     * @var string
+     * @Gedmo\Versioned
+     * @ORM\Column(name="language", type="string", columnDefinition="enum('lt_LT', 'en_US')")
+     */
+    private $language;
+
+    /**
      * Get id
      * @return integer
      */
@@ -234,6 +241,20 @@ class Page
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * @param mixed $language
+     */
+    public function setLanguage($language) {
+        $this->language = $language;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLanguage() {
+        return $this->language;
     }
 
 }

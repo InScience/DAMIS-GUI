@@ -12,3 +12,6 @@ form:
   delete: Delete
   deleted: Paged deleted
   position: Position
+  lt_LT: Lietuvių
+  en_US: English
+  help: Help
