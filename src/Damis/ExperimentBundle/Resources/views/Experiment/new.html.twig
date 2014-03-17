@@ -69,6 +69,8 @@
         </div>
     </div>
 </div>
+    <form id="file-upload-form" method="POST" action="{{ path('dataset_upload_handler') }}" enctype="multipart/form-data" target="file-upload-iframe" style="display:none;" autocomplete="off"></form>
+    <iframe id="file-upload-iframe" name="file-upload-iframe" style="display: none;"></iframe>
 {% endblock %}
 
 {% block javascripts %}

@@ -1,3 +1,11 @@
 <div style="display:none;">
-    <input id="form-connection_type" type="hidden" value="{{ type.getType }}" name="form-connection_type"/>
+    <span title="">{{parameter.getTitle | trans({}, 'ExperimentBundle') }}
+
+        <span class="helptext">( {{ parameter.getName }})<br></span>
+
+
+        <input id="value" name="value" type="text" value="{{ parameter.getDefault }}">
+    </span>
+    <input id="form-connection_type" type="hidden" value="{{ parameter.connectionType.getType }}"
+           name="form-connection_type"/>
 </div>

@@ -92,6 +92,7 @@ class DatasetsController extends Controller
             $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
             return $this->redirect($this->generateUrl('datasets_list'));
         }
+
         return array(
             'form' => $form->createView()
         );
@@ -157,6 +158,44 @@ class DatasetsController extends Controller
      */
     public function uploadAction()
     {
-        return [];
+        $entity = new Dataset();
+        $form = $this->createForm(new DatasetType(), $entity);
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    /**
+     * Dataset upload handler for component form
+     *
+     * @Route("/upload_handler.html", name="dataset_upload_handler")
+     * @Method("POST")
+     * @Template()
+     */
+    public function uploadHandlerAction(Request $request)
+    {
+        $entity = new Dataset();
+        $form = $this->createForm(new DatasetType(), $entity);
+        $form->submit($request);
+        $user = $this->get('security.context')->getToken()->getUser();
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $entity->setDatasetCreated(time());
+            $entity->setUserId($user);
+            $entity->setDatasetIsMidas(false);
+            $em->persist($entity);
+            $em->flush();
+
+            return [
+                'form' => $form->createView(),
+                'file' => $entity
+            ];
+        }
+
+        return [
+            'form' => $form->createView(),
+            'file' => null
+        ];
     }
 }

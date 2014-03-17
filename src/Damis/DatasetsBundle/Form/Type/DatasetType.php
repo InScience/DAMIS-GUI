@@ -13,7 +13,7 @@ class DatasetType extends AbstractType {
                 ->add('datasetTitle', 'text', array(
                     'label' => 'Title',
                     'required' => true,
-                    'attr' => array('class' => 'form-control')
+                    'attr' => array('class' => 'form-control'),
                     ))
                 ->add('datasetDescription', 'textarea', array(
                     'label' => 'Description',

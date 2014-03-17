@@ -20,8 +20,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`, `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`, `ParameterConnectionTypeID`, `ComponentID`) VALUES
-('', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1),
-('', 0, NULL, NULL, NULL, NULL, 2, NULL, 2, 2);
+('dataset', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1),
+('dataset', 0, NULL, NULL, NULL, NULL, 2, NULL, 2, 2);
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
