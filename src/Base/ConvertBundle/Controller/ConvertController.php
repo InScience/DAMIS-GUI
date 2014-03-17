@@ -35,6 +35,7 @@ class ConvertController extends Controller
             if ($format == 'arff'){
                 $content = file_get_contents($this->get('kernel')->getRootDir()
                     . '/../web/datasets' . $entity->getFile()['fileName']);
+                $content = str_replace(strtok($content, "\n"), '@relation ' . $filename, $content);
                 $response = new Response($content);
                 $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.arff"', $filename));

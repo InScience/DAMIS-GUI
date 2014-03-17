@@ -56,7 +56,7 @@ class DatasetsController extends Controller
     /**
      * Create new dataset
      *
-     * @Route("/datasets/new.html", name="datasets_create")
+     * @Route("/create.html", name="datasets_create")
      * @Method("POST")
      * @Template("DamisDatasetsBundle:Datasets:new.html.twig")
      */
@@ -81,6 +81,58 @@ class DatasetsController extends Controller
             'form' => $form->createView()
         );
     }
+
+    /**
+     * Edit dataset
+     *
+     * @Route("/{id}/edit.html", name="datasets_edit")
+     * @Method("GET")
+     * @Template()
+     */
+    public function editAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        $form = $this->createForm(new DatasetType(), null);
+        $form->get('datasetTitle')->setData($entity->getDatasetTitle());
+        $form->get('datasetDescription')->setData($entity->getDatasetDescription());
+        return array(
+            'form' => $form->createView(),
+            'id' => $entity->getDatasetId()
+        );
+    }
+
+    /**
+     * Update dataset
+     *
+     * @Route("/{id}/update.html", name="datasets_update")
+     * @Method("POST")
+     * @Template("DamisDatasetsBundle:Datasets:edit.html.twig")
+     */
+    public function updateAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        $form = $this->createForm(new DatasetType(), null);
+        $form->get('datasetTitle')->setData($entity->getDatasetTitle());
+        $form->get('datasetDescription')->setData($entity->getDatasetDescription());
+        $form->submit($request);
+        if ($form->isValid()) {
+            $data = $request->get('datasets_newtype');
+            $entity->setDatasetUpdated(time());
+            $entity->setDatasetTitle($data['datasetTitle']);
+            $entity->setDatasetDescription($data['datasetDescription']);
+            $em->persist($entity);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('success', 'Dataset successfully updated!');
+            return $this->redirect($this->generateUrl('datasets_list'));
+        }
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
 
     /**
      * Dataset upload component form

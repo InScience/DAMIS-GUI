@@ -33,7 +33,9 @@
                     {% for entity in entities %}
                         <tr>
                             <td>
-                                {{ entity.datasetTitle }}
+                                <a href="{{ path('datasets_edit',{'id' : entity.datasetId}) }}">
+                                    {{ entity.datasetTitle }}
+                                </a>
                             </td>
                             <td nowrap="nowrap">
                                 {{ entity.file.size|convert_bytes }}
@@ -45,7 +47,7 @@
                                 {{ entity.datasetDescription }}
                             </td>
                             <td>
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="{{ path('datasets_edit',{'id' : entity.datasetId}) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                             </td>

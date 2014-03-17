@@ -1,0 +1,26 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
+        <li class="active"><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
+        <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
+    </ul>
+    <div class="row">
+        <div class="col-lg-4" style="margin-top: 35px;">
+            <form role="form" id="createDataset" action="{{ path('datasets_update', {'id' : id}) }}" method="post" {{ form_enctype(form) }}>
+                <div class="form-group">
+                    {{ form_label(form.datasetTitle) }}
+                    {{ form_widget(form.datasetTitle) }}
+                    {{ form_errors(form.datasetTitle) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.datasetDescription) }}
+                    {{ form_widget(form.datasetDescription) }}
+                    {{ form_errors(form.datasetDescription) }}
+                </div>
+                {{ form_widget(form._token) }}
+                <button type="submit" class="btn btn-primary">{{ 'Save' | trans({}, 'DatasetsBundle') }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
