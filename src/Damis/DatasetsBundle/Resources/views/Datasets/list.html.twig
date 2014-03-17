@@ -13,12 +13,16 @@
                     <tr class="active">
                         <th>
                             {{ 'Title' | trans({}, 'DatasetsBundle') }}
+                            <a href="{{ path('datasets_list', {'order_by' : 'titleASC'}) }}"><i class="glyphicon glyphicon-chevron-up datasets-sort"></i></a>
+                            <a href="{{ path('datasets_list', {'order_by' : 'titleDESC'}) }}"><i class="glyphicon glyphicon-chevron-down datasets-sort"></i></a>
                         </th>
                         <th>
                             {{ 'Size' | trans({}, 'DatasetsBundle') }}
                         </th>
                         <th>
                             {{ 'Created' | trans({}, 'DatasetsBundle') }}
+                            <a href="{{ path('datasets_list', {'order_by' : 'createdASC'}) }}"><i class="glyphicon glyphicon-chevron-up datasets-sort"></i></a>
+                            <a href="{{ path('datasets_list', {'order_by' : 'createdDESC'}) }}"><i class="glyphicon glyphicon-chevron-down datasets-sort"></i></a>
                         </th>
                         <th>
                             {{ 'Description' | trans({}, 'DatasetsBundle') }}

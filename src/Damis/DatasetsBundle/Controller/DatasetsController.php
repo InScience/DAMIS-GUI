@@ -23,13 +23,28 @@ class DatasetsController extends Controller
      * User datasets list window
      *
      * @Route("/list.html", name="datasets_list")
+     * @Method({"GET","POST"})
      * @Template()
      */
     public function listAction()
     {
+        $sort = $this->getRequest()->get('order_by');
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('DamisDatasetsBundle:Dataset')->getUserDatasets($user);
+        if($sort == 'titleASC')
+            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
+                ->getUserDatasets($user, array('title' => 'ASC'));
+        elseif($sort == 'titleDESC')
+            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
+                ->getUserDatasets($user, array('title' => 'DESC'));
+        elseif($sort == 'createdASC')
+            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
+                ->getUserDatasets($user, array('created' => 'ASC'));
+        elseif($sort == 'createdDESC')
+            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
+                ->getUserDatasets($user, array('created' => 'DESC'));
+        else
+            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')->getUserDatasets($user);
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $entities, $this->get('request')->query->get('page', 1), 15);
