@@ -1,0 +1,9 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block body -%}
+    {% include "BaseUserBundle::messages.html.twig" %}
+
+    <h1>{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</h1>
+
+    {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
+{% endblock %}

@@ -41,6 +41,17 @@ class ExperimentController extends Controller
     }
 
     /**
+     * Edit experiment in workflow creation window
+     *
+     * @Route("/experiment/{id}/edit.html", name="edit_experiment")
+     * @Template()
+     */
+    public function editAction($id)
+    {
+        return array();
+    }
+
+    /**
      * Component info
      *
      * @Route("/experiment/component/{id}/info.html", name="component", options={"expose" = true})

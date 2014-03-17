@@ -21,6 +21,17 @@ class ExperimentHistoryController extends Controller
     {
         $source = new Entity('DamisExperimentBundle:Experiment');
 
+        $tableAlias = $source->getTableAlias();
+        $userId = $this->get('security.context')->getToken()->getUser()->getId();
+
+        $source->manipulateQuery(
+            function ($query) use ($tableAlias, $userId)
+            {
+                $query->andWhere($tableAlias . '.userid = :user');
+                $query->setParameter('user', $userId);
+            }
+        );
+
         /* @var $grid \APY\DataGridBundle\Grid\Grid */
         $grid = $this->get('grid');
 
@@ -29,14 +40,34 @@ class ExperimentHistoryController extends Controller
         $grid->setNoResultMessage($this->get('translator')->trans('No data'));
 
         //custom colums config
-        //$grid->hideColumns('id');
+        $grid->hideColumns('experimentid');
+        $grid->setDefaultOrder('experimentid', 'ASC');
+
+        /* @var $column \APY\DataGridBundle\Grid\Column\Column */
+        $column = $grid->getColumn('experimentname');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setSortable(false);
+        $column->setTitle($this->get('translator')->trans('Experiment name', array(), 'ExperimentBundle'));
+
+        $column = $grid->getColumn('experimentstatusid.experimentstatus');
+        $column->setFilterType('select');
+        $column->setOperators(array('like'));
+        $column->setOperatorsVisible(false);
+        $column->setDefaultOperator('like');
+        $column->setSelectFrom('source');
+        $column->setSortable(false);
+        $column->setTitle($this->get('translator')->trans('Experiment status', array(), 'ExperimentBundle'));
 
         //add actions column
-//        $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'user_edit');
-//        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
-//        $grid->addColumn($actionsColumn2);
+        $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'edit_experiment');
+        $rowAction->setRouteParameters(array('experimentid'));
+        $rowAction->setRouteParametersMapping(array('experimentid' => 'id'));
+        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
+        $grid->addColumn($actionsColumn2);
 
-        return $grid->getGridResponse('BaseUserBundle::User\index.html.twig');
+        return $grid->getGridResponse('DamisExperimentBundle::ExperimentHistory\index.html.twig');
     }
 
 }
