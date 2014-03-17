@@ -3,3 +3,8 @@
         {{ flashMessage | trans({}, 'DatasetsBundle')}}
     </div>
 {% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+        {{ flashMessage | trans({}, 'DatasetsBundle')}}
+    </div>
+{% endfor %}

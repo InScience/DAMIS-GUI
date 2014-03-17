@@ -50,19 +50,19 @@
                                 </a>
                             </td>
                             <td nowrap="nowrap">
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download CSV file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download CSV file' | trans({}, 'DatasetsBundle') }}" href="{{ path('convert_csv', {'id' : entity.datasetId}) }}">
                                     CSV
                                 </a>
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download ARFF file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download ARFF file' | trans({}, 'DatasetsBundle') }}" href="{{ path('convert_arff', {'id' : entity.datasetId}) }}">
                                     ARFF
                                 </a>
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TXT file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TXT file' | trans({}, 'DatasetsBundle') }}" href="{{ path('convert_txt', {'id' : entity.datasetId}) }}">
                                     TXT
                                 </a>
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TAB file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download TAB file' | trans({}, 'DatasetsBundle') }}" href="{{ path('convert_tab', {'id' : entity.datasetId}) }}">
                                     TAB
                                 </a>
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download XLS file' | trans({}, 'DatasetsBundle') }}" href="#">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Download XLS file' | trans({}, 'DatasetsBundle') }}" href="{{ path('convert_xls', {'id' : entity.datasetId}) }}">
                                     XLS
                                 </a>
                             </td>
