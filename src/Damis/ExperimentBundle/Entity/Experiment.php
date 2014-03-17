@@ -19,56 +19,56 @@ class Experiment
      *
      * @ORM\Column(name="ExperimentName", type="string", length=80, nullable=false)
      */
-    private $experimentname;
+    private $name;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="ExperimentMaxDuration", type="time", nullable=true)
      */
-    private $experimentmaxduration;
+    private $maxDuration;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="ExpermentStart", type="integer", nullable=true)
      */
-    private $expermentstart;
+    private $start;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="ExperimentFinish", type="integer", nullable=true)
      */
-    private $experimentfinish;
+    private $finish;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="ExperimentUseCPU", type="integer", nullable=true)
      */
-    private $experimentusecpu;
+    private $useCpu;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="ExperimentUsePrimaryMemory", type="integer", nullable=true)
      */
-    private $experimentuseprimarymemory;
+    private $usePrimaryMemory;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="ExperimentUseSecMemory", type="integer", nullable=true)
      */
-    private $experimentusesecmemory;
+    private $useSecMemory;
 
     /**
      * @var string
      *
      * @ORM\Column(name="ExperimentGUIData", type="text", nullable=true)
      */
-    private $experimentguidata;
+    private $guiData;
 
     /**
      * @var integer
@@ -77,7 +77,7 @@ class Experiment
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $experimentid;
+    private $id;
 
     /**
      * @var \Damis\ExperimentBundle\Entity\Experimentstatus
@@ -89,7 +89,7 @@ class Experiment
      *
      * @GRID\Column(field="experimentstatusid.experimentstatus", type="text")
      */
-    private $experimentstatusid;
+    private $status;
 
     /**
      * @var \Base\UserBundle\Entity\User
@@ -99,65 +99,65 @@ class Experiment
      *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
      * })
      */
-    private $userid;
+    private $user;
 
 
 
     /**
-     * Set experimentname
+     * Set name
      *
-     * @param string $experimentname
+     * @param string $name
      * @return Experiment
      */
-    public function setExperimentname($experimentname)
+    public function setName($name)
     {
-        $this->experimentname = $experimentname;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get experimentname
+     * Get name
      *
      * @return string
      */
-    public function getExperimentname()
+    public function getName()
     {
-        return $this->experimentname;
+        return $this->Name;
     }
 
     /**
-     * Set experimentmaxduration
+     * Set maxDuration
      *
-     * @param \DateTime $experimentmaxduration
+     * @param \DateTime $maxDuration
      * @return Experiment
      */
-    public function setExperimentmaxduration($experimentmaxduration)
+    public function setMaxDuration($maxDuration)
     {
-        $this->experimentmaxduration = $experimentmaxduration;
+        $this->maxDuration = $maxDuration;
 
         return $this;
     }
 
     /**
-     * Get experimentmaxduration
+     * Get maxduration
      *
      * @return \DateTime
      */
-    public function getExperimentmaxduration()
+    public function getMaxDuration()
     {
-        return $this->experimentmaxduration;
+        return $this->maxDuration;
     }
 
     /**
-     * Set expermentstart
+     * Set start
      *
-     * @param integer $expermentstart
+     * @param integer $start
      * @return Experiment
      */
-    public function setExpermentstart($expermentstart)
+    public function setStart($start)
     {
-        $this->expermentstart = $expermentstart;
+        $this->start = $start;
 
         return $this;
     }
@@ -167,179 +167,179 @@ class Experiment
      *
      * @return integer
      */
-    public function getExpermentstart()
+    public function getStart()
     {
-        return $this->expermentstart;
+        return $this->start;
     }
 
     /**
-     * Set experimentfinish
+     * Set finish
      *
-     * @param integer $experimentfinish
+     * @param integer $finish
      * @return Experiment
      */
-    public function setExperimentfinish($experimentfinish)
+    public function setFinish($finish)
     {
-        $this->experimentfinish = $experimentfinish;
+        $this->finish = $finish;
 
         return $this;
     }
 
     /**
-     * Get experimentfinish
+     * Get finish
      *
      * @return integer
      */
-    public function getExperimentfinish()
+    public function getFinish()
     {
-        return $this->experimentfinish;
+        return $this->finish;
     }
 
     /**
-     * Set experimentusecpu
+     * Set useCpu
      *
-     * @param integer $experimentusecpu
+     * @param integer $useCpu
      * @return Experiment
      */
-    public function setExperimentusecpu($experimentusecpu)
+    public function setUseCpu($useCpu)
     {
-        $this->experimentusecpu = $experimentusecpu;
+        $this->useCpu = $useCpu;
 
         return $this;
     }
 
     /**
-     * Get experimentusecpu
+     * Get useCpu
      *
      * @return integer
      */
-    public function getExperimentusecpu()
+    public function getUseCpu()
     {
-        return $this->experimentusecpu;
+        return $this->useCpu;
     }
 
     /**
-     * Set experimentuseprimarymemory
+     * Set usePrimaryMemory
      *
-     * @param integer $experimentuseprimarymemory
+     * @param integer $usePrimaryMemory
      * @return Experiment
      */
-    public function setExperimentuseprimarymemory($experimentuseprimarymemory)
+    public function setUsePrimaryMemory($usePrimaryMemory)
     {
-        $this->experimentuseprimarymemory = $experimentuseprimarymemory;
+        $this->usePrimaryMemory = $usePrimaryMemory;
 
         return $this;
     }
 
     /**
-     * Get experimentuseprimarymemory
+     * Get usePrimaryMemory
      *
      * @return integer
      */
-    public function getExperimentuseprimarymemory()
+    public function getUsePrimaryMemory()
     {
-        return $this->experimentuseprimarymemory;
+        return $this->usePrimaryMemory;
     }
 
     /**
-     * Set experimentusesecmemory
+     * Set useSecMemory
      *
-     * @param integer $experimentusesecmemory
+     * @param integer $useSecMemory
      * @return Experiment
      */
-    public function setExperimentusesecmemory($experimentusesecmemory)
+    public function setUseSecMemory($useSecMemory)
     {
-        $this->experimentusesecmemory = $experimentusesecmemory;
+        $this->useSecMemory = $useSecMemory;
 
         return $this;
     }
 
     /**
-     * Get experimentusesecmemory
+     * Get useSecMemory
      *
      * @return integer
      */
-    public function getExperimentusesecmemory()
+    public function getUseSecMemory()
     {
-        return $this->experimentusesecmemory;
+        return $this->useSecMemory;
     }
 
     /**
-     * Set experimentguidata
+     * Set GuiData
      *
-     * @param string $experimentguidata
+     * @param string $guiData
      * @return Experiment
      */
-    public function setExperimentguidata($experimentguidata)
+    public function setGuiData($guiData)
     {
-        $this->experimentguidata = $experimentguidata;
+        $this->guiData = $guiData;
 
         return $this;
     }
 
     /**
-     * Get experimentguidata
+     * Get guidata
      *
      * @return string
      */
-    public function getExperimentguidata()
+    public function getGuiData()
     {
-        return $this->experimentguidata;
+        return $this->guiData;
     }
 
     /**
-     * Get experimentid
+     * Get id
      *
      * @return integer
      */
-    public function getExperimentid()
+    public function getId()
     {
-        return $this->experimentid;
+        return $this->id;
     }
 
     /**
-     * Set experimentstatusid
+     * Set status
      *
-     * @param \Damis\ExperimentBundle\Entity\Experimentstatus $experimentstatusid
+     * @param \Damis\ExperimentBundle\Entity\Experimentstatus $status
      * @return Experiment
      */
-    public function setExperimentstatusid(\Damis\ExperimentBundle\Entity\Experimentstatus $experimentstatusid = null)
+    public function setStatus(\Damis\ExperimentBundle\Entity\Experimentstatus $status = null)
     {
-        $this->experimentstatusid = $experimentstatusid;
+        $this->status = $status;
 
         return $this;
     }
 
     /**
-     * Get experimentstatusid
+     * Get status
      *
      * @return \Damis\ExperimentBundle\Entity\Experimentstatus
      */
-    public function getExperimentstatusid()
+    public function getStatus()
     {
-        return $this->experimentstatusid;
+        return $this->status;
     }
 
     /**
-     * Set userid
+     * Set user
      *
-     * @param \Base\UserBundle\Entity\User $userid
+     * @param \Base\UserBundle\Entity\User $user
      * @return Experiment
      */
-    public function setUserid(\Base\UserBundle\Entity\User $userid = null)
+    public function setUser(\Base\UserBundle\Entity\User $user = null)
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userid
+     * Get user
      *
      * @return \Base\UserBundle\Entity\User
      */
-    public function getUserid()
+    public function getUser()
     {
-        return $this->userid;
+        return $this->user;
     }
 }
