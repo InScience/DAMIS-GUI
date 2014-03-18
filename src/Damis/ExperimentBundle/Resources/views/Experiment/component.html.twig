@@ -1,8 +1,12 @@
 {% block body %}
     {% for parameter in parameters %}
-        {% if parameter.connectionType != null %}
+        {% if parameter.connectionType.type == 'OUTPUT_CONNECTION'
+            or parameter.connectionType.type == 'INPUT_CONNECTION' %}
             {% include "DamisExperimentBundle::_experiment_connection.html.twig"
                 with {parameter : parameter} %}
+        {% else %}
+            {% include "DamisExperimentBundle::_experiment_component.html.twig"
+            with {parameter : parameter} %}
         {% endif %}
     {% endfor %}
 {% endblock %}

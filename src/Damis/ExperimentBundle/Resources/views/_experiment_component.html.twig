@@ -1,3 +1,21 @@
-<div style="display:none;">
+<div>
+<span title=
+        >{{ parameter.name }}<span class="req">*</span>
 
+        <input id="value" name="value" type="text" />
+    </span>
+
+
+
+
+
+    <input id="parameter" name="parameter" type="hidden" value="{{ parameter.id}}" />
+
+    <input id="task" name="task" type="hidden" />
+
+    <input id="source_ref" name="source_ref" type="hidden" />
+
+    <input id="id" name="id" type="hidden" />
+
+    <input id="connection_type" type="hidden" value="{{ parameter.connectionType.type}}" name="connection_type"/>
 </div>

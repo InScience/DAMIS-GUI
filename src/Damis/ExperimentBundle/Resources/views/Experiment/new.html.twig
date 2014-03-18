@@ -96,7 +96,7 @@
             window.componentSettings.details = {};
             {% for component in components %}
             window.componentSettings.details["{{ component.getId }}"] = {
-                type: "{{ component.getTypeId.id }}",
+                type: "{{ component.id }}",
                 label: "{{ component.getName }}",
                 ico: "{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}",
                 cluster_ico: "{{ asset('bundles/damisexperiment/images/cluster_' ~ component.clusterId.id ~ '_icon.jpeg') }}"
