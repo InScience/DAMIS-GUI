@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -182,13 +183,29 @@ class DatasetsController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
 
         if ($form->isValid()) {
+            if(!$entity->getDatasetTitle()){
+                $form->get('datasetTitle')
+                    ->addError(new FormError($this->get('translator')->trans('This field is required', array(), 'DatasetsBundle')));
+                return [
+                    'form' => $form->createView(),
+                    'file' => null
+                ];
+            }
+            if($entity->getFile() == null){
+                $form->get('file')
+                    ->addError(new FormError($this->get('translator')->trans('This field is required', array(), 'DatasetsBundle')));
+                return [
+                    'form' => $form->createView(),
+                    'file' => null
+                ];
+            }
             $em = $this->getDoctrine()->getManager();
             $entity->setDatasetCreated(time());
             $entity->setUserId($user);
             $entity->setDatasetIsMidas(false);
             $em->persist($entity);
             $em->flush();
-
+            $this->uploadArff($entity->getDatasetId());
             return [
                 'form' => $form->createView(),
                 'file' => $entity

@@ -57,3 +57,6 @@ body {
 .datasets-sort{
     color: #333;
 }
+.form-group li {
+    color: red;
+}

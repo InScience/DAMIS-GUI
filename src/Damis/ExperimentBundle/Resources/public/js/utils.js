@@ -60,30 +60,24 @@
 
 		// initilializes elements of file input form
 		customizeFileForm: function(container) {
-			var fileInput = container.find("input[type=file]");
-			var fileButton = container.find(".choose-file");
-			fileButton.on("click", function(ev) {
-				fileInput.click();
-			});
+            var fileInput = $("input#datasets_newtype_file");
+            var titleInput = $("input[name='datasets_newtype[datasetTitle]']");
+            titleInput.on("change", window.utils.titleChanged);
+            fileInput.on("change", function (ev) {
+                var fileName = $(this).val();
+                // put the uploaded file name next to the upload button
+                var stdFileName = fileName.replace(/\\/g, "/");
+                var start = stdFileName.lastIndexOf("/") + 1;
 
-			var titleInput = container.find("input[name=title]");
-			titleInput.on("change", window.utils.titleChanged);
-			fileInput.on("change", function(ev) {
-				var fileName = $(this).val();
-				// put the uploaded file name next to the upload button
-				var stdFileName = fileName.replace(/\\/g, "/");
-				var start = stdFileName.lastIndexOf("/") + 1;
-				fileButton.next("span").html(stdFileName.substring(start, stdFileName.length));
-
-				// prefill title input field with the uploaded file name
-				// if the input had not been changed by the user
-				if (!titleInput.hasClass("changed")) {
-					var baseName = fileName.substring(start, stdFileName.lastIndexOf("."));
-					titleInput.off("change");
-					titleInput.val(baseName);
-					titleInput.on("change", window.utils.titleChanged);
-				}
-			});
+                // prefill title input field with the uploaded file name
+                // if the input had not been changed by the user
+                if (!titleInput.hasClass("changed")) {
+                    var baseName = fileName.substring(start, stdFileName.lastIndexOf("."));
+                    titleInput.off("change");
+                    titleInput.val(baseName);
+                    titleInput.on("change", window.utils.titleChanged);
+                }
+            });
 
 			// toggle file form visibility on click of a button
 			window.utils.initToggleSectionBtn(container);

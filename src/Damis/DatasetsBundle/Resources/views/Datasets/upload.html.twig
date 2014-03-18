@@ -1,7 +1,7 @@
 {% block body %}
     {% if file != null %}
     <div class="message">
-        {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a href="/media/demo/datasets/asdasd.arff">asdasd</a>
+        {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a>
     </div>
 
     <button type="button" class="toggle-btn show btn">{{'New file' | trans({}, 'DatasetsBundle') }}</button>
