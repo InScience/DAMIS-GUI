@@ -98,7 +98,7 @@
             window.componentSettings.details["{{ component.getId }}"] = {
                 label: "{{ component.getName }}",
                 ico: "{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}",
-                cluster_ico: "{{ asset('bundles/damisexperiment/images/cluster_' ~ component.clusterId.id ~ '_icon.jpeg') }}"
+                cluster_ico: "{{ asset('bundles/damisexperiment/images/cluster_' ~ component.clusterId.id ~ '_icon.jpeg') }}",
                 type: "{{ component.formType }}"
             };
             {% endfor %}

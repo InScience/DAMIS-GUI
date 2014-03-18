@@ -31,6 +31,8 @@
 					$(this).html(resp);
 					window.utils.customizeFileForm($(this));
 					var buttons;
+
+                    // TODO: fix buttons
 					if (data['dataset_url']) {
 						buttons = window.files.uploadedButtons();
 					} else {
