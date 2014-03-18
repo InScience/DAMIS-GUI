@@ -28,9 +28,9 @@ class DatasetsController extends Controller
      * @Method({"GET","POST"})
      * @Template()
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
-        $sort = $this->getRequest()->get('order_by');
+        $sort = $request->get('order_by');
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         if($sort == 'titleASC')
