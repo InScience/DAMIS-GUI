@@ -65,7 +65,14 @@
 			// replace them with a placeholder
 			var fileUploadForm = $("#file-upload-form");
 			fileForm.after(fileFormPlaceholder).appendTo(fileUploadForm);
-
+            if($('form#createDataset').length > 0){
+                fileUploadForm.find('form').children().each(function(c){
+                    fileUploadForm.append(fileUploadForm.find('form').children()[c]);
+                });
+                fileUploadForm.find('form').children().each(function(c){
+                    fileUploadForm.append(fileUploadForm.find('form').children()[c]);
+                });
+            }
 			$("#file-upload-iframe").off("load");
 			$("#file-upload-iframe").on("load", function(resp) {
 				window.files.handleUploadResponse(fileFormPlaceholder);
@@ -94,12 +101,13 @@
 
 			var connectionInput = formWindow.find(".parameter-values input[value=OUTPUT_CONNECTION]");
 			var valueInput = connectionInput.parent().find("input[name$=value]");
+			var idInput = connectionInput.parent().find("input[name$=id]");
 			if (this.checkSuccess(responseText)) {
 				// set OUTPUT_CONNECTION parameter of this task to the uploaded 
 				// file url
 				var fileUrl = responseText.find("input[name=file_path]").val();
                 this.filePath = fileUrl;
-                window.params.addParam(this.taskBoxId, valueInput.val(), fileUrl);
+                window.params.addParam(this.taskBoxId, idInput.val(), fileUrl);
 				valueInput.val(fileUrl);
 
 				// display only another set of buttons 
@@ -120,7 +128,7 @@
 
 		// check if the upload was successful
 		checkSuccess: function(resp) {
-			return resp.find(".errorlist").length == 0;
+			return resp.find(".form-row li").length == 0;
 		},
 
 		uploadedButtons: function() {
@@ -130,9 +138,10 @@
 				"click": function(ev) {
 					var fileForm = $(this).find(".dynamic-container");
 					var submit = false;
-					$.each(fileForm.find("input[name=title],input[name=file],textarea[name=description]"), function(idx, el) {
+					$.each(fileForm.find("input#datasets_newtype_datasetTitle,input#datasets_newtype_file,textarea#datasets_newtype_datasetDescription"), function(idx, el) {
 						if ($(el).val()) {
-							submit = true;
+                            if(!$('.toggle-btn').is(':visible'))
+							    submit = true;
 							return false;
 						}
 					});

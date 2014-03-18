@@ -4,7 +4,7 @@
             {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a>
         </div>
 
-        <button type="button" class="toggle-btn show btn">{{'New file' | trans({}, 'DatasetsBundle') }}</button>
+        <button type="button" class="toggle-btn btn">{{'New file' | trans({}, 'DatasetsBundle') }}</button>
     {% endif %}
 
     <div class="toggle-section" style="width:450px; {% if file != null %} display:none {%endif%}" >
@@ -39,7 +39,6 @@
                     {{ form_widget(form.datasetDescription) }}
                     {{ form_errors(form.datasetDescription) }}
                 </div>
-                {{ form_widget(form._token) }}
                 {% if file != null %}
                     <input id="id_file_path" type="hidden" value="{{ file.datasetId }}" name="file_path">
                 {% endif %}

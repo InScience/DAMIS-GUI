@@ -110,7 +110,7 @@
 				newStr = newStr.replace(new RegExp("{" + key + "}", "g"), args[key]);
 			}
 			return newStr;
-		},
+		}
 	}
 })();
 

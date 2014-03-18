@@ -183,22 +183,6 @@ class DatasetsController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
 
         if ($form->isValid()) {
-            if(!$entity->getDatasetTitle()){
-                $form->get('datasetTitle')
-                    ->addError(new FormError($this->get('translator')->trans('This field is required', array(), 'DatasetsBundle')));
-                return [
-                    'form' => $form->createView(),
-                    'file' => null
-                ];
-            }
-            if($entity->getFile() == null){
-                $form->get('file')
-                    ->addError(new FormError($this->get('translator')->trans('This field is required', array(), 'DatasetsBundle')));
-                return [
-                    'form' => $form->createView(),
-                    'file' => null
-                ];
-            }
             $em = $this->getDoctrine()->getManager();
             $entity->setDatasetCreated(time());
             $entity->setUserId($user);
@@ -211,7 +195,6 @@ class DatasetsController extends Controller
                 'file' => $entity
             ];
         }
-
         return [
             'form' => $form->createView(),
             'file' => null
