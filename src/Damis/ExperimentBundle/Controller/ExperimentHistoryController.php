@@ -27,7 +27,7 @@ class ExperimentHistoryController extends Controller
         $source->manipulateQuery(
             function ($query) use ($tableAlias, $userId)
             {
-                $query->andWhere($tableAlias . '.userid = :user');
+                $query->andWhere($tableAlias . '.user = :user');
                 $query->setParameter('user', $userId);
             }
         );
@@ -40,18 +40,18 @@ class ExperimentHistoryController extends Controller
         $grid->setNoResultMessage($this->get('translator')->trans('No data'));
 
         //custom colums config
-        $grid->hideColumns('experimentid');
-        $grid->setDefaultOrder('experimentid', 'ASC');
+        $grid->hideColumns('id');
+        $grid->setDefaultOrder('id', 'ASC');
 
         /* @var $column \APY\DataGridBundle\Grid\Column\Column */
-        $column = $grid->getColumn('experimentname');
+        $column = $grid->getColumn('name');
         $column->setOperators(array('like'));
         $column->setOperatorsVisible(false);
         $column->setDefaultOperator('like');
         $column->setSortable(false);
         $column->setTitle($this->get('translator')->trans('Experiment name', array(), 'ExperimentBundle'));
 
-        $column = $grid->getColumn('experimentstatusid.experimentstatus');
+        $column = $grid->getColumn('status.experimentstatus');
         $column->setFilterType('select');
         $column->setOperators(array('like'));
         $column->setOperatorsVisible(false);
@@ -62,8 +62,8 @@ class ExperimentHistoryController extends Controller
 
         //add actions column
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'edit_experiment');
-        $rowAction->setRouteParameters(array('experimentid'));
-        $rowAction->setRouteParametersMapping(array('experimentid' => 'id'));
+        $rowAction->setRouteParameters(array('id'));
+        $rowAction->setRouteParametersMapping(array('id' => 'id'));
         $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
         $grid->addColumn($actionsColumn2);
 

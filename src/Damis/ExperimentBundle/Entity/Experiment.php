@@ -10,7 +10,7 @@ use APY\DataGridBundle\Grid\Mapping as GRID;
  *
  * @ORM\Table(name="experiment", uniqueConstraints={@ORM\UniqueConstraint(name="EXPERIMENT_PK", columns={"ExperimentID"})}, indexes={@ORM\Index(name="FK_EXPERIMET_EXPERIMENTSTATUS", columns={"ExperimentStatusID"}), @ORM\Index(name="FK_EXPERIMET_DAMISUSER", columns={"UserID"})})
  * @ORM\Entity
- * @GRID\Source(columns="experimentid, experimentname, experimentstatusid.experimentstatus")
+ * @GRID\Source(columns="id, name, status.experimentstatus")
  */
 class Experiment
 {
@@ -87,7 +87,7 @@ class Experiment
      *   @ORM\JoinColumn(name="ExperimentStatusID", referencedColumnName="ExperimentStatusID")
      * })
      *
-     * @GRID\Column(field="experimentstatusid.experimentstatus", type="text")
+     * @GRID\Column(field="status.experimentstatus", type="text")
      */
     private $status;
 
