@@ -22,11 +22,11 @@ class PageController extends Controller
      * Show for static menu
      *
      */
-    public function staticMenuAction($groupName)
+    public function staticMenuAction($groupName, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName), array('position' => 'ASC'));;
+        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));;
 
         return $this->container->get('templating')->renderResponse("BaseStaticBundle::staticMenu.html.twig", array(
             'pages' => $entities,

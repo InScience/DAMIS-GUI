@@ -24,7 +24,7 @@ class PageType extends AbstractType
                     'attr' => array('class' => 'form-control', 'placeholder' => 'form.group'),
                 )
             )
-            ->add('text', 'textarea', array('required' => false, 'attr' => array('class' => 'tinymce_textarea form-control')))
+            ->add('text', 'textarea', array('label' => 'form.text', 'required' => false, 'attr' => array('class' => 'tinymce_textarea form-control')))
             ->add('position', 'integer', array('label' => 'form.position', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.position'),))
             ->add('language', 'choice',
                 array(

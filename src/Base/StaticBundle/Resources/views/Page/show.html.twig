@@ -1,7 +1,7 @@
 {% extends 'BaseMainBundle::layout.html.twig' %}
 
 {% block body -%}
-    <h2 class="form-signin-heading">{{ entity.title }}</h2>
+    <h1>{{ entity.title }}</h1>
 
     {% if entity.text %}
         {{ entity.text|raw }}

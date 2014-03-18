@@ -33,6 +33,7 @@ body {
 }
 
 .tinymce-div,
+.form-normal input[type="number"],
 .form-normal input[type="text"],
 .form-normal input[type="email"],
 .form-normal input[type="password"],

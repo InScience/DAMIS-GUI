@@ -4,23 +4,28 @@
     {% include "BaseStaticBundle::messages.html.twig" %}
 
     <form class="form-normal" role="form" action="{{ path('page_create') }}" method="post" {{ form_enctype(form) }}>
-        <h2 class="form-signin-heading">{{ 'form.create_page'|trans({}, 'StaticBundle') }}</h2>
+        <h1>{{ 'form.create_page'|trans({}, 'StaticBundle') }}</h1>
 
         {{ form_widget(form._token) }}
 
+        {{ form_label(form.title) }}
         {{ form_errors(form.title) }}
         {{ form_widget(form.title) }}
 
+        {{ form_label(form.groupName) }}
         {{ form_errors(form.groupName) }}
         {{ form_widget(form.groupName) }}
 
+        {{ form_label(form.position) }}
         {{ form_errors(form.position) }}
         {{ form_widget(form.position) }}
 
+        {{ form_label(form.language) }}
         {{ form_errors(form.language) }}
         {{ form_widget(form.language) }}
 
         <div class="tinymce-div">
+            {{ form_label(form.text) }}
             {{ form_errors(form.text) }}
             {{ form_widget(form.text) }}
         </div>
