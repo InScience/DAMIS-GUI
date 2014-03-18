@@ -34,9 +34,9 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Result type', 1, NULL, NULL, NULL, NULL, 9, NULL, 3, 9),
 ('Z value', 1, NULL, NULL, NULL, NULL, 10, NULL, 3, 9),
 ('Attribute', 1, NULL, NULL, NULL, NULL, 11, NULL, 3, 9),
-('Result type', 1, NULL, NULL, NULL, NULL, 9, NULL, 3, 10),
-('Z value', 1, NULL, NULL, NULL, NULL, 10, NULL, 3, 10),
-('Attribute', 1, NULL, NULL, NULL, NULL, 11, NULL, 3, 10);
+('Result type', 1, NULL, NULL, NULL, NULL, 12, NULL, 3, 10),
+('Z value', 1, NULL, NULL, NULL, NULL, 13, NULL, 3, 10),
+('Attribute', 1, NULL, NULL, NULL, NULL, 14, NULL, 3, 10);
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
