@@ -4,7 +4,7 @@
     {% include "BaseUserBundle::messages.html.twig" %}
 
     <form class="form-signin fos_user_profile_edit" role="form" action="{{ path('user_update', { 'id': entity.id }) }}" {{ form_enctype(edit_form) }} method="POST">
-        <h2 class="form-signin-heading">{{ 'admin.edit_user'|trans({}, 'FOSUserBundle') }}</h2>
+        <h1>{{ 'admin.edit_user'|trans({}, 'FOSUserBundle') }}</h1>
         <input type="hidden" name="_method" value="PUT" />
         {{ form_widget(edit_form._token) }}
 

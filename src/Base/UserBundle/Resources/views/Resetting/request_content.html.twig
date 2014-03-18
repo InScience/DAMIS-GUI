@@ -1,7 +1,7 @@
 {% include "BaseUserBundle::messages.html.twig" %}
 
 <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="form-signin fos_user_resetting_request" role="form">
-    <h2 class="form-signin-heading">{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</h2>
+    <h1>{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</h1>
     {% if invalid_username is defined %}
         <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
     {% endif %}

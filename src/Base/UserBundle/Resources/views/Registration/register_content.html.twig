@@ -1,7 +1,7 @@
 {% include "BaseUserBundle::messages.html.twig" %}
 
 <form class="form-signin fos_user_registration_register" role="form" action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="post">
-    <h2 class="form-signin-heading">{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}</h2>
+    <h1>{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}</h1>
     {{ form_widget(form._token) }}
 
     {{ form_errors(form.username) }}

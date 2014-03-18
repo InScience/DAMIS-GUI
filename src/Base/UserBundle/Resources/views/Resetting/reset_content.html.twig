@@ -1,7 +1,7 @@
 {% include "BaseUserBundle::messages.html.twig" %}
 
 <form class="form-signin fos_user_resetting_reset" role="form" action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="post">
-    <h2 class="form-signin-heading">{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }}</h2>
+    <h1>{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }}</h1>
     {{ form_widget(form._token) }}
 
     {{ form_errors(form.new.first) }}
