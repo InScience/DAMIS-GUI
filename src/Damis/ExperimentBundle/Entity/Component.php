@@ -97,6 +97,13 @@ class Component
      */
     private $typeId;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="FormType", type="string", length=255, nullable=true)
+     */
+    private $formType;
+
 
 
     /**
@@ -338,4 +345,22 @@ class Component
     {
         return $this->typeId;
     }
+
+    /**
+     * @param string $formType
+     */
+    public function setFormType($formType)
+    {
+        $this->formType = $formType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormType()
+    {
+        return $this->formType;
+    }
+
+
 }
