@@ -4,7 +4,7 @@
         filePath : null,
 
 		init: function(componentType, formWindow) {
-			if (componentType == 1 || componentType == 2) {
+			if (componentType == 'NewFile') {
 				this.update(formWindow);
 			}
 		},

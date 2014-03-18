@@ -15,11 +15,13 @@ INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConn
 ('OUTPUT_CONNECTION', 2),
 ('INPUT_VALUE', 3);
 
-INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost`, `ComponentWSDLCallFunction`, `ComponentDescription`, `ComponentAltDescription`, `ComponentLabelLT`, `ComponentLabelEN`, `ComponentID`, `ClusterID`, `ComponentTypeID`) VALUES
-('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1),
-('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1),
-('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2),
-('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2);
+INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost`, `ComponentWSDLCallFunction`,
+`ComponentDescription`, `ComponentAltDescription`, `ComponentLabelLT`, `ComponentLabelEN`, `ComponentID`, `ClusterID`,
+`ComponentTypeID`, `FormType`) VALUES
+('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1, 'NewFile'),
+('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1, 'NewFile'),
+('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
+('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter');
 
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`, `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`, `ParameterConnectionTypeID`, `ComponentID`) VALUES
