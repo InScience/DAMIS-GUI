@@ -1,5 +1,8 @@
 (function() {
 	window.files = {
+        taskBoxId : null,
+        filePath : null,
+
 		init: function(componentType, formWindow) {
 			if (componentType == 1 || componentType == 2) {
 				this.update(formWindow);
@@ -43,6 +46,7 @@
 
 		// upload form in the iframe
 		doUpload: function(dialog) {
+            this.taskBoxId = /\d+/g.exec(dialog.attr("id"))[0];
 			window.utils.showProgress();
 			dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
 
@@ -94,6 +98,8 @@
 				// set OUTPUT_CONNECTION parameter of this task to the uploaded 
 				// file url
 				var fileUrl = responseText.find("input[name=file_path]").val();
+                this.filePath = fileUrl;
+                window.params.addParam(this.taskBoxId, valueInput.val(), fileUrl);
 				valueInput.val(fileUrl);
 
 				// display only another set of buttons 

@@ -3,9 +3,11 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExperimentController extends Controller
 {
@@ -73,10 +75,23 @@ class ExperimentController extends Controller
      * Experiment save
      *
      * @Route("/experiment/save.html", name="experiment_save")
+     * @Method("POST")
      * @Template()
      */
-    public function saveAction()
+    public function saveAction(Request $request)
     {
+        $params = $request->request->all();
+
+        $experiment = new Experiment;
+        $experiment->setName($params['experiment-title']);
+        $experiment->setGuiData($params['experiment-workflow_state']);
+        $experiment->setUser($this->get('security.context')->getToken()->getUser());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($experiment);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
 
         return [];
     }

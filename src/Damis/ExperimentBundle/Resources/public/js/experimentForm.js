@@ -177,18 +177,18 @@
 		executeDialog: function(action) {
 			var dialog = $("#exec-dialog");
 			dialog.dialog({
-				"title": gettext('Experiment settings'),
+				"title": 'Experiment settings',
 				"modal": true,
 				"appendTo": "#experiment-form",
 				"buttons": [{
-					"text": gettext('Cancel'),
+					"text": 'Cancel',
 					"class": "btn",
 					"click": function(ev) {
 						$(this).dialog("close");
 					}
 				},
 				{
-					"text": gettext('OK'),
+					"text": 'OK',
 					"class": "btn btn-primary",
 					"click": function(ev) {
 						$(this).dialog("close");

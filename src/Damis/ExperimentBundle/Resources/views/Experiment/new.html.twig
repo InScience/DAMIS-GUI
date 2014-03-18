@@ -9,6 +9,7 @@
 <div class="tabbable">
     <div class="tab-content">
         <div>
+        {% include "DamisDatasetsBundle::messages.html.twig" %}
         {% include "DamisExperimentBundle::_experiment_form.html.twig" with { components : components } %}
         <div id="workflow-editor-container">
             <div id="toolbox-container">

@@ -1,4 +1,30 @@
-<form id="experiment-form" action="" method="post" autocomplete="off">
+<form id="experiment-form" action="{{ path('experiment_save') }}" method="post" autocomplete="off">
+        <div id="exec-dialog" style="display:none;">
+
+            <p>{{'Experiment title'| trans({}, 'ExperimentBundle') }}: <br> <input id="id_experiment-title" maxlength="255" name="experiment-title" type="text"></p>
+            <div id="exec-params">
+
+
+
+
+
+                <p>{{'Maximum calculation time'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-max_calc_time" name="experiment-max_calc_time" type="text" value="2:00"></p>
+
+
+
+
+                <p>{{ 'Processor number'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-p" name="experiment-p" type="text" value="1"></p>
+
+
+
+
+                <input id="id_experiment-workflow_state" name="experiment-workflow_state" type="hidden">
+
+
+                <input id="id_experiment-skip_validation" name="experiment-skip_validation" type="hidden">
+
+            </div>
+    </div>
     <div style="display:none">
     <div class="inline task">
         <div style="display:none">

@@ -42,8 +42,7 @@
                 </div>
                 {{ form_widget(form._token) }}
                 {% if file != null %}
-                    {#TODO: Address for download is not working#}
-                    <input id="id_file_path" type="hidden" value="/media/demo/datasets/asdasd.arff" name="file_path">
+                    <input id="id_file_path" type="hidden" value="{{ file.datasetId }}" name="file_path">
                 {% endif %}
             </form>
         </div>
