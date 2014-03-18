@@ -1155,12 +1155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vitiko/IphpFileStoreBundle.git",
-                "reference": "d9210fec92865b70bfd6d4816b031f5868180311"
+                "reference": "eae902564c0afe98015bc4d99e5a647067ff1705"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vitiko/IphpFileStoreBundle/zipball/d9210fec92865b70bfd6d4816b031f5868180311",
-                "reference": "d9210fec92865b70bfd6d4816b031f5868180311",
+                "url": "https://api.github.com/repos/vitiko/IphpFileStoreBundle/zipball/eae902564c0afe98015bc4d99e5a647067ff1705",
+                "reference": "eae902564c0afe98015bc4d99e5a647067ff1705",
                 "shasum": ""
             },
             "require": {
@@ -1205,7 +1205,7 @@
                 "symfony file upload",
                 "upload"
             ],
-            "time": "2014-02-27 10:14:14"
+            "time": "2014-03-14 05:34:30"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1972,12 +1972,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/whiteoctober/Pagerfanta.git",
-                "reference": "e413b68dd4653104f94bba4b96c2ffb38468bd6f"
+                "reference": "c41473a84768ac18ec107033dbfa87229cdefafa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/e413b68dd4653104f94bba4b96c2ffb38468bd6f",
-                "reference": "e413b68dd4653104f94bba4b96c2ffb38468bd6f",
+                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/c41473a84768ac18ec107033dbfa87229cdefafa",
+                "reference": "c41473a84768ac18ec107033dbfa87229cdefafa",
                 "shasum": ""
             },
             "require": {
@@ -2030,7 +2030,7 @@
                 "paginator",
                 "paging"
             ],
-            "time": "2014-02-19 13:57:56"
+            "time": "2014-03-14 07:32:00"
         },
         {
             "name": "phpcollection/phpcollection",

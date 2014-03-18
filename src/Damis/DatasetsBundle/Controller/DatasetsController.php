@@ -2,10 +2,12 @@
 
 namespace Damis\DatasetsBundle\Controller;
 
+use Base\ConvertBundle\Helpers\ReadFile;
 use Damis\DatasetsBundle\Form\Type\DatasetType;
 use Damis\DatasetsBundle\Entity\Dataset;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use PHPExcel_IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -88,7 +90,7 @@ class DatasetsController extends Controller
             $entity->setDatasetIsMidas(false);
             $em->persist($entity);
             $em->flush();
-
+            $this->uploadArff($entity->getDatasetId());
             $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
             return $this->redirect($this->generateUrl('datasets_list'));
         }
@@ -197,5 +199,89 @@ class DatasetsController extends Controller
             'form' => $form->createView(),
             'file' => null
         ];
+    }
+
+    /**
+     * When uploading csv/txt/tab/xls/xlsx types to arff
+     * convert it and save
+     *
+     * @param String $id
+     * @return boolean
+     */
+    public function uploadArff($id)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
+            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+        if($entity){
+            $format = explode('.', $entity->getFile()['fileName']);
+            $format = $format[count($format)-1];
+            $filename = $entity->getDatasetTitle();
+            if ($format == 'arff'){
+                return true;
+            }
+            elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
+                $fileReader = new ReadFile();
+                $rows = $fileReader->getRows($this->get('kernel')->getRootDir()
+                    . '/../web/assets' . $entity->getFile()['fileName'] , $format);
+            } elseif($format == 'xls' || $format == 'xlsx'){
+                $objPHPExcel = PHPExcel_IOFactory::load($this->get('kernel')->getRootDir()
+                    . '/../web/assets' . $entity->getFile()['fileName']);
+                $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                array_unshift($rows, null);
+                unset($rows[0]);
+            } else{
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirect($this->generateUrl('datasets_list'));
+            }
+            $hasHeaders = false;
+            if(!empty($rows)){
+                foreach($rows[1] as $header){
+                    if(!(is_numeric($header))){
+                        $hasHeaders = true;
+                    }
+                }
+            }
+            $arff = '';
+            $arff .= '@relation ' . $filename . PHP_EOL;
+            if($hasHeaders){
+                foreach($rows[1] as $key => $header){
+                    if(is_int($rows[2][$key] + 0))
+                        $arff .= '@attribute ' . $header . ' ' . 'integer' . PHP_EOL;
+                    else if(is_float($rows[2][$key] + 0))
+                        $arff .= '@attribute ' . $header . ' ' . 'real' . PHP_EOL;
+
+                }
+            } else {
+                foreach($rows[1] as $key => $header){
+                    if(is_int($rows[2][$key] + 0))
+                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'integer' . PHP_EOL;
+                    else if(is_float($rows[2][$key] + 0))
+                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'real' . PHP_EOL;
+
+                }
+            }
+            $arff .= '@data' . PHP_EOL;
+            if($hasHeaders)
+                unset($rows[1]);
+            foreach($rows as $row){
+                foreach($row as $key => $value)
+                    if($key > 0)
+                        $arff .= ',' . $value;
+                    else
+                        $arff .= $value;
+                $arff .= PHP_EOL;
+            }
+            $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
+            $fp = fopen($_SERVER['DOCUMENT_ROOT'] . $dir . ".arff","w+");
+            fwrite($fp, $arff);
+            fclose($fp);
+            $entity->setFilePath($dir . ".arff");
+            $em->persist($entity);
+            $em->flush();
+            return true;
+        }
+        return false;
     }
 }

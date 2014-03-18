@@ -15,6 +15,7 @@ class ConvertController extends Controller
 {
     /**
      * Converts csv/txt/tab/xls/xlsx types to arff
+     * and downloads it
      *
      * @param String $id
      * @return Response response
@@ -34,7 +35,7 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $content = file_get_contents($this->get('kernel')->getRootDir()
-                    . '/../web/datasets' . $entity->getFile()['fileName']);
+                    . '/../web' . $entity->getFilePath());
                 $content = str_replace(strtok($content, "\n"), '@relation ' . $filename, $content);
                 $response = new Response($content);
                 $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
@@ -42,13 +43,13 @@ class ConvertController extends Controller
 
                 return $response;
             }
-            elseif($format == 'txt' && $format == 'tab' && $format == 'csv'){
+            elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows($this->get('kernel')->getRootDir()
-                    . '/../web/datasets' . $entity->getFile()['fileName'] , $format);
+                    . '/../web/assets' . $entity->getFile()['fileName'] , $format);
             } elseif($format == 'xls' || $format == 'xlsx'){
                 $objPHPExcel = PHPExcel_IOFactory::load($this->get('kernel')->getRootDir()
-                    . '/../web/datasets' . $entity->getFile()['fileName']);
+                    . '/../web/assets' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);
@@ -105,6 +106,7 @@ class ConvertController extends Controller
 
     /**
      * Converts arff type to txt
+     * and downloads it
      *
      * @param String $id
      * @return Response response
@@ -119,12 +121,12 @@ class ConvertController extends Controller
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
         if($entity){
-            $format = explode('.', $entity->getFile()['fileName']);
+            $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web/datasets' . $entity->getFile()['fileName'], 'arff');
+                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
                     if($row[0] != '@data'){
                         unset($rows[$key]);
@@ -154,6 +156,7 @@ class ConvertController extends Controller
     }
     /**
      * Converts arff type to txt
+     * and downloads it
      *
      * @param String $id
      * @return Response response
@@ -168,12 +171,12 @@ class ConvertController extends Controller
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
         if($entity){
-            $format = explode('.', $entity->getFile()['fileName']);
+            $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web/datasets' . $entity->getFile()['fileName'], 'arff');
+                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
                     if($row[0] != '@data'){
                         unset($rows[$key]);
@@ -203,6 +206,7 @@ class ConvertController extends Controller
     }
     /**
      * Converts arff type to csv
+     * and downloads it
      *
      * @param String $id
      * @return Response response
@@ -217,12 +221,12 @@ class ConvertController extends Controller
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
         if($entity){
-            $format = explode('.', $entity->getFile()['fileName']);
+            $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web/datasets' . $entity->getFile()['fileName'], 'arff');
+                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
                 $file = '';
                 $first = true;
                 foreach($rows as $key => $row){
@@ -262,6 +266,7 @@ class ConvertController extends Controller
     }
     /**
      * Converts arff type to xsl
+     * and downloads it
      *
      * @param String $id
      * @return Response response
@@ -276,12 +281,12 @@ class ConvertController extends Controller
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
         if($entity){
-            $format = explode('.', $entity->getFile()['fileName']);
+            $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web/datasets' . $entity->getFile()['fileName'], 'arff');
+                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
                 $objPHPExcel = new PHPExcel();
                 $objPHPExcel->setActiveSheetIndex(0);
                 $colCount = 0;

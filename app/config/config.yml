@@ -120,15 +120,15 @@ apy_data_grid:
 iphp_file_store:
     mappings:
         dataset:
-            upload_dir:  %kernel.root_dir%/../web/datasets
-            upload_path: /datasets
+            upload_dir:  %kernel.root_dir%/../web/assets
+            upload_path: /assets
             namer:
                 translit: ~
                 property:
                     params: { field : datasetIdMd5 }
             directory_namer:
                 property:
-                    params: { field: userIdMd5 }
+                    params: { field: userIdMd5Dataset }
             delete_on_remove: true
             overwrite_duplicates: true
 

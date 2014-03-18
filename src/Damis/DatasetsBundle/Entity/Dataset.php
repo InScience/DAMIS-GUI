@@ -38,6 +38,13 @@ class Dataset
     private $datasetCreated;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="DatasetFilePath", type="string", length=255, nullable=true)
+     */
+    private $filePath;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="DatasetUpdated", type="integer", nullable=true)
@@ -242,7 +249,7 @@ class Dataset
      *
      * @return string
      */
-    public function getUserIdMd5Dateset(){
+    public function getUserIdMd5Dataset(){
         return $this->getUserIdMd5()."/dataset";
     }
 
@@ -273,6 +280,26 @@ class Dataset
     public function getFile()
     {
         return $this->file;
+    }
+
+    /**
+     * Set dataset arff file path
+     *
+     * @param string $filePath
+     */
+    public function setFilePath($filePath)
+    {
+        $this->filePath = $filePath;
+    }
+
+    /**
+     * Get dataset arff file path
+     *
+     * @return string
+     */
+    public function getFilePath()
+    {
+        return $this->filePath;
     }
 
 

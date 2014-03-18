@@ -24,13 +24,7 @@ class DatasetType extends AbstractType {
                             'rows' => 4,
                             'cols' => 40)))
                 ->add('file', 'file',
-                    array(
-                        'label' => 'File',
-                        'attr' => array("accept" => "application/octet-stream ,text/csv,
-                            text/tab-separated-values, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-                            application/vnd.ms-excel, text/plain"
-                        )
-                    ));
+                    array('label' => 'File',));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
