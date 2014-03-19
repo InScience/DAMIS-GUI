@@ -135,7 +135,7 @@
 
 		uploadedButtons: function() {
 			var buttons = [{
-				"text": 'OK',
+				"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					var fileForm = $(this).find(".dynamic-container");
@@ -157,7 +157,7 @@
 				}
 			},
 			{
-				"text": 'Cancel',
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
                     $(this).find(".toggle-section").hide();
@@ -172,14 +172,14 @@
 		// all buttons of this component dialog
 		allButtons: function() {
 			var buttons = [{
-				"text": 'OK',
+				"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					window.files.doUpload($(this));
 				}
 			},
 			{
-				"text": 'Cancel',
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
 					$(this).dialog("close");

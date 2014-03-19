@@ -34,6 +34,7 @@ class AppKernel extends Kernel
             new Base\LogBundle\BaseLogBundle(),
             new Iphp\FileStoreBundle\IphpFileStoreBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

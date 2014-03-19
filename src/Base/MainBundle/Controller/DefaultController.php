@@ -26,9 +26,9 @@ class DefaultController extends Controller
      */
     public function localeLtAction(Request $request)
     {
-        $request->getSession()->set('_locale', 'lt_LT');
+        $request->getSession()->set('_locale', 'lt');
         $locale = $request->getLocale();
-        $request->setLocale('lt_LT');
+        $request->setLocale('lt');
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 

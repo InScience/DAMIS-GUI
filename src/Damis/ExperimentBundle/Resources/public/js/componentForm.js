@@ -38,14 +38,14 @@
 
         allButtons: function() {
             var buttons = [{
-                "text": 'OK',
+                "text": Translator.trans('OK', {}, 'ExperimentBundle'),
                 "class": "btn btn-primary",
                 "click": function(ev) {
                     window.componentForm.doPost($(this));
                 }
             },
                 {
-                    "text": 'Cancel',
+                    "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
                     "class": "btn",
                     "click": function(ev) {
                         $(this).dialog("close");

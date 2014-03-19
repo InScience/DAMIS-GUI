@@ -32,7 +32,8 @@
         "pagerfanta/pagerfanta": "dev-master",
         "apy/datagrid-bundle": "dev-master",
         "liuggio/excelbundle": ">=1.0.4",
-        "iphp/filestore-bundle": "dev-master"
+        "iphp/filestore-bundle": "dev-master",
+        "willdurand/js-translation-bundle": "@stable"
     },
     "scripts": {
         "post-install-cmd": [

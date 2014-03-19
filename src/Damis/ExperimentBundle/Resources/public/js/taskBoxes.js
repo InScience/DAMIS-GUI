@@ -5,7 +5,7 @@
 		assembleBoxHTML: function(boxName, icoUrl, clusterIcoUrl) {
 			var closeIco = '<a href="#"><i class="component-tooltip icon-remove"></i></a>';
 			var clusterIco = '<span style="width: 20px; height: 20px; position: absolute; top:0; left:0; background: url(' + clusterIcoUrl + ')"></span>';
-			return '<div class="task-box"><img src=\"' + icoUrl + '\" width=\"64px\" height=\"64px\" />' + closeIco + clusterIco + '<div class=\"desc\"><div>' + boxName + '</div></div></div>';
+			return '<div class="task-box"><img src=\"' + icoUrl + '\" width=\"64px\" height=\"64px\" />' + closeIco + clusterIco + '<div class=\"desc\"><div>' + Translator.trans(boxName, {}, 'ExperimentBundle') + '</div></div></div>';
 		},
 
 		countBoxes: 0,
@@ -109,7 +109,7 @@
 				taskFormContainer.append("<div class=\"parameter-values\"></div>");
 			}
 			taskFormContainer.dialog({
-				title: title,
+				title: Translator.trans(title, {}, 'ExperimentBundle'),
 				autoOpen: false,
 				appendTo: "#task-forms",
 				modal: true,
@@ -134,7 +134,7 @@
 
 		defaultDialogButtons: function() {
 			return [{
-				"text": "OK",
+				"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					// TODO: send to server for processing
@@ -142,7 +142,7 @@
 				}
 			},
 			{
-				"text": "Cancel",
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
 					// TODO: discard any changes
