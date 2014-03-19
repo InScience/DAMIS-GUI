@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ])
         ->add('1layer', 'number', [
                 'required' => true,
+                'precision' => 0,
                 'data' => 5,
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
