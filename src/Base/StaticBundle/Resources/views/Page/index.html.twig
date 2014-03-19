@@ -4,7 +4,7 @@
     {% include "BaseStaticBundle::messages.html.twig" %}
 
     <h1>{{ 'form.pages'|trans({}, 'StaticBundle') }}</h1>
-    <a href="{{ path("page_new") }}"><span class="glyphicon glyphicon-plus"></span> {{ "form.create" | trans({}, 'StaticBundle') }}</a>
+    <a href="{{ path("page_new") }}">{{ "form.create" | trans({}, 'StaticBundle') }} <span class="glyphicon glyphicon-plus"></span></a>
 
     {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
 {% endblock %}
