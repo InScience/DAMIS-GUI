@@ -219,6 +219,9 @@ class DatasetsController extends Controller
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
+                $entity->setFilePath($entity->getFile()['path']);
+                $em->persist($entity);
+                $em->flush();
                 return true;
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){

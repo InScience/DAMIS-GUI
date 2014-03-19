@@ -40,4 +40,23 @@ class ReadFile {
 
         return $rows;
     }
+
+    /**
+     * Returns files attributes
+     *
+     * @param String $path
+     * @return array
+     */
+    function getAttributes($path) {
+        $rows = $this->getRows(ltrim ($path,'/'), 'arff');
+        $attributes = array();
+        foreach($rows as $row){
+            if(strpos($row[key($row)], '@attribute') === 0){
+                $attr = explode(' ', $row[key($row)]);
+                $attributes[] = $attr[1];
+            }
+        }
+
+        return $attributes;
+    }
 } 

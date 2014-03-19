@@ -30,7 +30,7 @@ class ConvertController extends Controller
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
         if($entity){
-            $format = explode('.', $entity->getFile()['fileName']);
+            $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
