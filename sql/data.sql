@@ -20,6 +20,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 `ComponentTypeID`, `FormType`) VALUES
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1, 'NewFile'),
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1, 'NewFile'),
+('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 5, 1, 1, 'NoForm'),
+('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 6, 2, 1, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
@@ -58,7 +60,9 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Size of test data', 1, NULL, NULL, NULL, NULL, 29, NULL, 3, 36, 'testData'),
 ('Size of validation data', 1, NULL, NULL, NULL, NULL, 30, NULL, 3, 36, 'validationData'),
 ('X', 0, NULL, NULL, NULL, NULL, 31, NULL, 1, 36, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 32, NULL, 2, 36, NULL);
+('Y', 0, NULL, NULL, NULL, NULL, 32, NULL, 2, 36, NULL),
+('dataset', 0, NULL, NULL, NULL, NULL, 33, NULL, 2, 5, NULL),
+('dataset', 0, NULL, NULL, NULL, NULL, 34, NULL, 2, 6, NULL)
 
 ;
 

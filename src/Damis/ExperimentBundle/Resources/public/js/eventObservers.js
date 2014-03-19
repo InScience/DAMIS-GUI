@@ -11,6 +11,7 @@
 			this.eventObservers.push(window.matrixView);
 			this.eventObservers.push(window.existingFile);
             this.eventObservers.push(window.componentForm);
+            this.eventObservers.push(window.componentNoForm);
 		}
 	}
 })();

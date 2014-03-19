@@ -7,7 +7,7 @@
         id : false,
 
         init: function(componentType, formWindow) {
-            if (!(componentType in ['NewFile'])) {
+            if (componentType !='NewFile' && componentType != 'NoForm') {
                 this.update(formWindow);
             }
         },
