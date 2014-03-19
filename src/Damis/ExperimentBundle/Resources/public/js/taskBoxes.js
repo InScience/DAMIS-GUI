@@ -1,5 +1,7 @@
 (function() {
 	window.taskBoxes = {
+        currentBoxId : null,
+
 		assembleBoxHTML: function(boxName, icoUrl, clusterIcoUrl) {
 			var closeIco = '<a href="#"><i class="component-tooltip icon-remove"></i></a>';
 			var clusterIco = '<span style="width: 20px; height: 20px; position: absolute; top:0; left:0; background: url(' + clusterIcoUrl + ')"></span>';
@@ -203,6 +205,7 @@
 			taskBox.off("dbclick");
 			taskBox.on("dblclick", function(ev) {
 				var boxId = $(ev.currentTarget).attr("id");
+                window.taskBoxes.currentBoxId = boxId;
 				var formWindowId = window.taskBoxes.getFormWindowId(boxId);
 				var formWindow = $("#" + formWindowId);
 				var componentType = window.componentSettings.getComponentDetails({

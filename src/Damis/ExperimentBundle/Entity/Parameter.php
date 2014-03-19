@@ -93,6 +93,12 @@ class Parameter
      */
     private $component;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ParameterSlug", type="string", length=255, nullable=true)
+     */
+    private $slug;
 
 
     /**
@@ -311,4 +317,21 @@ class Parameter
     {
         return $this->component;
     }
+
+    /**
+     * @param string $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
 }

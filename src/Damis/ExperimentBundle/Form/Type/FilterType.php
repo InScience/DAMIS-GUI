@@ -42,7 +42,7 @@ class FilterType extends AbstractType {
     }
 
     public function getName() {
-        return 'filters_type';
+        return 'filter_type';
     }
 
 }

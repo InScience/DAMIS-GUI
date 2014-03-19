@@ -24,19 +24,21 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter');
 
 
-INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`, `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`, `ParameterConnectionTypeID`, `ComponentID`) VALUES
-('dataset', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1),
-('dataset', 0, NULL, NULL, NULL, NULL, 2, NULL, 2, 2),
-('X', 0, NULL, NULL, NULL, NULL, 3, NULL, 1, 9),
-('Y', 0, NULL, NULL, NULL, NULL, 4, NULL, 2, 9),
-('X', 0, NULL, NULL, NULL, NULL, 5, NULL, 1, 10),
-('Y', 0, NULL, NULL, NULL, NULL, 6, NULL, 2, 10),
-('Result type', 1, NULL, NULL, NULL, NULL, 9, NULL, 3, 9),
-('Z value', 1, NULL, NULL, NULL, NULL, 10, NULL, 3, 9),
-('Attribute', 1, NULL, NULL, NULL, NULL, 11, NULL, 3, 9),
-('Result type', 1, NULL, NULL, NULL, NULL, 12, NULL, 3, 10),
-('Z value', 1, NULL, NULL, NULL, NULL, 13, NULL, 3, 10),
-('Attribute', 1, NULL, NULL, NULL, NULL, 14, NULL, 3, 10);
+INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`,
+                         `ParameterLabelLT`, `ParameterLabelEN`, `ParameterID`, `ParameterTypeID`,
+                         `ParameterConnectionTypeID`, `ComponentID`, `ParameterSlug`) VALUES
+('dataset', 0, NULL, NULL, NULL, NULL, 1, NULL, 2, 1, NULL),
+('dataset', 0, NULL, NULL, NULL, NULL, 2, NULL, 2, 2, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 3, NULL, 1, 9, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 4, NULL, 2, 9, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 5, NULL, 1, 10, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 6, NULL, 2, 10, NULL),
+('Result type', 1, NULL, NULL, NULL, NULL, 9, NULL, 3, 9, 'resultType'),
+('Z value', 1, NULL, NULL, NULL, NULL, 10, NULL, 3, 9, 'zValue'),
+('Attribute', 1, NULL, NULL, NULL, NULL, 11, NULL, 3, 9, 'attribute'),
+('Result type', 1, NULL, NULL, NULL, NULL, 12, NULL, 3, 10, 'resultType'),
+('Z value', 1, NULL, NULL, NULL, NULL, 13, NULL, 3, 10, 'zValue'),
+('Attribute', 1, NULL, NULL, NULL, NULL, 14, NULL, 3, 10, 'attribute');
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),

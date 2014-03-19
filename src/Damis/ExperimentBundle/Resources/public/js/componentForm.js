@@ -4,6 +4,7 @@
         filePath : null,
         url : null,
         valid : false,
+        id : false,
 
         init: function(componentType, formWindow) {
             if (!(componentType in ['NewFile'])) {
@@ -20,6 +21,7 @@
             dialog.append(form);
             window.utils.showProgress();
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
+            this.id = componentInput.val();
             this.url = Routing.generate('component_form', {id : componentInput.val()});
             $.ajax({
                 url: this.url,
@@ -57,8 +59,15 @@
             $.post(this.url, data, function(resp) {
                 context.find(".dynamic-container").html(resp);
                 window.componentForm.isValid(context);
-                if(window.componentForm.valid)
+                if(window.componentForm.valid) {
+                    var params = context.find('input[name=params]').val();
+                    var _params = JSON.parse(params);
+                    for(i in _params) {
+                        window.params.addParam(window.taskBoxes.currentBoxId, i, _params[i])
+                    }
+                    window.params.addParam
                     context.dialog('close');
+                }
             });
         },
 

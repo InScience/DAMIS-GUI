@@ -49,7 +49,29 @@ class ComponentController extends Controller
         if($request->getMethod() == 'POST') {
             $form->submit($request);
             if ($form->isValid()) {
+                $parameters = $this->getDoctrine()
+                    ->getManager()
+                    ->getRepository('DamisExperimentBundle:Parameter')
+                    ->findBy(['component' => $id]);
 
+                $requestParams = $request->request->all();
+                $response = [];
+
+                $formParam = strtolower($component->getFormType()) . '_type';
+
+                foreach($parameters as $parameter) {
+                    if(isset($requestParams[$formParam][$parameter->getSlug()]))
+                        $response[$parameter->getId()] = $requestParams[$formParam][$parameter->getSlug()];
+
+                }
+
+                return $this->render(
+                    'DamisExperimentBundle:Component:filter.html.twig',
+                    [
+                        'form' => $form->createView(),
+                        'response' => json_encode($response),
+                    ]
+                );
             }
         }
         return $this->render(
