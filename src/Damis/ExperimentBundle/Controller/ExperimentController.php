@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ExperimentController extends Controller
 {
@@ -88,6 +89,35 @@ class ExperimentController extends Controller
     {
 
         return [];
+    }
+
+    /**
+     * Experiment execution
+     *
+     * @Route("/experiment/{id}/populate.html", name="populate_experiment")
+     * @Template()
+     */
+    public function populateAction($id){
+        $experiment = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Experiment')
+            ->findOneBy(['id' => $id]);
+
+        if (!$experiment) {
+            throw $this->createNotFoundException('Unable to find Experiment entity.');
+        }
+
+        $guiDataExploded = explode('***', $experiment->getGuiData());
+        $workflows = json_decode($guiDataExploded[0]);
+        $workflowsConnections = json_decode($guiDataExploded[1]);
+        $workflowCount = $guiDataExploded[2];
+
+        var_dump($workflows);
+
+        //workflows
+
+        exit;
+        return new RedirectResponse($this->container->get('router')->generate('experiment_execute'));
     }
 
 }

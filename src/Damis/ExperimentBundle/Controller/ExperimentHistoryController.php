@@ -64,7 +64,12 @@ class ExperimentHistoryController extends Controller
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'edit_experiment');
         $rowAction->setRouteParameters(array('id'));
         $rowAction->setRouteParametersMapping(array('id' => 'id'));
-        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
+
+        $rowAction2 = new RowAction($this->get('translator')->trans('Populate'), 'populate_experiment');
+        $rowAction2->setRouteParameters(array('id'));
+        $rowAction2->setRouteParametersMapping(array('id' => 'id'));
+
+        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction, $rowAction2), "<br/>");
         $grid->addColumn($actionsColumn2);
 
         return $grid->getGridResponse('DamisExperimentBundle::ExperimentHistory\index.html.twig');
