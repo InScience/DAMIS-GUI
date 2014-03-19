@@ -75,7 +75,7 @@ class ComponentController extends Controller
             }
         }
         return $this->render(
-            'DamisExperimentBundle:Component:filter.html.twig',
+            'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
             ['form' => $form->createView()]
         );
     }

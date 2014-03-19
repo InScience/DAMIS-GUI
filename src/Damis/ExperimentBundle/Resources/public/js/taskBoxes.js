@@ -66,7 +66,7 @@
 
 				if (connectionType === "INPUT_CONNECTION") {
 					//add input endpoint
-					window.endpoints.addEndpoint(true, taskBox, inAnchors[idx], {
+					window.endpoints.addEndpoint(true, taskBox, inAnchors[iIdx], {
 						iParamNo: idx,
 						iTaskBoxId: taskBoxId
 					});

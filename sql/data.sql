@@ -21,7 +21,9 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1, 'NewFile'),
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1, 'NewFile'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
-('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter');
+('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
+('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
+('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp');
 
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`,
@@ -38,7 +40,27 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Attribute', 1, NULL, NULL, NULL, NULL, 11, NULL, 3, 9, 'attribute'),
 ('Result type', 1, NULL, NULL, NULL, NULL, 12, NULL, 3, 10, 'resultType'),
 ('Z value', 1, NULL, NULL, NULL, NULL, 13, NULL, 3, 10, 'zValue'),
-('Attribute', 1, NULL, NULL, NULL, NULL, 14, NULL, 3, 10, 'attribute');
+('Attribute', 1, NULL, NULL, NULL, NULL, 14, NULL, 3, 10, 'attribute'),
+('Maximum number of iteartion', 1, NULL, NULL, NULL, NULL, 15, NULL, 3, 35, 'maxIterations'),
+('1st layer', 1, NULL, NULL, NULL, NULL, 16, NULL, 3, 35, '1layer'),
+('2nd layer', 1, NULL, NULL, NULL, NULL, 17, NULL, 3, 35, '2layer'),
+('3rd layer', 1, NULL, NULL, NULL, NULL, 18, NULL, 3, 35, '3layer'),
+('Size of training data', 1, NULL, NULL, NULL, NULL, 19, NULL, 3, 35, 'trainingData'),
+('Size of test data', 1, NULL, NULL, NULL, NULL, 20, NULL, 3, 35, 'testData'),
+('Size of validation data', 1, NULL, NULL, NULL, NULL, 21, NULL, 3, 35, 'validationData'),
+('X', 0, NULL, NULL, NULL, NULL, 22, NULL, 1, 35, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 23, NULL, 2, 35, NULL),
+('Maximum number of iteartion', 1, NULL, NULL, NULL, NULL, 24, NULL, 3, 36, 'maxIterations'),
+('1st layer', 1, NULL, NULL, NULL, NULL, 25, NULL, 3, 36, '1layer'),
+('2nd layer', 1, NULL, NULL, NULL, NULL, 26, NULL, 3, 36, '2layer'),
+('3rd layer', 1, NULL, NULL, NULL, NULL, 27, NULL, 3, 36, '3layer'),
+('Size of training data', 1, NULL, NULL, NULL, NULL, 28, NULL, 3, 36, 'trainingData'),
+('Size of test data', 1, NULL, NULL, NULL, NULL, 29, NULL, 3, 36, 'testData'),
+('Size of validation data', 1, NULL, NULL, NULL, NULL, 30, NULL, 3, 36, 'validationData'),
+('X', 0, NULL, NULL, NULL, NULL, 31, NULL, 1, 36, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 32, NULL, 2, 36, NULL);
+
+;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),

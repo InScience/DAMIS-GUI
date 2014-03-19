@@ -1,0 +1,8 @@
+{% block body %}
+    <div class="col-lg-12">
+        <form method="POST">
+            <input type="hidden" name="params" id="params" value="{{ response }}" />
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+{% endblock %}
