@@ -20,6 +20,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 `ComponentTypeID`, `FormType`) VALUES
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 1, 1, 1, 'NewFile'),
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1, 'NewFile'),
+('Choose uploaded file', 'existing-file-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 3, 1, 1, 'UploadedFile'),
+('Choose uploaded file', 'existing-file-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 4, 2, 1, 'UploadedFile'),
 ('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 5, 1, 1, 'NoForm'),
 ('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 6, 2, 1, 'NoForm'),
 ('Clean data', 'clean-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 7, 1, 2, 'NoForm'),
@@ -106,8 +108,9 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 67, NULL, 1, 8, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 68, NULL, 2, 8, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 69, NULL, 1, 45, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 70, NULL, 1, 46, NULL);
-
+('X', 0, NULL, NULL, NULL, NULL, 70, NULL, 1, 46, NULL),
+('dataset', 0, NULL, NULL, NULL, NULL, 71, NULL, 2, 3, NULL),
+('dataset', 0, NULL, NULL, NULL, NULL, 72, NULL, 2, 4, NULL);
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
 	('FINISHED', 2);

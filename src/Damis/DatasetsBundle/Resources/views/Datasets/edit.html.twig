@@ -6,7 +6,7 @@
         <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
     <div class="row">
-        <div class="col-lg-4" style="margin-top: 35px;">
+        <div class="col-lg-4" style="margin-top: 35px;">{{ id }}
             <form role="form" id="createDataset" action="{{ path('datasets_update', {'id' : id}) }}" method="post" {{ form_enctype(form) }}>
                 <div class="form-group">
                     {{ form_label(form.datasetTitle) }}

@@ -1,15 +1,16 @@
 (function() {
 	window.existingFile = {
 		init: function(componentType, formWindow) {
-			if (componentType == 'EXISTING FILE') {
+			if (componentType == 'UploadedFile') {
 				window.existingFile.update(formWindow);
 			}
 		},
 
 		// send request to the server to obtain file upload form
-		update: function(dialog, url) {
+		update: function(dialog, url, id) {
+            var componentInput = dialog.find(".component-selection select");
 			if (!url) {
-				url = window.componentFormUrls['EXISTING FILE'];
+                url = Routing.generate('existing_file', {'id' : id});
 			}
 			var container = dialog.find(".dynamic-container");
 			var fileList;
@@ -35,7 +36,7 @@
 				container.html(resp);
 
 				// bind paging handler
-				container.find(".pagination a, thead a").on("click", function(ev) {
+				container.find(".pagination a, th a").on("click", function(ev) {
 					ev.preventDefault();
 					var page_url = $(this).attr("href");
 					if (!page_url.match(/.*#.*/g)) {
@@ -55,7 +56,7 @@
 		// all buttons of this component dialog
 		allButtons: function() {
 			var buttons = [{
-				"text": gettext('OK'),
+				"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					var container = $(this).find(".dynamic-container");
@@ -67,13 +68,13 @@
 						var connectionInput = $(this).find(".parameter-values input[value=OUTPUT_CONNECTION]");
 						var valueInput = connectionInput.parent().find("input[name$=value]");
 						valueInput.val(fileUrl);
-						window.existingFile.update($(this));
+						window.existingFile.update($(this), null, fileUrl);
 					}
 					$(this).dialog("close");
 				}
 			},
 			{
-				"text": gettext('Cancel'),
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
 					$(this).dialog("close");
@@ -81,7 +82,7 @@
 
 			}];
 			return buttons;
-		},
+		}
 	}
 })();
 

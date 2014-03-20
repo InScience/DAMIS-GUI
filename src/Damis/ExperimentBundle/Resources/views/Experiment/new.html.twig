@@ -38,7 +38,7 @@
                                     <div class="tools-padding">
                                     {% for component in components
                                         if (component.clusterId == cluster and component.typeId == category) %}
-                                        <div class="prototype-box">
+                                        <div class="prototype-box {% if loop.index is divisibleby(3) %}last{% endif %}">
                                             <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
                                                  width="64px" height="64px" />
                                             <i style="cursor:pointer; " class="component-tooltip icon-info-sign"

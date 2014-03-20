@@ -148,7 +148,8 @@ class DatasetsController extends Controller
             return $this->redirect($this->generateUrl('datasets_list'));
         }
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'id' => $id
         );
     }
 
@@ -183,17 +184,25 @@ class DatasetsController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity->setDatasetCreated(time());
-            $entity->setUserId($user);
-            $entity->setDatasetIsMidas(false);
-            $em->persist($entity);
-            $em->flush();
-            $this->uploadArff($entity->getDatasetId());
-            return [
-                'form' => $form->createView(),
-                'file' => $entity
-            ];
+            if($entity->getFile() == null){
+                $form->get('file')
+                    ->addError(new FormError($this->get('translator')->trans('This value should not be blank.', array(), 'validators')));
+            } else{
+                $em = $this->getDoctrine()->getManager();
+                $entity->setDatasetCreated(time());
+                $entity->setUserId($user);
+                $entity->setDatasetIsMidas(false);
+                $em->persist($entity);
+                $em->flush();
+                $this->uploadArff($entity->getDatasetId());
+                return [
+                    'form' => $form->createView(),
+                    'file' => $entity
+                ];
+            }
+        } else{
+            if($entity->getFile() == null)
+                $form->get('file')->addError(new FormError($this->get('translator')->trans('This value should not be blank.', array(), 'validators')));
         }
         return [
             'form' => $form->createView(),

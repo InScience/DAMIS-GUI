@@ -29,9 +29,7 @@ class DatasetType extends AbstractType {
                             'cols' => 40)))
                 ->add('file', 'file', array(
                         'label' => 'File',
-                        'constraints' => [
-                            new NotBlank()
-                        ]));
+                        ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
