@@ -27,15 +27,10 @@ Cancel : Atšaukti
 Upload file from MIDAS : Įkelti failą iš MIDAS
 Specify the parameters of the algorithm: Nurodykite algoritmo parametrus
 Maximum number of iteration: Maksimalus iteracijų skaičius
-Number of iteration must be in interval [1; 1000]: Maksimalus iteracijų skaičius intervale [1; 1000]
 Number of hidden layers: Neuronų skaičius paslėptuose sluoksniuose
 First layer: 1-as sluoksnis
 Second layer: 2-as sluoksnis
 Third layer: 3-as sluoksnis
-Number of hidden neurons at level 1 must be greater than 1: Neoronų skaičius pirmame sluoksnyje turi būti didesnis už 1
-Number of hidden neurons at level 2, 3 cannot be negative: Neuronų skaičius 2-ame ir 3-iame sluoksnyje negali būti neigiamas
 Size of training data: Mokymo objektų kiekis
 Size of test data: Testavimo objektų kiekis
 Size of validation data: Validavimo objektų kiekis
-Sum of data fields should be 100%: Mokymo, testavimo ir validavimo suma turi būti 100%
-This value type should be integer: Šios reikšmės tipas turi būti sveikas skaičius
