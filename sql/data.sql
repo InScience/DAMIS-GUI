@@ -104,14 +104,9 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 65, NULL, 1, 7, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 66, NULL, 2, 7, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 67, NULL, 1, 8, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 68, NULL, 2, 8, NULL)
-;
-('X', 0, NULL, NULL, NULL, NULL, 51, NULL, 1, 7, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 52, NULL, 2, 7, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 53, NULL, 1, 8, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 54, NULL, 2, 8, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 55, NULL, 1, 45, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 56, NULL, 1, 46, NULL);
+('Y', 0, NULL, NULL, NULL, NULL, 68, NULL, 2, 8, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 69, NULL, 1, 45, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 70, NULL, 1, 46, NULL);
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
