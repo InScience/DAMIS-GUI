@@ -1,9 +1,6 @@
 (function() {
     window.componentNoForm = {
         taskBoxId : null,
-        filePath : null,
-        url : null,
-        valid : false,
         id : false,
 
         init: function(componentType, formWindow) {
@@ -21,7 +18,7 @@
             dialog.append(form);
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
             this.id = componentInput.val();
-
+            form.html(Translator.trans('Component does not have control parameters', {}, 'ExperimentBundle'));
             var buttons = window.componentNoForm.allButtons();
             dialog.dialog("option", "buttons", buttons);
             dialog.dialog("option", "min-width", 0);
@@ -35,14 +32,7 @@
                 "click": function(ev) {
                     $(this).dialog("close");
                 }
-            },
-                {
-                    "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
-                    "class": "btn",
-                    "click": function(ev) {
-                        $(this).dialog("close");
-                    }
-                }];
+            }];
             return buttons;
         }
     }

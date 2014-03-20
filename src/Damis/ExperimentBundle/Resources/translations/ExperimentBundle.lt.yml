@@ -22,7 +22,7 @@ Result type: Pasirinkit filtravimo rezultatą
 Without outliers: Be atsiskyrėlių
 Only outliers: Tik atsiskyrėliai
 Z value: Z reikšmė
-OK : Gerai
+OK : Patvirtinti
 Cancel : Atšaukti
 Upload file from MIDAS : Įkelti failą iš MIDAS
 Specify the parameters of the algorithm: Nurodykite algoritmo parametrus
@@ -39,3 +39,5 @@ Number of columns of SOM : SOM stulpelių skaičius
 Number of SOM training epochs : SOM mokymų epochų skaičius
 Projection space of MDS : MDS projekcijos dimensija
 Number of iterations of MDS : MDS iteracijų skaičius
+Clean data: Valymas
+Component does not have control parameters: Ši komponentė neturi valdymo parametrų
