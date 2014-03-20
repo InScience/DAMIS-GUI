@@ -4,7 +4,7 @@
 		// prepare dialog, when component is unconnected 
 		toUnconnectedState: function(formWindow) {
 			formWindow.find(".plot-container").remove();
-			var container = $("<div class=\"plot-container\">" + gettext("This component should be connected to a selected file or an executed task in order to view results.") + "</div>");
+			var container = $("<div class=\"plot-container\">" + Translator.trans("This component should be connected to a selected file or an executed task in order to view results.", {}, 'ExperimentBundle') + "</div>");
 			formWindow.append(container);
 			formWindow.dialog("option", "buttons", window.chart.notConnectedButtons());
 			formWindow.dialog("option", "width", "auto");
@@ -16,7 +16,7 @@
 
 		notConnectedButtons: function() {
 			var buttons = [{
-				"text": gettext('Cancel'),
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
 					$(this).dialog("close");
@@ -28,7 +28,7 @@
 		// all buttons for this component
 		allButtons: function() {
 			var buttons = [{
-				"text": gettext('Download'),
+				"text": Translator.trans('Download', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					window.chart.downloadChart($(this));
@@ -54,7 +54,14 @@
 
 		// symbol palette, rotates through a set of symbols
 		generateSymbolPalette: function() {
-			return [["circle", gettext("Circle")], ["square", gettext("Square")], ["diamond", gettext("Diamond")], ["triangle", gettext("Triangle")], ["cross", gettext("Cross")]];
+			return
+            [
+                ["circle", Translator.trans('Circle', {}, 'ExperimentBundle')],
+                ["square", Translator.trans('Square', {}, 'ExperimentBundle')],
+                ["diamond", Translator.trans('Diamond', {}, 'ExperimentBundle')],
+                ["triangle", Translator.trans("Triangle", {}, 'ExperimentBundle')],
+                ["cross", Translator.trans("Cross", {}, 'ExperimentBundle')]
+            ];
 		},
 
 		// renders the chart in place of plotPlaceholder
@@ -64,10 +71,10 @@
 				data.push({
 					label: rec['group'],
 					points: {
-						symbol: symbols[idx],
+						symbol: symbols[idx]
 					},
 					data: rec['data'],
-					color: colors[idx],
+					color: colors[idx]
 				});
 			});
 			var options = {
@@ -76,7 +83,7 @@
 					points: {
 						show: true,
 						radius: 3
-					},
+					}
 				},
 				legend: {
 					show: false
@@ -95,7 +102,7 @@
 					min: dataContent["minY"],
 					max: dataContent["maxY"],
 					tickSize: 5
-				},
+				}
 			};
 
 			var plot = $.plot(plotPlaceholder, data, options);
@@ -115,7 +122,10 @@
 					y = item.datapoint[1].toFixed(2);
 
 					var containerOffset = $(plotContainer).find(".results-container").offset();
-					$("#point-tooltip").html(x + ", " + y + " (" + gettext("index") + ": " + (item.dataIndex + 1) + ", " + gettext("class") + ": " + item.series.label + ")").css({
+					$("#point-tooltip").html(
+                            x + ", " + y + " (" + Translator.trans("index") + ": " + (item.dataIndex + 1) + ", "
+                                + Translator.trans("class", {}, 'ExperimentBundle') + ": " + item.series.label + ")")
+                    .css({
 						top: item.pageY - containerOffset['top'],
 						left: item.pageX - containerOffset['left'] + 10
 					}).fadeIn(200);
@@ -149,7 +159,7 @@
 		downloadChart: function(formWindow) {
 			var downloadOptions = formWindow.find(".download-options").clone(true);
 			downloadOptions.dialog({
-				"title": gettext("Select file type and destination"),
+				"title": Translator.trans("Select file type and destination", {}, 'ExperimentBundle'),
 				"modal": true,
 				"minWidth": 450,
 				"open": function() {
@@ -157,7 +167,7 @@
 					dialog.find(".ui-dialog-titlebar > button").remove();
 				},
 				"buttons": [{
-					"text": gettext("OK"),
+					"text": Translator.trans("OK", {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
 					"click": function(ev) {
 						// TODO: show progress indicator
@@ -186,13 +196,13 @@
 					}
 				},
 				{
-					"text": gettext("Cancel"),
+					"text": Translator.trans("Cancel", {}, 'ExperimentBundle'),
 					"class": "btn",
 					"click": function(ev) {
 						$(this).dialog("destroy");
-					},
-				},
-				],
+					}
+				}
+				]
 			});
 		},
 
@@ -205,8 +215,8 @@
 			var dataContent = resp.content;
 			var colorPalette = window.chart.generateColorPalette(dataContent.data);
 			var symbolPalette = window.chart.generateSymbolPalette();
-			var symbolValues = []
-			var colorValues = []
+			var symbolValues = [];
+			var colorValues = [];
 
 			var plotContainer = formWindow.find(".plot-container");
 			var renderChoicesBody = plotContainer.find(".render-choices tbody");
@@ -259,7 +269,7 @@
 					seriesRow.find('.color-selector').colpick({
 						layout: 'rgbhex',
 						color: colorCode,
-						submitText: gettext('OK'),
+						submitText: Translator.trans('OK', {}, 'ExperimentBundle'),
 						onSubmit: function(hsb, hex, rgb, el) {
 							var colorCode = '#' + hex;
 							$(el).css('background-color', colorCode);
@@ -307,7 +317,7 @@
 				"bInfo": false,
 				"bPaginate": false,
 				"bFilter": false,
-				"bDestroy": true,
+				"bDestroy": true
 			});
 
 			formWindow.dialog("option", "buttons", window.chart.allButtons());
@@ -353,7 +363,7 @@
 			$.ajax({
 				url: url,
 				data: data,
-				context: container,
+				context: container
 			}).done(function(resp) {
 				$(this).html(resp.html);
 				window.chart.cleanupColorpick();
@@ -400,7 +410,7 @@
 		},
 
 		doubleClick: function(componentType, formWindow) {
-			if (componentType == 'CHART') {
+			if (componentType == 'Chart') {
 				formWindow.dialog("option", "minWidth", 650);
 				formWindow.dialog("open");
 				this.update(formWindow, this.renderChartAndForm);

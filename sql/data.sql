@@ -31,7 +31,9 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 32, 2, 4, 'SomMds'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
-('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp');
+('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp'),
+('Chart', 'chart-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
+('Chart', 'chart-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 46, 2, 6, 'Chart');
 
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`,
@@ -104,6 +106,12 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 67, NULL, 1, 8, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 68, NULL, 2, 8, NULL)
 ;
+('X', 0, NULL, NULL, NULL, NULL, 51, NULL, 1, 7, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 52, NULL, 2, 7, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 53, NULL, 1, 8, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 54, NULL, 2, 8, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 55, NULL, 1, 45, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 56, NULL, 1, 46, NULL);
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
