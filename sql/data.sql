@@ -22,6 +22,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Upload new file', 'upload-file-ico-1.jpeg', '', '', NULL, NULL, NULL, NULL, 2, 2, 1, 'NewFile'),
 ('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 5, 1, 1, 'NoForm'),
 ('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 6, 2, 1, 'NoForm'),
+('Clean data', 'clean-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 7, 1, 2, 'NoForm'),
+('Clean data', 'clean-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 8, 2, 2, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
@@ -80,9 +82,11 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 47, NULL, 1, 31, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 48, NULL, 2, 31, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 49, NULL, 1, 32, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 50, NULL, 2, 32, NULL)
-
-;
+('Y', 0, NULL, NULL, NULL, NULL, 50, NULL, 2, 32, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 51, NULL, 1, 7, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 52, NULL, 2, 7, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 53, NULL, 1, 8, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 54, NULL, 2, 8, NULL);
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
