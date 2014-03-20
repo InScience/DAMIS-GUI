@@ -21,7 +21,7 @@ class MlpType extends AbstractType {
         };
 
         $builder
-        ->add('maxIterations', 'number', [
+        ->add('maxIterations', 'integer', [
                 'required' => true,
                 'data' => 100,
                 'constraints' => [
@@ -31,13 +31,17 @@ class MlpType extends AbstractType {
                         'minMessage' => 'Number of iteration must be in interval [1; 1000]',
                         'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Maximum number of iteration',
                 'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'col-md-6']
+                'label_attr' => ['class' => 'col-md-7']
             ])
-        ->add('firLayer', 'number', [
+        ->add('firLayer', 'integer', [
                 'required' => true,
                 'precision' => 0,
                 'data' => 5,
@@ -46,12 +50,16 @@ class MlpType extends AbstractType {
                         'value' => 1,
                         'message' => 'Number of hidden neurons at level 1 must be greater than 1'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'First layer',
                 'attr' => ['class' => 'form-control']
             ])
-        ->add('secLayer', 'number', [
+        ->add('secLayer', 'integer', [
                 'required' => true,
                 'data' => 0,
                 'constraints' => [
@@ -59,12 +67,16 @@ class MlpType extends AbstractType {
                         'value' => 0,
                         'message' => 'Number of hidden neurons at level 2, 3 cannot be negative'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Second layer',
                 'attr' => ['class' => 'form-control']
             ])
-        ->add('thrLayer', 'number', [
+        ->add('thrLayer', 'integer', [
                 'required' => true,
                 'data' => 0,
                 'constraints' => [
@@ -72,7 +84,11 @@ class MlpType extends AbstractType {
                         'value' => 0,
                         'message' => 'Number of hidden neurons at level 2, 3 cannot be negative'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Third layer',
                 'attr' => ['class' => 'form-control']
@@ -87,8 +103,9 @@ class MlpType extends AbstractType {
                     new NotBlank(),
                     new Callback([$dataValidator])
                 ],
+                'label' =>'Size of training data',
                 'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'col-md-6']
+                'label_attr' => ['class' => 'col-md-7']
             ])
         ->add('testData', 'number', [
                 'required' => true,
@@ -99,8 +116,9 @@ class MlpType extends AbstractType {
                     ]),
                     new NotBlank()
                 ],
+                'label' =>'Size of test data',
                 'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'col-md-6']
+                'label_attr' => ['class' => 'col-md-7']
             ])
         ->add('validationData', 'number', [
                 'required' => true,
@@ -111,8 +129,9 @@ class MlpType extends AbstractType {
                     ]),
                     new NotBlank()
                 ],
-                'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'col-md-6']
+                'label' =>'Size of validation data',
+                'attr' => ['class' => 'form-control', 'readonly' => true],
+                'label_attr' => ['class' => 'col-md-7'],
             ]);
     }
 

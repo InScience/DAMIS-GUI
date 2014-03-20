@@ -5,7 +5,7 @@
             <p>{{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}</p>
             <div class="form-group">
                 {{ form_label(form.maxIterations) }}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     {{ form_widget(form.maxIterations) }}
                 </div>
             </div>
@@ -20,9 +20,9 @@
                     </tr>
                     <tr>
                         <td><span>{{ 'Number of hidden layers' | trans({}, 'ExperimentBundle') }}</span></td>
-                        <td><div class="col-sm-9">{{ form_widget(form.firLayer) }}</div></td>
-                        <td><div class="col-sm-9">{{ form_widget(form.secLayer) }}</div></td>
-                        <td><div class="col-sm-9">{{ form_widget(form.thrLayer) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.firLayer) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.secLayer) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.thrLayer) }}</div></td>
                     </tr>
                 </table>
                 {{ form_errors(form.firLayer) }}
@@ -31,29 +31,29 @@
             </div>
             <div class="form-group">
                 {{ form_label(form.trainingData) }}
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     {{ form_widget(form.trainingData) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:60px">{{ form_errors(form.trainingData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.trainingData) }}</div>
             <div class="form-group">
                 {{ form_label(form.testData) }}
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     {{ form_widget(form.testData) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:60px">{{ form_errors(form.testData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.testData) }}</div>
             <div class="form-group">
                 {{ form_label(form.validationData) }}
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     {{ form_widget(form.validationData) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
 
             </div>
-            <div class="form-group" style="margin-top:60px">{{ form_errors(form.validationData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.validationData) }}</div>
             {{ form_widget(form._token) }}
         </form>
     </div>

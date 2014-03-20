@@ -28,6 +28,7 @@
                 context: form
             }).done(function(resp) {
                 $(this).html(resp);
+                window.utils.countChange($(this));
                 window.utils.hideProgress();
                 var buttons = window.componentForm.allButtons();
                 dialog.dialog("option", "buttons", buttons);
@@ -55,7 +56,7 @@
         },
 
         doPost: function(context) {
-            var data = context.find('input[type=text],input[type=radio]:checked,input[type=hidden]').serialize();
+            var data = context.find('input[type=text],input[type=radio]:checked,input[type=hidden],input[type=number]').serialize();
             $.post(this.url, data, function(resp) {
                 context.find(".dynamic-container").html(resp);
                 window.componentForm.isValid(context);

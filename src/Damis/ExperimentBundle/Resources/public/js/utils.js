@@ -110,7 +110,18 @@
 				newStr = newStr.replace(new RegExp("{" + key + "}", "g"), args[key]);
 			}
 			return newStr;
-		}
+		},
+
+        countChange: function(context){
+            $(context).on('change', 'input#mlp_type_trainingData', window.utils.percentagesCount);
+            $(context).on('change', 'input#mlp_type_testData', window.utils.percentagesCount);
+        },
+
+        percentagesCount : function(ev) {
+            var used = 100 - parseFloat($('input#mlp_type_trainingData').val())
+                - parseFloat($('input#mlp_type_testData').val());
+            $('input#mlp_type_validationData').val(used);
+        }
 	}
 })();
 
