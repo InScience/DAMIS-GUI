@@ -28,7 +28,7 @@ class PageType extends AbstractType
             ->add('position', 'integer', array('label' => 'form.position', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.position'),))
             ->add('language', 'choice',
                 array(
-                    'choices' => array('lt_LT' => 'form.lt_LT', 'en_US' => 'form.en_US'),
+                    'choices' => array('lt' => 'form.lt_LT', 'en' => 'form.en_US'),
                     'label' => 'form.language', 'translation_domain' => 'StaticBundle',
                     'attr' => array('class' => 'form-control', 'placeholder' => 'form.position'),
                 )

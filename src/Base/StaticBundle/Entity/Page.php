@@ -78,7 +78,7 @@ class Page
     /**
      * @var string
      * @Gedmo\Versioned
-     * @ORM\Column(name="language", type="string", columnDefinition="enum('lt_LT', 'en_US')")
+     * @ORM\Column(name="language", type="string", columnDefinition="enum('lt', 'en')")
      */
     private $language;
 
