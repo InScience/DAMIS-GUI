@@ -33,10 +33,10 @@ class Parametervalue
      *
      * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="WorkflowTaskID", referencedColumnName="WorkflowTaskID")
+     *   @ORM\JoinColumn(name="WorkflowTaskID", referencedColumnName="WorkflowTaskID", onDelete="CASCADE")
      * })
      */
-    private $workflowtaskid;
+    private $workflowtask;
 
     /**
      * @var \Damis\ExperimentBundle\Entity\Parameter
@@ -46,7 +46,7 @@ class Parametervalue
      *   @ORM\JoinColumn(name="ParameterID", referencedColumnName="ParameterID")
      * })
      */
-    private $parameterid;
+    private $parameter;
 
 
 
@@ -66,7 +66,7 @@ class Parametervalue
     /**
      * Get parametervalue
      *
-     * @return string 
+     * @return string
      */
     public function getParametervalue()
     {
@@ -76,7 +76,7 @@ class Parametervalue
     /**
      * Get parametervalueid
      *
-     * @return integer 
+     * @return integer
      */
     public function getParametervalueid()
     {
@@ -84,48 +84,48 @@ class Parametervalue
     }
 
     /**
-     * Set workflowtaskid
+     * Set workflowtask
      *
-     * @param \Damis\EntitiesBundle\Entity\Workflowtask $workflowtaskid
+     * @param \Damis\EntitiesBundle\Entity\Workflowtask $workflowtask
      * @return Parametervalue
      */
-    public function setWorkflowtaskid(\Damis\EntitiesBundle\Entity\Workflowtask $workflowtaskid = null)
+    public function setWorkflowtask(\Damis\EntitiesBundle\Entity\Workflowtask $workflowtask = null)
     {
-        $this->workflowtaskid = $workflowtaskid;
+        $this->workflowtask = $workflowtask;
 
         return $this;
     }
 
     /**
-     * Get workflowtaskid
+     * Get workflowtask
      *
-     * @return \Damis\EntitiesBundle\Entity\Workflowtask 
+     * @return \Damis\EntitiesBundle\Entity\Workflowtask
      */
-    public function getWorkflowtaskid()
+    public function getWorkflowtask()
     {
-        return $this->workflowtaskid;
+        return $this->workflowtask;
     }
 
     /**
-     * Set parameterid
+     * Set parameter
      *
-     * @param \Damis\EntitiesBundle\Entity\Parameter $parameterid
+     * @param \Damis\EntitiesBundle\Entity\Parameter $parameter
      * @return Parametervalue
      */
-    public function setParameterid(\Damis\EntitiesBundle\Entity\Parameter $parameterid = null)
+    public function setParameter(\Damis\ExperimentBundle\Entity\Parameter $parameter = null)
     {
-        $this->parameterid = $parameterid;
+        $this->parameter = $parameter;
 
         return $this;
     }
 
     /**
-     * Get parameterid
+     * Get parameter
      *
-     * @return \Damis\EntitiesBundle\Entity\Parameter 
+     * @return \Damis\EntitiesBundle\Entity\Parameter
      */
-    public function getParameterid()
+    public function getParameter()
     {
-        return $this->parameterid;
+        return $this->parameter;
     }
 }

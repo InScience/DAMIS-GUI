@@ -3,7 +3,10 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Damis\ExperimentBundle\Entity\Experiment as Experiment;
+use Damis\ExperimentBundle\Entity\Experiment;
+use Damis\ExperimentBundle\Entity\Component;
+use Damis\EntitiesBundle\Entity\Workflowtask;
+use Damis\EntitiesBundle\Entity\Parametervalue;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -98,8 +101,10 @@ class ExperimentController extends Controller
      * @Template()
      */
     public function populateAction($id){
-        $experiment = $this->getDoctrine()
-            ->getManager()
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
+        $experiment = $em
             ->getRepository('DamisExperimentBundle:Experiment')
             ->findOneBy(['id' => $id]);
 
@@ -112,12 +117,61 @@ class ExperimentController extends Controller
         $workflowsConnections = json_decode($guiDataExploded[1]);
         $workflowCount = $guiDataExploded[2];
 
+        //remove workflotasks at first, this should remove parametervalues and parametervaluein-out too
+        foreach($experiment->getWorkflowtasks() as $task){
+            $em->remove($task);
+        }
+        $em->flush();
+
+        foreach($workflows as $workflow){
+            /* @var $component \Damis\ExperimentBundle\Entity\Component */
+            $component = $em
+                ->getRepository('DamisExperimentBundle:Component')
+                ->findOneBy(['id' => $workflow->componentId]);
+
+            if (!$component) {
+                continue;
+            }
+
+            //New workflowtask
+            $workflowTask = new Workflowtask();
+            $workflowTask->setExperiment($experiment);
+            $workflowTask->setWorkflowtaskisrunning(false);
+            $em->persist($workflowTask);
+
+            foreach($workflow->form_parameters as $form){
+                if ($form){
+                    if (!isset($form->id) or !isset($form->value)){
+                        continue;
+                    }
+
+                    /* @var $component \Damis\ExperimentBundle\Entity\Parameter */
+                    $parameter = $em
+                        ->getRepository('DamisExperimentBundle:Parameter')
+                        ->findOneBy(['id' => $form->id]);
+
+                    if(!$parameter) {
+                        continue;
+                    }
+
+                    $value = new Parametervalue();
+                    $value->setWorkflowtask($workflowTask);
+                    $value->setParameter($parameter);
+                    $value->setParametervalue($form->value);
+                    $em->persist($value);
+                }
+            }
+
+            $em->flush();
+        }
+
         var_dump($workflows);
 
-        //workflows
+        foreach($workflowsConnections as $conn){
+            var_dump($conn);
+        }
 
-        exit;
-        return new RedirectResponse($this->container->get('router')->generate('experiment_execute'));
+        return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
 }

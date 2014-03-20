@@ -104,7 +104,17 @@ class Component
      */
     private $formType;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Damis\ExperimentBundle\Entity\Parameter" , mappedBy="component")
+     */
+    private $parameters;
 
+    /**
+     * @return mixed
+     */
+    public function getParameters() {
+        return $this->parameters;
+    }
 
     /**
      * Set name
@@ -122,7 +132,7 @@ class Component
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -145,7 +155,7 @@ class Component
     /**
      * Get icon
      *
-     * @return string 
+     * @return string
      */
     public function getIcon()
     {
@@ -168,7 +178,7 @@ class Component
     /**
      * Get wsdlRunHost
      *
-     * @return string 
+     * @return string
      */
     public function getWsdlRunHost()
     {
@@ -191,7 +201,7 @@ class Component
     /**
      * Get wsdlCallFunction
      *
-     * @return string 
+     * @return string
      */
     public function getWsdlCallFunction()
     {
@@ -214,7 +224,7 @@ class Component
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -237,7 +247,7 @@ class Component
     /**
      * Get altDescription
      *
-     * @return string 
+     * @return string
      */
     public function getAltDescription()
     {
@@ -260,7 +270,7 @@ class Component
     /**
      * Get labelLt
      *
-     * @return string 
+     * @return string
      */
     public function getLabelLt()
     {
@@ -283,7 +293,7 @@ class Component
     /**
      * Get labelEn
      *
-     * @return string 
+     * @return string
      */
     public function getLabelEn()
     {
@@ -293,7 +303,7 @@ class Component
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -362,5 +372,11 @@ class Component
         return $this->formType;
     }
 
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->parameters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
 }

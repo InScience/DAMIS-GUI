@@ -33,12 +33,10 @@ class Workflowtask
      *
      * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experiment")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ExperimentID", referencedColumnName="ExperimentID")
+     *   @ORM\JoinColumn(name="ExperimentID", referencedColumnName="ExperimentID", onDelete="CASCADE")
      * })
      */
-    private $experimentid;
-
-
+    private $experiment;
 
     /**
      * Set workflowtaskisrunning
@@ -74,25 +72,25 @@ class Workflowtask
     }
 
     /**
-     * Set experimentid
+     * Set experiment
      *
-     * @param \Damis\ExperimentBundle\Entity\Experiment $experimentid
+     * @param \Damis\ExperimentBundle\Entity\Experiment $experiment
      * @return Workflowtask
      */
-    public function setExperimentid(\Damis\ExperimentBundle\Entity\Experiment $experimentid = null)
+    public function setExperiment(\Damis\ExperimentBundle\Entity\Experiment $experiment = null)
     {
-        $this->experimentid = $experimentid;
+        $this->experiment = $experiment;
 
         return $this;
     }
 
     /**
-     * Get experimentid
+     * Get experiment
      *
      * @return \Damis\ExperimentBundle\Entity\Experiment
      */
-    public function getExperimentid()
+    public function getExperiment()
     {
-        return $this->experimentid;
+        return $this->experiment;
     }
 }

@@ -19,7 +19,7 @@ class Pvalueoutpvaluein
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\OneToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="InParameterValueID", referencedColumnName="ParameterValueID")
+     *   @ORM\JoinColumn(name="InParameterValueID", referencedColumnName="ParameterValueID", onDelete="CASCADE")
      * })
      */
     private $inparametervalueid;
@@ -33,8 +33,6 @@ class Pvalueoutpvaluein
      * })
      */
     private $outparametervalueid;
-
-
 
     /**
      * Set inparametervalueid
@@ -52,7 +50,7 @@ class Pvalueoutpvaluein
     /**
      * Get inparametervalueid
      *
-     * @return \Damis\EntitiesBundle\Entity\Parametervalue 
+     * @return \Damis\EntitiesBundle\Entity\Parametervalue
      */
     public function getInparametervalueid()
     {
@@ -75,7 +73,7 @@ class Pvalueoutpvaluein
     /**
      * Get outparametervalueid
      *
-     * @return \Damis\EntitiesBundle\Entity\Parametervalue 
+     * @return \Damis\EntitiesBundle\Entity\Parametervalue
      */
     public function getOutparametervalueid()
     {

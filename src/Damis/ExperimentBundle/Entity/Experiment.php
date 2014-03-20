@@ -101,7 +101,10 @@ class Experiment
      */
     private $user;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask", mappedBy="experiment")
+     */
+    private $workflowtasks;
 
     /**
      * Set name
@@ -341,5 +344,19 @@ class Experiment
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->workflowtasks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWorkflowtasks() {
+        return $this->workflowtasks;
     }
 }
