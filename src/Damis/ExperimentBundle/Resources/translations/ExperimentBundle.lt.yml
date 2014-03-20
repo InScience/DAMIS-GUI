@@ -34,3 +34,8 @@ Third layer: 3-as sluoksnis
 Size of training data: Mokymo objektų kiekis
 Size of test data: Testavimo objektų kiekis
 Size of validation data: Validavimo objektų kiekis
+Number of rows of SOM : SOM eilučių skaičius
+Number of columns of SOM : SOM stulpelių skaičius
+Number of SOM training epochs : SOM mokymų epochų skaičius
+Projection space of MDS : MDS projekcijos dimensija
+Number of iterations of MDS : MDS iteracijų skaičius

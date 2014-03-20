@@ -60,3 +60,6 @@ body {
 .form-group li {
     color: red;
 }
+.component-form-margin {
+    margin-bottom: 5px;
+}

@@ -1,0 +1,65 @@
+{% block body %}
+    <div class="col-lg-12">
+        <form method="POST">
+            <input type="hidden" name="params" id="params" value="{{ response }}" />
+            <p>
+                {{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}
+            </p>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.rowsNumber) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.rowsNumber) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.rowsNumber) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.colsNumber) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.colsNumber) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.colsNumber) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.epochsNumber) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.epochsNumber) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.epochsNumber) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.projectionSpace) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.projectionSpace) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.projectionSpace) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.iterations) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.iterations) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.iterations) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.calculationError) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.calculationError) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.calculationError) }}
+            </div>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+{% endblock %}

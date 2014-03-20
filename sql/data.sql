@@ -24,6 +24,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Upload file from MIDAS', 'midas-file.jpeg', '', '', NULL, NULL, NULL, NULL, 6, 2, 1, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
+('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
+('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 32, 2, 4, 'SomMds'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp');
 
@@ -62,7 +64,23 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 31, NULL, 1, 36, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 32, NULL, 2, 36, NULL),
 ('dataset', 0, NULL, NULL, NULL, NULL, 33, NULL, 2, 5, NULL),
-('dataset', 0, NULL, NULL, NULL, NULL, 34, NULL, 2, 6, NULL)
+('dataset', 0, NULL, NULL, NULL, NULL, 34, NULL, 2, 6, NULL),
+('Number of rows of SOM', 1, NULL, NULL, NULL, NULL, 35, NULL, 3, 31, 'rowsNumber'),
+('Number of columns of SOM', 1, NULL, NULL, NULL, NULL, 36, NULL, 3, 31, 'colsNumber'),
+('Number of SOM training epochs', 1, NULL, NULL, NULL, NULL, 37, NULL, 3, 31, 'epochsNumber'),
+('Projection space of MDS', 1, NULL, NULL, NULL, NULL, 38, NULL, 3, 31, 'projectionSpace'),
+('Number of iterations of MDS', 1, NULL, NULL, NULL, NULL, 39, NULL, 3, 31, 'iterations'),
+('Difference between calculation errors', 1, NULL, NULL, NULL, NULL, 40, NULL, 3, 31, 'calculationError'),
+('Number of rows of SOM', 1, NULL, NULL, NULL, NULL, 41, NULL, 3, 32, 'rowsNumber'),
+('Number of columns of SOM', 1, NULL, NULL, NULL, NULL, 42, NULL, 3, 32, 'colsNumber'),
+('Number of SOM training epochs', 1, NULL, NULL, NULL, NULL, 43, NULL, 3, 32, 'epochsNumber'),
+('Projection space of MDS', 1, NULL, NULL, NULL, NULL, 44, NULL, 3, 32, 'projectionSpace'),
+('Number of iterations of MDS', 1, NULL, NULL, NULL, NULL, 45, NULL, 3, 32, 'iterations'),
+('Difference between calculation errors', 1, NULL, NULL, NULL, NULL, 46, NULL, 3, 32, 'calculationError'),
+('X', 0, NULL, NULL, NULL, NULL, 47, NULL, 1, 31, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 48, NULL, 2, 31, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 49, NULL, 1, 32, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 50, NULL, 2, 32, NULL)
 
 ;
 
