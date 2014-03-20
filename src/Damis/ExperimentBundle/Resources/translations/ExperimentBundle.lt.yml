@@ -39,5 +39,12 @@ Number of columns of SOM : SOM stulpelių skaičius
 Number of SOM training epochs : SOM mokymų epochų skaičius
 Projection space of MDS : MDS projekcijos dimensija
 Number of iterations of MDS : MDS iteracijų skaičius
+Projection space : Projekcijos dimensija
+Minimal stress change : Skirtumas tarp paklaidų, gautų tarp gretimų iteracijų
+Relative number of basis objects : Bazinis objektų skaičius
+Select Basis objects strategy : Bazinių objektų parinkimas
+Random : Atsitiktinis
+By line based on PCA : Pagal PCA(dimensija 1)
+By line based on max variable : Pagal dydžiausių požymių dispersiją
 Clean data: Valymas
 Component does not have control parameters: Ši komponentė neturi valdymo parametrų

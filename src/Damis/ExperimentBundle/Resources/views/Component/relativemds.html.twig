@@ -1,0 +1,57 @@
+{% block body %}
+    <div class="col-lg-12">
+        <form method="POST">
+            <input type="hidden" name="params" id="params" value="{{ response }}" />
+            <p>
+                {{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}
+            </p>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.projectionSpace) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.projectionSpace) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.projectionSpace) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.iterations) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.iterations) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.iterations) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.minimalStress) }}
+                <div class="col-md-3 component-form-margin">
+                    {{ form_widget(form.minimalStress) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.minimalStress) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.basicObjects) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.basicObjects) }}
+                </div>
+                <div class="col-sm-1" style="margin-left:-25px;padding-top: 6px;">%</div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.basicObjects) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.strategy) }}
+                <div class="col-md-5 component-form-margin">
+                {{ form_widget(form.strategy) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.strategy) }}
+            </div>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+{% endblock %}

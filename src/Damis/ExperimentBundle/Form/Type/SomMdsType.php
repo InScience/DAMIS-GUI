@@ -24,7 +24,11 @@ class SomMdsType extends AbstractType {
                         'minMessage' => 'SOM rows and columns quantity must be in interval [3; 100]',
                         'maxMessage' => 'SOM rows and columns quantity must be in interval [3; 100]'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Number of rows of SOM',
                 'label_attr' => ['class' => 'col-md-9']
@@ -40,7 +44,11 @@ class SomMdsType extends AbstractType {
                         'minMessage' => 'SOM rows and columns quantity must be in interval [3; 100]',
                         'maxMessage' => 'SOM rows and columns quantity must be in interval [3; 100]'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Number of columns of SOM',
                 'label_attr' => ['class' => 'col-md-9']
@@ -56,7 +64,11 @@ class SomMdsType extends AbstractType {
                         'minMessage' => 'Number of SOM training epochs must be in interval [1; 1000]',
                         'maxMessage' => 'Number of SOM training epochs must be in interval [1; 1000]'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Number of SOM training epochs',
                 'label_attr' => ['class' => 'col-md-9']
@@ -80,7 +92,11 @@ class SomMdsType extends AbstractType {
                         'minMessage' => 'Number of iterations of MDS must be in interval [1; 1000]',
                         'maxMessage' => 'Number of iterations of MDS must be in interval [1; 1000]'
                     ]),
-                    new NotBlank()
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Number of iterations of MDS',
                 'label_attr' => ['class' => 'col-md-9']
@@ -92,11 +108,11 @@ class SomMdsType extends AbstractType {
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0.00000001,
-                        'message' => 'Number of calculation errors difference must be in interval [10^-8; ∞)'
+                        'message' => 'Minimal stress change must be in interval [10-8; ∞)'
                     ]),
                     new NotBlank()
                 ],
-                'label' => 'Difference between calculation errors',
+                'label' => 'Minimal stress change',
                 'label_attr' => ['class' => 'col-md-9']
             ]);
     }
