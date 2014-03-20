@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b8b2d475350203f29eba0e8f56da170f",
+    "hash": "1c5410df0f054c43bc5b281cf7277827",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -3146,7 +3146,7 @@
             ],
             "authors": [
                 {
-                    "name": "William Durand",
+                    "name": "William DURAND",
                     "email": "william.durand1@gmail.com",
                     "homepage": "http://www.willdurand.fr"
                 }
