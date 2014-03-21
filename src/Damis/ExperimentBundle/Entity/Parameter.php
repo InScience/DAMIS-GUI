@@ -117,7 +117,7 @@ class Parameter
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -140,7 +140,7 @@ class Parameter
     /**
      * Get isRequired
      *
-     * @return integer 
+     * @return integer
      */
     public function getIsRequired()
     {
@@ -163,7 +163,7 @@ class Parameter
     /**
      * Get default
      *
-     * @return string 
+     * @return string
      */
     public function getDefault()
     {
@@ -186,7 +186,7 @@ class Parameter
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -209,7 +209,7 @@ class Parameter
     /**
      * Get labelLt
      *
-     * @return string 
+     * @return string
      */
     public function getLabelLt()
     {
@@ -232,7 +232,7 @@ class Parameter
     /**
      * Get labelEn
      *
-     * @return string 
+     * @return string
      */
     public function getLabelEn()
     {
@@ -242,7 +242,7 @@ class Parameter
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -278,7 +278,7 @@ class Parameter
      * @param ParameterConnectionType $connectionType
      * @return Parameter
      */
-    public function setParameterConnectionType(ParameterConnectionType $connectionType = null)
+    public function setConnectionType(ParameterConnectionType $connectionType = null)
     {
         $this->connectionType = $connectionType;
 

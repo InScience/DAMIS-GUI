@@ -15,68 +15,69 @@ class Pvalueoutpvaluein
     /**
      * @var \Damis\EntitiesBundle\Entity\Parametervalue
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\OneToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="InParameterValueID", referencedColumnName="ParameterValueID", onDelete="CASCADE")
      * })
      */
-    private $inparametervalueid;
+    private $inparametervalue;
 
     /**
      * @var \Damis\EntitiesBundle\Entity\Parametervalue
      *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     *
      * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="OutParameterValueID", referencedColumnName="ParameterValueID")
+     *   @ORM\JoinColumn(name="OutParameterValueID", referencedColumnName="ParameterValueID", onDelete="CASCADE")
      * })
      */
-    private $outparametervalueid;
+    private $outparametervalue;
 
     /**
-     * Set inparametervalueid
+     * Set inparametervalue
      *
-     * @param \Damis\EntitiesBundle\Entity\Parametervalue $inparametervalueid
+     * @param \Damis\EntitiesBundle\Entity\Parametervalue $inparametervalue
      * @return Pvalueoutpvaluein
      */
-    public function setInparametervalueid(\Damis\EntitiesBundle\Entity\Parametervalue $inparametervalueid)
+    public function setInparametervalue(\Damis\EntitiesBundle\Entity\Parametervalue $inparametervalue)
     {
-        $this->inparametervalueid = $inparametervalueid;
+        $this->inparametervalue = $inparametervalue;
 
         return $this;
     }
 
     /**
-     * Get inparametervalueid
+     * Get inparametervalue
      *
      * @return \Damis\EntitiesBundle\Entity\Parametervalue
      */
-    public function getInparametervalueid()
+    public function getInparametervalue()
     {
-        return $this->inparametervalueid;
+        return $this->inparametervalue;
     }
 
     /**
-     * Set outparametervalueid
+     * Set outparametervalue
      *
-     * @param \Damis\EntitiesBundle\Entity\Parametervalue $outparametervalueid
+     * @param \Damis\EntitiesBundle\Entity\Parametervalue $outparametervalue
      * @return Pvalueoutpvaluein
      */
-    public function setOutparametervalueid(\Damis\EntitiesBundle\Entity\Parametervalue $outparametervalueid = null)
+    public function setOutparametervalue(\Damis\EntitiesBundle\Entity\Parametervalue $outparametervalue = null)
     {
-        $this->outparametervalueid = $outparametervalueid;
+        $this->outparametervalue = $outparametervalue;
 
         return $this;
     }
 
     /**
-     * Get outparametervalueid
+     * Get outparametervalue
      *
      * @return \Damis\EntitiesBundle\Entity\Parametervalue
      */
-    public function getOutparametervalueid()
+    public function getOutparametervalue()
     {
-        return $this->outparametervalueid;
+        return $this->outparametervalue;
     }
 }

@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 
 class ExperimentController extends Controller
 {
@@ -123,6 +124,8 @@ class ExperimentController extends Controller
         }
         $em->flush();
 
+        $workflowsSaved = array();
+
         foreach($workflows as $workflow){
             /* @var $component \Damis\ExperimentBundle\Entity\Component */
             $component = $em
@@ -138,38 +141,66 @@ class ExperimentController extends Controller
             $workflowTask->setExperiment($experiment);
             $workflowTask->setWorkflowtaskisrunning(false);
             $em->persist($workflowTask);
+            $em->flush();
 
-            foreach($workflow->form_parameters as $form){
-                if ($form){
-                    if (!isset($form->id) or !isset($form->value)){
-                        continue;
+            $wf = array();
+
+            /* @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
+            foreach($component->getParameters() as $parameter){
+                $value = new Parametervalue();
+                $value->setWorkflowtask($workflowTask);
+                $value->setParameter($parameter);
+                $value->setParametervalue(null);
+
+                foreach($workflow->form_parameters as $form){
+                    if ($form){
+                        if (!isset($form->id) or !isset($form->value)){
+                            continue;
+                        }
+
+                        if ($form->id == $parameter->getId())
+                            $value->setParametervalue($form->value);
                     }
-
-                    /* @var $component \Damis\ExperimentBundle\Entity\Parameter */
-                    $parameter = $em
-                        ->getRepository('DamisExperimentBundle:Parameter')
-                        ->findOneBy(['id' => $form->id]);
-
-                    if(!$parameter) {
-                        continue;
-                    }
-
-                    $value = new Parametervalue();
-                    $value->setWorkflowtask($workflowTask);
-                    $value->setParameter($parameter);
-                    $value->setParametervalue($form->value);
-                    $em->persist($value);
                 }
+                $em->persist($value);
+                $em->flush();
+
+                if ($parameter->getConnectionType()->getId() == '1'){
+                    $wf['in'] = $value->getParametervalueid();
+                }
+                if ($parameter->getConnectionType()->getId() == '2'){
+                    $wf['out'] = $value->getParametervalueid();
+                }
+
             }
 
-            $em->flush();
+            $wf['id'] = $workflowTask->getWorkflowtaskid();
+            $workflowsSaved[$workflow->boxId] = $wf;
         }
 
-        var_dump($workflows);
+        var_dump($workflowsSaved);
 
         foreach($workflowsConnections as $conn){
-            var_dump($conn);
+            if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])){
+                if ( isset($workflowsSaved[$conn->sourceBoxId]['out']) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
+                    $valOut = $em
+                        ->getRepository('DamisEntitiesBundle:Parametervalue')
+                        ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out'] ]);
+
+                    $valIn = $em
+                        ->getRepository('DamisEntitiesBundle:Parametervalue')
+                        ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
+
+                    $connection = new Pvalueoutpvaluein;
+                    $connection->setOutparametervalue($valOut);
+                    $connection->setInparametervalue($valIn);
+                    $em->persist($connection);
+                    $em->flush();
+                }
+            }
         }
+
+        exit;
 
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
