@@ -178,8 +178,6 @@ class ExperimentController extends Controller
             $workflowsSaved[$workflow->boxId] = $wf;
         }
 
-        var_dump($workflowsSaved);
-
         foreach($workflowsConnections as $conn){
             if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])){
                 if ( isset($workflowsSaved[$conn->sourceBoxId]['out']) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
@@ -199,8 +197,6 @@ class ExperimentController extends Controller
                 }
             }
         }
-
-        exit;
 
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
