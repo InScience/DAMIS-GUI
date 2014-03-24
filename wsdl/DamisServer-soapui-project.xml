@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="DamisServer" resourceRoot="" soapui-version="4.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DAMIS" type="wsdl" bindingName="{DAMIS}DAMIS" soapVersion="1_1" anonymous="optional" definition="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl"><con:part><con:url>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl</con:url><con:content><![CDATA[<!--(DAMIS) edited with XMLSpy by Povilas (povilas.treigys[eta]inscience.lt) InScience.LT-->
+<definitions name="DAMIS" targetNamespace="DAMIS" xmlns:tns="DAMIS" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="DAMIS" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/" xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema targetNamespace="DAMIS" elementFormDefault="unqualified" attributeFormDefault="unqualified" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+    </schema>
+  </types>
+  <WSDL:message name="PCARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="projType" type="xsd:boolean">
+      <WSDL:documentation>Projekcijos dimensija</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="d" type="xsd:double">
+      <WSDL:documentation>Jei projType = true, d reiškia dispersijos dalį procentais, kurią norima išlaikyti, kitu atveju - projekcijos ervės matas.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="PCAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos klaidos įvertis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SMACOFRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="d" type="xsd:int">
+      <WSDL:documentation>Projekcijos dimensija</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eps" type="xsd:double">
+      <WSDL:documentation>Skirtumas tarp paklaidų</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="zeidel" type="xsd:boolean">
+      <WSDL:documentation>Reikšmė True jei vykdoma Zeidel modifikacija, jei nenurodyta kitaip zeidel = false</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="p" type="xsd:int">
+      <WSDL:documentation>Procesorių skaičius, jei nenurodyta kitaip p = 1</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SMACOFResponce">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos paklaidos įvertis (MDS)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="DMARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="d" type="xsd:int">
+      <WSDL:documentation>Projekcijos dimensija</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eps" type="xsd:double">
+      <WSDL:documentation>Skirtumas tarp paklaidų</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="neighbour" type="xsd:double">
+      <WSDL:documentation>Santykinis kaimynų skaičius naudojamas matricos V apskaičiavimui.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="DMAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos paklaidos įvertis (MDS)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="RELMDSRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="d" type="xsd:int">
+      <WSDL:documentation>Projekcijos dimensija</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eps" type="xsd:double">
+      <WSDL:documentation>Skirtumas tarp paklaidų</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="noOfBaseVectors" type="xsd:double">
+      <WSDL:documentation>Santykinis bazinių vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="selStrategy" type="xsd:int">
+      <WSDL:documentation>Bazinių vektorių parinkimo strategija 1,2, arba 3</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="RELMDSResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos paklaidos įvertis (SDS)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SAMANNRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="d" type="xsd:int">
+      <WSDL:documentation>Projekcijos dimensija</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="mTrain" type="xsd:double">
+      <WSDL:documentation>Santykinis mokymo elementų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="nNeurons" type="xsd:int">
+      <WSDL:documentation>Paslėpto sliuoksnio neuronų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eta" type="xsd:double">
+      <WSDL:documentation>Mokymosi greitį reguliuojančio parametro reikšmė</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="p" type="xsd:int">
+      <WSDL:documentation>Procesorių skaičius, jei nenurodyta kitaip p = 1</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SAMANNResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautod paklaidos įvertis (SAMANN error)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SOMRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="rows" type="xsd:int">
+      <WSDL:documentation>Objektų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="columns" type="xsd:int">
+      <WSDL:documentation>Objekto požymių kiekis (lygus objekto stulpelių skaičiui)</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eHat" type="xsd:int">
+      <WSDL:documentation>Mokymo epochų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="p" type="xsd:int">
+      <WSDL:documentation>Procesorių skaičius, jei nenurodyta kitaip p = 1</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SOMResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos paklaidos įvertis (SOM quantization error)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SOMMDSRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="rows" type="xsd:int">
+      <WSDL:documentation>Eilučių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="columns" type="xsd:int">
+      <WSDL:documentation>Stulpelių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eHat" type="xsd:int">
+      <WSDL:documentation>Mokymo epochų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="mdsIteration" type="xsd:int">
+      <WSDL:documentation>MDS iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="eps" type="xsd:double">
+      <WSDL:documentation>Skirtumas tarp paklaidų</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="mdsProjection" type="xsd:int">
+      <WSDL:documentation>MDS projekcijos dimensija = 2</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SOMMDSResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmErrorQuantization" type="xsd:double">
+      <WSDL:documentation>SOM gautos kvantavimo paklaidos įvertis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmErrorMDS" type="xsd:double">
+      <WSDL:documentation>MDS gautos paklaidos įvertis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="MLPRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="h1pNo" type="xsd:int">
+      <WSDL:documentation>Antrojo paslėpto sluoksnio neuronų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="h2pNo" type="xsd:int">
+      <WSDL:documentation>Pirmojo paslėpto sluoksnio neuronų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="h3pNo" type="xsd:int">
+      <WSDL:documentation>Trečiojo paslėpto sluoksnio neuronų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="dL" type="xsd:double">
+      <WSDL:documentation>Mokymosi vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="dT" type="xsd:double">
+      <WSDL:documentation>Testavimo vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="dV" type="xsd:double">
+      <WSDL:documentation>Validavimo vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="p" type="xsd:int">
+      <WSDL:documentation>Procesorių skaičius, jei nenurodyta kitaip p = 1</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="MLPResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki ARFF rezultatų failo (suklasifikuoti testiniai duomenys)</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>aGautos paklaidos įvertis (MES error)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="C45Request">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="q" type="xsd:double">
+      <WSDL:documentation>Pasikliovimo lygmuo, įvertinant klaidos tikimybėsp pasikliautinąjį intervalą</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="dL" type="xsd:double">
+      <WSDL:documentation>Mokymosi vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="dT" type="xsd:double">
+      <WSDL:documentation>Testavimo vektorių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="C45Response">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo (suklasifikuoti testiniai duomenys)</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="algorithmError" type="xsd:double">
+      <WSDL:documentation>Gautos paklaidos įvertis (testiniams duomenims)</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="KMEANSRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo.</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="kMax" type="xsd:int">
+      <WSDL:documentation>Maksimalus galimas grupių skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxIteration" type="xsd:int">
+      <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="KMEANSResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="kBest" type="xsd:int">
+      <WSDL:documentation>Gautas geriausias k</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="STATRPRIMITIVESRequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="STATRPRIMITIVESResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų failo (matrica su apskaičiuotomis charakteristikoms kiekvienam stulpeliui)</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="CLEANDATARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="CLEANDATAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="FILTERDATARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="retFilteredData" type="xsd:boolean">
+      <WSDL:documentation>jei retFilteredData = true, grąžinami filtruoti duomenys, kitu atveju - tik atsiskyrėliai</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="zValue" type="xsd:double">
+      <WSDL:documentation>Nurodoma Z reikšmė (3 reiškia 3 sigma taisyklės taikymą)</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="attrIndex" type="xsd:int">
+      <WSDL:documentation>Stulpelio,su kuriuo reikia atlikti skaičiavimus, indeksas</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="FILTERDATAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SPLITDATARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="reshufleObjects" type="xsd:boolean">
+      <WSDL:documentation>Jei reshufleObjects = true prieš skirstant juos į failus atliekamas jų sumaišymas, priešingu atveju objektai priskiriami  failams  jų tvarkos faile nekeičiant</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="firstSubsetPerc" type="xsd:double">
+      <WSDL:documentation>Pirmą duomenų failą sudarančių objektų skaičius atsižvelgiant į nurodytą procentą</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="secondSubsetPerc" type="xsd:double">
+      <WSDL:documentation>Antrą duomenų failą sudarančių objektų skaičius atsižvelgiant į nurodytą procentą</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="SPLITDATAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="Yalt" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="TRANSPOSEDATARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="TRANSPOSEDATAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultato duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="NORMDATARequest">
+    <WSDL:part name="X" type="xsd:string">
+      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="normMeanStd" type="xsd:boolean">
+      <WSDL:documentation>Jei normMeanStd = true nurodyti parametrai reiškia vidurkį ir dispersiją, priešingu atveju normuojama į nurodytą intervalą</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="a" type="xsd:double">
+      <WSDL:documentation>Vidurkis arba intervalo apatinis rėžis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="b" type="xsd:double">
+      <WSDL:documentation>Dispersija arba intervalo viršutinis rėžis</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="maxCalcTime" type="xsd:int">
+      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <WSDL:message name="NORMDATAResponse">
+    <WSDL:part name="Y" type="xsd:string">
+      <WSDL:documentation>Kelias iki rezultatų duomenų ARFF failo</WSDL:documentation>
+    </WSDL:part>
+    <WSDL:part name="calcTime" type="xsd:double">
+      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
+    </WSDL:part>
+  </WSDL:message>
+  <portType name="DAMISPortType">
+    <WSDL:operation name="PCA">
+      <WSDL:documentation>Pagrindinių komponenčių analizė vertinant liekamąją dispersiją</WSDL:documentation>
+      <WSDL:input message="tns:PCARequest"/>
+      <WSDL:output message="tns:PCAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="SMACOFMDS">
+      <WSDL:documentation>SMACOF algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:SMACOFRequest"/>
+      <WSDL:output message="tns:SMACOFResponce"/>
+    </WSDL:operation>
+    <WSDL:operation name="DMA">
+      <WSDL:documentation>Diagonalinio mažoravimo algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:DMARequest"/>
+      <WSDL:output message="tns:DMAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="RELMDS">
+      <WSDL:documentation>Santykinių daugiamačių skalių algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:RELMDSRequest"/>
+      <WSDL:output message="tns:RELMDSResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="SAMANN">
+      <WSDL:documentation>SAMANN algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:SAMANNRequest"/>
+      <WSDL:output message="tns:SAMANNResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="SOM">
+      <WSDL:documentation>Saviorganizuojantis neuroninis tinklas</WSDL:documentation>
+      <WSDL:input message="tns:SOMRequest"/>
+      <WSDL:output message="tns:SOMResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="SOMMDS">
+      <WSDL:input message="tns:SOMMDSRequest"/>
+      <WSDL:output message="tns:SOMMDSResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="MLP">
+      <WSDL:documentation>Daugiasluoksnio perceptrono klasifikavimo algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:MLPRequest"/>
+      <WSDL:output message="tns:MLPResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="C45">
+      <WSDL:documentation>Sprendimų medžio klasifikavimo algoritmas</WSDL:documentation>
+      <WSDL:input message="tns:C45Request"/>
+      <WSDL:output message="tns:C45Response"/>
+    </WSDL:operation>
+    <WSDL:operation name="KMEANS">
+      <WSDL:documentation>K-means vektoriams be nurodytos klasinės priklausomybės</WSDL:documentation>
+      <WSDL:input message="tns:KMEANSRequest"/>
+      <WSDL:output message="tns:KMEANSResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="STATPRIMITIVES">
+      <WSDL:documentation>Statistiniai primityvai (min, max, vidurkis, standartinis nuokrypis, mediana)</WSDL:documentation>
+      <WSDL:input message="tns:STATRPRIMITIVESRequest"/>
+      <WSDL:output message="tns:STATRPRIMITIVESResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="CLEANDATA">
+      <WSDL:documentation>Duomenų valymas (pašalinami objektai neatitinkantys meta informacijos)</WSDL:documentation>
+      <WSDL:input message="tns:CLEANDATARequest"/>
+      <WSDL:output message="tns:CLEANDATAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="FILTERDATA">
+      <WSDL:documentation>Duomenų filtravimas</WSDL:documentation>
+      <WSDL:input message="tns:FILTERDATARequest"/>
+      <WSDL:output message="tns:FILTERDATAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="SPLITDATA">
+      <WSDL:documentation>Duomenų skaidymas</WSDL:documentation>
+      <WSDL:input message="tns:SPLITDATARequest"/>
+      <WSDL:output message="tns:SPLITDATAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="TRANSPOSEDATA">
+      <WSDL:documentation>Duomenų transponavimas</WSDL:documentation>
+      <WSDL:input message="tns:TRANSPOSEDATARequest"/>
+      <WSDL:output message="tns:TRANSPOSEDATAResponse"/>
+    </WSDL:operation>
+    <WSDL:operation name="NORMDATA">
+      <WSDL:documentation>Duomenų normavimas</WSDL:documentation>
+      <WSDL:input message="tns:NORMDATARequest"/>
+      <WSDL:output message="tns:NORMDATAResponse"/>
+    </WSDL:operation>
+  </portType>
+  <binding name="DAMIS" type="tns:DAMISPortType">
+    <SOAP:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WSDL:operation name="PCA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="SMACOFMDS">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="DMA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="RELMDS">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="SAMANN">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="SOM">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="SOMMDS">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="MLP">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="C45">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="KMEANS">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="STATPRIMITIVES">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="CLEANDATA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="FILTERDATA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="SPLITDATA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="TRANSPOSEDATA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+    <WSDL:operation name="NORMDATA">
+      <SOAP:operation soapAction="" style="rpc"/>
+      <WSDL:input>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:input>
+      <WSDL:output>
+        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
+      </WSDL:output>
+    </WSDL:operation>
+  </binding>
+  <service name="DAMIS">
+    <documentation>Generated service definition 2014-03-21</documentation>
+    <port name="DAMIS" binding="tns:DAMIS">
+      <SOAP:address location="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi"/>
+    </port>
+  </service>
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="C45" bindingOperationName="C45" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:C45 soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <q xsi:type="xsd:double">?</q>
+         <dL xsi:type="xsd:double">?</dL>
+         <dT xsi:type="xsd:double">?</dT>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:C45>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/C45Request"/></con:call></con:operation><con:operation isOneWay="false" action="" name="CLEANDATA" bindingOperationName="CLEANDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:CLEANDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:CLEANDATA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/CLEANDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="DMA" bindingOperationName="DMA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:DMA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <d xsi:type="xsd:int">?</d>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <eps xsi:type="xsd:double">?</eps>
+         <neighbour xsi:type="xsd:double">?</neighbour>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:DMA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/DMARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="FILTERDATA" bindingOperationName="FILTERDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:FILTERDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <retFilteredData xsi:type="xsd:boolean">?</retFilteredData>
+         <zValue xsi:type="xsd:double">?</zValue>
+         <attrIndex xsi:type="xsd:int">?</attrIndex>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:FILTERDATA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/FILTERDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="KMEANS" bindingOperationName="KMEANS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:KMEANS soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <kMax xsi:type="xsd:int">?</kMax>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:KMEANS>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/KMEANSRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="MLP" bindingOperationName="MLP" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:MLP soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <h1pNo xsi:type="xsd:int">?</h1pNo>
+         <h2pNo xsi:type="xsd:int">?</h2pNo>
+         <h3pNo xsi:type="xsd:int">?</h3pNo>
+         <dL xsi:type="xsd:double">?</dL>
+         <dT xsi:type="xsd:double">?</dT>
+         <dV xsi:type="xsd:double">?</dV>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <p xsi:type="xsd:int">?</p>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:MLP>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/MLPRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="NORMDATA" bindingOperationName="NORMDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:NORMDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <normMeanStd xsi:type="xsd:boolean">?</normMeanStd>
+         <a xsi:type="xsd:double">?</a>
+         <b xsi:type="xsd:double">?</b>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:NORMDATA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/NORMDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="PCA" bindingOperationName="PCA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:PCA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <projType xsi:type="xsd:boolean">?</projType>
+         <d xsi:type="xsd:double">?</d>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:PCA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/PCARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="RELMDS" bindingOperationName="RELMDS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:RELMDS soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <d xsi:type="xsd:int">?</d>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <eps xsi:type="xsd:double">?</eps>
+         <noOfBaseVectors xsi:type="xsd:double">?</noOfBaseVectors>
+         <selStrategy xsi:type="xsd:int">?</selStrategy>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:RELMDS>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/RELMDSRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SAMANN" bindingOperationName="SAMANN" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:SAMANN soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <d xsi:type="xsd:int">?</d>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <mTrain xsi:type="xsd:double">?</mTrain>
+         <nNeurons xsi:type="xsd:int">?</nNeurons>
+         <eta xsi:type="xsd:double">?</eta>
+         <p xsi:type="xsd:int">?</p>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:SAMANN>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/SAMANNRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SMACOFMDS" bindingOperationName="SMACOFMDS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:SMACOFMDS soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <d xsi:type="xsd:int">?</d>
+         <maxIteration xsi:type="xsd:int">?</maxIteration>
+         <eps xsi:type="xsd:double">?</eps>
+         <zeidel xsi:type="xsd:boolean">?</zeidel>
+         <p xsi:type="xsd:int">?</p>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:SMACOFMDS>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/SMACOFMDSRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SOM" bindingOperationName="SOM" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:SOM soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <rows xsi:type="xsd:int">?</rows>
+         <columns xsi:type="xsd:int">?</columns>
+         <eHat xsi:type="xsd:int">?</eHat>
+         <p xsi:type="xsd:int">?</p>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:SOM>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/SOMRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SOMMDS" bindingOperationName="SOMMDS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:SOMMDS soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <rows xsi:type="xsd:int">?</rows>
+         <columns xsi:type="xsd:int">?</columns>
+         <eHat xsi:type="xsd:int">?</eHat>
+         <mdsIteration xsi:type="xsd:int">?</mdsIteration>
+         <eps xsi:type="xsd:double">?</eps>
+         <mdsProjection xsi:type="xsd:int">?</mdsProjection>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:SOMMDS>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/SOMMDSRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="SPLITDATA" bindingOperationName="SPLITDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:SPLITDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <reshufleObjects xsi:type="xsd:boolean">?</reshufleObjects>
+         <firstSubsetPerc xsi:type="xsd:double">?</firstSubsetPerc>
+         <secondSubsetPerc xsi:type="xsd:double">?</secondSubsetPerc>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:SPLITDATA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/SPLITDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="STATPRIMITIVES" bindingOperationName="STATPRIMITIVES" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:STATPRIMITIVES soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:STATPRIMITIVES>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/STATPRIMITIVESRequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="TRANSPOSEDATA" bindingOperationName="TRANSPOSEDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dam:TRANSPOSEDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <X xsi:type="xsd:string">?</X>
+         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+      </dam:TRANSPOSEDATA>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/TRANSPOSEDATARequest"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
