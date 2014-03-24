@@ -102,3 +102,37 @@
     color : #090909;
 }
 
+/* color picker */
+.color-selector {width: 28px; height: 28px; margin: 4px; vertical-align: middle; display: inline-block; cursor: pointer;}
+
+.chart-choices input, .chart-choices select {margin-bottom: 0px;}
+.chart-choices tr {height: 40px;}
+
+.colpick {z-index: 9999;}
+.req {font-weight: bold; color: #A60000}
+.message {margin-bottom: 20px;}
+
+.damis-list {margin-top: 5px;}
+.damis-list thead {background-color: #f5f5f5;}
+.damis-list .c {text-align: center}
+.damis-list .title {max-width: 140px; min-width: 140px; word-wrap: break-word;}
+.damis-list th.created {min-width: 100px;}
+.damis-list .descr {max-width: 100px; min-width: 100px; word-wrap: break-word;}
+.damis-list .selected-row {background-color: #f5f5f5;}
+table {max-width: none}
+.gradient {
+    height: 20px;
+
+    /* for Safari */
+    background: -webkit-linear-gradient(left, hsl(0, 95%, 35%), hsl(60, 95%, 35%), hsl(120, 95%, 35%), hsl(180, 95%, 35%), hsl(240, 95%, 35%), hsl(300, 95%, 35%));
+    /* For Opera 11.1 to 12.0 */
+    background: -o-linear-gradient(right, hsl(0, 95%, 35%), hsl(60, 95%, 35%), hsl(120, 95%, 35%), hsl(180, 95%, 35%), hsl(240, 95%, 35%), hsl(300, 95%, 35%));
+    /* For Firefox 3.6 to 15 */
+    background: -moz-linear-gradient(right, hsl(0, 95%, 35%), hsl(60, 95%, 35%), hsl(120, 95%, 35%), hsl(180, 95%, 35%), hsl(240, 95%, 35%), hsl(300, 95%, 35%));
+
+    /* Standard syntax (must be last) */
+    background: linear-gradient(to right, hsl(0, 95%, 35%), hsl(60, 95%, 35%), hsl(120, 95%, 35%), hsl(180, 95%, 35%), hsl(240, 95%, 35%), hsl(300, 95%, 35%));
+
+    margin: auto;
+}
+
