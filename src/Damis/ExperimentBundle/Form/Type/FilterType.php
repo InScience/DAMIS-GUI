@@ -12,7 +12,7 @@ class FilterType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('resultType', 'choice', [
+            ->add('retFilteredData', 'choice', [
                 'choices' => [0 => 'Without outliers', 1 => 'Only outliers'],
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
