@@ -28,6 +28,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Clean data', 'clean-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 8, 2, 2, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
+('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
+('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 22, 2, 4, 'Pca'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 27, 1, 4, 'RelativeMds'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 28, 2, 4, 'RelativeMds'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
@@ -110,7 +112,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 69, NULL, 1, 45, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 70, NULL, 1, 46, NULL),
 ('dataset', 0, NULL, NULL, NULL, NULL, 71, NULL, 2, 3, NULL),
-('dataset', 0, NULL, NULL, NULL, NULL, 72, NULL, 2, 4, NULL);
+('dataset', 0, NULL, NULL, NULL, NULL, 72, NULL, 2, 4, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 73, NULL, 1, 21, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 74, NULL, 2, 21, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 75, NULL, 1, 22, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 76, NULL, 2, 22, NULL),
+('Choose PCA projection', 1, NULL, NULL, NULL, NULL, 77, NULL, 3, 21, 'projType'),
+('Space/Variance', 1, NULL, NULL, NULL, NULL, 78, NULL, 3, 21, 'd'),
+('Choose PCA projection', 1, NULL, NULL, NULL, NULL, 79, NULL, 3, 22, 'projType'),
+('Space/Variance', 1, NULL, NULL, NULL, NULL, 80, NULL, 3, 22, 'd'),
+;
+
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
 	('FINISHED', 2);
