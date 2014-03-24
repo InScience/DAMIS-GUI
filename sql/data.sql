@@ -38,6 +38,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 32, 2, 4, 'SomMds'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
 ('MLP', 'mlp-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp'),
+('K-MEANS', 'kmeans-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 39, 1, 5, 'Kmeans'),
+('K-MEANS', 'kmeans-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 40, 2, 5, 'Kmeans'),
 ('Chart', 'chart-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
 ('Chart', 'chart-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 46, 2, 6, 'Chart');
 
@@ -134,7 +136,15 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Projection space', 1, NULL, NULL, NULL, NULL, 89, NULL, 3, 26, 'd'),
 ('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 90, NULL, 3, 26, 'maxIteration'),
 ('Minimal stress change', 1, NULL, NULL, NULL, NULL, 91, NULL, 3, 26, 'eps'),
-('Relative number of neighbours', 1, NULL, NULL, NULL, NULL, 92, NULL, 3, 26, 'neighbour')
+('Relative number of neighbours', 1, NULL, NULL, NULL, NULL, 92, NULL, 3, 26, 'neighbour'),
+('X', 0, NULL, NULL, NULL, NULL, 93, NULL, 1, 39, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 94, NULL, 2, 39, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 95, NULL, 1, 40, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 96, NULL, 2, 40, NULL),
+('Maximum number of cluster', 1, NULL, NULL, NULL, NULL, 97, NULL, 3, 39, 'kMax'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 98, NULL, 3, 39, 'maxIteration'),
+('Maximum number of cluster', 1, NULL, NULL, NULL, NULL, 99, NULL, 3, 40, 'kMax'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 100, NULL, 3, 40, 'maxIteration')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
