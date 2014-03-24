@@ -42,8 +42,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 39, 1, 5, 'Kmeans'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 40, 2, 5, 'Kmeans'),
-('Chart', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
-('Chart', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 46, 2, 6, 'Chart');
+('Chart view', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
+('Chart view', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 46, 2, 6, 'Chart');
 
 
 INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefault`, `ParameterDescription`,
