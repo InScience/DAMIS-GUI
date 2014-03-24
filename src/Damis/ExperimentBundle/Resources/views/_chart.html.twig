@@ -1,0 +1,119 @@
+<div style="width: 614px;">
+    <table class="attribute-choices" style="margin: auto; 20px;">
+        <tbody>
+        <td style="padding: 5px;">X:
+            <select class="x-attr" style="width: 100px;">
+                <option value="-">-</option>
+                {% for attr in context.attrs %}
+                    {% if attr.0.type == "integer" or attr.0.type == "real" %}
+                        <option value="{{ loop.index0 }}" {% if loop.index0 == context.x %}selected="selected"{% endif %}>
+                            {{ attr.0.name }}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </td>
+        <td style="padding: 5px;">Y:
+            <select class="y-attr" style="width: 100px;">
+                <option value="-">-</option>
+                {% for attr in context.attrs %}
+                    {% if attr.0.type == "integer" or attr.0.type == "real" %}
+                        <option value="{{ loop.index0 }}" {% if loop.index0 == context.y %}selected="selected"{% endif %}>
+                            {{ attr.0.name }}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </td>
+        <td style="padding: 5px;">{{ 'Class' | trans({}, 'ExperimentBundle')}}:
+            <select class="cls-attr" style="width: 100px;">
+                <option value="-">-</option>
+                {% for attr in context.attrs %}
+                    <option value="{{ loop.index0 }}" {% if loop.index0 == context.cls %}selected="selected"{% endif %}>
+                        {{ attr.0.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </td>
+        </tbody>
+    </table>
+</div>
+{% if not error %}
+    <div class="results-container" style="width: 600px; height: 300px; margin: auto;"></div>
+    {% if context.float_cls %}
+        <table class="float-cls-choices chart-choices" style="margin: auto; text-align: center">
+            <thead>
+            <tr>
+                <th>{{ 'Color' | trans({}, 'ExperimentBundle')}}</th>
+                <th>{{ 'Shape' | trans({}, 'ExperimentBundle')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div style="width: 250px; margin: auto;">
+                        <div class="gradient"></div>
+
+                        <div style="position: relative; height: 17px">
+                            <span style="position: absolute; bottom: 0; left: 0">{{ minCls }}</span>
+                            <span style="position: absolute; bottom: 0; right: 0">{{ maxCls }}</span>
+                        </div>
+
+                    </div>
+                </td>
+                <td>
+                    <select>
+                        <option value="circle">{{ 'Circle' | trans({}, 'ExperimentBundle')}}</option>
+                        <option value="square">{{ 'Square' | trans({}, 'ExperimentBundle')}}</option>
+                        <option value="diamond">{{ 'Diamond' | trans({}, 'ExperimentBundle')}}</option>
+                        <option value="triangle">{{ 'Triangle' | trans({}, 'ExperimentBundle')}}</option>
+                        <option value="cross">{{ 'Cross' | trans({}, 'ExperimentBundle')}}</option>
+                    </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <table class="render-choices chart-choices" style="margin: auto; text-align: center">
+            <thead>
+            <tr>
+                <th>{{ 'Class' | trans({}, 'ExperimentBundle')}}</th>
+                <th>{{ 'Color' | trans({}, 'ExperimentBundle')}}</th>
+                <th class="hide"></th>
+                <th>{{ 'Shape' | trans({}, 'ExperimentBundle')}}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    {% endif %}
+{% endif %}
+</div>
+
+<div style="display:none;" class="download-options">
+    <div>
+        {{ 'Select file type' | trans({}, 'ExperimentBundle')}}:<br />
+        <table><tbody>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-type" value="jpeg" checked="checked" />jpeg</td>
+            </tr>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-type" value="png" />png</td>
+            </tr>
+            </tbody></table>
+    </div>
+    <hr />
+    <div>
+        {{ 'Select destination' | trans({}, 'ExperimentBundle')}}:<br />
+        <table><tbody>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-destination" value="user-computer" checked="checked" />{{ 'User computer' | trans({}, 'ExperimentBundle')}}</td>
+            </tr>
+            <tr>
+                <td style="padding:5px">
+                    <input type="radio" name="file-destination" value="midas" />{{ 'MIDAS' | trans({}, 'ExperimentBundle')}}
+                    <span style="display: none;" class="not-implemented helptext">{{ 'This functionality will be negotiated during the 6th activity.' | trans({}, 'ExperimentBundle')}}</span>
+                </td>
+            </tr>
+            </tbody></table>
+    </div>
+</div>

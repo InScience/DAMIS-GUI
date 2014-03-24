@@ -1,0 +1,5 @@
+table.chart-choices tr.even td.sorting_1, 
+table.chart-choices tr.odd td.sorting_1,
+table.chart-choices tr.odd, 
+table.chart-choices tr.even {background-color: transparent}
+table.chart-choices td {padding: 0} 

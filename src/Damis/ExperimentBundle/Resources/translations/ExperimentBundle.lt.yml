@@ -56,3 +56,17 @@ Choose PCA projection : Pasirinkite PCA projekcijos
 Relative number of neighbours : Santykinis kaimynų skaičius
 Maximum number of cluster : Maksimalus klasterių skaičius
 Transpose data : Transponavimas
+Class: Klasė
+Color: Spalva
+Shape: Forma
+Chart view: Grafinis vaizdavimas
+Download: Atsisiųsti
+Select file type and destination: Pasirinkite failo tipą ir saugojimo vietą
+Select file type: Pasirinkite failo tipą
+Select destination: Pasirinkite saugojimo vietą
+User computer: Vartotojo kompiuteris
+Circle: Apskritimas
+Square: Kvadratas
+Diamond: Rombas
+Triangle: Trikampis
+Cross: Kryžiukas

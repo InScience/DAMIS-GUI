@@ -54,14 +54,7 @@
 
 		// symbol palette, rotates through a set of symbols
 		generateSymbolPalette: function() {
-			return
-            [
-                ["circle", Translator.trans('Circle', {}, 'ExperimentBundle')],
-                ["square", Translator.trans('Square', {}, 'ExperimentBundle')],
-                ["diamond", Translator.trans('Diamond', {}, 'ExperimentBundle')],
-                ["triangle", Translator.trans("Triangle", {}, 'ExperimentBundle')],
-                ["cross", Translator.trans("Cross", {}, 'ExperimentBundle')]
-            ];
+			return [["circle", Translator.trans('Circle', {}, 'ExperimentBundle')], ["square", Translator.trans('Square', {}, 'ExperimentBundle')],["diamond", Translator.trans('Diamond', {}, 'ExperimentBundle')],["triangle", Translator.trans("Triangle", {}, 'ExperimentBundle')],["cross", Translator.trans("Cross", {}, 'ExperimentBundle')]];
 		},
 
 		// renders the chart in place of plotPlaceholder
@@ -179,8 +172,8 @@
 							$(this).find(".not-implemented").show();
 						} else {
 							image = canvas.toDataURL();
-							image = image.replace("image/png", "image/octet-stream");
-							var url = window.componentFormUrls['CHART'];
+							//image = image.replace("image/png", "image/octet-stream");
+							var url = Routing.generate('dataset_chart');
 
 							// POST to server to obtain a downloadable result
 							var imageInput = $("<input name=\"image\" value=\"" + image + "\"/>");
@@ -356,12 +349,11 @@
 			}
 			this.mergeAttributeChoices(data, formWindow);
 
-			var url = window.componentFormUrls['CHART'];
 			formWindow.find(".plot-container").remove();
-			var container = $("<div class=\"plot-container\"><img style=\"display: block; width: 250px; margin:auto;\" width=\"250px\" src=\"/static/img/loading.gif\"/></div>");
+			var container = $("<div class=\"plot-container\"><img style=\"display: block; width: 250px; margin:auto;\" width=\"250px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
 			formWindow.append(container);
 			$.ajax({
-				url: url,
+				url: Routing.generate('dataset_chart', {id : data["dataset_url"]}),
 				data: data,
 				context: container
 			}).done(function(resp) {
