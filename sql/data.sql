@@ -28,6 +28,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Clean data', 'clean-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 8, 2, 2, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
+('Transpose data', 'transpose-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 13, 1, 2, 'NoForm'),
+('Transpose data', 'transpose-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 14, 2, 2, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
 ('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 22, 2, 4, 'Pca'),
 ('DMA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 25, 1, 4, 'Dma'),
@@ -144,7 +146,11 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Maximum number of cluster', 1, NULL, NULL, NULL, NULL, 97, NULL, 3, 39, 'kMax'),
 ('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 98, NULL, 3, 39, 'maxIteration'),
 ('Maximum number of cluster', 1, NULL, NULL, NULL, NULL, 99, NULL, 3, 40, 'kMax'),
-('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 100, NULL, 3, 40, 'maxIteration')
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 100, NULL, 3, 40, 'maxIteration'),
+('X', 0, NULL, NULL, NULL, NULL, 101, NULL, 1, 13, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 102, NULL, 2, 13, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 103, NULL, 1, 14, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 104, NULL, 2, 14, NULL)
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
