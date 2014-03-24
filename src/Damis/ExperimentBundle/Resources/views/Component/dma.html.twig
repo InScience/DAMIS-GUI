@@ -1,0 +1,47 @@
+{% block body %}
+    <div class="col-lg-12">
+        <form method="POST">
+            <input type="hidden" name="params" id="params" value="{{ response }}" />
+            <p>
+                {{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}
+            </p>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.d) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.d) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.d) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.maxIteration) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.maxIteration) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.maxIteration) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.eps) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.eps) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.eps) }}
+            </div>
+            <div class="form-group component-form-margin">
+                {{ form_label(form.neighbour) }}
+                <div class="col-md-3 component-form-margin">
+                {{ form_widget(form.neighbour) }}
+                </div>
+            </div>
+            <div class="form-group col-md-12 component-form-margin">
+                {{ form_errors(form.neighbour) }}
+            </div>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+{% endblock %}

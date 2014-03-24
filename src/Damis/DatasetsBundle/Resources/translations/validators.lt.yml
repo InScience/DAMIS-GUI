@@ -11,3 +11,4 @@ Minimal stress change must be in interval [10^-8; ∞) : Skirtumas tarp paklaid�
 Relative basis object quantity must be in interval (0; 100] % : Santykinis bazių objektų skaičius intervale (0; 100] %
 This value should not be blank. : Ši reikšmė negali būti tuščia.
 Relative cumulative variance must be in interval (0; 100] : Santykinės dispersijos galimos reikšmės intervale (0; 100] %
+Relative neighbor quantity must be in interval (0; 100] % : Santykinis kaimynų skaičius  intervale (0; 100] %

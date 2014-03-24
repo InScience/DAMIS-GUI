@@ -30,6 +30,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Filter data', 'filter-data-ico.jpeg', '', '', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
 ('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
 ('PCA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 22, 2, 4, 'Pca'),
+('DMA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 25, 1, 4, 'Dma'),
+('DMA', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 26, 2, 4, 'Dma'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 27, 1, 4, 'RelativeMds'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 28, 2, 4, 'RelativeMds'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', '', '', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
@@ -121,6 +123,18 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Space/Variance', 1, NULL, NULL, NULL, NULL, 78, NULL, 3, 21, 'd'),
 ('Choose PCA projection', 1, NULL, NULL, NULL, NULL, 79, NULL, 3, 22, 'projType'),
 ('Space/Variance', 1, NULL, NULL, NULL, NULL, 80, NULL, 3, 22, 'd'),
+('X', 0, NULL, NULL, NULL, NULL, 81, NULL, 1, 25, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 82, NULL, 2, 25, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 83, NULL, 1, 26, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 84, NULL, 2, 26, NULL),
+('Projection space', 1, NULL, NULL, NULL, NULL, 85, NULL, 3, 25, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 86, NULL, 3, 25, 'maxIteration'),
+('Minimal stress change', 1, NULL, NULL, NULL, NULL, 87, NULL, 3, 25, 'eps'),
+('Relative number of neighbours', 1, NULL, NULL, NULL, NULL, 88, NULL, 3, 25, 'neighbour'),
+('Projection space', 1, NULL, NULL, NULL, NULL, 89, NULL, 3, 26, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 90, NULL, 3, 26, 'maxIteration'),
+('Minimal stress change', 1, NULL, NULL, NULL, NULL, 91, NULL, 3, 26, 'eps'),
+('Relative number of neighbours', 1, NULL, NULL, NULL, NULL, 92, NULL, 3, 26, 'neighbour')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
