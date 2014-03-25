@@ -32,6 +32,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Split data', 'split-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SPLITDATA', NULL, NULL, NULL, NULL, 12, 2, 2, 'SplitData'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 13, 1, 2, 'NoForm'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 14, 2, 2, 'NoForm'),
+('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 19, 1, 3, 'NoForm'),
+('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 20, 2, 3, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 22, 2, 4, 'Pca'),
 ('DMA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'DMA', NULL, NULL, NULL, NULL, 25, 1, 4, 'Dma'),
@@ -162,7 +164,11 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Second subset size', 1, NULL, NULL, NULL, NULL, 111, NULL, 3, 11, 'secondSubsetPerc'),
 ('Choose object sort type', 1, NULL, NULL, NULL, NULL, 112, NULL, 3, 11, 'reshufleObjects'),
 ('First subset size', 1, NULL, NULL, NULL, NULL, 113, NULL, 3, 11, 'firstSubsetPerc'),
-('Second subset size', 1, NULL, NULL, NULL, NULL, 114, NULL, 3, 11, 'secondSubsetPerc')
+('Second subset size', 1, NULL, NULL, NULL, NULL, 114, NULL, 3, 11, 'secondSubsetPerc'),
+('X', 0, NULL, NULL, NULL, NULL, 115, NULL, 1, 19, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 116, NULL, 2, 19, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 117, NULL, 1, 20, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 118, NULL, 2, 20, NULL)
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
