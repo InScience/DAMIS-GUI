@@ -28,6 +28,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Clean data', 'clean-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CLEANDATA', NULL, NULL, NULL, NULL, 8, 2, 2, 'NoForm'),
 ('Filter data', 'filter-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'FILTERDATA', NULL, NULL, NULL, NULL, 9, 1, 2, 'Filter'),
 ('Filter data', 'filter-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'FILTERDATA', NULL, NULL, NULL, NULL, 10, 2, 2, 'Filter'),
+('Split data', 'split-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SPLITDATA', NULL, NULL, NULL, NULL, 11, 1, 2, 'SplitData'),
+('Split data', 'split-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SPLITDATA', NULL, NULL, NULL, NULL, 12, 2, 2, 'SplitData'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 13, 1, 2, 'NoForm'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 14, 2, 2, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
@@ -150,7 +152,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 101, NULL, 1, 13, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 102, NULL, 2, 13, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 103, NULL, 1, 14, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 104, NULL, 2, 14, NULL)
+('Y', 0, NULL, NULL, NULL, NULL, 104, NULL, 2, 14, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 105, NULL, 1, 11, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 106, NULL, 2, 11, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 107, NULL, 1, 12, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 108, NULL, 2, 12, NULL),
+('Choose object sort type', 1, NULL, NULL, NULL, NULL, 109, NULL, 3, 11, 'reshufleObjects'),
+('First subset size', 1, NULL, NULL, NULL, NULL, 110, NULL, 3, 11, 'firstSubsetPerc'),
+('Second subset size', 1, NULL, NULL, NULL, NULL, 111, NULL, 3, 11, 'secondSubsetPerc'),
+('Choose object sort type', 1, NULL, NULL, NULL, NULL, 112, NULL, 3, 11, 'reshufleObjects'),
+('First subset size', 1, NULL, NULL, NULL, NULL, 113, NULL, 3, 11, 'firstSubsetPerc'),
+('Second subset size', 1, NULL, NULL, NULL, NULL, 114, NULL, 3, 11, 'secondSubsetPerc')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES

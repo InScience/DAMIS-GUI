@@ -5,6 +5,7 @@ vendor/*
 web/uploads/*
 web/bundles/*
 web/assets/*
+web/assetic/*
 web/translations/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
