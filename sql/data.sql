@@ -44,6 +44,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('DMA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'DMA', NULL, NULL, NULL, NULL, 26, 2, 4, 'Dma'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'RELMDS', NULL, NULL, NULL, NULL, 27, 1, 4, 'RelativeMds'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'RELMDS', NULL, NULL, NULL, NULL, 28, 2, 4, 'RelativeMds'),
+('SAMANN', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SAMANN', NULL, NULL, NULL, NULL, 29, 1, 4, 'Samann'),
+('SAMANN', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SAMANN', NULL, NULL, NULL, NULL, 30, 2, 4, 'Samann'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOMMDS', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOMMDS', NULL, NULL, NULL, NULL, 32, 2, 4, 'SomMds'),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
@@ -194,7 +196,22 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Projection space', 1, NULL, NULL, NULL, NULL, 137, NULL, 3, 24, 'd'),
 ('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 138, NULL, 3, 24, 'maxIteration'),
 ('Minimal stress change', 1, NULL, NULL, NULL, NULL, 139, NULL, 3, 24, 'eps'),
-('Does apply Seidel modification?', 1, NULL, NULL, NULL, NULL, 140, NULL, 3, 24, 'zeidel')
+('Does apply Seidel modification?', 1, NULL, NULL, NULL, NULL, 140, NULL, 3, 24, 'zeidel'),
+('X', 0, NULL, NULL, NULL, NULL, 141, NULL, 1, 29, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 142, NULL, 2, 29, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 143, NULL, 1, 30, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 144, NULL, 2, 30, NULL),
+('Projection space', 1, NULL, NULL, NULL, NULL, 145, NULL, 3, 29, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 146, NULL, 3, 29, 'maxIteration'),
+('Relative size of the training data', 1, NULL, NULL, NULL, NULL, 147, NULL, 3, 29, 'mTrain'),
+('Number of neurons in the hidden layer', 1, NULL, NULL, NULL, NULL, 148, NULL, 3, 29, 'nNeurons'),
+('Value of the learning rate', 1, NULL, NULL, NULL, NULL, 149, NULL, 3, 29, 'eta'),
+('Projection space', 1, NULL, NULL, NULL, NULL, 150, NULL, 3, 30, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 151, NULL, 3, 30, 'maxIteration'),
+('Relative size of the training data', 1, NULL, NULL, NULL, NULL, 152, NULL, 3, 30, 'mTrain'),
+('Number of neurons in the hidden layer', 1, NULL, NULL, NULL, NULL, 153, NULL, 3, 30, 'nNeurons'),
+('Value of the learning rate', 1, NULL, NULL, NULL, NULL, 154, NULL, 3, 30, 'eta')
+
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES

@@ -84,3 +84,6 @@ Norm data : Normavimas
 Does apply Seidel modification? : Ar taikyti Zeidelio modifikaciją?
 Yes : Taip
 No : Ne
+Relative size of the training data : Apmokymų aibės dydis
+Number of neurons in the hidden layer : Paslėptojo sluoksnio neuronų skaičius
+Value of the learning rate : Mokymo greičio parametras

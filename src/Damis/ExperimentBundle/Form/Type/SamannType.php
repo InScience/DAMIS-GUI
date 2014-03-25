@@ -9,28 +9,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class SmacofType extends AbstractType {
+class SamannType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-        ->add('zeidel', 'choice', [
-                'required' => true,
-                'empty_value' => false,
-                'data' => 0,
-                'expanded' => true,
-                'choices' => array(
-                    0 => 'No',
-                    1 => 'Yes'
-                ),
-                'constraints' => [
-                    new NotBlank()
-                ],
-                'label' => 'Does apply Seidel modification?',
-                'label_attr' => ['class' => 'col-md-9']
-            ])
             ->add('d', 'integer', [
                 'required' => true,
                 'data' => 2,
+                'read_only' => true,
                 'attr' => array('class' => 'form-control'),
                 'constraints' => [
                     new NotBlank(),
@@ -40,7 +26,7 @@ class SmacofType extends AbstractType {
                     ))
                 ],
                 'label' => 'Projection space',
-                'label_attr' => ['class' => 'col-md-9']
+                'label_attr' => ['class' => 'col-md-8']
             ])
         ->add('maxIteration', 'integer', [
                 'required' => true,
@@ -60,21 +46,51 @@ class SmacofType extends AbstractType {
                     ))
                 ],
                 'label' => 'Maximum number of iteration',
-                'label_attr' => ['class' => 'col-md-9']
+                'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('eps', 'text', [
+        ->add('mTrain', 'number', [
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
-                'data' => '0.0001',
+                'data' => 10.0,
                 'constraints' => [
-                    new Assert\GreaterThanOrEqual([
-                        'value' => 0.00000001,
-                        'message' => 'Minimal stress change must be in interval [10-8; ∞)'
+                    new Assert\Range([
+                        'min' => 0.00000000001,
+                        'max' => 100,
+                        'minMessage' => 'Relative size of the training data must be in interval (0; 100] %',
+                        'maxMessage' => 'Relative size of the training data must be in interval (0; 100] %'
                     ]),
                     new NotBlank()
                 ],
-                'label' => 'Minimal stress change',
-                'label_attr' => ['class' => 'col-md-9']
+                'label' => 'Relative size of the training data',
+                'label_attr' => ['class' => 'col-md-8']
+            ])
+            ->add('nNeurons', 'integer', [
+                'required' => true,
+                'data' => 10,
+                'attr' => array('class' => 'form-control'),
+                'constraints' => [
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
+                ],
+                'label' => 'Number of neurons in the hidden layer',
+                'label_attr' => ['class' => 'col-md-8']
+            ])
+            ->add('eta', 'number', [
+                'required' => true,
+                'attr' => array('class' => 'form-control'),
+                'data' => 1.0,
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual([
+                        'value' => 0,
+                        'message' => 'Value must be greater than 0'
+                    ]),
+                    new NotBlank()
+                ],
+                'label' => 'Value of the learning rate',
+                'label_attr' => ['class' => 'col-md-8']
             ]);
     }
 
@@ -85,7 +101,7 @@ class SmacofType extends AbstractType {
     }
 
     public function getName() {
-        return 'smacof_type';
+        return 'samann_type';
     }
 
 }
