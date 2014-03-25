@@ -87,3 +87,6 @@ No : Ne
 Relative size of the training data : Apmokymų aibės dydis
 Number of neurons in the hidden layer : Paslėptojo sluoksnio neuronų skaičius
 Value of the learning rate : Mokymo greičio parametras
+Number of training epochs : Mokymų epochų skaičius
+Number of columns : Stulpelių skaičius
+Number of rows : Eilučių skaičius

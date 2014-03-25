@@ -48,6 +48,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('SAMANN', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SAMANN', NULL, NULL, NULL, NULL, 30, 2, 4, 'Samann'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOMMDS', NULL, NULL, NULL, NULL, 31, 1, 4, 'SomMds'),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOMMDS', NULL, NULL, NULL, NULL, 32, 2, 4, 'SomMds'),
+('SOM', 'som-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOM', NULL, NULL, NULL, NULL, 33, 1, 5, 'Som'),
+('SOM', 'som-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOM', NULL, NULL, NULL, NULL, 34, 2, 5, 'Som'),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 39, 1, 5, 'Kmeans'),
@@ -210,7 +212,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 151, NULL, 3, 30, 'maxIteration'),
 ('Relative size of the training data', 1, NULL, NULL, NULL, NULL, 152, NULL, 3, 30, 'mTrain'),
 ('Number of neurons in the hidden layer', 1, NULL, NULL, NULL, NULL, 153, NULL, 3, 30, 'nNeurons'),
-('Value of the learning rate', 1, NULL, NULL, NULL, NULL, 154, NULL, 3, 30, 'eta')
+('Value of the learning rate', 1, NULL, NULL, NULL, NULL, 154, NULL, 3, 30, 'eta'),
+('X', 0, NULL, NULL, NULL, NULL, 155, NULL, 1, 33, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 156, NULL, 2, 33, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 157, NULL, 1, 34, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 158, NULL, 2, 34, NULL),
+('Number of rows', 1, NULL, NULL, NULL, NULL, 159, NULL, 3, 33, 'rows'),
+('Number of columns', 1, NULL, NULL, NULL, NULL, 160, NULL, 3, 33, 'columns'),
+('Number of training epochs', 1, NULL, NULL, NULL, NULL, 161, NULL, 3, 33, 'eHat'),
+('Number of rows', 1, NULL, NULL, NULL, NULL, 162, NULL, 3, 34, 'rows'),
+('Number of columns', 1, NULL, NULL, NULL, NULL, 163, NULL, 3, 34, 'columns'),
+('Number of training epochs', 1, NULL, NULL, NULL, NULL, 164, NULL, 3, 34, 'eHat')
 
 ;
 
