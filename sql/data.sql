@@ -38,6 +38,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 20, 2, 3, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 22, 2, 4, 'Pca'),
+('SMACOF (MDS)', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SMACOFMDS', NULL, NULL, NULL, NULL, 23, 1, 4, 'Smacof'),
+('SMACOF (MDS)', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SMACOFMDS', NULL, NULL, NULL, NULL, 24, 2, 4, 'Smacof'),
 ('DMA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'DMA', NULL, NULL, NULL, NULL, 25, 1, 4, 'Dma'),
 ('DMA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'DMA', NULL, NULL, NULL, NULL, 26, 2, 4, 'Dma'),
 ('Relative MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'RELMDS', NULL, NULL, NULL, NULL, 27, 1, 4, 'RelativeMds'),
@@ -180,7 +182,19 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('b', 1, NULL, NULL, NULL, NULL, 125, NULL, 3, 15, 'b'),
 ('Choose norm method', 1, NULL, NULL, NULL, NULL, 126, NULL, 3, 16, 'normMeanStd'),
 ('a', 1, NULL, NULL, NULL, NULL, 127, NULL, 3, 16, 'a'),
-('b', 1, NULL, NULL, NULL, NULL, 128, NULL, 3, 16, 'b')
+('b', 1, NULL, NULL, NULL, NULL, 128, NULL, 3, 16, 'b'),
+('X', 0, NULL, NULL, NULL, NULL, 129, NULL, 1, 23, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 130, NULL, 2, 23, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 131, NULL, 1, 24, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 132, NULL, 2, 24, NULL),
+('Projection space', 1, NULL, NULL, NULL, NULL, 133, NULL, 3, 23, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 134, NULL, 3, 23, 'maxIteration'),
+('Minimal stress change', 1, NULL, NULL, NULL, NULL, 135, NULL, 3, 23, 'eps'),
+('Does apply Seidel modification?', 1, NULL, NULL, NULL, NULL, 136, NULL, 3, 23, 'zeidel'),
+('Projection space', 1, NULL, NULL, NULL, NULL, 137, NULL, 3, 24, 'd'),
+('Maximum number of iteration', 1, NULL, NULL, NULL, NULL, 138, NULL, 3, 24, 'maxIteration'),
+('Minimal stress change', 1, NULL, NULL, NULL, NULL, 139, NULL, 3, 24, 'eps'),
+('Does apply Seidel modification?', 1, NULL, NULL, NULL, NULL, 140, NULL, 3, 24, 'zeidel')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES

@@ -81,3 +81,6 @@ Choose norm method: Pasirinkite normavimo būdą
 Mean a, Standard deviation b : Vidurkis a, dispersija b
 Interval [a;b] : Intervalas [a;b]
 Norm data : Normavimas
+Does apply Seidel modification? : Ar taikyti Zeidelio modifikaciją?
+Yes : Taip
+No : Ne
