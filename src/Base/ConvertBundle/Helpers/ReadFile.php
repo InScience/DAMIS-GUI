@@ -27,7 +27,7 @@ class ReadFile {
         else
             $delimiter = ',';
 
-        if (($handle = fopen('/' . $path, "r")) !== FALSE) {
+        if (($handle = fopen($path, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
                 $num = count($data);
                 $row++;
@@ -49,7 +49,7 @@ class ReadFile {
      * @return array
      */
     function getAttributes($path, $withType = false) {
-        $rows = $this->getRows(ltrim ($path,'/'), 'arff');
+        $rows = $this->getRows($path, 'arff');
         $attributes = array();
         foreach($rows as $row){
             if(strpos($row[key($row)], '@attribute') === 0){

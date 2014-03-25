@@ -34,8 +34,7 @@ class ConvertController extends Controller
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
-                $content = file_get_contents($this->get('kernel')->getRootDir()
-                    . '/../web' . $entity->getFilePath());
+                $content = file_get_contents('.' . $entity->getFilePath());
                 $content = str_replace(strtok($content, "\n"), '@relation ' . $filename, $content);
                 $response = new Response($content);
                 $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
@@ -45,11 +44,9 @@ class ConvertController extends Controller
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir()
-                    . '/../web/assets' . $entity->getFile()['fileName'] , $format);
+                $rows = $fileReader->getRows('.' . $entity->getFile()['fileName'] , $format);
             } elseif($format == 'xls' || $format == 'xlsx'){
-                $objPHPExcel = PHPExcel_IOFactory::load($this->get('kernel')->getRootDir()
-                    . '/../web/assets' . $entity->getFile()['fileName']);
+                $objPHPExcel = PHPExcel_IOFactory::load('.' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);
@@ -126,7 +123,7 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
+                $rows = $fileReader->getRows('.' .$entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
                     if($row[0] != '@data'){
                         unset($rows[$key]);
@@ -176,7 +173,7 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
+                $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
                     if($row[0] != '@data'){
                         unset($rows[$key]);
@@ -226,7 +223,7 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
+                $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
                 $file = '';
                 $first = true;
                 foreach($rows as $key => $row){
@@ -286,7 +283,7 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir() . '/../web' . $entity->getFilePath(), 'arff');
+                $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
                 $objPHPExcel = new PHPExcel();
                 $objPHPExcel->setActiveSheetIndex(0);
                 $colCount = 0;

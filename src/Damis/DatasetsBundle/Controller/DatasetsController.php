@@ -235,11 +235,9 @@ class DatasetsController extends Controller
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows($this->get('kernel')->getRootDir()
-                    . '/../web/assets' . $entity->getFile()['fileName'] , $format);
+                $rows = $fileReader->getRows('.' . $entity->getFile()['fileName'] , $format);
             } elseif($format == 'xls' || $format == 'xlsx'){
-                $objPHPExcel = PHPExcel_IOFactory::load($this->get('kernel')->getRootDir()
-                    . '/../web/assets' . $entity->getFile()['fileName']);
+                $objPHPExcel = PHPExcel_IOFactory::load('.' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);

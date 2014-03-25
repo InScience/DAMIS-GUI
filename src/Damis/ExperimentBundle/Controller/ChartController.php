@@ -37,8 +37,7 @@ class ChartController extends Controller
             $x = isset($params['x']) ? $params['x'] : null;
             $y = isset($params['y']) ? $params['y'] : null;
             $clsCol = isset($params['cls']) ? $params['cls'] : null;
-            $chart = $helper->classifieData(realpath($this->get('kernel')->getRootDir()
-                . '/../web' . $dataset->getFilePath()), $x, $y, $clsCol);
+            $chart = $helper->classifieData('.' . $dataset->getFilePath(), $x, $y, $clsCol);
 
             $context = [
                 "attrs" => $chart['attributes'],
