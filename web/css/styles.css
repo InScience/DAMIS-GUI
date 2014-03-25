@@ -63,6 +63,7 @@ body {
 .component-form-margin {
     margin-bottom: 5px;
 }
-#pca_type_projType label, #splitdata_type_reshufleObjects label {
+#pca_type_projType label, #splitdata_type_reshufleObjects label,
+#splitdata_type_normMeanStd label {
     margin-right: 10px;
 }

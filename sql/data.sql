@@ -32,6 +32,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Split data', 'split-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SPLITDATA', NULL, NULL, NULL, NULL, 12, 2, 2, 'SplitData'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 13, 1, 2, 'NoForm'),
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 14, 2, 2, 'NoForm'),
+('Norm data', 'transform-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'NORMDATA', NULL, NULL, NULL, NULL, 15, 1, 2, 'NormData'),
+('Norm data', 'transform-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'NORMDATA', NULL, NULL, NULL, NULL, 16, 2, 2, 'NormData'),
 ('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 19, 1, 3, 'NoForm'),
 ('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 20, 2, 3, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
@@ -168,7 +170,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 115, NULL, 1, 19, NULL),
 ('Y', 0, NULL, NULL, NULL, NULL, 116, NULL, 2, 19, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 117, NULL, 1, 20, NULL),
-('Y', 0, NULL, NULL, NULL, NULL, 118, NULL, 2, 20, NULL)
+('Y', 0, NULL, NULL, NULL, NULL, 118, NULL, 2, 20, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 119, NULL, 1, 15, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 120, NULL, 2, 15, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 121, NULL, 1, 16, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 122, NULL, 2, 16, NULL),
+('Choose norm method', 1, NULL, NULL, NULL, NULL, 123, NULL, 3, 15, 'normMeanStd'),
+('a', 1, NULL, NULL, NULL, NULL, 124, NULL, 3, 15, 'a'),
+('b', 1, NULL, NULL, NULL, NULL, 125, NULL, 3, 15, 'b'),
+('Choose norm method', 1, NULL, NULL, NULL, NULL, 126, NULL, 3, 16, 'normMeanStd'),
+('a', 1, NULL, NULL, NULL, NULL, 127, NULL, 3, 16, 'a'),
+('b', 1, NULL, NULL, NULL, NULL, 128, NULL, 3, 16, 'b')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES

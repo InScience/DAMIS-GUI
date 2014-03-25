@@ -77,3 +77,7 @@ First subset size : Pirmojo poaibio dydis
 Second subset size : Antrojo poaibio dydis
 Split data : Skaidymas
 Statistical data : Statistiniai primityvai
+Choose norm method: Pasirinkite normavimo būdą
+Mean a, Standard deviation b : Vidurkis a, dispersija b
+Interval [a;b] : Intervalas [a;b]
+Norm data : Normavimas
