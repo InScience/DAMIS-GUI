@@ -52,6 +52,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('SOM', 'som-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SOM', NULL, NULL, NULL, NULL, 34, 2, 5, 'Som'),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 35, 1, 5, 'Mlp'),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MLP', NULL, NULL, NULL, NULL, 36, 2, 5, 'Mlp'),
+('C 4.5', 'C45-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'C45', NULL, NULL, NULL, NULL, 37, 1, 5, 'C45'),
+('C 4.5', 'C45-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'C45', NULL, NULL, NULL, NULL, 38, 2, 5, 'C45'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 39, 1, 5, 'Kmeans'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 40, 2, 5, 'Kmeans'),
 ('Chart view', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
@@ -222,7 +224,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Number of training epochs', 1, NULL, NULL, NULL, NULL, 161, NULL, 3, 33, 'eHat'),
 ('Number of rows', 1, NULL, NULL, NULL, NULL, 162, NULL, 3, 34, 'rows'),
 ('Number of columns', 1, NULL, NULL, NULL, NULL, 163, NULL, 3, 34, 'columns'),
-('Number of training epochs', 1, NULL, NULL, NULL, NULL, 164, NULL, 3, 34, 'eHat')
+('Number of training epochs', 1, NULL, NULL, NULL, NULL, 164, NULL, 3, 34, 'eHat'),
+('X', 0, NULL, NULL, NULL, NULL, 165, NULL, 1, 37, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 166, NULL, 2, 37, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 167, NULL, 1, 38, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 168, NULL, 2, 38, NULL),
+('Confidence level', 1, NULL, NULL, NULL, NULL, 169, NULL, 3, 37, 'q'),
+('Size of training data', 1, NULL, NULL, NULL, NULL, 170, NULL, 3, 37, 'dL'),
+('Size of test data', 1, NULL, NULL, NULL, NULL, 171, NULL, 3, 37, 'dT'),
+('Confidence level', 1, NULL, NULL, NULL, NULL, 172, NULL, 3, 38, 'q'),
+('Size of training data', 1, NULL, NULL, NULL, NULL, 173, NULL, 3, 38, 'dL'),
+('Size of test data', 1, NULL, NULL, NULL, NULL, 174, NULL, 3, 38, 'dT')
 
 ;
 

@@ -90,3 +90,6 @@ Value of the learning rate : Mokymo greičio parametras
 Number of training epochs : Mokymų epochų skaičius
 Number of columns : Stulpelių skaičius
 Number of rows : Eilučių skaičius
+Confidence level : Pasikliovimo lygmuo
+Size of training data : Mokymo objektų kiekis
+Size of test data : Testavimo objektų kiekis
