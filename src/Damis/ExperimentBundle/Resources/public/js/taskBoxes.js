@@ -218,6 +218,16 @@
 					}
 				});
 
+                //Checking if its connected to file
+                if(componentType === 'Filter') {
+                    var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
+                    if(datasetId === false || datasetId === '')
+                        window.taskBoxes.toUnconnectedState(formWindow);
+                    else {
+                        window.componentForm.update(formWindow, datasetId);
+                    }
+                }
+
 				formWindow.dialog('open');
 			});
 
@@ -237,7 +247,46 @@
 		// generates task form id from the provided task box
 		getFormWindowId: function(taskBox) {
 			return taskBox instanceof $ ? taskBox.attr("id") + "-form": taskBox + "-form";
-		}
+		},
+
+        getConnectedTaskBoxDatasetId: function(taskBox) {
+            var ancestor = this.getAncestorTaskBoxId(taskBox);
+
+            if(ancestor == false)
+                return false;
+            else
+                return $('div#' + ancestor + '-form')
+                .find('.parameter-values input[value=OUTPUT_CONNECTION]')
+                .parent()
+                .find('input[name$=value]')
+                .val();
+        },
+
+        getAncestorTaskBoxId : function (taskBox) {
+            var connections = jsPlumb.getConnections({
+                target: taskBox
+            });
+
+            if(connections.length == 0)
+                return false;
+            else
+                return connections[0].sourceId;
+        },
+
+        toUnconnectedState: function(formWindow) {
+            formWindow.find(".plot-container").remove();
+            formWindow.find(".dynamic-container").hide();
+            var container = $("<div class=\"plot-container\">" + Translator.trans("This component should be connected to a selected file", {}, 'ExperimentBundle') + "</div>");
+            formWindow.append(container);
+            formWindow.dialog("option", "buttons", window.chart.notConnectedButtons());
+            formWindow.dialog("option", "width", "auto");
+        },
+
+        showConnectedForm : function(formWindow) {
+            formWindow.find(".plot-container").remove();
+            formWindow.find(".dynamic-container").show();
+            formWindow.dialog("option", "buttons", window.componentForm.allButtons());
+        }
 	}
 
 })();

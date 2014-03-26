@@ -19,8 +19,9 @@ class FilterType extends AbstractType {
                 'data' => 0,
                 'mapped' => false,
                 'multiple' => false,
-                'expanded' => true
-                ])
+                'expanded' => true,
+                'label' => 'Choose filtering result'
+            ])
             ->add('zValue', 'number', [
                 'precision' => 2,
                 'required' => true,
@@ -30,9 +31,14 @@ class FilterType extends AbstractType {
                         'value' => 0
                     ]),
                     new NotBlank()
-                ]
+                ],
+                'label' => 'Z value'
+            ])
+            ->add('attrIndex', 'choice', [
+                'choices' => $options['choices'],
+                'required' => true,
+                'label' => 'Attribute'
             ]);
-        // TODO : Add select with attributes
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {

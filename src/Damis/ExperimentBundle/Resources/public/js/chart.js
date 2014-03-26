@@ -395,7 +395,7 @@
 
 		// called when connection is deleted
 		connectionDeleted: function(srcComponentType, targetComponentType, connectionParams) {
-			if (srcComponentType == 'CHART' || targetComponentType == 'CHART') {
+			if (srcComponentType == 'Chart' || targetComponentType == 'Chart') {
 				var formWindow = $("#" + window.taskBoxes.getFormWindowId(connectionParams.iTaskBoxId));
 				this.toUnconnectedState(formWindow);
 			}

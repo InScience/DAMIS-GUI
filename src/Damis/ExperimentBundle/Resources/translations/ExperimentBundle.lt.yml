@@ -70,6 +70,9 @@ Square: Kvadratas
 Diamond: Rombas
 Triangle: Trikampis
 Cross: Kryžiukas
+This component should be connected to a selected file or an executed task in order to view results : Komponentas turi būti sujungtas su failo komponentu arba eksperimentas turi būti įvykdytas
+This component should be connected to a selected file : Komponentas turi būti sujungtas su failo komponentu
+Cross: Kryžiukas
 Choose object sort type : Pasirinkite objektų rikiavimą
 Order left intact : Tvarka nekeičiama
 Set splitting to files parameter values : Nurodykite skaidymo į failus parametrų reikšmes

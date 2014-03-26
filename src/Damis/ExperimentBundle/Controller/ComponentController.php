@@ -44,8 +44,21 @@ class ComponentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findOneBy(['id' => $id]);
 
+        $options = [];
+        $datasetId = $request->get('dataset_id');
+        if($datasetId > 0) {
+            /** @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
+            $dataset = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('DamisDatasetsBundle:Dataset')
+                ->findOneBy(['datasetId' => $datasetId]);
+            $helper = new ReadFile();
+            $attributes = $helper->getAttributes($dataset->getFilePath());
+            $options['choices'] = $attributes;
+        }
+
         $formType = 'Damis\ExperimentBundle\Form\Type\\' . $component->getFormType() . 'Type';
-        $form = $this->createForm(new $formType());
+        $form = $this->createForm(new $formType(), $options);
 
         if($request->getMethod() == 'POST') {
             $form->submit($request);

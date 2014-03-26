@@ -5,6 +5,7 @@
         url : null,
         valid : false,
         id : false,
+        type : null,
 
         init: function(componentType, formWindow) {
             if (componentType !='NewFile' && componentType != 'NoForm' && componentType != 'Chart' && componentType != 'UploadedFile' && componentType != 'Matrix') {
@@ -12,7 +13,7 @@
             }
         },
 
-        update: function(dialog) {
+        update: function(dialog, datasetId) {
             var form = dialog.find(".dynamic-container");
             if (form.length == 0)
                 var form = $("<div class=\"dynamic-container\"></div>");
@@ -21,8 +22,11 @@
             dialog.append(form);
             window.utils.showProgress();
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
+
             this.id = componentInput.val();
-            this.url = Routing.generate('component_form', {id : componentInput.val()});
+            this.url = Routing.generate('component_form', {id : componentInput.val() });
+            if(datasetId != null)
+                this.url += '?dataset_id=' + datasetId;
             $.ajax({
                 url: this.url,
                 context: form
