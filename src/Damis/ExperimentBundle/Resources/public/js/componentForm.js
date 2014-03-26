@@ -14,16 +14,18 @@
         },
 
         update: function(dialog, datasetId) {
+
             var form = dialog.find(".dynamic-container");
             if (form.length == 0)
                 var form = $("<div class=\"dynamic-container\"></div>");
+
             var componentInput = dialog.find(".component-selection select");
+            this.id = componentInput.val();
 
             dialog.append(form);
             window.utils.showProgress();
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
 
-            this.id = componentInput.val();
             this.url = Routing.generate('component_form', {id : componentInput.val() });
             if(datasetId != null)
                 this.url += '?dataset_id=' + datasetId;
@@ -60,7 +62,7 @@
         },
 
         doPost: function(context) {
-            var data = context.find('input[type=text],input[type=radio]:checked,input[type=hidden],input[type=number]').serialize();
+            var data = context.find('input[type=text],input[type=radio]:checked,input[type=hidden],input[type=number],select').serialize();
             $.post(this.url, data, function(resp) {
                 context.find(".dynamic-container").html(resp);
                 window.componentForm.isValid(context);
