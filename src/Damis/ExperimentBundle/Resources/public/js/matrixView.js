@@ -4,7 +4,7 @@
 		// prepare dialog, when component is unconnected 
 		toUnconnectedState: function(formWindow) {
 			formWindow.find(".matrix-container").remove();
-			var container = $("<div class=\"matrix-container\">" + gettext("This component should be connected to a selected file or an executed task in order to view results.") + "</div>");
+			var container = $("<div class=\"matrix-container\">" + Translator.trans("This component should be connected to a selected file or an executed task in order to view results.", {}, 'ExperimentBundle') + "</div>");
 			formWindow.append(container);
 			formWindow.dialog("option", "buttons", window.matrixView.reducedButtons());
 			formWindow.dialog("option", "width", "auto");
@@ -12,7 +12,7 @@
 
 		reducedButtons: function() {
 			var buttons = [{
-				"text": gettext('Cancel'),
+				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
 					$(this).dialog("close");
@@ -24,13 +24,13 @@
 		// all buttons for this component
 		allButtons: function() {
 			var buttons = [{
-				"text": gettext('Download'),
+				"text": Translator.trans('Download', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
 				"click": function(ev) {
 					var formWindow = $(this);
 					var downloadOptions = $(this).find(".download-options").clone(true);
 					downloadOptions.dialog({
-						"title": gettext("Select file type and destination"),
+						"title": Translator.trans("Select file type and destination", {}, 'ExperimentBundle'),
 						"modal": true,
 						"minWidth": 450,
 						"open": function() {
@@ -38,23 +38,31 @@
 							dialog.find(".ui-dialog-titlebar > button").remove();
 						},
 						"buttons": [{
-							"text": gettext("OK"),
+							"text": Translator.trans("OK", {}, 'ExperimentBundle'),
 							"class": "btn btn-primary",
 							"click": function(ev) {
+                                var data = window.matrixView.getOutputParamDetails(formWindow);
 								var format = $(this).find("input[name=file-type]:checked").val();
 								var dst = $(this).find("input[name=file-destination]:checked").val();
 								if (dst == 'midas') {
 									$(this).find(".not-implemented").show();
 								} else {
-									$(this).dialog("destroy");
-									var url = window.componentFormUrls['MATRIX VIEW'];
-									var data = window.matrixView.getOutputParamDetails(formWindow);
-									document.location.href = url + "?download=True&format=" + format + "&pv_name=" + data.pv_name + "&dataset_url=" + data.dataset_url;
+                                    //image = image.replace("image/png", "image/octet-stream");
+                                    var url = Routing.generate('matrix_view',{id : data["dataset_url"]});
+
+                                    // POST to server to obtain a downloadable result
+                                    var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
+                                    var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
+                                    myForm.append(formatInput);
+                                    $("body").append(myForm);
+                                    myForm.submit();
+                                    myForm.remove();
+                                    $(this).dialog("destroy");
 								}
 							}
 						},
 						{
-							"text": gettext("Cancel"),
+							"text": Translator.trans("Cancel", {}, 'ExperimentBundle'),
 							"class": "btn",
 							"click": function(ev) {
 								$(".not-implemented").hide();
@@ -75,9 +83,9 @@
                 this.toUnconnectedState(formWindow);
                 return;
             }
-			var url = window.componentFormUrls['MATRIX VIEW'];
+			var url = Routing.generate('matrix_view',{id : data["dataset_url"]});
 			formWindow.find(".matrix-container").remove();
-			var container = $("<div class=\"matrix-container\"><img style=\"display: block; width: 250px; margin:auto;\" width=\"250px\" src=\"/static/img/loading.gif\"/></div>");
+			var container = $("<div class=\"matrix-container\"><img style=\"display: block; width: 250px; margin:auto;\" width=\"250px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
             formWindow.dialog("option", "buttons", this.reducedButtons());
 			formWindow.append(container);
 			$.ajax({
@@ -92,7 +100,7 @@
 					formWindow.dialog("option", "buttons", window.matrixView.allButtons());
 					formWindow.dialog("option", "width", "auto");
 					var table = $(formWindow).find(".file-content-table");
-					var dataTable = window.matrixView.initTable(table);
+					//var dataTable = window.matrixView.initTable(table);
 				}
 			});
 		},
@@ -108,6 +116,7 @@
 				"bDestroy": true,
                 "bScrollCollapse": true
 			});
+
 		},
 
 		// get details of a parameter, that is connected to the current component input connection
@@ -124,7 +133,7 @@
 		},
 
 		doubleClick: function(componentType, formWindow) {
-			if (componentType == 'MATRIX VIEW') {
+			if (componentType == 'Matrix') {
 				formWindow.dialog("option", "width", 614);
 				formWindow.dialog("open");
 				this.update(formWindow);

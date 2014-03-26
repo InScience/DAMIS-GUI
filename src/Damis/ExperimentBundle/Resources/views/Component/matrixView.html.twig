@@ -1,0 +1,68 @@
+{% if id != null %}
+<div style="width: 614px; height:400px; overflow:auto;">
+    <table class="table table-bordered file-content-table">
+            <thead>
+            <tr class="active">
+                <th style="text-align: center; vertical-align: middle;">
+                    {{ 'Object No.'|trans({}, 'ExperimentBundle') }}
+                </th>
+                {% for attr in attributes %}
+                    <th style="text-align: center;">
+                        {{ attr['name'] }} <br/>
+                        ({{ attr['type'] }})
+                    </th>
+                {% endfor %}
+            </tr>
+            </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>
+                        {{ loop.index }}.
+                    </td>
+                {% for value in row %}
+                    <td>
+                        {{ value }}
+                    </td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endif %}
+
+<div style="display:none;" class="download-options">
+    <div>
+        {{ 'Select file type' | trans({}, 'ExperimentBundle')}}:<br />
+        <table>
+            <tbody>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-type" value="arff" checked="checked" />arff</td>
+                <td style="padding:5px"><input type="radio" name="file-type" value="txt" />txt</td>
+                <td style="padding:5px"><input type="radio" name="file-type" value="tab" />tab</td>
+            </tr>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-type" value="csv" />csv</td>
+                <td style="padding:5px"><input type="radio" name="file-type" value="xls" />xls</td>
+                <td style="padding:5px"><input type="radio" name="file-type" value="xls" />xlsx</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <div>
+        {{ 'Select destination' | trans({}, 'ExperimentBundle')}}:<br />
+        <table><tbody>
+            <tr>
+                <td style="padding:5px"><input type="radio" name="file-destination" value="user-computer" checked="checked" />{{ 'User computer' | trans({}, 'ExperimentBundle')}}</td>
+            </tr>
+            <tr>
+                <td style="padding:5px">
+                    <input type="radio" name="file-destination" value="midas" />{{ 'MIDAS' | trans({}, 'ExperimentBundle')}}
+                    <span style="display: none;" class="not-implemented helptext">{{ 'This functionality will be negotiated during the 6th activity.' | trans({}, 'ExperimentBundle')}}</span>
+                </td>
+            </tr>
+            </tbody></table>
+    </div>
+</div>

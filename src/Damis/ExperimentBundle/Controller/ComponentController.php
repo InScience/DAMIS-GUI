@@ -2,6 +2,7 @@
 
 namespace Damis\ExperimentBundle\Controller;
 
+use Base\ConvertBundle\Helpers\ReadFile;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -119,6 +120,48 @@ class ComponentController extends Controller
             'entities' => $pagination,
             'selected' => $id,
             'file' => $entity
+        );
+    }
+    /**
+     * Matrix view
+     *
+     * @Route("/experiment/component/{id}/matrixView.html", name="matrix_view", options={"expose" = true})
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function matrixViewAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = null;
+        $attributes = array();
+        $rows = array();
+        if($id == 'undefined')
+            $id = null;
+        else {
+            $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+            if($request->isMethod('POST')) {
+                return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+            } else {
+                $helper = new ReadFile();
+                $rows = $helper->getRows('.' . $entity->getFilePath(), 'arff');
+                foreach($rows as $key => $row){
+                    if($row[0] != '@data'){
+                        if(strpos($row[key($row)], '@attribute') === 0){
+                            $attr = explode(' ', $row[key($row)]);
+                                $attributes[] =  array('type' => $attr[2], 'name' => $attr[1]);
+                        }
+                        unset($rows[$key]);
+                    } else {
+                        unset($rows[$key]);
+                        break;
+                    }
+                }
+            }
+        }
+        return array(
+            'id' => $id,
+            'attributes' => $attributes,
+            'rows' => array_slice($rows, 0, 100)
         );
     }
 
