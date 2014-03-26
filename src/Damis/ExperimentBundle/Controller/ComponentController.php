@@ -44,7 +44,7 @@ class ComponentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findOneBy(['id' => $id]);
 
-        $options = [];
+        $options = ['choices' => []];
         $datasetId = $request->get('dataset_id');
         if($datasetId > 0) {
             /** @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
@@ -53,7 +53,7 @@ class ComponentController extends Controller
                 ->getRepository('DamisDatasetsBundle:Dataset')
                 ->findOneBy(['datasetId' => $datasetId]);
             $helper = new ReadFile();
-            $attributes = $helper->getAttributes($dataset->getFilePath());
+            $attributes = $helper->getAttributes('.' . $dataset->getFilePath());
             $options['choices'] = $attributes;
         }
 

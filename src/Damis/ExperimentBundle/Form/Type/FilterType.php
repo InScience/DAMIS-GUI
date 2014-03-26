@@ -35,7 +35,7 @@ class FilterType extends AbstractType {
                 'label' => 'Z value'
             ])
             ->add('attrIndex', 'choice', [
-                'choices' => $options['choices'],
+                'choices' => $options['data']['choices'],
                 'required' => true,
                 'label' => 'Attribute'
             ]);
