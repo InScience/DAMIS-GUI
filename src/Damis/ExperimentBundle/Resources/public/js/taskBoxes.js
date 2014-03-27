@@ -219,7 +219,7 @@
 				});
 
                 //Checking if its connected to file
-                if(componentType === 'Filter') {
+                if(componentType === 'Filter' || componentType === 'Select') {
                     var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
                     if(datasetId === false || datasetId === '')
                         window.taskBoxes.toUnconnectedState(formWindow);

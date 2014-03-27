@@ -52,7 +52,7 @@ class ReadFile {
         $rows = $this->getRows($path, 'arff');
         $attributes = array();
         foreach($rows as $row){
-            if(strpos($row[key($row)], '@attribute') === 0){
+            if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
                 $attr = explode(' ', $row[key($row)]);
                 if(!$withType)
                     $attributes[] = $attr[1];
@@ -61,6 +61,27 @@ class ReadFile {
             }
         }
 
+        return $attributes;
+    }
+
+    /**
+     * Returns file attributes with class attribute
+     *
+     * @param String $path
+      * @return array
+     */
+    function getClassAttr($path) {
+        $rows = $this->getRows($path, 'arff');
+        $attributes = [];
+        foreach($rows as $row){
+            if(strpos(strtolower($row[key($row)]), '@attribute class') === 0){
+                $attr = explode(' ', $row[key($row)]);
+                $attributes[] = $attr[1]. '_attr';
+            } else if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
+                $attr = explode(' ', $row[key($row)]);
+                    $attributes[] = $attr[1];
+            }
+        }
         return $attributes;
     }
 } 

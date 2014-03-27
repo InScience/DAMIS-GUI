@@ -125,7 +125,7 @@ class ConvertController extends Controller
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' .$entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
-                    if($row[0] != '@data'){
+                    if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
                         unset($rows[$key]);
@@ -175,7 +175,7 @@ class ConvertController extends Controller
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
-                    if($row[0] != '@data'){
+                    if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
                         unset($rows[$key]);
@@ -227,7 +227,7 @@ class ConvertController extends Controller
                 $file = '';
                 $first = true;
                 foreach($rows as $key => $row){
-                    if(strpos($row[0], '@attribute') === 0){
+                    if(strpos(strtolower($row[0]), '@attribute') === 0){
                         $header = explode(' ', $row[0]);
                         if(!$first)
                             $file .= ',';
@@ -235,7 +235,7 @@ class ConvertController extends Controller
                             $first = false;
                         $file .= $header[1];
                     }
-                    if($row[0] != '@data'){
+                    if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
                         $file .= PHP_EOL;
@@ -288,12 +288,12 @@ class ConvertController extends Controller
                 $objPHPExcel->setActiveSheetIndex(0);
                 $colCount = 0;
                 foreach($rows as $key => $row){
-                    if(strpos($row[0], '@attribute') === 0){
+                    if(strpos(strtolower($row[0]), '@attribute') === 0){
                         $header = explode(' ', $row[0]);
                         $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($colCount , 1, $header[1]);
                         $colCount++;
                     }
-                    if($row[0] != '@data'){
+                    if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
                         unset($rows[$key]);

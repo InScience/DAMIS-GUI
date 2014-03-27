@@ -34,6 +34,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('Transpose data', 'transpose-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TRANSPOSEDATA', NULL, NULL, NULL, NULL, 14, 2, 2, 'NoForm'),
 ('Norm data', 'transform-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'NORMDATA', NULL, NULL, NULL, NULL, 15, 1, 2, 'NormData'),
 ('Norm data', 'transform-data-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'NORMDATA', NULL, NULL, NULL, NULL, 16, 2, 2, 'NormData'),
+('Feature selection', 'select-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SELECT', NULL, NULL, NULL, NULL, 17, 1, 2, 'Select'),
+('Feature selection', 'select-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'SELECT', NULL, NULL, NULL, NULL, 18, 2, 2, 'Select'),
 ('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 19, 1, 3, 'NoForm'),
 ('Statistical data', 'statistical-primitives-icon.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'STATPRIMITIVES', NULL, NULL, NULL, NULL, 20, 2, 3, 'NoForm'),
 ('PCA', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'PCA', NULL, NULL, NULL, NULL, 21, 1, 4, 'Pca'),
@@ -242,7 +244,17 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('X', 0, NULL, NULL, NULL, NULL, 175, NULL, 1, 43, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 176, NULL, 1, 44, NULL),
 ('X', 0, NULL, NULL, NULL, NULL, 177, NULL, 1, 41, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 178, NULL, 1, 42, NULL)
+('X', 0, NULL, NULL, NULL, NULL, 178, NULL, 1, 42, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 179, NULL, 1, 17, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 180, NULL, 2, 17, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 181, NULL, 1, 18, NULL),
+('Y', 0, NULL, NULL, NULL, NULL, 182, NULL, 2, 18, NULL),
+('Attributes', 1, NULL, NULL, NULL, NULL, 183, NULL, 3, 17, 'attr'),
+('Selected attributes', 1, NULL, NULL, NULL, NULL, 184, NULL, 3, 17, 'selAttr'),
+('Class attribute', 1, NULL, NULL, NULL, NULL, 185, NULL, 3, 17, 'classAttr'),
+('Attributes', 1, NULL, NULL, NULL, NULL, 186, NULL, 3, 18, 'attr'),
+('Selected attributes', 1, NULL, NULL, NULL, NULL, 187, NULL, 3, 18, 'selAttr'),
+('Class attribute', 1, NULL, NULL, NULL, NULL, 188, NULL, 3, 18, 'classAttr')
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES

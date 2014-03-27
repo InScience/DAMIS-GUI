@@ -8,8 +8,10 @@ use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Damis\ExperimentBundle\Form\Type\FilterType;
+use Symfony\Component\HttpFoundation\Response;
 
 class ComponentController extends Controller
 {
@@ -44,7 +46,7 @@ class ComponentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findOneBy(['id' => $id]);
 
-        $options = ['choices' => []];
+        $options = ['choices' => [], 'class' => []];
         $datasetId = $request->get('dataset_id');
         if($datasetId > 0) {
             /** @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
@@ -54,7 +56,9 @@ class ComponentController extends Controller
                 ->findOneBy(['datasetId' => $datasetId]);
             $helper = new ReadFile();
             $attributes = $helper->getAttributes('.' . $dataset->getFilePath());
+            $class = $helper->getClassAttr('.' . $dataset->getFilePath());
             $options['choices'] = $attributes;
+            $options['class'] = $class;
         }
 
         $formType = 'Damis\ExperimentBundle\Form\Type\\' . $component->getFormType() . 'Type';
@@ -78,20 +82,25 @@ class ComponentController extends Controller
                         $response[$parameter->getId()] = $requestParams[$formParam][$parameter->getSlug()];
 
                 }
-
-                return $this->render(
+                $html = $this->renderView(
                     'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
                     [
                         'form' => $form->createView(),
                         'response' => json_encode($response),
                     ]
                 );
+                $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
             }
         }
-        return $this->render(
+        $html = $this->renderView(
             'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
             ['form' => $form->createView()]
         );
+        $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
     /**
      * User datasets list window
@@ -174,7 +183,7 @@ class ComponentController extends Controller
         return array(
             'id' => $id,
             'attributes' => $attributes,
-            'rows' => array_slice($rows, 0, 100)
+            'rows' => array_slice($rows, 0, 1000)
         );
     }
 

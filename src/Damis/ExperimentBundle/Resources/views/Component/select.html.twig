@@ -1,0 +1,74 @@
+{% block body %}
+    <div class="col-lg-12">
+        <form method="POST">
+            <input type="hidden" name="params" id="params" value="{{ response }}" />
+            <table>
+                <tr>
+                    <td>
+                        {{ form_label(form.attr) }}
+                    </td>
+                    <td></td>
+                    <td style="vertical-align: top;">
+                        {{ form_label(form.selAttr) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-group col-lg-4" style="vertical-align: top;">
+                        {{ form_widget(form.attr, {'attr': {'style': 'height:250px;'}}) }}
+                    </td>
+                    <td class="form-group col-lg-2" style="text-align: center;">
+                        <button class="btn btn-default shuttle-control-src-dst"
+                                style=" margin-bottom: 20px; margin-left: 4px;"><i class="glyphicon glyphicon-arrow-right"/></button>
+                        <br/>
+                        <button class="btn btn-default shuttle-control-dst-src"><i class="glyphicon glyphicon-arrow-left"/></button>
+                    </td>
+                    <td class="form-group col-lg-4" style="vertical-align: top;">
+                        {{ form_widget(form.selAttr, {'attr': {'style': 'height:150px;'}}) }}
+                        {{ form_errors(form.selAttr) }}
+                        <div style="margin-top: 15px;">
+                            {{ form_label(form.classAttr) }}
+                            {{ form_widget(form.classAttr) }}
+                        </div>
+                    </td>
+                </tr>
+                <div class="form-group col-md-12 component-form-margin">
+                    {{ form_errors(form.attr) }}
+                    {{ form_errors(form.classAttr) }}
+                </div>
+            </table>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+    <script>
+        (function() {
+            var $src = $('select[name="select_type[attr][]"]:visible');
+            var $dst = $('select[name="select_type[selAttr][]"]:visible');
+            $('.shuttle-control-src-dst:visible').on('click', function(event) {
+                event.preventDefault();
+                transfer($src, $dst);
+                $('select[name="select_type[attr][]"]:visible option').prop('selected', false);
+                $('select[name="select_type[selAttr][]"]:visible option').prop('selected', false);
+                return false;
+            });
+            $('.shuttle-control-dst-src:visible').on('click', function(event) {
+                event.preventDefault();
+                transfer($dst, $src);
+                $('select[name="select_type[attr][]"]:visible option').prop('selected', false);
+                $('select[name="select_type[selAttr][]"]:visible option').prop('selected', false);
+                return false;
+            });
+            var transfer = function(src, dst) {
+                dst.append($('option:selected', src).remove());
+                var options = $("option", dst);
+                options.sort(function(a, b) {
+                    var arel = parseInt($(a).attr('value'), 10) || 0;
+                    var brel = parseInt($(b).attr('value'), 10)|| 0;
+                    return arel == brel ? 0 : arel < brel ? -1 : 1
+                });
+                dst.empty().append(options);
+            };
+            $('button.submit:visible').click(function(){
+            });
+        })();
+    </script>
+{% endblock %}
