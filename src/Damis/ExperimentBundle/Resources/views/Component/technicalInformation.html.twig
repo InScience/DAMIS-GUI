@@ -1,36 +1,42 @@
-{% if id != null %}
-<div style="width: 614px; height:400px; overflow:auto;">
-    <table class="table table-bordered file-content-table">
-            <thead>
-            <tr class="active">
-                <th style="text-align: center; vertical-align: middle;">
-                    {{ 'Object No.'|trans({}, 'ExperimentBundle') }}
-                </th>
-                {% for attr in attributes %}
-                    <th style="text-align: center; vertical-align: middle;">
-                        {{ attr['name'] }} <br/>
-                        ({{ attr['type'] }})
-                    </th>
-                {% endfor %}
-            </tr>
-            </thead>
-        <tbody>
-            {% for row in rows %}
-                <tr>
-                    <td>
-                        {{ loop.index }}.
-                    </td>
-                {% for value in row %}
-                    <td>
-                        {{ value }}
-                    </td>
-                {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-    </div>
-{% endif %}
+<table class="table table-bordered" style="width:auto; max-width: 380px;">
+    <thead>
+        <tr class="active">
+            <th style="text-align: center; vertical-align: middle;">
+                {{ 'Parameter'|trans({}, 'ExperimentBundle') }}
+            </th>
+            <th style="text-align: center; vertical-align: middle;">
+                {{ 'Value'|trans({}, 'ExperimentBundle') }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                {{ 'Errors'|trans({}, 'ExperimentBundle') }}
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Calculation time'|trans({}, 'ExperimentBundle') }}
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Result file'|trans({}, 'ExperimentBundle') }}
+            </td>
+            <td>
+                {% if id != null %}
+                    <a href="{{ path('convert_arff', {'id' : id}) }}" style="display:block; max-width:250px; overflow : auto;">
+                        {{ app.request.getSchemeAndHttpHost() }}{{ file.filePath }}</a>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div style="display:none;" class="download-options">
     <div>

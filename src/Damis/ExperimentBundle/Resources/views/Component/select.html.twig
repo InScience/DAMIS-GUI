@@ -17,10 +17,10 @@
                         {{ form_widget(form.attr, {'attr': {'style': 'height:250px;'}}) }}
                     </td>
                     <td class="form-group col-lg-2" style="text-align: center;">
-                        <button class="btn btn-default shuttle-control-src-dst"
+                        <button title="{{ 'Add'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-src-dst"
                                 style=" margin-bottom: 20px; margin-left: 4px;"><i class="glyphicon glyphicon-arrow-right"/></button>
                         <br/>
-                        <button class="btn btn-default shuttle-control-dst-src"><i class="glyphicon glyphicon-arrow-left"/></button>
+                        <button title="{{ 'Remove'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-dst-src"><i class="glyphicon glyphicon-arrow-left"/></button>
                     </td>
                     <td class="form-group col-lg-4" style="vertical-align: top;">
                         {{ form_widget(form.selAttr, {'attr': {'style': 'height:150px;'}}) }}
@@ -69,6 +69,8 @@
             };
             $('button.submit:visible').click(function(){
             });
+            $('.shuttle-control-src-dst').tooltip();
+            $('.shuttle-control-dst-src').tooltip();
         })();
     </script>
 {% endblock %}

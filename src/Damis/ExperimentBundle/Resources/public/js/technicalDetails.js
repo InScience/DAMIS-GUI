@@ -30,18 +30,71 @@
         },
 
 		// all buttons for this component
-		allButtons: function() {
-			return window.technicalDetails.reducedButtons();
-		},
+        allButtons: function() {
+            var buttons = [{
+                "text": Translator.trans('Download', {}, 'ExperimentBundle'),
+                "class": "btn btn-primary",
+                "click": function(ev) {
+                    var formWindow = $(this);
+                    var downloadOptions = $(this).find(".download-options").clone(true);
+                    downloadOptions.dialog({
+                        "title": Translator.trans("Select file type and destination", {}, 'ExperimentBundle'),
+                        "modal": true,
+                        "minWidth": 450,
+                        "open": function() {
+                            var dialog = $(this).closest(".ui-dialog");
+                            dialog.find(".ui-dialog-titlebar > button").remove();
+                        },
+                        "buttons": [{
+                            "text": Translator.trans("OK", {}, 'ExperimentBundle'),
+                            "class": "btn btn-primary",
+                            "click": function(ev) {
+                                var data = window.matrixView.getOutputParamDetails(formWindow);
+                                var format = $(this).find("input[name=file-type]:checked").val();
+                                var dst = $(this).find("input[name=file-destination]:checked").val();
+                                if (dst == 'midas') {
+                                    $(this).find(".not-implemented").show();
+                                } else {
+                                    //image = image.replace("image/png", "image/octet-stream");
+                                    var url = Routing.generate('technical_information',{id : data["dataset_url"]});
+
+                                    // POST to server to obtain a downloadable result
+                                    var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
+                                    var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
+                                    myForm.append(formatInput);
+                                    $("body").append(myForm);
+                                    myForm.submit();
+                                    myForm.remove();
+                                    $(this).dialog("destroy");
+                                }
+                            }
+                        },
+                            {
+                                "text": Translator.trans("Cancel", {}, 'ExperimentBundle'),
+                                "class": "btn",
+                                "click": function(ev) {
+                                    $(".not-implemented").hide();
+                                    $(this).dialog("destroy");
+                                }
+                            }]
+                    });
+                }
+            }];
+            var reducedButtons = window.matrixView.reducedButtons();
+            return buttons.concat(reducedButtons);
+        },
 
 		// update dialog content with new data
 		update: function(formWindow) {
+            var boxId = window.taskBoxes.getBoxId(formWindow);
+            var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
 			formWindow.find(".technical-details-container").remove();
-			var container = $("<div class=\"technical-details-container\"><img width=\"250px\" src=\"/static/img/loading.gif\"/></div>");
+			var container = $("<div class=\"technical-details-container\"><img width=\"250px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
 			formWindow.append(container);
 			var data = window.technicalDetails.getOutputParamDetails(formWindow);
-            // TODO: sugeneruoti adresą informacijos gavimui
-            var url = null;
+            if(!datasetId)
+                datasetId = 'undefined';
+            var url = Routing.generate('technical_information', {id : datasetId});
 			$.ajax({
 				url: url,
 				data: data,
@@ -53,7 +106,7 @@
 				} else {
 					formWindow.dialog("option", "buttons", window.technicalDetails.allButtons());
 					formWindow.dialog("option", "minWidth", 0);
-					formWindow.dialog("option", "maxHeight", 500);
+					formWindow.dialog("option", "maxHeight", 400);
 					formWindow.dialog("option", "width", "auto");
 				}
 			});
@@ -87,7 +140,22 @@
 				var formWindow = $("#" + window.taskBoxes.getFormWindowId(connectionParams.iTaskBoxId));
 				this.toUnconnectedState(formWindow);
 			}
-		}
+		},
+
+        doubleClick: function(componentType, formWindow) {
+            if (componentType == 'TechnicalInfo') {
+                var boxId = window.taskBoxes.getBoxId(formWindow);
+                var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
+                if (datasetId == ""){
+                    this.toUnconnectedState(formWindow);
+                } else{
+                    formWindow.dialog("option", "width", 'auto');
+                    formWindow.dialog("open");
+                    this.update(formWindow);
+
+                }
+            }
+        }
 	}
 })();
 

@@ -187,4 +187,31 @@ class ComponentController extends Controller
         );
     }
 
+    /**
+     * Matrix view
+     *
+     * @Route("/experiment/component/{id}/technical/information.html", name="technical_information", options={"expose" = true})
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function technicalInformationAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = null;
+        if($id == 'undefined')
+            $id = null;
+        else {
+            $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+            if($request->isMethod('POST')) {
+                return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+            } else {
+           //@todo surasti workflow task pagal dataset
+            }
+        }
+        return array(
+            'id' => $id,
+            'file' => $entity
+        );
+    }
+
 }
