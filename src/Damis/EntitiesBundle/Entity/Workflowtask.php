@@ -39,6 +39,20 @@ class Workflowtask
     private $experiment;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="Message", type="text", nullable=true)
+     */
+    private $message;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ExecutionTime", type="integer", nullable=false)
+     */
+    private $executionTime;
+
+    /**
      * Set workflowtaskisrunning
      *
      * @param integer $workflowtaskisrunning
@@ -93,4 +107,34 @@ class Workflowtask
     {
         return $this->experiment;
     }
+
+    /**
+     * @param int $executionTime
+     */
+    public function setExecutionTime($executionTime) {
+        $this->executionTime = $executionTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExecutionTime() {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessage($message) {
+        $this->message = $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage() {
+        return $this->message;
+    }
+
+    
 }
