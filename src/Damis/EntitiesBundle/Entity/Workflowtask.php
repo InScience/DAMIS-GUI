@@ -48,7 +48,7 @@ class Workflowtask
     /**
      * @var integer
      *
-     * @ORM\Column(name="ExecutionTime", type="integer", nullable=false)
+     * @ORM\Column(name="ExecutionTime", type="integer", nullable=true)
      */
     private $executionTime;
 
@@ -136,5 +136,5 @@ class Workflowtask
         return $this->message;
     }
 
-    
+
 }
