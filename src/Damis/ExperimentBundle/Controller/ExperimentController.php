@@ -97,6 +97,8 @@ class ExperimentController extends Controller
         $isNew = !(boolean)$experiment;
         if ($isNew)
             $experiment = new Experiment();
+        elseif($experiment->getStatus()->getExperimentstatus() != 'SAVED')
+            $experiment = new Experiment();
 
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
