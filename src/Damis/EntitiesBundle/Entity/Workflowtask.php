@@ -53,6 +53,33 @@ class Workflowtask
     private $executionTime;
 
     /**
+     * @ORM\OneToMany(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue", mappedBy="workflowtask")
+     */
+    private $parameterValues;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->parameterValues = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @param mixed $parameterValues
+     */
+    public function setParameterValues($parameterValues) {
+        $this->parameterValues = $parameterValues;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParameterValues() {
+        return $this->parameterValues;
+    }
+
+
+    /**
      * Set workflowtaskisrunning
      *
      * @param integer $workflowtaskisrunning

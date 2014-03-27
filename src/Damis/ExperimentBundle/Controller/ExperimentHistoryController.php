@@ -41,7 +41,7 @@ class ExperimentHistoryController extends Controller
 
         //custom colums config
         $grid->hideColumns('id');
-        $grid->setDefaultOrder('id', 'ASC');
+        $grid->setDefaultOrder('id', 'DESC');
 
         /* @var $column \APY\DataGridBundle\Grid\Column\Column */
         $column = $grid->getColumn('name');
