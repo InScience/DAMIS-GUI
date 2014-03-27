@@ -20,15 +20,12 @@
 					});
 				});
 
-				formWindow = $("#" + window.taskBoxes.getFormWindowId(boxId));
-				var componentInput = $(formWindow).find(".component-selection select");
-
 				boxes[boxId] = {
 					boxId: boxId,
 					x: parseInt($box.css("left"), 10),
 					y: parseInt($box.css("top"), 10),
 					endpoints: endpoints,
-                    componentId: componentInput.val(),
+                    componentId: $box.attr('data-componentid'),
                     form_parameters: window.params.getParams(boxId)
 				};
 			});
@@ -69,7 +66,7 @@
                 var componentSettings = window.componentSettings.getComponentDetails({
                     componentId: box['componentId']
                 });
-				var taskBox = $(window.taskBoxes.assembleBoxHTML("", componentSettings['ico'], componentSettings['cluster_ico']));
+				var taskBox = $(window.taskBoxes.assembleBoxHTML(componentSettings['label'], componentSettings['ico'], componentSettings['cluster_ico'], box['componentId']));
 				taskBox.attr("id", box['boxId']);
 				taskBox.appendTo($("#flowchart-container"));
 				taskBox.css("left", box['x'] + "px");

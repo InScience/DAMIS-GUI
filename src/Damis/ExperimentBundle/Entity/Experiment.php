@@ -126,7 +126,7 @@ class Experiment
      */
     public function getName()
     {
-        return $this->Name;
+        return $this->name;
     }
 
     /**

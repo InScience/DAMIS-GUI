@@ -13,7 +13,7 @@
             var form = dialog.find(".dynamic-container");
             if (form.length == 0)
                 var form = $("<div class=\"dynamic-container\"></div>");
-            var componentInput = dialog.find(".component-selection select");
+            var componentInput = dialog.find(".component-id input");
 
             dialog.append(form);
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");

@@ -44,6 +44,10 @@ class ExperimentController extends Controller
             'clusters' => $clusters,
             'componentsCategories' => $componentsCategories,
             'components' => $components,
+            'workFlowState' => null,
+            'taskBoxesCount' => 0,
+            'experimentId' => null,
+            'experiemntTitle' => null
         ];
     }
 
@@ -51,11 +55,24 @@ class ExperimentController extends Controller
      * Edit experiment in workflow creation window
      *
      * @Route("/experiment/{id}/edit.html", name="edit_experiment")
-     * @Template()
+     * @Template("DamisExperimentBundle:Experiment:new.html.twig")
      */
     public function editAction($id)
     {
-        return array();
+        $data = $this->newAction();
+
+        /** @var $experiment Experiment */
+        $experiment = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Experiment')
+            ->findOneById($id);
+
+        $data['workFlowState'] = $experiment->getGuiData();
+        $data['taskBoxesCount'] = explode('***', $data['workFlowState'])[2];
+        $data['experimentId'] = $id;
+        $data['experimentTitle'] = $experiment->getName();
+
+        return $data;
     }
 
     /**
@@ -69,7 +86,18 @@ class ExperimentController extends Controller
     {
         $params = $request->request->all();
 
-        $experiment = new Experiment;
+        /* @var $experiment Experiment */
+        if($params['experiment-id'])
+            $experiment = $this->getDoctrine()
+                ->getRepository('DamisExperimentBundle:Experiment')
+                ->findOneBy(['id' => $params['experiment-id']]);
+        else
+            $experiment = false;
+
+        $isNew = !(boolean)$experiment;
+        if ($isNew)
+            $experiment = new Experiment();
+
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
@@ -78,7 +106,10 @@ class ExperimentController extends Controller
         $em->persist($experiment);
         $em->flush();
 
-        $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
+        if($isNew)
+            $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
+        else
+            $this->get('session')->getFlashBag()->add('success', 'Experiment successfully updated!');
 
         return [];
     }

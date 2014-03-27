@@ -2,10 +2,10 @@
 	window.taskBoxes = {
         currentBoxId : null,
 
-		assembleBoxHTML: function(boxName, icoUrl, clusterIcoUrl) {
+		assembleBoxHTML: function(boxName, icoUrl, clusterIcoUrl, componentId) {
 			var closeIco = '<a class="black-remove" href="#"><span class="component-tooltip glyphicon glyphicon-remove"></span></a>';
 			var clusterIco = '<span style="width: 20px; height: 20px; position: absolute; top:0; left:0; background: url(' + clusterIcoUrl + ')"></span>';
-			return '<div class="task-box"><img src=\"' + icoUrl + '\" width=\"64px\" height=\"64px\" />' + closeIco + clusterIco + '<div class=\"desc\"><div>' + Translator.trans(boxName, {}, 'ExperimentBundle') + '</div></div></div>';
+			return '<div class="task-box" data-componentId="' + componentId + '"><img src=\"' + icoUrl + '\" width=\"64px\" height=\"64px\" />' + closeIco + clusterIco + '<div class=\"desc\"><div>' + Translator.trans(boxName, {}, 'ExperimentBundle') + '</div></div></div>';
 		},
 
 		countBoxes: 0,
@@ -39,7 +39,7 @@
 		// modify box name according to component selection
 		setBoxName: function(taskBoxId, title) {
 			var nameContainer = $("#" + taskBoxId).find(".desc div");
-			nameContainer.html(title);
+			nameContainer.html(Translator.trans(title, {}, 'ExperimentBundle'));
 		},
 
 		// delete existing endpoints and create new ones to reflect the
@@ -98,7 +98,7 @@
 		},
 
 		// create modal window
-		createTaskFormDialog: function(taskForm, existingParameters, formWindowId, title) {
+		createTaskFormDialog: function(taskForm, existingParameters, formWindowId, title, componentId) {
 			var taskFormContainer = $("<div></div>");
 			taskFormContainer.attr("id", formWindowId);
 			taskFormContainer.addClass("task-window");
@@ -123,7 +123,7 @@
 			});
 
 			var componentType = window.componentSettings.getComponentDetails({
-				formWindowId: formWindowId
+				componentId: componentId
 			})['type'];
 			$.each(window.eventObservers.eventObservers, function(idx, o) {
 				if (o.init) {
@@ -161,7 +161,7 @@
 
 			//set component ID into the task form
 			var componentId = $(ui.draggable).find("input").val();
-			var componentInput = taskForm.find(".component-selection select");
+			var componentInput = taskForm.find(".component-id input");
 			componentInput.val(componentId);
 
 			// drop the task where it was dragged
@@ -170,7 +170,7 @@
 			var clusterIcoUrl = componentDetails['cluster_ico'];
 			var icoUrl = componentDetails['ico'];
 
-			var taskBox = $(window.taskBoxes.assembleBoxHTML(componentLabel, icoUrl, clusterIcoUrl));
+			var taskBox = $(window.taskBoxes.assembleBoxHTML(componentLabel, icoUrl, clusterIcoUrl, componentId));
 			taskBox.appendTo(taskContainer);
 			taskBox.css("left", ui.position.left + "px");
 			taskBox.css("top", ui.position.top + "px");
@@ -181,7 +181,7 @@
 			taskBox.attr("id", "task-box-" + count);
 
 			// create modal window for the form
-			window.taskBoxes.createTaskFormDialog(taskForm, null, window.taskBoxes.getFormWindowId(taskBox), componentLabel);
+			window.taskBoxes.createTaskFormDialog(taskForm, null, window.taskBoxes.getFormWindowId(taskBox), componentLabel, componentId);
 
 			this.addTaskBoxEventHandlers(taskBox);
 
@@ -209,7 +209,7 @@
 				var formWindowId = window.taskBoxes.getFormWindowId(boxId);
 				var formWindow = $("#" + formWindowId);
 				var componentType = window.componentSettings.getComponentDetails({
-					formWindow: formWindow
+					componentId : $(ev.currentTarget).attr('data-componentid')
 				})['type'];
 
 				$.each(window.eventObservers.eventObservers, function(idx, o) {

@@ -8,7 +8,7 @@
 
 		// send request to the server to obtain file upload form
 		update: function(dialog, url, id) {
-            var componentInput = dialog.find(".component-selection select");
+            var componentInput = dialog.find(".component-id input");
 			if (!url) {
                 url = Routing.generate('existing_file', {'id' : id});
 			}

@@ -10,7 +10,9 @@
     <div class="tab-content">
         <div>
         {% include "DamisExperimentBundle::messages.html.twig" %}
-        {% include "DamisExperimentBundle::_experiment_form.html.twig" with { components : components } %}
+        {% include "DamisExperimentBundle::_experiment_form.html.twig"
+        with { components : components, taskBoxesCount : taskBoxesCount, experimentId : experimentId,
+        experimentTitle : experimentTitle } %}
         <div id="workflow-editor-container">
             <div id="toolbox-container">
                 <ul class="nav nav-tabs" id="cluster-tabs">
@@ -72,6 +74,7 @@
 </div>
     <form id="file-upload-form" method="POST" action="{{ path('dataset_upload_handler') }}" enctype="multipart/form-data" target="file-upload-iframe" style="display:none;" autocomplete="off"></form>
     <iframe id="file-upload-iframe" name="file-upload-iframe" style="display: none;"></iframe>
+    <input type="hidden" name="id_experiment-workflow_state" id="id_experiment-workflow_state" value="{{ workFlowState }}">
 {% endblock %}
 
 {% block javascripts %}
@@ -111,7 +114,7 @@
 
             //decide if an empty canvas or a persisted worklow should be
             //displayed
-            var persistedStr = $("#id_experiment-workflow_state").val();
+            var persistedStr = $("input[name=id_experiment-workflow_state]").val();
             if (persistedStr) {
                 jsPlumb.setSuspendDrawing(true);
 

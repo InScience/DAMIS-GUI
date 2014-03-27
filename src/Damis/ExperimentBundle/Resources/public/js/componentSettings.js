@@ -14,7 +14,7 @@
 				} else if (params['formWindow']) {
 					formWindow = params['formWindow'];
 				}
-				var componentInput = $(formWindow).find(".component-selection select");
+				var componentInput = $(formWindow).find(".component-id input");
 				componentId = componentInput.val();
 			}
 			return this.details[componentId];

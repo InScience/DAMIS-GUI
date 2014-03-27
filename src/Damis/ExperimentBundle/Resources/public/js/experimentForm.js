@@ -100,10 +100,13 @@
 				} else {
 					$(taskBox).removeClass("error");
 				}
+                var componentId = $(taskBox).attr('data-componentId');
 				var componentLabel = window.componentSettings.getComponentDetails({
-					formWindow: taskForm
+					componentId: componentId
 				})['label'];
-				window.taskBoxes.createTaskFormDialog(taskForm, parameterFormset, window.taskBoxes.getFormWindowId($(taskBox)), componentLabel);
+                $(taskForm).find('input').val(componentId);
+				window.taskBoxes.createTaskFormDialog(taskForm, parameterFormset,
+                    window.taskBoxes.getFormWindowId($(taskBox)), componentLabel, componentId);
 				window.taskBoxes.setBoxName($(taskBox).attr("id"), componentLabel);
 				window.taskBoxes.addTaskBoxEventHandlers($(taskBox));
 			});
@@ -193,21 +196,15 @@
 					"click": function(ev) {
 						$(this).dialog("close");
 						if (action == "execute") {
-							window.experimentForm.updatePrefixes(parameterPrefixesUrl, function() {
-								var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
-								$("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
-								window.experimentForm.submit({});
-							},
-							{});
+                            var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
+                            $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
+                            window.experimentForm.submit({});
 						} else {
-							window.experimentForm.updatePrefixes(parameterPrefixesUrl, function(params) {
-								var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
-								$("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
-								window.experimentForm.submit({
-									"skipValidation": true
-								});
-							},
-							{});
+                            var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
+                            $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
+                            window.experimentForm.submit({
+                                "skipValidation": true
+                            });
 						}
 					}
 				}],
