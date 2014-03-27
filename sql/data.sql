@@ -56,6 +56,8 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('C 4.5', 'C45-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'C45', NULL, NULL, NULL, NULL, 38, 2, 5, 'C45'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 39, 1, 5, 'Kmeans'),
 ('K-MEANS', 'kmeans-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'KMEANS', NULL, NULL, NULL, NULL, 40, 2, 5, 'Kmeans'),
+('Technical details', 'technical-details-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TECHNICALINFO', NULL, NULL, NULL, NULL, 41, 1, 6, 'TechnicalInfo'),
+('Technical details', 'technical-details-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'TECHNICALINFO', NULL, NULL, NULL, NULL, 42, 2, 6, 'TechnicalInfo'),
 ('Matrix view', 'matrix-view-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MATRIX', NULL, NULL, NULL, NULL, 43, 1, 6, 'Matrix'),
 ('Matrix view', 'matrix-view-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'MATRIX', NULL, NULL, NULL, NULL, 44, 2, 6, 'Matrix'),
 ('Chart view', 'chart-ico.jpeg', 'http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl', 'CHART', NULL, NULL, NULL, NULL, 45, 1, 6, 'Chart'),
@@ -236,9 +238,11 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 ('Size of test data', 1, NULL, NULL, NULL, NULL, 171, NULL, 3, 37, 'dT'),
 ('Confidence level', 1, NULL, NULL, NULL, NULL, 172, NULL, 3, 38, 'q'),
 ('Size of training data', 1, NULL, NULL, NULL, NULL, 173, NULL, 3, 38, 'dL'),
-('Size of test data', 1, NULL, NULL, NULL, NULL, 174, NULL, 3, 38, 'dT')
+('Size of test data', 1, NULL, NULL, NULL, NULL, 174, NULL, 3, 38, 'dT'),
 ('X', 0, NULL, NULL, NULL, NULL, 175, NULL, 1, 43, NULL),
-('X', 0, NULL, NULL, NULL, NULL, 176, NULL, 1, 44, NULL)
+('X', 0, NULL, NULL, NULL, NULL, 176, NULL, 1, 44, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 177, NULL, 1, 41, NULL),
+('X', 0, NULL, NULL, NULL, NULL, 178, NULL, 1, 42, NULL)
 ;
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
