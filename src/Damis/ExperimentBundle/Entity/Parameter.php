@@ -100,6 +100,12 @@ class Parameter
      */
     private $slug;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ParameterPosition", type="integer", nullable=false)
+     */
+    private $position;
 
     /**
      * Set name
@@ -332,6 +338,22 @@ class Parameter
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * @param int $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 
 }
