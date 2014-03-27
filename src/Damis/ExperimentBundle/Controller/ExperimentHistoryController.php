@@ -65,7 +65,7 @@ class ExperimentHistoryController extends Controller
         $rowAction->setRouteParameters(array('id'));
         $rowAction->setRouteParametersMapping(array('id' => 'id'));
 
-        $rowAction2 = new RowAction($this->get('translator')->trans('Populate'), 'populate_experiment');
+        $rowAction2 = new RowAction($this->get('translator')->trans('Execute'), 'execute_experiment');
         $rowAction2->setRouteParameters(array('id'));
         $rowAction2->setRouteParametersMapping(array('id' => 'id'));
 

@@ -86,22 +86,34 @@ class ExperimentController extends Controller
     /**
      * Experiment execution
      *
-     * @Route("/experiment/execute.html", name="experiment_execute")
+     * @Route("/experiment/{id}/execute.html", name="execute_experiment")
      * @Template()
      */
-    public function executeAction()
-    {
+    public function executeAction($id){
+        $em = $this->getDoctrine()->getManager();
 
-        return [];
+        /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
+        $experiment = $em
+            ->getRepository('DamisExperimentBundle:Experiment')
+            ->findOneBy(['id' => $id]);
+
+        if (!$experiment) {
+            throw $this->createNotFoundException('Unable to find Experiment entity.');
+        }
+
+        $this->populate($id);
+
+        $experimentStatus = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'EXECUTING']);
+
+        $experiment->setStatus($experimentStatus);
+        $em->flush();
+
+        return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
-    /**
-     * Experiment execution
-     *
-     * @Route("/experiment/{id}/populate.html", name="populate_experiment")
-     * @Template()
-     */
-    public function populateAction($id){
+    public function populate($id){
         $em = $this->getDoctrine()->getManager();
 
         /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
@@ -192,13 +204,12 @@ class ExperimentController extends Controller
                     $connection = new Pvalueoutpvaluein;
                     $connection->setOutparametervalue($valOut);
                     $connection->setInparametervalue($valIn);
+                    $valIn->setParametervalue($valOut->getParametervalue());
                     $em->persist($connection);
                     $em->flush();
                 }
             }
         }
-
-        return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
 }

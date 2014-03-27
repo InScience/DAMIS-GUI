@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Workflowtask
  *
  * @ORM\Table(name="workflowtask", uniqueConstraints={@ORM\UniqueConstraint(name="WORKFLOWTASK_PK", columns={"WorkflowTaskID"})}, indexes={@ORM\Index(name="FK_WORKFLOWTASK_EXPERIMENT", columns={"ExperimentID"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Damis\EntitiesBundle\Entity\WorkflowtaskRepository")
  */
 class Workflowtask
 {

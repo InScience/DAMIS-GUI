@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project activeEnvironment="Default" name="DamisServer" resourceRoot="" soapui-version="4.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DAMIS" type="wsdl" bindingName="{DAMIS}DAMIS" soapVersion="1_1" anonymous="optional" definition="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl"><con:part><con:url>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl</con:url><con:content><![CDATA[<!--(DAMIS) edited with XMLSpy by Povilas (povilas.treigys[eta]inscience.lt) InScience.LT-->
+<con:soapui-project activeEnvironment="Default" name="DamisServer" resourceRoot="" soapui-version="4.6.4" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DAMIS" type="wsdl" bindingName="{DAMIS}DAMIS" soapVersion="1_1" anonymous="optional" definition="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl"><con:part><con:url>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi?wsdl</con:url><con:content><![CDATA[<!--(DAMIS) edited with XMLSpy by Povilas (povilas.treigys[eta]inscience.lt) InScience.LT-->
 <definitions name="DAMIS" targetNamespace="DAMIS" xmlns:tns="DAMIS" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="DAMIS" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/" xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <schema targetNamespace="DAMIS" elementFormDefault="unqualified" attributeFormDefault="unqualified" xmlns="http://www.w3.org/2001/XMLSchema">
@@ -705,27 +705,27 @@
          <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
       </dam:C45>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/C45Request"/></con:call></con:operation><con:operation isOneWay="false" action="" name="CLEANDATA" bindingOperationName="CLEANDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/C45Request"/></con:call></con:operation><con:operation isOneWay="false" action="" name="CLEANDATA" bindingOperationName="CLEANDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
    <soapenv:Header/>
    <soapenv:Body>
       <dam:CLEANDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-         <X xsi:type="xsd:string">?</X>
-         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+         <X xsi:type="xsd:string">http://158.129.140.146/Damis/Data/testData/test.arff</X>
+         <maxCalcTime xsi:type="xsd:int">1</maxCalcTime>
       </dam:CLEANDATA>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/CLEANDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="DMA" bindingOperationName="DMA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/CLEANDATARequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="DMA" bindingOperationName="DMA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
    <soapenv:Header/>
    <soapenv:Body>
       <dam:DMA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-         <X xsi:type="xsd:string">?</X>
-         <d xsi:type="xsd:int">?</d>
-         <maxIteration xsi:type="xsd:int">?</maxIteration>
-         <eps xsi:type="xsd:double">?</eps>
-         <neighbour xsi:type="xsd:double">?</neighbour>
-         <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
+         <X xsi:type="xsd:string">http://dev.damis.lt/assets/test/arabic-digits.arff</X>
+         <d xsi:type="xsd:int">1</d>
+         <maxIteration xsi:type="xsd:int">1</maxIteration>
+         <eps xsi:type="xsd:double">1</eps>
+         <neighbour xsi:type="xsd:double">1</neighbour>
+         <maxCalcTime xsi:type="xsd:int">1</maxCalcTime>
       </dam:DMA>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/DMARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="FILTERDATA" bindingOperationName="FILTERDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/DMARequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="FILTERDATA" bindingOperationName="FILTERDATA" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
    <soapenv:Header/>
    <soapenv:Body>
       <dam:FILTERDATA soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -736,7 +736,7 @@
          <maxCalcTime xsi:type="xsd:int">?</maxCalcTime>
       </dam:FILTERDATA>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/FILTERDATARequest"/></con:call></con:operation><con:operation isOneWay="false" action="" name="KMEANS" bindingOperationName="KMEANS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="DAMIS/DAMISPortType/FILTERDATARequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="KMEANS" bindingOperationName="KMEANS" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://158.129.140.146/Damis/cgi-bin/DAMISserver.cgi</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dam="DAMIS">
    <soapenv:Header/>
    <soapenv:Body>
       <dam:KMEANS soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Component
  *
  * @ORM\Table(name="component", uniqueConstraints={@ORM\UniqueConstraint(name="COMPONENT_PK", columns={"ComponentID"})}, indexes={@ORM\Index(name="FK_COMPONENT_CLUSTER", columns={"ClusterID"}), @ORM\Index(name="FK_COMPONENT_COMPONENTTYPE", columns={"ComponentTypeID"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Damis\ExperimentBundle\Entity\ComponentRepository")
  */
 class Component
 {

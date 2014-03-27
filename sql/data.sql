@@ -247,7 +247,8 @@ INSERT INTO `parameter` (`ParameterName`, `ParameterIsRequired`, `ParameterDefau
 
 INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
-	('FINISHED', 2);
+	('EXECUTING', 2),
+	('FINISHED', 3);
 
 -- --------------------------------------------------------
 -- help pages
