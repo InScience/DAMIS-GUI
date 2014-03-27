@@ -1,7 +1,7 @@
 (function() {
 	window.technicalDetails = {
 		init: function(componentType, formWindow) {
-			if (componentType == 'TECHNICAL DETAILS') {
+			if (componentType == 'TechnicalInfo') {
 				this.toUnconnectedState(formWindow);
 			}
 		},
@@ -9,7 +9,9 @@
 		// prepare dialog, when component is unconnected 
 		toUnconnectedState: function(formWindow) {
 			formWindow.find(".technical-details-container").remove();
-			var container = $("<div class=\"technical-details-container\">" + gettext("This component should be connected to an executed task in order to view results.") + "</div>");
+			var container = $("<div class=\"technical-details-container\">" +
+                Translator.trans("This component should be connected to an executed task in order to view results.", {}, 'ExperimentBundle') +
+                "</div>");
 			formWindow.append(container);
 			formWindow.dialog("option", "buttons", window.technicalDetails.reducedButtons());
 			formWindow.dialog("option", "minWidth", 0);
@@ -18,7 +20,7 @@
 
         reducedButtons: function() {
              var buttons = [{
-                 "text": gettext('Cancel'),
+                 "text":Translator.trans('Cancel', {}, 'ExperimentBundle'),
                  "class": "btn",
                  "click": function(ev) {
                      $(this).dialog("close");
@@ -34,11 +36,12 @@
 
 		// update dialog content with new data
 		update: function(formWindow) {
-			var url = window.componentFormUrls['TECHNICAL DETAILS'];
 			formWindow.find(".technical-details-container").remove();
 			var container = $("<div class=\"technical-details-container\"><img width=\"250px\" src=\"/static/img/loading.gif\"/></div>");
 			formWindow.append(container);
 			var data = window.technicalDetails.getOutputParamDetails(formWindow);
+            // TODO: sugeneruoti adresą informacijos gavimui
+            var url = null;
 			$.ajax({
 				url: url,
 				data: data,
@@ -58,6 +61,7 @@
 
 		// get details of a parameter, that is connected to the current component input connection
 		getOutputParamDetails: function(dialog) {
+            // TODO get data of dataset
 			var inParam = dialog.find("input[value=INPUT_CONNECTION]");
 			var srcRefField = inParam.closest("div").find("input[id$=source_ref]");
 			var oParamField = window.experimentForm.getOutputParam(srcRefField);
@@ -72,14 +76,14 @@
 
 		// called when connection is established
 		connectionEstablished: function(srcComponentType, targetComponentType, connectionParams) {
-			if (targetComponentType == 'TECHNICAL DETAILS') {
+			if (targetComponentType == 'TechnicalInfo') {
 				this.update($("#" + window.taskBoxes.getFormWindowId(connectionParams.iTaskBoxId)));
 			}
 		},
 
 		// called when connection is deleted
 		connectionDeleted: function(srcComponentType, targetComponentType, connectionParams) {
-			if (srcComponentType == 'TECHNICAL DETAILS' || targetComponentType == 'TECHNICAL DETAILS') {
+			if (srcComponentType == 'TechnicalInfo' || targetComponentType == 'TechnicalInfo') {
 				var formWindow = $("#" + window.taskBoxes.getFormWindowId(connectionParams.iTaskBoxId));
 				this.toUnconnectedState(formWindow);
 			}
