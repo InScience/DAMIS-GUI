@@ -19,6 +19,14 @@
 
         filterName : function(taskBoxId) {
             return /\d+/g.exec(taskBoxId)[0];
+        },
+
+        setParams : function(taskBoxId, parameters) {
+            taskBoxId = this.filterName(taskBoxId);
+            if(this.container[taskBoxId] == undefined)
+                this.container[taskBoxId] = [];
+
+            this.container[taskBoxId] = parameters;
         }
     }
 })();

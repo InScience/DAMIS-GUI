@@ -160,10 +160,13 @@ class DatasetsController extends Controller
      * @Route("/upload.html", name="dataset_upload")
      * @Template()
      */
-    public function uploadAction()
+    public function uploadAction(Request $request)
     {
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
+        var_dump($request->query);
+        die();
+        $parameters = $this->get('experiment')->getParameters();
         return array(
             'form' => $form->createView()
         );

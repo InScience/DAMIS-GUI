@@ -71,6 +71,7 @@
 				taskBox.appendTo($("#flowchart-container"));
 				taskBox.css("left", box['x'] + "px");
 				taskBox.css("top", box['y'] + "px");
+                window.params.setParams(box['boxId'], box.form_parameters);
 
 				$.each(box['endpoints'], function(i, e) {
 					var endpoint = window.endpoints.addEndpoint(e.isTarget, box['boxId'], e.anchor, e.parameters);
