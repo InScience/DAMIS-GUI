@@ -185,6 +185,7 @@ class ExperimentController extends Controller
             $workflowTask = new Workflowtask();
             $workflowTask->setExperiment($experiment);
             $workflowTask->setWorkflowtaskisrunning(false);
+            $workflowTask->setTaskBox($workflow->boxId);
             $em->persist($workflowTask);
             $em->flush();
 

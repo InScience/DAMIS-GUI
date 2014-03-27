@@ -41,6 +41,13 @@ class Workflowtask
     /**
      * @var string
      *
+     * @ORM\Column(name="TaskBox", type="string", length=256, nullable=true)
+     */
+    private $taskBox;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="Message", type="text", nullable=true)
      */
     private $message;
@@ -163,5 +170,18 @@ class Workflowtask
         return $this->message;
     }
 
+    /**
+     * @param string $taskBox
+     */
+    public function setTaskBox($taskBox) {
+        $this->taskBox = $taskBox;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaskBox() {
+        return $this->taskBox;
+    }
 
 }
