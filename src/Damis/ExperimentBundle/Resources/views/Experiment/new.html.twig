@@ -143,7 +143,9 @@
                         accept: spec.task,
                         drop: function(ev, ui) {
                             if ($(ui.draggable).hasClass(spec.task.replace(".", ""))) {
+                                jsPlumb.setSuspendDrawing(true);
                                 window.taskBoxes.createTaskBox(ev, ui, spec.canvas);
+                                jsPlumb.setSuspendDrawing(false, true);
                                 return;
                             }
                         }

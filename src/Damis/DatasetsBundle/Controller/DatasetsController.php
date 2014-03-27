@@ -174,7 +174,7 @@ class DatasetsController extends Controller
      *
      * @Route("/upload_handler.html", name="dataset_upload_handler")
      * @Method("POST")
-     * @Template()
+     * @Template("DamisDatasetsBundle:Datasets:upload.html.twig")
      */
     public function uploadHandlerAction(Request $request)
     {
