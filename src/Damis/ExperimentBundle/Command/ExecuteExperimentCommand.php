@@ -18,8 +18,6 @@ use \Symfony\Component\HttpFoundation\File\File;
 
 class ExecuteExperimentCommand extends ContainerAwareCommand
 {
-    const url_pre = 'http://www.damis.lt';
-
     protected function configure() {
         $this
             ->setName('experiment:execute')
@@ -29,18 +27,6 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln('Executing workflow task');
-
-//        $weeks_length = $input->getArgument('weeks_length');
-
-//        if (!$weeks_length) {
-//            $weeks_length = 3;
-//        } else {
-//            $weeks_length = (int)$weeks_length;
-//        }
-//        if ($weeks_length < 1) $weeks_length = 3;
-
-//        $date_from = new DateTime(date('Y-m-d'), new \DateTimeZone('Europe/Vilnius'));
-
 
         /* @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine')->getManager('default');
@@ -53,9 +39,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         foreach($workflowTasks as $task){
             //set to in progress
             $task->setWorkflowtaskisrunning(1);//running
-            //$em->flush(); //FOR TESTING PURPOSES ONLY
+            //$em->flush(); //COMMENT FOR TESTING PURPOSES ONLY
 
-            //collect all data
+            //----------------------------------------------------------------------------------------------------//
+            // collect all data
+            //----------------------------------------------------------------------------------------------------//
 
             //find damned component
             /* @var $component \Damis\ExperimentBundle\Entity\Component */
@@ -63,6 +51,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             if (!$component) continue;
 
             $params = array();
+
             $inDataset = null;
             foreach($task->getParameterValues() as $value){
                 if ($value->getParameter()->getConnectionType()->getId() == 1)
@@ -72,37 +61,58 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             }
 
             if (!$inDataset) continue;
-
-            $params['maxCalcTime'] = $task->getExperiment()->getMaxDuration();
-            if (!$params['maxCalcTime']) $params['maxCalcTime'] = 1;
-
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDataset]);
             if (!$dataset) continue;
-            //$params['X'] = $this::url_pre . $dataset->getFilePath();
-            $params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff'; //FOR TESTING PURPOSES ONLY
+
+            $params = array_merge(
+                array(
+                    'X' => $this->getContainer()->getParameter('project_full_host') . $dataset->getFilePath(),
+                ),
+                $params,
+                array(
+                    'maxCalcTime' => $task->getExperiment()->getMaxDuration()
+                )
+            );
+            if (!$params['maxCalcTime']) $params['maxCalcTime'] = 1;
+
+            //----------------------------------------------------------------------------------------------------//
 
             $output->writeln('Task id : ' . $task->getWorkflowtaskid());
             $output->writeln('Wsdl host : ' . $component->getWsdlRunHost());
             $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
             $output->writeln('Wsdl function parameters: ' . print_r($params, true));
 
-            //execute
+            //FOR TESTING PURPOSES ONLY
+            $params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
+
+            //----------------------------------------------------------------------------------------------------//
+            // execute
+            //----------------------------------------------------------------------------------------------------//
+
             /* @var $client \SoapClient */
-            $client = new \SoapClient($component->getWsdlRunHost());
+            $client = new \SoapClient($component->getWsdlRunHost(),
+                array(
+                    'trace' => 1,
+                    'exception' => 0
+                )
+            );
 
-            var_dump($client->__getTypes());
-
-            $result = array();
+            $result = false;
+            $error = false;
             try {
-                $result = $client->__soapCall($component->getWsdlCallFunction(), $params);
+                $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
             } catch (\SoapFault $e) {
-                var_dump($e->getMessage(), $e->detail);
+                $error['message'] = $e->getMessage();
+                $error['detail'] = @$e->detail;
             }
+
             var_dump($result);
+            var_dump($error);
+
 
             //set to finished
             $task->setWorkflowtaskisrunning(2);//finished
-            //$em->flush(); //FOR TESTING PURPOSES ONLY
+            //$em->flush(); //COMMENT FOR TESTING PURPOSES ONLY
         }
 
 
