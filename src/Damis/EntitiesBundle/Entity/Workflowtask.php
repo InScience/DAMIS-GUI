@@ -53,9 +53,9 @@ class Workflowtask
     private $message;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="ExecutionTime", type="integer", nullable=true)
+     * @ORM\Column(name="ExecutionTime", type="float", nullable=true)
      */
     private $executionTime;
 
