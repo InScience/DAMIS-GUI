@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\HttpFoundation\File\File;
+use Damis\DatasetsBundle\Entity\Dataset;
 
 class ExecuteExperimentCommand extends ContainerAwareCommand
 {
@@ -39,7 +40,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         foreach($workflowTasks as $task){
             //set to in progress
             $task->setWorkflowtaskisrunning(1);//running
-            //$em->flush(); //COMMENT FOR TESTING PURPOSES ONLY
+            $em->flush();
 
             //----------------------------------------------------------------------------------------------------//
             // collect all data
@@ -120,8 +121,42 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $task->setExecutionTime($result['calcTime']);
 
                 // save results file
+                $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
+                $temp_file = $temp_folder . '/' . basename($result['Y']);
+                $err = false;
+                try {
+                    file_put_contents($temp_file, file_get_contents($result['Y']));
+                } catch (Exception $e) {
+                    $err = true;
+                }
 
-                // set proper out and in if available and successfull
+                if ($err == false) {
+                    //create dataset
+                    $file = new File($temp_file);
+
+                    $file_entity = new Dataset();
+                    $file_entity->setUserId($task->getExperiment()->getUser());
+                    $file_entity->setDatasetTitle('experiment result');
+                    $file_entity->setDatasetCreated(time());
+                    $file_entity->setDatasetIsMidas(false);
+                    $file_entity->setHidden(true);
+                    $em->persist($file_entity);
+                    $em->flush();//HACK, ENTITY MUST BE PERSISTED, FOR MANUAL UPLOAD TO WORK
+
+                    $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+                    $mapping = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity, $ref_class, 'file');
+                    $file_data = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file);
+                    $file_entity->setFile($file_data);
+                    $file_entity->setFilePath($file_data['path']);
+                    $em->flush();
+
+                    // set proper out and in if available and successfull
+
+                } else {
+                    $task->setWorkflowtaskisrunning(3);//error!
+                    $task->setMessage('Save file error');
+                    $output->writeln('Save file error');
+                }
 
                 $output->writeln('Wsdl result got: ' . print_r($result, true));
             }
@@ -130,7 +165,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
             //set to finished
             $task->setWorkflowtaskisrunning(2);//finished
-            //$em->flush(); //COMMENT FOR TESTING PURPOSES ONLY
+            $em->flush();
         }
 
         //find finished experiments and set to finished

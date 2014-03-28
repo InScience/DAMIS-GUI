@@ -92,7 +92,26 @@ class Dataset
      */
     private $userId;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="Hidden", type="integer", nullable=true)
+     */
+    private $hidden;
 
+    /**
+     * @param int $hidden
+     */
+    public function setHidden($hidden) {
+        $this->hidden = $hidden;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHidden() {
+        return $this->hidden;
+    }
 
     /**
      * Set datasetIsMidas
@@ -257,6 +276,7 @@ class Dataset
      * @return string
      */
     public function getUserIdMd5Dataset(){
+        if ($this->hidden) return $this->getUserIdMd5()."/experiment";
         return $this->getUserIdMd5()."/dataset";
     }
 
