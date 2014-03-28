@@ -116,6 +116,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $task->setWorkflowtaskisrunning(3);//error!
                 $task->setMessage($error['message'] . ':' . $error['detail']);
                 $output->writeln('Wsdl result error: ' . print_r($error, true));
+                $em->flush();
+                continue;
             } else {
                 // set proper execution time
                 $task->setExecutionTime($result['calcTime']);
@@ -156,6 +158,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     $task->setWorkflowtaskisrunning(3);//error!
                     $task->setMessage('Save file error');
                     $output->writeln('Save file error');
+                    $em->flush();
+                    continue;
                 }
 
                 $output->writeln('Wsdl result got: ' . print_r($result, true));
@@ -165,6 +169,10 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
             //set to finished
             $task->setWorkflowtaskisrunning(2);//finished
+            $em->flush();
+
+            //FOR TESTING PURPOSES ONLY
+            $task->setWorkflowtaskisrunning(0);
             $em->flush();
         }
 
