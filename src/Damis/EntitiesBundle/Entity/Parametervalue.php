@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Parametervalue
  *
  * @ORM\Table(name="parametervalue", uniqueConstraints={@ORM\UniqueConstraint(name="PARAMETERVALUE_PK", columns={"ParameterValueID"})}, indexes={@ORM\Index(name="FK_PARAMETERVALUE_WORKFLOWTASK", columns={"WorkflowTaskID"}), @ORM\Index(name="FK_PARAMETERVALUE_PARAMETER", columns={"ParameterID"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Damis\EntitiesBundle\Entity\ParametervalueRepository")
  */
 class Parametervalue
 {
@@ -47,8 +47,6 @@ class Parametervalue
      * })
      */
     private $parameter;
-
-
 
     /**
      * Set parametervalue

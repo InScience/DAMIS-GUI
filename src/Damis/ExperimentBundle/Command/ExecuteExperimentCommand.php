@@ -53,7 +53,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $params = array();
 
             $inDataset = null;
-            foreach($task->getParameterValues() as $value){
+            foreach($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value){
                 if ($value->getParameter()->getConnectionType()->getId() == 1)
                     $inDataset = $value->getParametervalue();
                 if ($value->getParameter()->getConnectionType()->getId() == 3)
@@ -106,24 +106,34 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $error['detail'] = @$e->detail;
             }
 
-            var_dump($result);
-            var_dump($error);
+            //----------------------------------------------------------------------------------------------------//
+            // process result
+            //----------------------------------------------------------------------------------------------------//
 
+            if ($error) {
+                //save error message
+                $task->setWorkflowtaskisrunning(3);//error!
+                $task->setMessage($error['message'] . ':' . $error['detail']);
+                $output->writeln('Wsdl result error: ' . print_r($error, true));
+            } else {
+                // set proper execution time
+                $task->setExecutionTime($result['calcTime']);
+
+                // save results file
+
+                // set proper out and in if available and successfull
+
+                $output->writeln('Wsdl result got: ' . print_r($result, true));
+            }
+
+            //----------------------------------------------------------------------------------------------------//
 
             //set to finished
             $task->setWorkflowtaskisrunning(2);//finished
             //$em->flush(); //COMMENT FOR TESTING PURPOSES ONLY
         }
 
-
-
-
-        //save results file OR save error message
-        //set proper out and in if available and successfull
-
-
         //find finished experiments and set to finished
-
 
         $output->writeln('Executing finished');
     }
