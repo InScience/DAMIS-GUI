@@ -54,9 +54,12 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $params = array();
 
             $inDataset = null;
+            $outDatasetEntity = null;
             foreach($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value){
                 if ($value->getParameter()->getConnectionType()->getId() == 1)
                     $inDataset = $value->getParametervalue();
+                if ($value->getParameter()->getConnectionType()->getId() == 2)
+                    $outDatasetEntity = $value;
                 if ($value->getParameter()->getConnectionType()->getId() == 3)
                     $params[$value->getParameter()->getSlug()] = $value->getParametervalue();
             }
@@ -153,6 +156,10 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     $em->flush();
 
                     // set proper out and in if available and successfull
+                    if ($outDatasetEntity){
+                        $outDatasetEntity->setParametervalue($file_entity->getDatasetId());
+                    }
+
 
                 } else {
                     $task->setWorkflowtaskisrunning(3);//error!
