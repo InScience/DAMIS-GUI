@@ -67,6 +67,9 @@
 						// set OUTPUT_CONNECTION value for this component
 						var connectionInput = $(this).find(".parameter-values input[value=OUTPUT_CONNECTION]");
 						var valueInput = connectionInput.parent().find("input[name$=value]");
+                        var idInput = connectionInput.parent().find("input[name$=id]");
+                        window.params.addParam(window.taskBoxes.getBoxId($(this)), idInput.val(), fileUrl);
+
 						valueInput.val(fileUrl);
 						window.existingFile.update($(this), null, fileUrl);
 					}
