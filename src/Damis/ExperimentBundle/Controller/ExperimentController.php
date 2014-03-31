@@ -2,6 +2,7 @@
 
 namespace Damis\ExperimentBundle\Controller;
 
+use Damis\ExperimentBundle\Entity\Experimentstatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
 use Damis\ExperimentBundle\Entity\Component;
@@ -105,6 +106,10 @@ class ExperimentController extends Controller
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
+
+        $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')->findOneByExperimentstatusid(1);
+        if($experimentStatus)
+            $experiment->setStatus($experimentStatus);
         $em->persist($experiment);
         $em->flush();
 

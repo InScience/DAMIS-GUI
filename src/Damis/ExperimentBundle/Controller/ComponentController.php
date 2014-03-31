@@ -116,8 +116,8 @@ class ComponentController extends Controller
         $id  = $request->get('id');
         $entity = null;
         $entity = null;
-
-        if($request->get('data')) {
+        $data = json_decode($request->get('data'));
+        if($request->get('data') && !empty($data)) {
             $id = json_decode($request->get('data'))[0]->value;
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
         } else {
