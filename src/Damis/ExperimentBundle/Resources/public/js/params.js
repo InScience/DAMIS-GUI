@@ -10,7 +10,7 @@
             var updated = false;
             this.container[taskBoxId].forEach(function(row, index){
                 if(row.id == parameterId) {
-                    this.container[taskBoxId][index] =
+                    window.params.container[taskBoxId][index] =
                     {id : parameterId,
                      value : parameterValue};
                     updated = true;

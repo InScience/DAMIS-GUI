@@ -10,7 +10,7 @@
         init: function(componentType, formWindow) {
             if (componentType !='NewFile' && componentType != 'NoForm' && componentType != 'Chart'
                 && componentType != 'UploadedFile' && componentType != 'Matrix' && componentType != 'TechnicalInfo') {
-                this.update(formWindow);
+                this.update(formWindow, null);
             }
         },
 
@@ -28,8 +28,13 @@
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
 
             this.url = Routing.generate('component_form', {id : componentInput.val() });
+            var data = {}
+            if (window.params.getParams(window.taskBoxes.getBoxId(dialog)))
+                data['data'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId(dialog)));
+
             if(datasetId != null)
-                this.url += '?dataset_id=' + datasetId;
+                data['dataset_id'] = datasetId;
+
             $.ajax({
                 url: this.url,
                 context: form

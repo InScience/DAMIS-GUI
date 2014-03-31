@@ -14,7 +14,7 @@ class NormDataType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
-            $data = $_POST['splitdata_type'];
+            $data = $_POST['normdata_type'];
             if($object >= $data['b']) {
                 $context->addViolation('Interval upper bound must be greater than lower', [], null);
             }
@@ -69,7 +69,7 @@ class NormDataType extends AbstractType {
     }
 
     public function getName() {
-        return 'splitdata_type';
+        return 'normdata_type';
     }
 
 }
