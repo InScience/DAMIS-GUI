@@ -164,9 +164,16 @@ class DatasetsController extends Controller
     {
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
-        var_dump($request->query);
-        die();
-        $parameters = $this->get('experiment')->getParameters();
+        $data = $request->query;
+        if($data) {
+            $datasetId = json_decode($data->all()['dataset_url'])[0]->value;
+            $em = $this->getDoctrine()->getManager();
+            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
+            return [
+                'form' => $form->createView(),
+                'file' => $dataset
+            ];
+        }
         return array(
             'form' => $form->createView()
         );

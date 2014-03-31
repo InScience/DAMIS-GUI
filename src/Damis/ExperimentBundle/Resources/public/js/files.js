@@ -18,8 +18,8 @@
 				dialog.append(fileForm);
 				var outParam = dialog.find("input[value=OUTPUT_CONNECTION]").parent().find("input[name$=value]");
 				var data = {}
-				if (outParam.val()) {
-					data['dataset_url'] = outParam.val();
+				if (window.params.getParams(window.taskBoxes.getBoxId(dialog))) {
+					data['dataset_url'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId(dialog)));
 				}
 				window.utils.showProgress();
 				dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");

@@ -7,9 +7,21 @@
             if(this.container[taskBoxId] == undefined)
                 this.container[taskBoxId] = [];
 
-            this.container[taskBoxId][parameterId] =
-                {id : parameterId,
-                value : parameterValue};
+            var updated = false;
+            this.container[taskBoxId].forEach(function(row, index){
+                if(row.id == parameterId) {
+                    this.container[taskBoxId][index] =
+                    {id : parameterId,
+                     value : parameterValue};
+                    updated = true;
+                }
+            });
+
+            if(!updated) {
+                this.container[taskBoxId].push(
+                    {id : parameterId,
+                    value : parameterValue});
+            }
         },
 
         getParams : function(taskBoxId) {

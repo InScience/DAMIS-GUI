@@ -22,6 +22,8 @@ class Experiment {
     public function getParameters(array $parameterIds) {
         $repository = $this->em->getRepository('DamisExperimentBundle:Parameter');
 
+        if(count($parameterIds) == 0)
+            return [];
         if(count($parameterIds) == 1)
             return $repository->findOneBy(['id' => $parameterIds]);
     }
