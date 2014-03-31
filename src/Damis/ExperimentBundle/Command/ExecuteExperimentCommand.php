@@ -57,8 +57,9 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
 
             // filter out un callable functions
-            if ($component->getWsdlCallFunction() == "CHART") {
+            if (!$component->getWsdlRunHost()) {
                 //set to finished
+                $output->writeln('Unrunnable task, closing.');
                 $task->setWorkflowtaskisrunning(2);//finished
                 $em->flush();
                 continue;
@@ -189,11 +190,15 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             //----------------------------------------------------------------------------------------------------//
 
             //set to finished
+            $output->writeln('Task finished, closing.');
             $task->setWorkflowtaskisrunning(2);//finished
             $em->flush();
         }
 
-        //find finished experiments and set to finished
+        //----------------------------------------------------------------------------------------------------//
+        // find tasks which cannot be run, i.e. in file tasks and set to finished
+        //----------------------------------------------------------------------------------------------------//
+
         $workflowTasksUn = $em->getRepository('DamisEntitiesBundle:Workflowtask')->getUnrunableTasks(100);
         foreach($workflowTasksUn as $taskUn){
             $output->writeln('==============================');
@@ -202,6 +207,10 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $taskUn->setWorkflowtaskisrunning(2);//finished
         }
         $em->flush();
+
+        //----------------------------------------------------------------------------------------------------//
+        // find finished experiments and set to finished
+        //----------------------------------------------------------------------------------------------------//
 
         $experimentsToCloe = $em->getRepository('DamisExperimentBundle:Experiment')->getClosableExperiments(100);
         $experimentStatus = $em
@@ -214,6 +223,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $exCl->setStatus($experimentStatus);//finished
         }
         $em->flush();
+
+        //----------------------------------------------------------------------------------------------------//
 
         $output->writeln('==============================');
         $output->writeln('Executing finished');

@@ -36,7 +36,7 @@ class Component
     /**
      * @var string
      *
-     * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=true)
+     * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=false)
      */
     private $wsdlCallFunction;
 

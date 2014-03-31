@@ -15,10 +15,9 @@ class ExperimentRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->select('e')
-            ->leftJoin('e.workflowtasks', 'w')
+            ->leftJoin('e.workflowtasks', 'w', 'with', 'w.experiment = e and (w.workflowtaskisrunning = 0 or w.workflowtaskisrunning = 1 or w.workflowtaskisrunning = 3)')
             ->andWhere('e.status = 2')
-            ->andWhere('w.workflowtaskisrunning != 0')
-            ->andWhere('w.workflowtaskisrunning != 3')
+            ->andWhere('w.workflowtaskid is null')
             ->setMaxResults($limit);
 
         return $query->getQuery()->getResult();
