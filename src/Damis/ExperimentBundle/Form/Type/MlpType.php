@@ -15,13 +15,13 @@ class MlpType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
             $mlp = $_POST['mlp_type'];
-            if($object + $mlp['testData'] + $mlp['validationData'] != 100) {
+            if($object + $mlp['dT'] + $mlp['dV'] != 100) {
                 $context->addViolation('Sum of data fields should be 100%', [], null);
             }
         };
 
         $builder
-        ->add('maxIterations', 'integer', [
+        ->add('maxIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
                 'constraints' => [
@@ -41,7 +41,7 @@ class MlpType extends AbstractType {
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'col-md-7']
             ])
-        ->add('firLayer', 'integer', [
+        ->add('h1pNo', 'integer', [
                 'required' => true,
                 'precision' => 0,
                 'data' => 5,
@@ -59,7 +59,7 @@ class MlpType extends AbstractType {
                 'label' => 'First layer',
                 'attr' => ['class' => 'form-control']
             ])
-        ->add('secLayer', 'integer', [
+        ->add('h2pNo', 'integer', [
                 'required' => true,
                 'data' => 0,
                 'constraints' => [
@@ -76,7 +76,7 @@ class MlpType extends AbstractType {
                 'label' => 'Second layer',
                 'attr' => ['class' => 'form-control']
             ])
-        ->add('thrLayer', 'integer', [
+        ->add('h3pNo', 'integer', [
                 'required' => true,
                 'data' => 0,
                 'constraints' => [
@@ -93,7 +93,7 @@ class MlpType extends AbstractType {
                 'label' => 'Third layer',
                 'attr' => ['class' => 'form-control']
             ])
-        ->add('trainingData', 'number', [
+        ->add('dL', 'number', [
                 'required' => true,
                 'data' => 80,
                 'constraints' => [
@@ -107,7 +107,7 @@ class MlpType extends AbstractType {
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'col-md-7']
             ])
-        ->add('testData', 'number', [
+        ->add('dT', 'number', [
                 'required' => true,
                 'data' => 10,
                 'constraints' => [
@@ -120,7 +120,7 @@ class MlpType extends AbstractType {
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'col-md-7']
             ])
-        ->add('validationData', 'number', [
+        ->add('dV', 'number', [
                 'required' => true,
                 'data' => 10,
                 'constraints' => [

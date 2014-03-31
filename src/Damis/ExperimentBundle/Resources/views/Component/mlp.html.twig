@@ -4,56 +4,56 @@
             <input type="hidden" name="params" id="params" value="{{ response }}" />
             <p>{{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}</p>
             <div class="form-group">
-                {{ form_label(form.maxIterations) }}
+                {{ form_label(form.maxIteration) }}
                 <div class="col-md-4">
-                    {{ form_widget(form.maxIterations) }}
+                    {{ form_widget(form.maxIteration) }}
                 </div>
             </div>
-            <div class="form-group" style="margin-top:60px">{{ form_errors(form.maxIterations) }}</div>
+            <div class="form-group" style="margin-top:60px">{{ form_errors(form.maxIteration) }}</div>
             <div class="form-group">
                 <table border="0" style="width:500px;">
                     <tr>
                         <td></td>
-                        <td>{{ form_label(form.firLayer) }}</td>
-                        <td>{{ form_label(form.secLayer) }}</td>
-                        <td>{{ form_label(form.thrLayer) }}</td>
+                        <td>{{ form_label(form.h1pNo) }}</td>
+                        <td>{{ form_label(form.h2pNo) }}</td>
+                        <td>{{ form_label(form.h3pNo) }}</td>
                     </tr>
                     <tr>
                         <td><span>{{ 'Number of hidden layers' | trans({}, 'ExperimentBundle') }}</span></td>
-                        <td><div class="col-sm-11">{{ form_widget(form.firLayer) }}</div></td>
-                        <td><div class="col-sm-11">{{ form_widget(form.secLayer) }}</div></td>
-                        <td><div class="col-sm-11">{{ form_widget(form.thrLayer) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.h1pNo) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.h2pNo) }}</div></td>
+                        <td><div class="col-sm-11">{{ form_widget(form.h3pNo) }}</div></td>
                     </tr>
                 </table>
-                {{ form_errors(form.firLayer) }}
-                {{ form_errors(form.secLayer) }}
-                {{ form_errors(form.thrLayer) }}
+                {{ form_errors(form.h1pNo) }}
+                {{ form_errors(form.h2pNo) }}
+                {{ form_errors(form.h3pNo) }}
             </div>
             <div class="form-group">
-                {{ form_label(form.trainingData) }}
+                {{ form_label(form.dL) }}
                 <div class="col-sm-4">
-                    {{ form_widget(form.trainingData) }}
+                    {{ form_widget(form.dL) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.trainingData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dL) }}</div>
             <div class="form-group">
-                {{ form_label(form.testData) }}
+                {{ form_label(form.dT) }}
                 <div class="col-sm-4">
-                    {{ form_widget(form.testData) }}
+                    {{ form_widget(form.dT) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.testData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dT) }}</div>
             <div class="form-group">
-                {{ form_label(form.validationData) }}
+                {{ form_label(form.dV) }}
                 <div class="col-sm-4">
-                    {{ form_widget(form.validationData) }}
+                    {{ form_widget(form.dV) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;">%</div>
 
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.validationData) }}</div>
+            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dV) }}</div>
             {{ form_widget(form._token) }}
         </form>
     </div>
