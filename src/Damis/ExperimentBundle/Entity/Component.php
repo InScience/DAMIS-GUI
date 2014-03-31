@@ -29,14 +29,14 @@ class Component
     /**
      * @var string
      *
-     * @ORM\Column(name="ComponentWSDLRunHost", type="string", length=255, nullable=false)
+     * @ORM\Column(name="ComponentWSDLRunHost", type="string", length=255, nullable=true)
      */
     private $wsdlRunHost;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=false)
+     * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=true)
      */
     private $wsdlCallFunction;
 
