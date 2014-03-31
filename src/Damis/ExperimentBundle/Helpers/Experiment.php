@@ -26,6 +26,8 @@ class Experiment {
             return [];
         if(count($parameterIds) == 1)
             return $repository->findOneBy(['id' => $parameterIds]);
+        if(count($parameterIds) > 1)
+            return $repository->findBy(['id' => $parameterIds]);
     }
 
 

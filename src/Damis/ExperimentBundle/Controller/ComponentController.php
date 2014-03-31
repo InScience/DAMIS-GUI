@@ -3,6 +3,8 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Base\ConvertBundle\Helpers\ReadFile;
+use Damis\ExperimentBundle\Entity\Parameter;
+use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -64,6 +66,26 @@ class ComponentController extends Controller
         $formType = 'Damis\ExperimentBundle\Form\Type\\' . $component->getFormType() . 'Type';
         $form = $this->createForm(new $formType(), $options);
 
+        $data = json_decode($request->get('data'));
+        if($request->getMethod() != 'POST' && !empty($data)) {
+            $parametersIds = [];
+            $values = [];
+            foreach($data as $parameter) {
+                $parametersIds[$parameter->id] = $parameter->id;
+                $values[$parameter->id] = $parameter->value;
+            }
+
+            /** @var $helper ExperimentHelper */
+            $helper = $this->get('experiment');
+            $parameters = $helper->getParameters($parametersIds);
+
+            /** @var $param Parameter */
+            foreach($parameters as $param)
+                $form->get($param->getSlug())->submit($values[$param->getId()]);
+
+
+        }
+
         if($request->getMethod() == 'POST') {
             $form->submit($request);
             if ($form->isValid()) {
@@ -94,10 +116,12 @@ class ComponentController extends Controller
                 return $response;
             }
         }
+
         $html = $this->renderView(
             'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
             ['form' => $form->createView()]
         );
+
         $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));
         $response->headers->set('Content-Type', 'application/json');
         return $response;

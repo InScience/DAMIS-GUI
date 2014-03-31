@@ -37,7 +37,8 @@
 
             $.ajax({
                 url: this.url,
-                context: form
+                context: form,
+                data: data
             }).done(function(resp) {
                 $(this).html(resp['html']);
                 window.utils.countChange($(this));
