@@ -6,50 +6,50 @@
                 {{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}
             </p>
             <div class="form-group component-form-margin">
-                {{ form_label(form.projectionSpace) }}
+                {{ form_label(form.d) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.projectionSpace) }}
+                {{ form_widget(form.d) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.projectionSpace) }}
+                {{ form_errors(form.d) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.iterations) }}
+                {{ form_label(form.maxIteration) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.iterations) }}
+                {{ form_widget(form.maxIteration) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.iterations) }}
+                {{ form_errors(form.maxIteration) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.minimalStress) }}
+                {{ form_label(form.eps) }}
                 <div class="col-md-3 component-form-margin">
-                    {{ form_widget(form.minimalStress) }}
+                    {{ form_widget(form.eps) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.minimalStress) }}
+                {{ form_errors(form.eps) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.basicObjects) }}
+                {{ form_label(form.noOfBaseVectors) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.basicObjects) }}
+                {{ form_widget(form.noOfBaseVectors) }}
                 </div>
                 <div class="col-sm-1" style="margin-left:-25px;padding-top: 6px;">%</div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.basicObjects) }}
+                {{ form_errors(form.noOfBaseVectors) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.strategy) }}
+                {{ form_label(form.selStrategy) }}
                 <div class="col-md-5 component-form-margin">
-                {{ form_widget(form.strategy) }}
+                {{ form_widget(form.selStrategy) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.strategy) }}
+                {{ form_errors(form.selStrategy) }}
             </div>
             {{ form_widget(form._token) }}
         </form>

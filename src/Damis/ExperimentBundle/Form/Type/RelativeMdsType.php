@@ -13,7 +13,7 @@ class RelativeMdsType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-        ->add('projectionSpace', 'integer', [
+        ->add('d', 'integer', [
                 'required' => true,
                 'data' => 2,
                 'attr' => array('class' => 'form-control'),
@@ -31,7 +31,7 @@ class RelativeMdsType extends AbstractType {
                 'label' => 'Projection space',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('iterations', 'integer', [
+        ->add('maxIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
                 'attr' => array('class' => 'form-control'),
@@ -51,7 +51,7 @@ class RelativeMdsType extends AbstractType {
                 'label' => 'Maximum number of iteration',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('basicObjects', 'integer', [
+        ->add('noOfBaseVectors', 'integer', [
                 'required' => true,
                 'data' => 1,
                 'attr' => array('class' => 'form-control'),
@@ -71,7 +71,7 @@ class RelativeMdsType extends AbstractType {
                 'label' => 'Relative number of basis objects',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('strategy', 'choice', [
+        ->add('selStrategy', 'choice', [
                 'required' => true,
                 'choices' => array(
                     0 => 'Random',
@@ -83,7 +83,7 @@ class RelativeMdsType extends AbstractType {
                 'label_attr' => ['class' => 'col-md-7'],
 
             ])
-        ->add('minimalStress', 'text', [
+        ->add('eps', 'text', [
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'data' => '0.0001',
