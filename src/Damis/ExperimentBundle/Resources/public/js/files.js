@@ -16,7 +16,7 @@
 			if (fileForm.length == 0) {
 				var fileForm = $("<div class=\"dynamic-container\"></div>");
 				dialog.append(fileForm);
-				var outParam = dialog.find("input[value=OUTPUT_CONNECTION]").parent().find("input[name$=value]");
+
 				var data = {}
 				if (window.params.getParams(window.taskBoxes.getBoxId(dialog))) {
 					data['dataset_url'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId(dialog)));

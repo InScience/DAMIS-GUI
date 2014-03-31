@@ -115,10 +115,17 @@ class ComponentController extends Controller
         $sort = $request->get('order_by');
         $id  = $request->get('id');
         $entity = null;
-        if($id == 'undefined')
-            $id = null;
-        else
+        $entity = null;
+
+        if($request->get('data')) {
+            $id = json_decode($request->get('data'))[0]->value;
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        } else {
+            if($id == 'undefined')
+                $id = null;
+            else
+                $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        }
 
         $user = $this->get('security.context')->getToken()->getUser();
         if($sort == 'titleASC')

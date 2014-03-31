@@ -20,11 +20,11 @@
 			} else {
 				fileList = container.find(".file-list");
 			}
-			var outParam = dialog.find("input[value=OUTPUT_CONNECTION]").parent().find("input[name$=value]");
-			var data = {}
-			if (outParam.val()) {
-				data['dataset_url'] = outParam.val();
-			}
+
+            var data = {}
+            if (window.params.getParams(window.taskBoxes.getBoxId(dialog))) {
+                data['data'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId(dialog)));
+            }
 			dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
 			window.utils.showProgress();
 			$.ajax({
