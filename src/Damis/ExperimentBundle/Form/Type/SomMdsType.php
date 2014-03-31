@@ -13,7 +13,7 @@ class SomMdsType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-        ->add('rowsNumber', 'integer', [
+        ->add('rows', 'integer', [
                 'required' => true,
                 'data' => 10,
                 'attr' => array('class' => 'form-control'),
@@ -33,7 +33,7 @@ class SomMdsType extends AbstractType {
                 'label' => 'Number of rows of SOM',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('colsNumber', 'integer', [
+        ->add('columns', 'integer', [
                 'required' => true,
                 'data' => 10,
                 'attr' => array('class' => 'form-control'),
@@ -53,7 +53,7 @@ class SomMdsType extends AbstractType {
                 'label' => 'Number of columns of SOM',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('epochsNumber', 'integer', [
+        ->add('eHat', 'integer', [
                 'required' => true,
                 'data' => 100,
                 'attr' => array('class' => 'form-control'),
@@ -73,7 +73,7 @@ class SomMdsType extends AbstractType {
                 'label' => 'Number of SOM training epochs',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('projectionSpace', 'integer', [
+        ->add('mdsProjection', 'integer', [
                 'required' => true,
                 'data' => 2,
                 'attr' => array('class' => 'form-control'),
@@ -81,7 +81,7 @@ class SomMdsType extends AbstractType {
                 'label' => 'Projection space of MDS',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('iterations', 'integer', [
+        ->add('mdsIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
                 'attr' => array('class' => 'form-control'),
@@ -101,7 +101,7 @@ class SomMdsType extends AbstractType {
                 'label' => 'Number of iterations of MDS',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('calculationError', 'text', [
+        ->add('eps', 'text', [
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'data' => '0.0001',

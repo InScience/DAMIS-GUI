@@ -6,58 +6,58 @@
                 {{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}
             </p>
             <div class="form-group component-form-margin">
-                {{ form_label(form.rowsNumber) }}
+                {{ form_label(form.rows) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.rowsNumber) }}
+                {{ form_widget(form.rows) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.rowsNumber) }}
+                {{ form_errors(form.rows) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.colsNumber) }}
+                {{ form_label(form.columns) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.colsNumber) }}
+                {{ form_widget(form.columns) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.colsNumber) }}
+                {{ form_errors(form.columns) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.epochsNumber) }}
+                {{ form_label(form.eHat) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.epochsNumber) }}
+                {{ form_widget(form.eHat) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.epochsNumber) }}
+                {{ form_errors(form.eHat) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.projectionSpace) }}
+                {{ form_label(form.mdsProjection) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.projectionSpace) }}
+                {{ form_widget(form.mdsProjection) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.projectionSpace) }}
+                {{ form_errors(form.mdsProjection) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.iterations) }}
+                {{ form_label(form.mdsIteration) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.iterations) }}
+                {{ form_widget(form.mdsIteration) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.iterations) }}
+                {{ form_errors(form.mdsIteration) }}
             </div>
             <div class="form-group component-form-margin">
-                {{ form_label(form.calculationError) }}
+                {{ form_label(form.eps) }}
                 <div class="col-md-3 component-form-margin">
-                {{ form_widget(form.calculationError) }}
+                {{ form_widget(form.eps) }}
                 </div>
             </div>
             <div class="form-group col-md-12 component-form-margin">
-                {{ form_errors(form.calculationError) }}
+                {{ form_errors(form.eps) }}
             </div>
             {{ form_widget(form._token) }}
         </form>
