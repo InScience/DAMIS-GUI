@@ -103,7 +103,7 @@ class Parameter
     /**
      * @var integer
      *
-     * @ORM\Column(name="ParameterPosition", type="integer", nullable=false)
+     * @ORM\Column(name="ParameterPosition", type="integer", nullable=true)
      */
     private $position;
 
