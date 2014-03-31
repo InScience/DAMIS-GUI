@@ -9,7 +9,7 @@ use APY\DataGridBundle\Grid\Mapping as GRID;
  * Experiment
  *
  * @ORM\Table(name="experiment", uniqueConstraints={@ORM\UniqueConstraint(name="EXPERIMENT_PK", columns={"ExperimentID"})}, indexes={@ORM\Index(name="FK_EXPERIMET_EXPERIMENTSTATUS", columns={"ExperimentStatusID"}), @ORM\Index(name="FK_EXPERIMET_DAMISUSER", columns={"UserID"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Damis\ExperimentBundle\Entity\ExperimentRepository")
  * @GRID\Source(columns="id, name, status.experimentstatus")
  */
 class Experiment

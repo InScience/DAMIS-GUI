@@ -51,21 +51,34 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $component = $em->getRepository('DamisExperimentBundle:Component')->getTasksComponent($task);
             if (!$component) continue;
 
+            $output->writeln('==============================');
+            $output->writeln('Task id : ' . $task->getWorkflowtaskid());
+            $output->writeln('Wsdl host : ' . $component->getWsdlRunHost());
+            $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
+
+            // filter out un callable functions
+            if ($component->getWsdlCallFunction() == "CHART") {
+                //set to finished
+                $task->setWorkflowtaskisrunning(2);//finished
+                $em->flush();
+                continue;
+            }
+
             $params = array();
 
-            $inDataset = null;
+            $inDatasetEntity = null;
             $outDatasetEntity = null;
             foreach($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value){
                 if ($value->getParameter()->getConnectionType()->getId() == 1)
-                    $inDataset = $value->getParametervalue();
+                    $inDatasetEntity = $value;
                 if ($value->getParameter()->getConnectionType()->getId() == 2)
                     $outDatasetEntity = $value;
                 if ($value->getParameter()->getConnectionType()->getId() == 3)
                     $params[$value->getParameter()->getSlug()] = $value->getParametervalue();
             }
 
-            if (!$inDataset) continue;
-            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDataset]);
+            if (!$inDatasetEntity) continue;
+            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDatasetEntity->getParametervalue()]);
             if (!$dataset) continue;
 
             $params = array_merge(
@@ -81,9 +94,6 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
             //----------------------------------------------------------------------------------------------------//
 
-            $output->writeln('Task id : ' . $task->getWorkflowtaskid());
-            $output->writeln('Wsdl host : ' . $component->getWsdlRunHost());
-            $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
             $output->writeln('Wsdl function parameters: ' . print_r($params, true));
 
             //FOR TESTING PURPOSES ONLY
@@ -158,8 +168,12 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     // set proper out and in if available and successfull
                     if ($outDatasetEntity){
                         $outDatasetEntity->setParametervalue($file_entity->getDatasetId());
-                    }
 
+                        $inNext = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findOneBy(array('outparametervalue' => $outDatasetEntity->getParametervalueid()));
+                        if ($inNext) {
+                            $inNext->getInparametervalue()->setParametervalue($file_entity->getDatasetId());
+                        }
+                    }
 
                 } else {
                     $task->setWorkflowtaskisrunning(3);//error!
@@ -177,14 +191,31 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             //set to finished
             $task->setWorkflowtaskisrunning(2);//finished
             $em->flush();
-
-            //FOR TESTING PURPOSES ONLY
-            $task->setWorkflowtaskisrunning(0);
-            $em->flush();
         }
 
         //find finished experiments and set to finished
+        $workflowTasksUn = $em->getRepository('DamisEntitiesBundle:Workflowtask')->getUnrunableTasks(100);
+        foreach($workflowTasksUn as $taskUn){
+            $output->writeln('==============================');
+            $output->writeln('Task id : ' . $taskUn->getWorkflowtaskid());
+            $output->writeln('Set to finished, has no in parameters.');
+            $taskUn->setWorkflowtaskisrunning(2);//finished
+        }
+        $em->flush();
 
+        $experimentsToCloe = $em->getRepository('DamisExperimentBundle:Experiment')->getClosableExperiments(100);
+        $experimentStatus = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'FINISHED']);
+        foreach($experimentsToCloe as $exCl){
+            $output->writeln('==============================');
+            $output->writeln('Experiment id : ' . $exCl->getId());
+            $output->writeln('Set to finished, has all tasks finished.');
+            $exCl->setStatus($experimentStatus);//finished
+        }
+        $em->flush();
+
+        $output->writeln('==============================');
         $output->writeln('Executing finished');
     }
 

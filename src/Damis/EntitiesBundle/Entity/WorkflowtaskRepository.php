@@ -26,4 +26,19 @@ class WorkflowtaskRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getUnrunableTasks($limit)
+    {
+        $query = $this->createQueryBuilder('w')
+            ->select('w')
+            ->leftJoin('w.experiment', 'e')
+            ->leftJoin('DamisEntitiesBundle:Parametervalue', 'pv', 'with', 'pv.workflowtask = w')
+            ->leftJoin('DamisEntitiesBundle:Pvalueoutpvaluein', 'pio', 'with', 'pv.parametervalueid = pio.inparametervalue')
+            ->andWhere('e.status = 2')
+            ->andWhere('w.workflowtaskisrunning = 0')
+            ->andWhere('pio.outparametervalue IS NULL')
+            ->setMaxResults($limit);
+
+        return $query->getQuery()->getResult();
+    }
 }
