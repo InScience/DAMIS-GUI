@@ -135,6 +135,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             } else {
                 // set proper execution time
                 $task->setExecutionTime($result['calcTime']);
+                $task->setMessage($result['algorithmError']);
 
                 // save results file
                 $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
@@ -203,7 +204,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         foreach($workflowTasksUn as $taskUn){
             $output->writeln('==============================');
             $output->writeln('Task id : ' . $taskUn->getWorkflowtaskid());
-            $output->writeln('Set to finished, has no in parameters.');
+            $output->writeln('Un runable task, set to finish.');
             $taskUn->setWorkflowtaskisrunning(2);//finished
         }
         $em->flush();

@@ -33,10 +33,11 @@ class WorkflowtaskRepository extends EntityRepository
             ->select('w')
             ->leftJoin('w.experiment', 'e')
             ->leftJoin('DamisEntitiesBundle:Parametervalue', 'pv', 'with', 'pv.workflowtask = w')
-            ->leftJoin('DamisEntitiesBundle:Pvalueoutpvaluein', 'pio', 'with', 'pv.parametervalueid = pio.inparametervalue')
+            ->leftJoin('pv.parameter', 'p')
+            ->leftJoin('p.component', 'c')
             ->andWhere('e.status = 2')
             ->andWhere('w.workflowtaskisrunning = 0')
-            ->andWhere('pio.outparametervalue IS NULL')
+            ->andWhere('c.typeId = 1 or c.typeId = 6')
             ->setMaxResults($limit);
 
         return $query->getQuery()->getResult();
