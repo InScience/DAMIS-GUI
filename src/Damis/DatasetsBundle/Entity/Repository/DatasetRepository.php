@@ -18,7 +18,7 @@ class DatasetRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('d')
             ->andWhere('d.userId = :user')
-            ->andWhere('d.hidded = false')
+            ->andWhere('d.hidden != true')
             ->andWhere('d.hidden is null or d.hidden = false')
             ->setParameter('user', $user);
         $sortBy = key($orderBy);

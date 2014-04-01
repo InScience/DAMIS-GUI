@@ -64,7 +64,7 @@
 			}).done(function(parameterFormsetPrefixes) {
 				// when a box is deleted, other boxes have their ids
 				// updated,  however, parameter formsets prefixes are not updated
-				// we need to do it manually 
+				// we need to do it manually
 				var paramPrefixes = parameterFormsetPrefixes.split(",");
 				$.each($(".task-window .parameter-values"), function(taskBoxIdx, paramsFormset) {
 					$.each($(paramsFormset).find("input,select,textarea,label"), function(inputIdx, input) {
@@ -83,7 +83,7 @@
 			});
 		},
 
-		// Create form modal windows, assign them to boxes 
+		// Create form modal windows, assign them to boxes
 		reinitExperimentForm: function() {
 
 			// recreate modal windows
@@ -127,24 +127,25 @@
 			var form = $("#experiment-form");
 			if (params["skipValidation"]) {
 				form.find("input[name=experiment-skip_validation]").val("True");
-			}
+                var valid = true;
+			} else
+                var valid = window.validation.validate();
 			var data = form.serialize();
-            window.validation.validate();
-            if($(".task-box.error").length == 0)
-			$.post(form.attr("action"), data, function(resp) {
-				if (!/<[a-z][\s\S]*>/i.test(resp)) {
-					// non-html string is returned, which is a redirec url 
-					window.location = resp;
-					return;
-				}
-				//replace the existing form with the validated one
-				$("#experiment-form").remove();
-				$("#workflow-editor-container").before(resp);
+            if(valid)
+                $.post(form.attr("action"), data, function(resp) {
+                    if (!/<[a-z][\s\S]*>/i.test(resp)) {
+                        // non-html string is returned, which is a redirec url
+                        window.location = resp;
+                        return;
+                    }
+                    //replace the existing form with the validated one
+                    $("#experiment-form").remove();
+                    $("#workflow-editor-container").before(resp);
 
-				//run standard initialization
-				window.experimentForm.init();
-				window.experimentForm.reinitExperimentForm();
-			});
+                    //run standard initialization
+                    window.experimentForm.init();
+                    window.experimentForm.reinitExperimentForm();
+                });
 		},
 
 		// init formset plugin and form submit handlers
@@ -186,14 +187,14 @@
 				"modal": true,
 				"appendTo": "#experiment-form",
 				"buttons": [{
-					"text":  Translator.trans('Cancel', 'ExperimentBundle'),
+                    "text":  Translator.trans('Cancel', {}, 'ExperimentBundle'),
 					"class": "btn",
 					"click": function(ev) {
 						$(this).dialog("close");
 					}
 				},
 				{
-					"text": Translator.trans('OK', {}, 'ExperimentBundle'),
+                    "text": Translator.trans('OK', {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
 					"click": function(ev) {
 						$(this).dialog("close");

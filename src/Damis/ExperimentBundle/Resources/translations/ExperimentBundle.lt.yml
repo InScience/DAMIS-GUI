@@ -116,3 +116,9 @@ Result file: Rezultatų failas
 Add : pridėti
 Remove : pašalinti
 This component should be connected to an executed task in order to view results. : Techninė informacija negalima.
+There are errors in forms : Formose yra klaidų
+Not all components are connected : Yra nesujungtų komponentų
+Please select file : Prašome pasirinkti failą
+Too many file components : Failo komponentė galima tik viena
+File component is required : Failo komponentė yra privaloma
+There are loops : Vykdymo grafe ciklai negalimi
