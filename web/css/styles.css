@@ -1,7 +1,9 @@
 body {
-    padding-top: 70px;
     background-color: white;
-    padding-bottom: 40px;
+    height: 100%;
+}
+html {
+    height: 100%;
 }
 .form-signin {
     max-width: 330px;
@@ -65,33 +67,12 @@ body {
     margin-bottom: 5px;
 }
 #pca_type_projType label, #splitdata_type_reshufleObjects label,
-#splitdata_type_normMeanStd label , #smacof_type_zeidel label,
-#filter_type_retFilteredData label{
+#splitdata_type_normMeanStd label , #smacof_type_zeidel label{
     margin-right: 10px;
 }
 span.helptext{
     color: grey;
     font-size: 13px;
-}
-#footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 40px;
-    background-color: #f5f5f5;
-}
-.container-footer {
-    padding: 0 15px;
-}
-.container-footer .text-muted {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-.container-footer .text-muted a{
-    margin-left: 5px;
-    margin-right: 5px;
 }
 .helptext {
     color: #808080;
@@ -117,7 +98,42 @@ span.helptext{
 .about pre {
     display: inline;
 }
-.required:after {
-    content: "*";
-    color: red;
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -40px;
+}
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 40px;
+}
+#footer {
+    background-color: #f5f5f5;
+}
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+#wrap > .container {
+    padding-top: 70px;
+}
+.container-footer {
+    padding: 0 15px;
+}
+.text-muted {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.text-muted a{
+    margin-left: 5px;
+    margin-right: 5px;
 }
