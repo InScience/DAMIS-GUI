@@ -48,17 +48,22 @@ class ExperimentHistoryController extends Controller
         $column->setOperators(array('like'));
         $column->setOperatorsVisible(false);
         $column->setDefaultOperator('like');
-        $column->setSortable(false);
         $column->setTitle($this->get('translator')->trans('Experiment name', array(), 'ExperimentBundle'));
 
         $column = $grid->getColumn('status.experimentstatus');
         $column->setFilterType('select');
-        $column->setOperators(array('like'));
+        $column->setOperators(array('eq'));
         $column->setOperatorsVisible(false);
-        $column->setDefaultOperator('like');
-        $column->setSelectFrom('source');
-        $column->setSortable(false);
+        $column->setDefaultOperator('eq');
+        $column->setSelectFrom('values');
         $column->setTitle($this->get('translator')->trans('Experiment status', array(), 'ExperimentBundle'));
+        $column->setValues(
+            array(
+                'FINISHED' => $this->get('translator')->trans('Finished', array(), 'ExperimentBundle'),
+                'SAVED' => $this->get('translator')->trans('Saved', array(), 'ExperimentBundle'),
+                'EXECUTING' => $this->get('translator')->trans('Executing', array(), 'ExperimentBundle'),
+            )
+        );
 
         //add actions column
         $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'edit_experiment');

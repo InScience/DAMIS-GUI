@@ -87,7 +87,7 @@ class Experiment
      *   @ORM\JoinColumn(name="ExperimentStatusID", referencedColumnName="ExperimentStatusID")
      * })
      *
-     * @GRID\Column(field="status.experimentstatus", type="text")
+     * @GRID\Column(field="status.experimentstatus", type="status")
      */
     private $status;
 
