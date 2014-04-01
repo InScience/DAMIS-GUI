@@ -8,6 +8,7 @@
 			formWindow.append(container);
 			formWindow.dialog("option", "buttons", window.chart.notConnectedButtons());
 			formWindow.dialog("option", "width", "auto");
+            formWindow.find('.attribute-choices').remove();
 		},
 
 		errorButtons: function() {

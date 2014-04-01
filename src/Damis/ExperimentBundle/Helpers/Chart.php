@@ -40,6 +40,12 @@ class Chart {
                 $arffCls = $key;
         }
 
+        if($x > count($helper->getAttributes($fileUrl, true)) - 1)
+            $x = 0;
+
+        if($y > count($helper->getAttributes($fileUrl, true)) - 1)
+            $y = 1;
+
         if($clsCol == null) {
             if($arffCls != null)
                 $clsCol = $arffCls;
