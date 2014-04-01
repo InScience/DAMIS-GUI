@@ -139,7 +139,6 @@ class ComponentController extends Controller
         $sort = $request->get('order_by');
         $id  = $request->get('id');
         $entity = null;
-        $entity = null;
         $data = json_decode($request->get('data'));
         if($request->get('data') && !empty($data)) {
             $id = json_decode($request->get('data'))[0]->value;
