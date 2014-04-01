@@ -97,3 +97,22 @@ span.helptext{
     font-size: 11px;
     line-height: 0.8;
 }
+.about {
+    font-family: "Courier";
+    font-size: 18px;
+    text-align: center;
+}
+.about :first-child {
+    margin-left: 0;
+}
+.span6 {
+    -moz-box-sizing: border-box;
+    display: block;
+    float: left;
+    margin-left: 2.12766%;
+    min-height: 30px;
+    width: 48.9362%;
+}
+.about pre {
+    display: inline;
+}
