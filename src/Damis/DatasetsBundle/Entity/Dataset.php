@@ -97,7 +97,7 @@ class Dataset
      *
      * @ORM\Column(name="Hidden", type="integer", nullable=true)
      */
-    private $hidden;
+    private $hidden = 0;
 
     /**
      * @param int $hidden

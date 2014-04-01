@@ -87,14 +87,16 @@
 		// update dialog content with new data
 		update: function(formWindow) {
             var boxId = window.taskBoxes.getBoxId(formWindow);
-            var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
+            var ancestor = window.taskBoxes.getAncestorTaskBoxId(boxId);
+            var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(ancestor);
 			formWindow.find(".technical-details-container").remove();
 			var container = $("<div class=\"technical-details-container\"><img width=\"250px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
 			formWindow.append(container);
 			var data = window.technicalDetails.getOutputParamDetails(formWindow);
             if(!datasetId)
                 datasetId = 'undefined';
-            var url = Routing.generate('technical_information', {id : datasetId});
+            var url = Routing.generate('technical_information',
+                {id : datasetId, experimentId : $('#id_experiment').val(), taskBox: ancestor});
 			$.ajax({
 				url: url,
 				data: data,

@@ -167,7 +167,7 @@ class ComponentController extends Controller
             $entities = $em->getRepository('DamisDatasetsBundle:Dataset')->getUserDatasets($user);
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $entities, $this->get('request')->query->get('page', 1), 15);
+            $entities, $this->get('request')->query->get('page', 1), 8);
         return array(
             'entities' => $pagination,
             'selected' => $id,
@@ -235,19 +235,26 @@ class ComponentController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $entity = null;
-        if($id == 'undefined')
+        $message = '';
+        $runtime = '';
+         if($id == 'undefined')
             $id = null;
         else {
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
             if($request->isMethod('POST')) {
                 return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
             } else {
-           //@todo surasti workflow task pagal dataset
+                $workflow = $em->getRepository('DamisEntitiesBundle:Workflowtask')
+                    ->findOneBy(array('experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')));
+                $message = $workflow->getExecutionTime();
+                $runtime = $workflow->getMessage();
             }
         }
         return array(
             'id' => $id,
-            'file' => $entity
+            'file' => $entity,
+            'message' => $message,
+            'runtime' => $runtime
         );
     }
 

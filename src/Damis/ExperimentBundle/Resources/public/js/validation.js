@@ -115,30 +115,30 @@
 		},
 
         validateLoops: function(box) {
-            var trg = jsPlumb.getConnections({target:[box]});
             var src = jsPlumb.getConnections({source:[box]});
-            if(src != false && trg != false){
-                if(trg[0].sourceId == trg[0].targetId)
-                $('#' + box).addClass('error');
-                return true;
-            }
-            else{
-                $('#' + box).removeClass('error');
-                return false;
+            if(src != false){
+                if(src[0].sourceId == src[0].targetId){
+                    $('#' + box).addClass('error');
+                    return true;
+                }
+                else {
+                    $('#' + box).removeClass('error');
+                    return false;
+                }
             }
 		},
 
 		validateFormErrors: function() {
             var error = false;
             $.each($(".task-box"), function(taskBoxId, taskBox) {
-               var tb = $('#task-box-'+taskBoxId+'-form');
-                if(tb.find('.dynamic-container').find('ul li').length > 0){
-                    $(taskBox).addClass("error");
-                    error = true;
-                } else {
-                    var type = window.componentSettings.getComponentDetails({boxId : 'task-box-'+taskBoxId})['type'];
-                    if(type !== "UploadedFile" && type !== "NewFile"){
-                        $(taskBox).removeClass("error");
+                var tb = $('#task-box-'+taskBoxId+'-form');
+                var type = window.componentSettings.getComponentDetails({boxId : 'task-box-'+taskBoxId})['type'];
+                if(type !== "UploadedFile" && type !== "NewFile"){
+                    if(tb.find('.dynamic-container').find('ul li').length > 0){
+                        $(taskBox).addClass("error");
+                        error = true;
+                    } else {
+                            $(taskBox).removeClass("error");
                     }
                 }
 
