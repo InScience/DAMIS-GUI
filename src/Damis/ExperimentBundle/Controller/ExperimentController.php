@@ -104,6 +104,7 @@ class ExperimentController extends Controller
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
         $isExecution = isset($params['experiment-max_calc_time']) && isset($params['experiment-p']);
+
         if($isExecution) {
             $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
             $experiment->setUseCpu($params['experiment-p']);
@@ -123,6 +124,9 @@ class ExperimentController extends Controller
             $experiment->setStatus($experimentStatus);
         $em->persist($experiment);
         $em->flush();
+
+        if($isExecution)
+            $this->populate($experiment->getId());
 
         if($isNew)
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
@@ -262,4 +266,36 @@ class ExperimentController extends Controller
         }
     }
 
+    /**
+     * Edit experiment in workflow creation window
+     *
+     * @Route("/experiment/{id}/see.html", name="see_experiment")
+     * @Template("DamisExperimentBundle:Experiment:new.html.twig")
+     */
+    public function seeAction($id)
+    {
+        $data = $this->newAction();
+
+        /** @var $experiment Experiment */
+        $experiment = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Experiment')
+            ->findOneById($id);
+
+        /** @var $task Workflowtask */
+        foreach($experiment->getWorkflowtasks() as $task) {
+            /** @var $value Parametervalue */
+            foreach($task->getParameterValues() as $value) {
+                if($value->getParameter()->getConnectionType()->getId() == 2) {
+                    $data['datasets'][$task->getTaskBox()] = $value->getParametervalue();
+                }
+            }
+        }
+        $data['workFlowState'] = $experiment->getGuiData();
+        $data['taskBoxesCount'] = explode('***', $data['workFlowState'])[2];
+        $data['experimentId'] = $id;
+        $data['experimentTitle'] = $experiment->getName();
+
+        return $data;
+    }
 }
