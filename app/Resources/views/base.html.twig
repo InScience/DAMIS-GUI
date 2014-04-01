@@ -50,6 +50,16 @@
         {% endblock %}
     </div>
 
+    <div id="footer">
+        <div class="container container-footer">
+            <p class="text-muted">
+                <a href="http://www.inscience.lt">InScience.LT </a>
+                <a href="https://github.com/InScience/DAMIS-GUI">Source code</a>
+                <a href="https://www.gnu.org/licenses/agpl.txt" rel="license" class="helptext"> (aGPL) </a>
+            </p>
+        </div>
+    </div>
+
     {% block javascripts %}
         {% if app.environment == "prod" %}
             <script src="{{ asset('/js/jquery-1.11.0.min.js') }}" type="text/javascript"></script>

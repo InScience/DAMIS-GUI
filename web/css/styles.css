@@ -1,6 +1,7 @@
 body {
     padding-top: 70px;
     background-color: white;
+    margin-bottom: 60px;
 }
 .form-signin {
     max-width: 330px;
@@ -70,4 +71,29 @@ body {
 span.helptext{
     color: grey;
     font-size: 13px;
+}
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+}
+.container-footer {
+    padding: 0 15px;
+}
+.container-footer .text-muted {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.container-footer .text-muted a{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.helptext {
+    color: #808080;
+    font-size: 11px;
+    line-height: 0.8;
 }
