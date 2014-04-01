@@ -21,8 +21,8 @@ class NormDataType extends AbstractType {
         };
         $builder
         ->add('normMeanStd', 'choice', [
-                'required' => true,
                 'empty_value' => false,
+                'required' => false,
                 'data' => 0,
                 'expanded' => true,
                 'choices' => array(

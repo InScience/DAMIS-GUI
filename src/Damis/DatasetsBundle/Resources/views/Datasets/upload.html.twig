@@ -39,6 +39,9 @@
                 {{ form_widget(form.datasetDescription) }}
                 {{ form_errors(form.datasetDescription) }}
             </div>
+            <div class="col-md-12">
+                {{ "Fields marked with <span style='color:red;'>*</span> are mandatory"|trans({}, 'ExperimentBundle')|raw }}
+            </div>
             {% if file != null %}
             <input id="id_file_path" type="hidden" value="{{ file.datasetId }}" name="file_path">
             {% endif %}

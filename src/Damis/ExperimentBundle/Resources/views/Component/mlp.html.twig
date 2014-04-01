@@ -54,6 +54,9 @@
 
             </div>
             <div class="form-group" style="margin-top:70px">{{ form_errors(form.dV) }}</div>
+            <div class="col-md-12">
+                {{ "Fields marked with <span style='color:red;'>*</span> are mandatory"|trans({}, 'ExperimentBundle')|raw }}
+            </div>
             {{ form_widget(form._token) }}
         </form>
     </div>

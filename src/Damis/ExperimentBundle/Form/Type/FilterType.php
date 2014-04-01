@@ -14,12 +14,15 @@ class FilterType extends AbstractType {
         $builder
             ->add('retFilteredData', 'choice', [
                 'choices' => [0 => 'Without outliers', 1 => 'Only outliers'],
-                'required' => true,
+                'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'data' => 0,
                 'mapped' => false,
                 'multiple' => false,
                 'expanded' => true,
+                'constraints' => [
+                    new NotBlank()
+                ],
                 'label' => 'Choose filtering result'
             ])
             ->add('zValue', 'number', [

@@ -15,7 +15,7 @@ class SplitDataType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
         ->add('reshufleObjects', 'choice', [
-                'required' => true,
+                'required' => false,
                 'empty_value' => false,
                 'data' => 0,
                 'expanded' => true,

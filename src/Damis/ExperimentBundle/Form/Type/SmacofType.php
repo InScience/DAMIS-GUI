@@ -14,8 +14,8 @@ class SmacofType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
         ->add('zeidel', 'choice', [
-                'required' => true,
                 'empty_value' => false,
+                'required' => false,
                 'data' => 0,
                 'expanded' => true,
                 'choices' => array(

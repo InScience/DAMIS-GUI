@@ -21,7 +21,7 @@ class PcaType extends AbstractType {
         };
         $builder
         ->add('projType', 'choice', [
-                'required' => true,
+                'required' => false,
                 'empty_value' => false,
                 'data' => 0,
                 'expanded' => true,

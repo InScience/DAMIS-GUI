@@ -116,3 +116,7 @@ span.helptext{
 .about pre {
     display: inline;
 }
+.required:after {
+    content: "*";
+    color: red;
+}

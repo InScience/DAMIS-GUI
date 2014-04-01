@@ -122,3 +122,4 @@ Please select file : Prašome pasirinkti failą
 Too many file components : Failo komponentė galima tik viena
 File component is required : Failo komponentė yra privaloma
 There are loops : Vykdymo grafe ciklai negalimi
+Fields marked with <span style='color:red;'>*</span> are mandatory : "<span style='color:red;'>*</span> Žvaigždute pažymėti laukai yra privalomi"

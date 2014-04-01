@@ -72,7 +72,7 @@ class RelativeMdsType extends AbstractType {
                 'label_attr' => ['class' => 'col-md-8']
             ])
         ->add('selStrategy', 'choice', [
-                'required' => true,
+                'empty_value' => false,
                 'choices' => array(
                     0 => 'Random',
                     1 => 'By line based on PCA',
