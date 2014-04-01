@@ -65,7 +65,8 @@ body {
     margin-bottom: 5px;
 }
 #pca_type_projType label, #splitdata_type_reshufleObjects label,
-#splitdata_type_normMeanStd label , #smacof_type_zeidel label{
+#splitdata_type_normMeanStd label , #smacof_type_zeidel label,
+#filter_type_retFilteredData label{
     margin-right: 10px;
 }
 span.helptext{

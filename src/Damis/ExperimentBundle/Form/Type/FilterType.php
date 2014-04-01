@@ -15,9 +15,9 @@ class FilterType extends AbstractType {
             ->add('retFilteredData', 'choice', [
                 'choices' => [0 => 'Without outliers', 1 => 'Only outliers'],
                 'required' => false,
-                'attr' => array('class' => 'form-control'),
                 'data' => 0,
                 'mapped' => false,
+                'empty_value' => false,
                 'multiple' => false,
                 'expanded' => true,
                 'constraints' => [

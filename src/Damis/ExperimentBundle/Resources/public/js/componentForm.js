@@ -91,7 +91,9 @@
         },
         doPost: function(context) {
             var data = context.find('input[type=text],input[type=radio]:checked,input[type=hidden],input[type=number],select').serialize();
-
+            data += '&dataset_id='+window.taskBoxes.getConnectedTaskBoxDatasetId(
+                window.taskBoxes.getBoxId(context)
+            );
             var url = Routing.generate('component_form', {id : window.componentSettings.getComponentDetails({'boxId': window.taskBoxes.currentBoxId}).componentId });
             $.post(url, data, function(resp) {
                 context.find(".dynamic-container").html(resp["html"]);
