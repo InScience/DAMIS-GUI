@@ -121,12 +121,12 @@
 
 		// get details of a parameter, that is connected to the current component input connection
 		getOutputParamDetails: function(dialog) {
-			var inParam = dialog.find("input[value=INPUT_CONNECTION]");
-			var srcRefField = inParam.closest("div").find("input[id$=source_ref]");
-			var oParamField = window.experimentForm.getOutputParam(srcRefField);
-			if (oParamField) {
+            var dataset_id = window.taskBoxes.getConnectedTaskBoxDatasetId(
+                window.taskBoxes.getBoxId($(dialog).attr('id'))
+            );
+			if (dataset_id) {
 				return {
-					dataset_url: oParamField.val()
+					dataset_url: dataset_id
 				}
 			}
 			return {}

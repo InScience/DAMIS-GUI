@@ -33,11 +33,10 @@ class Chart {
             $attributes[] = [$attr];
             if($x == null && $colType != 'string')
                 $x = $key;
-
             elseif($y == null && $colType != 'string')
                 $y = $key;
 
-            if($colType == 'class')
+            if(strtolower($colType) == 'class' || strtolower($colName) == 'class')
                 $arffCls = $key;
         }
 
@@ -52,10 +51,14 @@ class Chart {
         if($clsCol != null)
             $clsType = $helper->getAttributes($fileUrl, true)[$clsCol]['type'];
 
+        if(mb_strtolower($helper->getAttributes($fileUrl, true)[$clsCol]['name']) == 'class')
+            $clsType = 'class';
+
+
         $data = false;
         foreach ($helper->getRows($fileUrl, 'arff') as $row) {
             if(!$data) {
-                if($row[0] == '@data')
+                if(strtolower($row[0]) == '@data')
                     $data = true;
                 continue;
             }
@@ -76,14 +79,15 @@ class Chart {
                         $maxCls = (float) $row[$clsCol];
             }
 
-            if (!($clsType == "string" or $clsType == "integer"))
+            if ($clsType == "string" or $clsType == "integer")
                 continue;
+
             $classCell = $row[$clsCol];
 
             $result[$classCell][] = [$row[$x], $row[$y]];
         }
 
-        if($clsType != 'string' and $clsType != 'integer') {
+        if($clsType != 'string' and $clsType != 'integer' and $clsType != 'class') {
             $step = 1 * ($maxCls - $minCls) / $maxClasses;
             $groups = [];
             foreach(range($minCls, $maxCls, $step) as $group)
@@ -92,17 +96,25 @@ class Chart {
             $data = false;
             foreach ($helper->getRows($fileUrl, 'arff') as $row) {
                 if(!$data) {
-                    if($row[0] == '@data')
+                    if(strtolower($row[0]) == '@data')
                         $data = true;
                     continue;
                 }
                 $value = $row[$clsCol];
 
-                $groupNo = (int) ((1 * ($value - $minCls) * $maxClasses) / ($maxCls - $minCls));
+                if(($maxCls - $minCls) != 0)
+                    $groupNo = (int) ((1 * ($value - $minCls) * $maxClasses) / ($maxCls - $minCls));
+                else
+                    $groupNo = 0;
+
                 if($groupNo == count($groups))
                     $groupNo--;
 
-                $cls = $groups[$groupNo];
+                if(isset($groups[$groupNo]))
+                    $cls = $groups[$groupNo];
+                else
+                    $cls = 0;
+
                 $result[$cls][] = [$row[$x], $row[$y]];
             }
         }

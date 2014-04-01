@@ -342,7 +342,7 @@
 
 		// update data from the server and call callback with parameters
 		update: function(formWindow, callback, params) {
-			var data = window.chart.getOutputParamDetails(formWindow);
+			var data = window.matrixView.getOutputParamDetails(formWindow);
 			if (!data["dataset_url"]) {
 				this.toUnconnectedState(formWindow);
 				return;
@@ -378,19 +378,6 @@
 				}
 				window.utils.hideProgress();
 			});
-		},
-
-		// get details of a parameter, that is connected to the current component input connection
-		getOutputParamDetails: function(dialog) {
-			var inParam = dialog.find("input[value=INPUT_CONNECTION]");
-			var srcRefField = inParam.closest("div").find("input[id$=source_ref]");
-			var oParamField = window.experimentForm.getOutputParam(srcRefField);
-			if (oParamField) {
-				return {
-					dataset_url: oParamField.val()
-				}
-			}
-			return {}
 		},
 
 		// called when connection is deleted

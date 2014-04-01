@@ -197,10 +197,17 @@ class ComponentController extends Controller
                 $helper = new ReadFile();
                 $rows = $helper->getRows('.' . $entity->getFilePath(), 'arff');
                 foreach($rows as $key => $row){
-                    if($row[0] != '@data'){
-                        if(strpos($row[key($row)], '@attribute') === 0){
+                    if(mb_strtolower($row[0]) != '@data'){
+                        if(strpos(mb_strtolower($row[key($row)]), '@attribute') === 0 ){
                             $attr = explode(' ', $row[key($row)]);
+                            if(trim(strtoupper($attr[1])) != 'CLASS' )
                                 $attributes[] =  array('type' => $attr[2], 'name' => $attr[1]);
+                            else {
+                                $_row = implode(', ', $row);
+                                $_attr = explode('{', $_row);
+                                $__attr = explode('}', $_attr[1]);
+                                $attributes[] = array('type' => $__attr[0], 'name' => 'CLASS');
+                            }
                         }
                         unset($rows[$key]);
                     } else {

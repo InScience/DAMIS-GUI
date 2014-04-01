@@ -257,12 +257,16 @@
 
             if(ancestor == false)
                 return false;
-            else
-                return $('div#' + ancestor + '-form')
+
+            var inputValue = $('div#' + ancestor + '-form')
                 .find('.parameter-values input[value=OUTPUT_CONNECTION]')
                 .parent()
                 .find('input[name$=value]')
                 .val();
+
+            var datasetsValue = window.datasets[ancestor];
+
+            return (inputValue == undefined) ? datasetsValue : inputValue;
         },
 
         getAncestorTaskBoxId : function (taskBox) {

@@ -107,6 +107,10 @@
             };
             {% endfor %}
 
+            window.datasets = {};
+            {% for taskBox, dataset in datasets %}
+                window.datasets['{{ taskBox}}'] = '{{ dataset }}';
+            {% endfor %}
             window.experimentForm.params = {
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
                 experimentNewUrl: "{{ path('new_experiment') }}",
@@ -116,6 +120,7 @@
             //decide if an empty canvas or a persisted worklow should be
             //displayed
             var persistedStr = $("input[name=id_experiment-workflow_state]").val();
+
             if (persistedStr) {
                 jsPlumb.setSuspendDrawing(true);
 
@@ -126,6 +131,10 @@
                 window.experimentForm.reinitExperimentForm();
 
                 window.persistWorkflow.restoreConnections(persistedStr);
+
+                if(Object.keys(datasets).length > 0)
+                    window.persistWorkflow.restoreDatasets(datasets);
+
                 jsPlumb.setSuspendDrawing(false, true);
             } else {
                 window.experimentForm.init();

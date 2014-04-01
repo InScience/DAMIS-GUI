@@ -122,7 +122,11 @@
 			var parts = persistedStr.split("***");
 			var boxes = JSON.parse(parts[0]);
 			window.taskBoxes.countBoxes = parseInt(parts[2]);
-		}
+		},
+
+        restoreDatasets : function (datasets) {
+            console.log(datasets);
+        }
 	}
 })();
 

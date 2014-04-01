@@ -104,7 +104,7 @@
 				var componentLabel = window.componentSettings.getComponentDetails({
 					componentId: componentId
 				})['label'];
-                $(taskForm).find('input').val(componentId);
+                $(taskForm).find('span.component-id input').val(componentId);
 				window.taskBoxes.createTaskFormDialog(taskForm, parameterFormset,
                     window.taskBoxes.getFormWindowId($(taskBox)), componentLabel, componentId);
 				window.taskBoxes.setBoxName($(taskBox).attr("id"), componentLabel);

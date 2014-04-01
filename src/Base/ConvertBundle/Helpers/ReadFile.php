@@ -57,7 +57,7 @@ class ReadFile {
                 if(!$withType)
                     $attributes[] = $attr[1];
                 else
-                    $attributes[] = array('type' => $attr[2], 'name' => $attr[1]);
+                    $attributes[] = array('type' => strtolower($attr[2]), 'name' => $attr[1]);
             }
         }
 
