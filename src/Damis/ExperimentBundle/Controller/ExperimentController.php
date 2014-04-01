@@ -103,11 +103,22 @@ class ExperimentController extends Controller
 
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
+        $isExecution = isset($params['experiment-max_calc_time']) && isset($params['experiment-p']);
+        if($isExecution) {
+            $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
+            $experiment->setUseCpu($params['experiment-p']);
+        }
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
 
-        $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')->findOneByExperimentstatusid(1);
+        if(!$isExecution)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(1);
+        else
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(2);
+
         if($experimentStatus)
             $experiment->setStatus($experimentStatus);
         $em->persist($experiment);

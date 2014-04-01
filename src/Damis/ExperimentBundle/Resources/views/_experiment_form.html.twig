@@ -1,41 +1,22 @@
 <form id="experiment-form" action="{{ path('experiment_save') }}" method="post" autocomplete="off">
         <div id="exec-dialog" style="display:none;">
-
             <p>{{'Experiment title'| trans({}, 'ExperimentBundle') }}: <br> <input id="id_experiment-title" maxlength="255" name="experiment-title" type="text" value="{{ experimentTitle }}"></p>
             <div id="exec-params">
-
-
-
-
-
-                <p>{{'Maximum calculation time'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-max_calc_time" name="experiment-max_calc_time" type="text" value="2:00"></p>
-
-
-
-
+                <p>{{'Maximum calculation time'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-max_calc_time" name="experiment-max_calc_time" type="text" value="2:00:00"></p>
                 <p>{{ 'Processor number'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-p" name="experiment-p" type="text" value="1"></p>
-
-
-
                 <input id="id_experiment-workflow_state" name="experiment-workflow_state" type="hidden">
-
-
                 <input id="id_experiment-skip_validation" name="experiment-skip_validation" type="hidden">
-
                 <input id="id_experiment" name="experiment-id" type="hidden" value="{{ experimentId }}">
-
             </div>
     </div>
     <div style="display:none">
     {% for i in 0..taskBoxesCount %}
     <div class="inline task">
         <div style="display:none">
-
             <p style="display:none">
-                Component:<br/>
-
-                        <span class='component-id'>
-                            <input id="id_tasks-0-component" name="tasks-0-component"></span>
+                <span class='component-id'>
+                     <input id="id_tasks-0-component" name="tasks-0-component">
+                </span>
             </p>
             <a class="add-row" href="javascript:void(0)">
                 <button class="btn">

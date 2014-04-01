@@ -184,14 +184,14 @@
 				"modal": true,
 				"appendTo": "#experiment-form",
 				"buttons": [{
-					"text": 'Cancel',
+					"text":  Translator.trans('Cancel', 'ExperimentBundle'),
 					"class": "btn",
 					"click": function(ev) {
 						$(this).dialog("close");
 					}
 				},
 				{
-					"text": 'OK',
+					"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
 					"click": function(ev) {
 						$(this).dialog("close");
