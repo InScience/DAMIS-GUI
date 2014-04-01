@@ -129,6 +129,8 @@
 				form.find("input[name=experiment-skip_validation]").val("True");
 			}
 			var data = form.serialize();
+            window.validation.validate();
+            if($(".task-box.error").length == 0)
 			$.post(form.attr("action"), data, function(resp) {
 				if (!/<[a-z][\s\S]*>/i.test(resp)) {
 					// non-html string is returned, which is a redirec url 

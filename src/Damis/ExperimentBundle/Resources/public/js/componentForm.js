@@ -57,7 +57,7 @@
         allButtons: function() {
             var buttons = [{
                 "text": Translator.trans('OK', {}, 'ExperimentBundle'),
-                "class": "btn btn-primary",
+                "class": "btn btn-primary submit",
                 "click": function(ev) {
                     window.componentForm.doPost($(this));
                 }

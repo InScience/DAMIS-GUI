@@ -164,9 +164,9 @@ class DatasetsController extends Controller
     {
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
-        $data = $request->query;
-        if($data) {
-            $datasetId = json_decode($data->all()['dataset_url'])[0]->value;
+        $data = json_decode($request->query->all()['dataset_url']);
+        if($request->query->all() && !empty($data)) {
+            $datasetId = $data[0]->value;
             $em = $this->getDoctrine()->getManager();
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
             return [
@@ -175,7 +175,8 @@ class DatasetsController extends Controller
             ];
         }
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'file' => null
         );
     }
 
@@ -245,9 +246,9 @@ class DatasetsController extends Controller
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.' . $entity->getFile()['fileName'] , $format);
+                $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
             } elseif($format == 'xls' || $format == 'xlsx'){
-                $objPHPExcel = PHPExcel_IOFactory::load('.' . $entity->getFile()['fileName']);
+                $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);

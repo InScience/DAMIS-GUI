@@ -54,7 +54,7 @@
 }
 
 .task-box.error {
-    border:1px solid #A60000; box-shadow: 2px 2px 19px #D4A3A3; -o-box-shadow: 2px 2px 19px #D4A3A3; -webkit-box-shadow: 2px 2px 19px #D4A3A3; -moz-box-shadow: 2px 2px 19px #D4A3A3; background-color:#eeeeef; color: #A60000;
+    width: auto; border:1px solid #A60000; box-shadow: 2px 2px 19px #D4A3A3; -o-box-shadow: 2px 2px 19px #D4A3A3; -webkit-box-shadow: 2px 2px 19px #D4A3A3; -moz-box-shadow: 2px 2px 19px #D4A3A3; background-color:#eeeeef; color: #A60000;
 }
 
 .task-box.error:hover {

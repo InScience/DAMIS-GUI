@@ -160,7 +160,7 @@
 				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
 				"click": function(ev) {
-                    $(this).find(".toggle-section").hide();
+                   // $(this).find(".toggle-section").hide();
                     $(this).find(".toggle-btn").show();
 					$(this).dialog("close");
 				}
