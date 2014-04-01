@@ -62,7 +62,7 @@
             </div>
 
             <div id="canvas">
-                <div id="flowchart-container" />
+                <div id="flowchart-container" ></div>
             </div>
         </div>
         <div id="buttons-block" class="pull-right">
@@ -70,8 +70,10 @@
             <button class="btn" type="button" id="save-btn">{{ "Save"| trans({}, 'ExperimentBundle')  }}</button>
             <button class="btn btn-primary" type="button" id="execute-btn">{{"Execute"| trans({}, 'ExperimentBundle')   }}</button>
         </div>
+        </div>
     </div>
 </div>
+
     <form id="file-upload-form" method="POST" action="{{ path('dataset_upload_handler') }}" enctype="multipart/form-data" target="file-upload-iframe" style="display:none;" autocomplete="off"></form>
     <iframe id="file-upload-iframe" name="file-upload-iframe" style="display: none;"></iframe>
     <input type="hidden" name="id_experiment-workflow_state" id="id_experiment-workflow_state" value="{{ workFlowState }}">
