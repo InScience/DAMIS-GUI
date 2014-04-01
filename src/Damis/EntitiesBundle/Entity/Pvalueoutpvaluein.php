@@ -7,13 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Pvalueoutpvaluein
  *
- * @ORM\Table(name="pvalueoutpvaluein", indexes={@ORM\Index(name="FK_PVALUEOUT_PARAMETERVALUE", columns={"OutParameterValueID"})})
+ * @ORM\Table(name="pvalueoutpvaluein", indexes={@ORM\Index(name="FK_PVALUEOUT_PARAMETERVALUE", columns={"InParameterValueID"})})
  * @ORM\Entity
  */
 class Pvalueoutpvaluein
 {
     /**
      * @var \Damis\EntitiesBundle\Entity\Parametervalue
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      *
      * @ORM\OneToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
      * @ORM\JoinColumns({
@@ -24,9 +27,6 @@ class Pvalueoutpvaluein
 
     /**
      * @var \Damis\EntitiesBundle\Entity\Parametervalue
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      *
      * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
      * @ORM\JoinColumns({
