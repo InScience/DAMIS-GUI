@@ -137,3 +137,7 @@ span.helptext{
     margin-left: 5px;
     margin-right: 5px;
 }
+.required:after {
+    content: "*";
+    color: red;
+}
