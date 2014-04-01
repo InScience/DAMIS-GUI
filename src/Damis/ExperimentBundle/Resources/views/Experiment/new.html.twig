@@ -134,9 +134,6 @@
 
                 window.persistWorkflow.restoreConnections(persistedStr);
 
-                if(Object.keys(datasets).length > 0)
-                    window.persistWorkflow.restoreDatasets(datasets);
-
                 jsPlumb.setSuspendDrawing(false, true);
             } else {
                 window.experimentForm.init();

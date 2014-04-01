@@ -269,7 +269,7 @@ class ExperimentController extends Controller
     /**
      * Edit experiment in workflow creation window
      *
-     * @Route("/experiment/{id}/see.html", name="see_experiment")
+     * @Route("/experiment/{id}/show.html", name="see_experiment")
      * @Template("DamisExperimentBundle:Experiment:new.html.twig")
      */
     public function seeAction($id)

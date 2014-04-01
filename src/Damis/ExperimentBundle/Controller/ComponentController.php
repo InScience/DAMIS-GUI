@@ -246,8 +246,8 @@ class ComponentController extends Controller
             } else {
                 $workflow = $em->getRepository('DamisEntitiesBundle:Workflowtask')
                     ->findOneBy(array('experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')));
-                $message = $workflow->getExecutionTime();
-                $runtime = $workflow->getMessage();
+                $runtime = $workflow->getExecutionTime();
+                $message = $workflow->getMessage();
             }
         }
         return array(
