@@ -28,12 +28,14 @@ class SelectType extends AbstractType {
 
         $builder
         ->add('attr', 'choice', [
+                'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => $options['data']['class'],
                 'multiple' => true,
                 'label' => 'Attributes'
             ])
         ->add('selAttr', 'choice', [
+                'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(),
                 'multiple' => true,
@@ -43,6 +45,7 @@ class SelectType extends AbstractType {
                 'label' => 'Selected attributes'
             ])
         ->add('classAttr', 'choice', [
+                'required' => false,
                 'empty_value' => '',
                 'attr' => array('class' => 'form-control'),
                 'choices' => $options['data']['class'],
