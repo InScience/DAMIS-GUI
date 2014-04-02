@@ -86,7 +86,8 @@
 		loadComponentParameters: function(componentInput) {
 			$.ajax({
 				url: Routing.generate('component', {id : componentInput.val()}),
-				context: $(this)
+				context: $(this),
+                async:   false
 			}).done(function(resp) {
 				// replace old parameter formset with a new one
 				var formWindow = componentInput.closest('.task').parent();
