@@ -15,7 +15,7 @@ class Parametervalue
     /**
      * @var string
      *
-     * @ORM\Column(name="ParameterValue", type="string", length=80, nullable=true)
+     * @ORM\Column(name="ParameterValue", type="string", length=255, nullable=true)
      */
     private $parametervalue;
 
