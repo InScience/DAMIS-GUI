@@ -62,16 +62,16 @@
 					var container = $(this).find(".dynamic-container");
 					var datasetInput = container.find("input[name=dataset_pk]:checked");
 					if (datasetInput.val()) {
-						var fileUrl = $(datasetInput).val();
+						var  datasetId = $(datasetInput).val();
 
 						// set OUTPUT_CONNECTION value for this component
 						var connectionInput = $(this).find(".parameter-values input[value=OUTPUT_CONNECTION]");
 						var valueInput = connectionInput.parent().find("input[name$=value]");
                         var idInput = connectionInput.parent().find("input[name$=id]");
-                        window.params.addParam(window.taskBoxes.getBoxId($(this)), idInput.val(), fileUrl);
-
-						valueInput.val(fileUrl);
-						window.existingFile.update($(this), null, fileUrl);
+                        window.params.addParam(window.taskBoxes.getBoxId($(this)), idInput.val(), datasetId);
+                        window.datasets[window.taskBoxes.getBoxId($(this))] = datasetId;
+						valueInput.val(datasetId);
+						window.existingFile.update($(this), null, datasetId);
 					}
 					$(this).dialog("close");
 				}

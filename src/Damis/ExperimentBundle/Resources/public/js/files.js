@@ -105,13 +105,12 @@
 			var valueInput = connectionInput.parent().find("input[name$=value]");
 			var idInput = connectionInput.parent().find("input[name$=id]");
 			if (this.checkSuccess(responseText)) {
-				// set OUTPUT_CONNECTION parameter of this task to the uploaded 
-				// file url
-				var fileUrl = responseText.find("input[name=file_path]").val();
-                this.filePath = fileUrl;
-                window.params.addParam(this.taskBoxId, idInput.val(), fileUrl);
-				valueInput.val(fileUrl);
-
+				// set OUTPUT_CONNECTION parameter of this task to the uploaded
+				var datasetId = responseText.find("input[name=file_path]").val();
+                this.filePath = datasetId;
+                window.params.addParam(this.taskBoxId, idInput.val(), datasetId);
+				valueInput.val(datasetId);
+                window.datasets[window.taskBoxes.getBoxId($(this))] = datasetId;
 				// display only another set of buttons 
 				formWindow.dialog("option", "buttons", window.files.uploadedButtons());
 			} else {
