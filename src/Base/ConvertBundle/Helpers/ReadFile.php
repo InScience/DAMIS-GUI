@@ -9,6 +9,11 @@
 namespace Base\ConvertBundle\Helpers;
 
 
+use Damis\DatasetsBundle\Entity\Dataset;
+use ReflectionClass;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Response;
+
 class ReadFile {
 
     /**
@@ -83,5 +88,91 @@ class ReadFile {
             }
         }
         return $attributes;
+    }
+
+    /**
+     * Select dataset features
+     *
+     * @param $datasetId
+     * @param $attr
+     * @param $class
+     * @param $userId
+     * @param $container
+     * @return int
+     */
+    public function selectFeatures($datasetId, $attr, $class, $userId, $container)
+    {
+        $em = $container->get('doctrine')->getEntityManager();
+        $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
+        $rows = $this->getRows('.' . $dataset->getFilePath(), 'arff');
+        $nr = 0;
+        $file = '';
+
+        if(!in_array($class, $attr) && $class != ""){
+            $attrs = $attr;
+            $attrs[] = $class;
+        } else
+            $attrs = $attr;
+
+        foreach($rows as $row){
+           if(strpos(strtolower($row[0]), '@attribute') === 0){
+                if($nr == $class && $class != ""){
+                    $header = explode(' ', $row[0]);
+                    if(strpos(strtolower($row[0]), '@attribute class') === 0)
+                        $file .= '@attribute class ' . $header[2];
+                    else
+                        $file .= '@attribute class ' . $header[1];
+                    $file .= PHP_EOL;
+                }
+                elseif(in_array($nr, $attr)){
+                    foreach($row as $value)
+                        $file .= $value;
+                    $file .= PHP_EOL;
+                }
+                $nr++;
+            } elseif(strpos(strtolower($row[0]), '@data') === 0 ||
+                strpos(strtolower($row[0]), '@relation') === 0) {
+                foreach($row as $value)
+                    $file .= $value;
+                $file .= PHP_EOL;
+            } else {
+                foreach($attrs as $key => $at){
+                    if($key > 0)
+                        $file .= ',' . $row[$at];
+                    else
+                        $file .= $row[$at];
+                }
+                $file .= PHP_EOL;
+            }
+        }
+        $temp_folder = $container->getParameter("kernel.cache_dir");
+        $temp_file = $temp_folder . '/' . basename($dataset->getDatasetTitle() . time() . '.arff');
+
+        $filew = fopen($temp_file,"w");
+        fwrite($filew, $file);
+        fclose($filew);
+
+        $file = new File($temp_file);
+        $user = $em->getRepository('BaseUserBundle:User')->findOneById($userId);
+        $file_entity = new Dataset();
+        $file_entity->setUserId($user);
+        $file_entity->setDatasetTitle('experiment result');
+        $file_entity->setDatasetCreated(time());
+        $file_entity->setDatasetIsMidas(false);
+        $file_entity->setHidden(true);
+        $em->persist($file_entity);
+        $em->flush();
+
+        $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+        $mapping = $container->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity, $ref_class, 'file');
+        $file_data = $container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file);
+        $file_entity->setFile($file_data);
+        $file_entity->setFilePath($file_data['path']);
+        $em->flush();
+
+        unlink($temp_file);
+
+        return $file_entity->getDatasetId();
+
     }
 } 

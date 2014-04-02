@@ -174,6 +174,7 @@ class ComponentController extends Controller
             'file' => $entity
         );
     }
+
     /**
      * Matrix view
      *
@@ -229,7 +230,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * Matrix view
+     * Technical information action
      *
      * @Route("/experiment/component/{id}/technical/information.html", name="technical_information", options={"expose" = true})
      * @Method({"GET", "POST"})
@@ -261,5 +262,4 @@ class ComponentController extends Controller
             'runtime' => $runtime
         );
     }
-
 }
