@@ -80,7 +80,7 @@
                 var attrId = 0;
                 {% for attrId in form_data['selAttr'] %}
                     attrId = {{ attrId }};
-                    $('option[value=' + attrId + ']').attr('selected', true);
+                    $('select[name="select_type[attr][]"] option[value=' + attrId + ']').attr('selected', true);
                     transfer($src, $dst);
                 {% endfor %}
                 unselectAll();
