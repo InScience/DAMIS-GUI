@@ -41,6 +41,8 @@
                 data: data
             }).done(function(resp) {
                 $(this).html(resp['html']);
+                var params = $(this).find('input[name=params]').val();
+                window.componentForm.addParams(window.taskBoxes.getBoxId(dialog), params);
                 window.utils.countChange($(this));
                 window.utils.hideProgress();
                 var type = window.componentSettings.getComponentDetails({componentId : resp['componentId']})['type'];
@@ -100,13 +102,17 @@
                 window.componentForm.isValid(context);
                 if(window.componentForm.valid) {
                     var params = context.find('input[name=params]').val();
-                    var _params = JSON.parse(params);
-                    for(i in _params) {
-                        window.params.addParam(window.taskBoxes.currentBoxId, i, _params[i])
-                    }
+                    window.componentForm.addParams(window.taskBoxes.currentBoxId, params);
                     context.dialog('close');
                 }
             });
+        },
+
+        addParams: function(taskBoxId, params) {
+            var _params = JSON.parse(params);
+            for(i in _params) {
+                window.params.addParam(taskBoxId, i, _params[i])
+            }
         },
 
         isValid: function(context) {

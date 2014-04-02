@@ -121,12 +121,24 @@ class ComponentController extends Controller
                 return $response;
             }
         }
+        $parameters = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Parameter')
+            ->findBy(['component' => $id]);
+
+        $response = [];
+
+        foreach($parameters as $parameter) {
+            if($parameter->getSlug())
+                $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
+
+        }
 
         $html = $this->renderView(
             'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
             [
                 'form' => $form->createView(),
-                'form_data' => $form_data
+                'response' => json_encode($response)
             ]
         );
 
