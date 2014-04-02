@@ -135,7 +135,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             } else {
                 // set proper execution time
                 $task->setExecutionTime($result['calcTime']);
-                $task->setMessage($result['algorithmError']);
+                if (isset($result['algorithmError']))
+                    $task->setMessage($result['algorithmError']);
 
                 // save results file
                 $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
@@ -166,6 +167,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     $file_entity->setFile($file_data);
                     $file_entity->setFilePath($file_data['path']);
                     $em->flush();
+
+                    @unlink($temp_file);
 
                     // set proper out and in if available and successfull
                     if ($outDatasetEntity){
