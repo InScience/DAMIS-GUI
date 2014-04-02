@@ -1,16 +1,16 @@
 {% block body %}
-    <div class="col-lg-9">
+    <div class="col-lg-12">
         <form method="POST" class="form-horizontal">
             <input type="hidden" name="params" id="params" value="{{ response }}" />
             <p>{{ 'Specify the parameters of the algorithm' | trans({}, 'ExperimentBundle') }}</p>
-            <div class="form-group">
+            <div class="form-group component-form-margin">
                 {{ form_label(form.maxIteration) }}
-                <div class="col-md-4">
+                <div class="col-md-4 component-form-margin">
                     {{ form_widget(form.maxIteration) }}
                 </div>
             </div>
-            <div class="form-group" style="margin-top:60px">{{ form_errors(form.maxIteration) }}</div>
-            <div class="form-group">
+            <div class="form-group component-form-margin">{{ form_errors(form.maxIteration) }}</div>
+            <div class="form-group component-form-margin">
                 <table border="0" style="width:500px;">
                     <tr>
                         <td></td>
@@ -29,31 +29,31 @@
                 {{ form_errors(form.h2pNo) }}
                 {{ form_errors(form.h3pNo) }}
             </div>
-            <div class="form-group">
+            <div class="form-group component-form-margin">
                 {{ form_label(form.dL) }}
-                <div class="col-sm-4">
+                <div class="col-sm-4 component-form-margin">
                     {{ form_widget(form.dL) }}
                 </div>
-                <div class="col-sm-1" style="margin-left:-25px;">%</div>
+                <div class="col-sm-1 component-form-margin" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dL) }}</div>
-            <div class="form-group">
+            <div class="form-group col-md-12 component-form-margin">{{ form_errors(form.dL) }}</div>
+            <div class="form-group component-form-margin">
                 {{ form_label(form.dT) }}
-                <div class="col-sm-4">
+                <div class="col-sm-4 component-form-margin">
                     {{ form_widget(form.dT) }}
                 </div>
-                <div class="col-sm-1" style="margin-left:-25px;">%</div>
+                <div class="col-sm-1 component-form-margin" style="margin-left:-25px;">%</div>
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dT) }}</div>
-            <div class="form-group">
+            <div class="form-group col-md-12 component-form-margin">{{ form_errors(form.dT) }}</div>
+            <div class="form-group component-form-margin">
                 {{ form_label(form.dV) }}
-                <div class="col-sm-4">
+                <div class="col-sm-4 component-form-margin">
                     {{ form_widget(form.dV) }}
                 </div>
-                <div class="col-sm-1" style="margin-left:-25px;">%</div>
+                <div class="col-sm-1 component-form-margin" style="margin-left:-25px;">%</div>
 
             </div>
-            <div class="form-group" style="margin-top:70px">{{ form_errors(form.dV) }}</div>
+            <div class="form-group col-md-12 component-form-margin">{{ form_errors(form.dV) }}</div>
             <div class="col-md-12">
                 {{ "Fields marked with <span style='color:red;'>*</span> are mandatory"|trans({}, 'ExperimentBundle')|raw }}
             </div>
