@@ -36,7 +36,7 @@ class ExperimentHistoryController extends Controller
         $grid = $this->get('grid');
 
         $grid->setSource($source);
-        $grid->setLimits(25);
+        $grid->setLimits(20);
         $grid->setNoResultMessage($this->get('translator')->trans('No data'));
 
         //custom colums config
