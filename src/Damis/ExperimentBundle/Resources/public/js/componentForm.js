@@ -96,7 +96,7 @@
             data += '&dataset_id='+window.taskBoxes.getConnectedTaskBoxDatasetId(
                 window.taskBoxes.getBoxId(context)
             );
-            var url = Routing.generate('component_form', {id : window.componentSettings.getComponentDetails({'boxId': window.taskBoxes.currentBoxId}).componentId });
+            var url = Routing.generate('component_form', {id : $('#' + window.taskBoxes.getBoxId(context)).attr('data-componentid') });
             $.post(url, data, function(resp) {
                 context.find(".dynamic-container").html(resp["html"]);
                 window.componentForm.isValid(context);
