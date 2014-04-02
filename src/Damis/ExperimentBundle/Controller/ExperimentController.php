@@ -225,7 +225,10 @@ class ExperimentController extends Controller
                         }
 
                         if ($form->id == $parameter->getId())
-                            $value->setParametervalue($form->value);
+                            if(is_array($form->value))
+                                $value->setParametervalue(json_encode($form->value));
+                            else
+                                $value->setParametervalue($form->value);
                     }
                 }
                 $em->persist($value);

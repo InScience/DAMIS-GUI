@@ -3,6 +3,7 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Base\ConvertBundle\Helpers\ReadFile;
+use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -43,6 +44,7 @@ class ComponentController extends Controller
      */
     public function componentFormAction(Request $request, $id)
     {
+        /** @var $component Component */
         $component = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Component')
@@ -65,8 +67,8 @@ class ComponentController extends Controller
 
         $formType = 'Damis\ExperimentBundle\Form\Type\\' . $component->getFormType() . 'Type';
         $form = $this->createForm(new $formType(), $options);
-
         $data = json_decode($request->get('data'));
+        $form_data = [];
         if($request->getMethod() != 'POST' && !empty($data)) {
             $parametersIds = [];
             $values = [];
@@ -80,8 +82,10 @@ class ComponentController extends Controller
             $parameters = $helper->getParameters($parametersIds);
 
             /** @var $param Parameter */
-            foreach($parameters as $param)
+            foreach($parameters as $param) {
                 $form->get($param->getSlug())->submit($values[$param->getId()]);
+                $form_data[$param->getSlug()] = $values[$param->getId()];
+            }
 
 
         }
@@ -109,6 +113,7 @@ class ComponentController extends Controller
                     [
                         'form' => $form->createView(),
                         'response' => json_encode($response),
+                        'form_data' => $form_data
                     ]
                 );
                 $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));
@@ -119,7 +124,10 @@ class ComponentController extends Controller
 
         $html = $this->renderView(
             'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
-            ['form' => $form->createView()]
+            [
+                'form' => $form->createView(),
+                'form_data' => $form_data
+            ]
         );
 
         $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));

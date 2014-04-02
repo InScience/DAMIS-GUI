@@ -52,7 +52,7 @@ class SelectType extends AbstractType {
                 'label' => 'Class attribute'
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) {
+        $closure = function (FormEvent $e) {
             $data = $e->getData();
             $form = $e->getForm();
             $choices_selAttr = [];
@@ -77,7 +77,9 @@ class SelectType extends AbstractType {
                     'label' => 'Attributes'
                 ]);
             }
-        });
+        };
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, $closure);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {

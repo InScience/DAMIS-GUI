@@ -224,10 +224,8 @@
                     if(datasetId === false || datasetId === '')
                         window.taskBoxes.toUnconnectedState(formWindow);
                     else {
-                        if(window.params.getParams(this.id).length === 0){
-                            window.taskBoxes.showConnectedForm(formWindow);
-                            window.componentForm.update(formWindow, datasetId);
-                        }
+                        window.taskBoxes.showConnectedForm(formWindow);
+                        window.componentForm.update(formWindow, datasetId);
                     }
                 }
 
@@ -264,9 +262,19 @@
                 .find('input[name$=value]')
                 .val();
 
-            var datasetsValue = window.datasets[ancestor];
+            var datasetValue = window.datasets[ancestor];
 
-            return (inputValue == undefined) ? datasetsValue : inputValue;
+            if(datasetValue == undefined && inputValue == undefined) {
+                var ancestorComponent = window.componentSettings.getComponentDetails({boxId : ancestor});
+                if(ancestorComponent != undefined) {
+                    if(ancestorComponent['type'] == 'NewFile' || ancestorComponent['type'] == 'UploadedFile') {
+                        return window.params.getParams(ancestor)[0].value;
+                    }
+                }
+
+            }
+
+            return (inputValue == undefined) ? datasetValue : inputValue;
         },
 
         getAncestorTaskBoxId : function (taskBox) {

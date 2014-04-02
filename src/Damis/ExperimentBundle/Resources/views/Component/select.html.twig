@@ -43,18 +43,22 @@
         (function() {
             var $src = $('select[name="select_type[attr][]"]:visible');
             var $dst = $('select[name="select_type[selAttr][]"]:visible');
+
+            var unselectAll = function() {
+                $('select[name="select_type[attr][]"]:visible option').prop('selected', false);
+                $('select[name="select_type[selAttr][]"]:visible option').prop('selected', false);
+            }
+
             $('.shuttle-control-src-dst:visible').on('click', function(event) {
                 event.preventDefault();
                 transfer($src, $dst);
-                $('select[name="select_type[attr][]"]:visible option').prop('selected', false);
-                $('select[name="select_type[selAttr][]"]:visible option').prop('selected', false);
+                unselectAll();
                 return false;
             });
             $('.shuttle-control-dst-src:visible').on('click', function(event) {
                 event.preventDefault();
                 transfer($dst, $src);
-                $('select[name="select_type[attr][]"]:visible option').prop('selected', false);
-                $('select[name="select_type[selAttr][]"]:visible option').prop('selected', false);
+                unselectAll();
                 return false;
             });
             var transfer = function(src, dst) {
@@ -71,6 +75,16 @@
             });
             $('.shuttle-control-src-dst').tooltip();
             $('.shuttle-control-dst-src').tooltip();
+
+            {% if form_data['selAttr']|length > 0 %}
+                var attrId = 0;
+                {% for attrId in form_data['selAttr'] %}
+                    attrId = {{ attrId }};
+                    $('option[value=' + attrId + ']').attr('selected', true);
+                    transfer($src, $dst);
+                {% endfor %}
+                unselectAll();
+            {% endif %}
         })();
     </script>
 {% endblock %}
