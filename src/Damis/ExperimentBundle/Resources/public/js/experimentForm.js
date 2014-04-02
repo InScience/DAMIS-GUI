@@ -225,6 +225,12 @@
 					$(this).dialog("destroy");
 				}
 			});
+            $('a#change-title').on('click', function(e) {
+                e.preventDefault();
+                $('a#change-title').css('display', 'none');
+                $('span#experiment-title').css('display', 'none');
+                $('input#id_experiment-title').css('display', 'inline');
+            });
 		},
 
 		// returns parameter form, given 

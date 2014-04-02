@@ -110,7 +110,7 @@
                 this.filePath = datasetId;
                 window.params.addParam(this.taskBoxId, idInput.val(), datasetId);
 				valueInput.val(datasetId);
-                window.datasets[window.taskBoxes.getBoxId($(this))] = datasetId;
+                window.datasets[window.taskBoxes.getBoxId(formWindow)] = datasetId;
 				// display only another set of buttons 
 				formWindow.dialog("option", "buttons", window.files.uploadedButtons());
 			} else {
