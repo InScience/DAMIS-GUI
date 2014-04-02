@@ -22,4 +22,43 @@ class ParametervalueRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getValueBySlug($task, $slug){
+        $query = $this->createQueryBuilder('pv')
+            ->select('pv.parametervalue')
+            ->leftJoin('pv.parameter', 'p')
+            ->andWhere('pv.workflowtask = :w')
+            ->andWhere('p.slug = :s')
+            ->setParameter('w', $task)
+            ->setParameter('s', $slug)
+            ->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    public function getParameterByType($task, $type){
+        $query = $this->createQueryBuilder('pv')
+            ->select('pv')
+            ->leftJoin('pv.parameter', 'p')
+            ->andWhere('pv.workflowtask = :w')
+            ->andWhere('p.connectionType = :s')
+            ->setParameter('w', $task)
+            ->setParameter('s', $type)
+            ->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    public function getValueByType($task, $type){
+        $query = $this->createQueryBuilder('pv')
+            ->select('pv.parametervalue')
+            ->leftJoin('pv.parameter', 'p')
+            ->andWhere('pv.workflowtask = :w')
+            ->andWhere('p.connectionType = :s')
+            ->setParameter('w', $task)
+            ->setParameter('s', $type)
+            ->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

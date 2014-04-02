@@ -104,7 +104,7 @@ class ReadFile {
     {
         $em = $container->get('doctrine')->getEntityManager();
         $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
-        $rows = $this->getRows('.' . $dataset->getFilePath(), 'arff');
+        $rows = @$this->getRows('.' . $dataset->getFilePath(), 'arff');
         $nr = 0;
         $file = '';
 
@@ -175,4 +175,4 @@ class ReadFile {
         return $file_entity->getDatasetId();
 
     }
-} 
+}
