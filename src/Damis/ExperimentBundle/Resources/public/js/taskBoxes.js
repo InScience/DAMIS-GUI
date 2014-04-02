@@ -267,12 +267,10 @@
 
             if(datasetValue == undefined && inputValue == undefined) {
                 var ancestorComponent = window.componentSettings.getComponentDetails({boxId : ancestor});
-                if(ancestorComponent != undefined) {
-                    if(ancestorComponent['type'] == 'NewFile' || ancestorComponent['type'] == 'UploadedFile') {
-                        return window.params.getParams(ancestor)[0].value;
-                    }
-                }
-
+                if(ancestorComponent != undefined)
+                    if(ancestorComponent['type'] == 'NewFile' || ancestorComponent['type'] == 'UploadedFile')
+                        if(window.params.getParams(ancestor)[0] != undefined)
+                            return window.params.getParams(ancestor)[0].value;
             }
 
             return (inputValue == undefined) ? datasetValue : inputValue;
