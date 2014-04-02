@@ -55,7 +55,6 @@
                                 if (dst == 'midas') {
                                     $(this).find(".not-implemented").show();
                                 } else {
-                                    //image = image.replace("image/png", "image/octet-stream");
                                     var url = Routing.generate('technical_information',{id : data["dataset_url"]});
 
                                     // POST to server to obtain a downloadable result
