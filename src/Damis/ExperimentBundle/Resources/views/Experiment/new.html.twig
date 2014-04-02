@@ -18,10 +18,10 @@
                 <ul class="nav nav-tabs" id="cluster-tabs">
                     {% for cluster in clusters %}
                     <li id="cluster-{{ cluster.id }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
-                        <a href="#">{{ cluster.name }}</a>
+                        <a href="#">{{ cluster.name | trans({}, 'ExperimentBundle')}}</a>
                         <span>
-                            <i class="component-tooltip cluster-tooltip icon-info-sign" data-placement="bottom"
-                               data-content="{{ cluster.desciption }}" style="cursor: pointer">
+                            <i class="component-tooltip cluster-tooltip glyphicon glyphicon-info-sign" data-placement="bottom"
+                               data-content="{{ (cluster.description) | trans({}, 'ExperimentBundle')}}" style="cursor: pointer">
                                 <span style="display: none;">Cluster information</span>
                             </i>
                         </span>
@@ -43,8 +43,8 @@
                                         <div class="prototype-box {% if loop.index is divisibleby(3) %}last{% endif %}">
                                             <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
                                                  width="64px" height="64px" />
-                                            <i style="cursor:pointer; " class="component-tooltip icon-info-sign"
-                                               data-placement="bottom" data-content="Upload file for data analysis"
+                                            <i style="cursor:pointer; " class="component-tooltip glyphicon glyphicon-info-sign"
+                                               data-placement="bottom" data-content="{{ component.description | trans({} , 'ExperimentBundle')}}"
                                                data-original-title="" title="">
                                                 <span style="display: none;">{{ component.getName | trans({}, 'ExperimentBundle') }}</span>
                                             </i>
@@ -116,7 +116,7 @@
             window.experimentForm.params = {
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
                 experimentNewUrl: "{{ path('new_experiment') }}",
-                taskFormPrefix: "form-111-"
+                taskFormPrefix: "form-"
             };
 
             //decide if an empty canvas or a persisted worklow should be

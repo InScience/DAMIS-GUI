@@ -136,3 +136,8 @@ table {max-width: none}
     margin: auto;
 }
 
+/* tooltips */
+.popover-content { word-wrap: break-word; }
+.popover { width: 276px; }
+.tab-content { overflow: visible; }
+.file-content-table td, .file-content-table th {padding: 4px; border: 1px solid #bbb}

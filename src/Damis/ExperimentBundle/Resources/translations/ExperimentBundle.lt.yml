@@ -121,7 +121,34 @@ Not all components are connected : Yra nesujungtų komponentų
 Please select file : Prašome pasirinkti failą
 Too many file components : Failo komponentė galima tik viena
 File component is required : Failo komponentė yra privaloma
-Finished : Pabaigta
+There are loops : Vykdymo grafe ciklai negalimi
+MII Cluster : MII klasteris
+Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstitųjų skaičiavimų klasteris
+Supercomputer of Vilnius University Faculty of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos fakulteto paskirstytųjų skaičiavimų superkompiuteris
+C4.5 classifier : C4.5 klasifikatorius
+Data cleaning : Duomenų valymas
+Diagonal majorization algorithm : Diagonalinio mažoravimo algoritmas  (DMA)
+Select uploaded file : Pasirinkti įkeltą failą
+Filter data : Duomenų filtravimas
+k-means clustering : k-vidurkių klasterizavimo metodas
+Results matrix view : Rezultatų matricinis vaizdavimas
+Select file from MIDAS archive : Pasirinkti failą iš MIDAS archyvo
+Multilayer perceptron : Daugiasluoksnis perceptronas
+Principal Component Analysis : Pagrindinių komponenčių analizė (PCA)
+SAMANN algorithm : SAMANN algoritmas
+Relative Multidimensional Scaling (MDS)  algorithm : Santykinių daugiamačių skalių (MDS) algoritmas
+Select features : Požymių atrinkimas
+SMACOF (MDS) algorithm : SMACOF (MDS) algoritmas
+Self-Organizing Map (SOM) : Saviorganizuojantis neuroninis tinklas (SOM)
+SOM for Multidimensional Data Visualization : Saviorganizuojančių neuroninių tinklų junginys su daugiamatėmis skalėmis
+Split a file into given number of parts : Failo padalinimas į kelis smulkesnius
+Splits nominal feature into several features : Kategorinį požymį išskaido į kelis požymius
+The set of statistical primitives : Statistinių primityvų skaičiavimas
+Show all component's outputs' values : Pateikti visų komponentės išeičių reikšmes
+Data transformation : Duomenų normavimas
+Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
+Upload file for data analysis : Įkelkite norimą failą duomenų analizei
+Chart : Rezultatų grafinis vaizdavimasFinished : Pabaigta
 Saved : Išsaugota
 Executing : Vykdoma
 There are loops : Vykdymo grafe ciklai negalimi
