@@ -148,7 +148,8 @@ Show all component's outputs' values : Pateikti visų komponentės išeičių re
 Data transformation : Duomenų normavimas
 Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
 Upload file for data analysis : Įkelkite norimą failą duomenų analizei
-Chart : Rezultatų grafinis vaizdavimasFinished : Pabaigta
+Chart : Rezultatų grafinis vaizdavimas
+Finished : Pabaigta
 Saved : Išsaugota
 Executing : Vykdoma
 Fields marked with <span style='color:red;'>*</span> are mandatory : "<span style='color:red;'>*</span> Žvaigždute pažymėti laukai yra privalomi"
