@@ -105,7 +105,9 @@
                     window.componentForm.addParams(window.taskBoxes.currentBoxId, params);
                     context.dialog('close');
                 }
-                window.submitedForms[$(context).attr('id')] = 1;
+                window.submitedForms[$(context).attr('id')] = window.taskBoxes.getConnectedTaskBoxDatasetId(
+                    window.taskBoxes.getBoxId(context)
+                );
             });
         },
 

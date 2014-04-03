@@ -225,7 +225,8 @@
                     if(datasetId === false || datasetId === '')
                         window.taskBoxes.toUnconnectedState(formWindow);
                     else {
-                        if(window.submitedForms[formWindowId] == undefined) {
+                        if(window.submitedForms[formWindowId] == undefined
+                            || window.submitedForms[formWindowId] != datasetId) {
                             window.taskBoxes.showConnectedForm(formWindow);
                             window.componentForm.update(formWindow, datasetId);
                         }

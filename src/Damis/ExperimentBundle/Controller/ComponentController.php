@@ -68,7 +68,7 @@ class ComponentController extends Controller
         $formType = 'Damis\ExperimentBundle\Form\Type\\' . $component->getFormType() . 'Type';
         $form = $this->createForm(new $formType(), $options);
         $data = json_decode($request->get('data'));
-        $form_data = [];
+        $formData = [];
         if($request->getMethod() != 'POST' && !empty($data)) {
             $parametersIds = [];
             $values = [];
@@ -84,7 +84,7 @@ class ComponentController extends Controller
             /** @var $param Parameter */
             foreach($parameters as $param) {
                 $form->get($param->getSlug())->submit($values[$param->getId()]);
-                $form_data[$param->getSlug()] = $values[$param->getId()];
+                $formData[$param->getSlug()] = $values[$param->getId()];
             }
 
 
@@ -121,16 +121,18 @@ class ComponentController extends Controller
                 return $response;
             }
         }
-        $parameters = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('DamisExperimentBundle:Parameter')
-            ->findBy(['component' => $id]);
 
-        $response = [];
 
-        foreach($parameters as $parameter) {
-            if($parameter->getSlug())
-                $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
+        $response = $formData;
+        if($request->getMethod() != 'POST' && empty($data)) {
+            $parameters = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('DamisExperimentBundle:Parameter')
+                ->findBy(['component' => $id]);
+
+            foreach($parameters as $parameter)
+                if($parameter->getSlug())
+                    $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
 
         }
 
@@ -139,7 +141,7 @@ class ComponentController extends Controller
             [
                 'form' => $form->createView(),
                 'response' => json_encode($response),
-                'form_data' => $form_data
+                'form_data' => $formData
             ]
         );
 
