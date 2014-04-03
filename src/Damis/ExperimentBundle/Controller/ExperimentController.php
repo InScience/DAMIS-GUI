@@ -306,7 +306,7 @@ class ExperimentController extends Controller
         $data['experimentId'] = $id;
         $data['experimentTitle'] = $experiment->getName();
         $data['tasksBoxsWithErrors'] = $tasksBoxsWithErrors;
-var_dump($data);
+
         return $data;
     }
 
