@@ -43,7 +43,7 @@
             }
 
             for(var box in boxes){
-                var type = window.componentSettings.getComponentDetails({boxId : box})['type'];
+                var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
                 if(type !== "UploadedFile" && type !== "NewFile"){
                     if(!error)
                         error = this.validateConnections(box);
@@ -67,7 +67,7 @@
              }
 
             for(var box in boxes){
-                var type = window.componentSettings.getComponentDetails({boxId : box})['type'];
+                var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
                 if(type !== "UploadedFile" && type !== "NewFile"){
                     if(!error)
                         error = this.validateLoops(box);
