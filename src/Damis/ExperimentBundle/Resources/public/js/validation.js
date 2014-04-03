@@ -14,7 +14,7 @@
             var fileNumbers = 0;
             for(var box in boxes){
                 $('#' + box).removeClass('error');
-                var type = window.componentSettings.getComponentDetails({boxId : box})['type'];
+                var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
                 if(type === "UploadedFile" || type === "NewFile"){
                     fileNumbers++;
                     if(!error)
