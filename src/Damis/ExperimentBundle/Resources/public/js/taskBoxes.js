@@ -225,8 +225,10 @@
                     if(datasetId === false || datasetId === '')
                         window.taskBoxes.toUnconnectedState(formWindow);
                     else {
-                        window.taskBoxes.showConnectedForm(formWindow);
-                        window.componentForm.update(formWindow, datasetId);
+                        if(window.submitedForms[formWindowId] == undefined) {
+                            window.taskBoxes.showConnectedForm(formWindow);
+                            window.componentForm.update(formWindow, datasetId);
+                        }
                     }
                 }
 
