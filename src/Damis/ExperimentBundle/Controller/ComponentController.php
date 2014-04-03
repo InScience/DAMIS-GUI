@@ -267,17 +267,18 @@ class ComponentController extends Controller
         $runtime = '';
          if($id == 'undefined')
             $id = null;
-        else {
+        else
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
-            if($request->isMethod('POST')) {
-                return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
-            } else {
-                $workflow = $em->getRepository('DamisEntitiesBundle:Workflowtask')
-                    ->findOneBy(array('experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')));
-                $runtime = $workflow->getExecutionTime();
-                $message = $workflow->getMessage();
-            }
+
+        if($request->isMethod('POST')) {
+            return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+        } else {
+            $workflow = $em->getRepository('DamisEntitiesBundle:Workflowtask')
+                ->findOneBy(array('experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')));
+            $runtime = $workflow->getExecutionTime();
+            $message = $workflow->getMessage();
         }
+
         return array(
             'id' => $id,
             'file' => $entity,
