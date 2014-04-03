@@ -71,19 +71,18 @@
                 });
                 dst.empty().append(options);
             };
-            $('button.submit:visible').click(function(){
-            });
+
             $('.shuttle-control-src-dst').tooltip();
             $('.shuttle-control-dst-src').tooltip();
 
             {% if form_data['selAttr']|length > 0 %}
-                var attrId = 0;
-                {% for attrId in form_data['selAttr'] %}
-                    attrId = {{ attrId }};
-                    $('select[name="select_type[attr][]"] option[value=' + attrId + ']').attr('selected', true);
-                    transfer($src, $dst);
-                {% endfor %}
-                unselectAll();
+            var attrId = 0;
+            {% for attrId in form_data['selAttr'] %}
+            attrId = {{ attrId }};
+            $('select[name="select_type[attr][]"] option[value=' + attrId + ']').attr('selected', 'selected');
+            transfer($src, $dst);
+            {% endfor %}
+            unselectAll();
             {% endif %}
         })();
     </script>

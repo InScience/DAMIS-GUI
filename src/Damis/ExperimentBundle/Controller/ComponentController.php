@@ -113,7 +113,7 @@ class ComponentController extends Controller
                     [
                         'form' => $form->createView(),
                         'response' => json_encode($response),
-                        'form_data' => $form_data
+                        'form_data' => $requestParams[$formParam]
                     ]
                 );
                 $response = new Response(json_encode( array("html" => $html,  'componentId' => $id) ));
@@ -138,7 +138,8 @@ class ComponentController extends Controller
             'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
             [
                 'form' => $form->createView(),
-                'response' => json_encode($response)
+                'response' => json_encode($response),
+                'form_data' => $form_data
             ]
         );
 
