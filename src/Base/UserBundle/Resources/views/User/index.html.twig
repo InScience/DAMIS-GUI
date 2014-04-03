@@ -3,7 +3,7 @@
 {% block body -%}
     {% include "BaseUserBundle::messages.html.twig" %}
 
-    <h1>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h1>
+    <h2>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h2>
 
     {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
 {% endblock %}

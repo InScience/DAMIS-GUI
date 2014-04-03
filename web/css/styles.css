@@ -145,3 +145,9 @@ span.helptext{
     content: "*";
     color: red;
 }
+.grid_body.table-responsive th a {
+    color : black;
+}
+.grid .grid-filter-input-query input, .grid .grid-filter-select-query select {
+  width: 90% !important;
+}
