@@ -105,6 +105,9 @@ class ExperimentController extends Controller
         $experiment->setGuiData($params['experiment-workflow_state']);
         $isExecution = isset($params['experiment-execute']);
 
+        if($isExecution)
+            $isExecution = ($params['experiment-execute'] > 0);
+
         if($isExecution) {
             $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
             $experiment->setUseCpu($params['experiment-p']);

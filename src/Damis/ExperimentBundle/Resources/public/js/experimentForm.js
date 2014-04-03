@@ -206,6 +206,7 @@
 						} else {
                             var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
                             $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
+                            $("#experiment-form input[name=experiment-execute]").val(0);
                             window.experimentForm.submit({
                                 "skipValidation": true
                             });
