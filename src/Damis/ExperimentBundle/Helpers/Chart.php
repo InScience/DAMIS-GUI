@@ -12,6 +12,15 @@ use Base\ConvertBundle\Helpers\ReadFile;
 
 class Chart {
 
+    /**
+     * Clasifing data for chart generation
+     *
+     * @param string $fileUrl file path in local storage
+     * @param int $x column id
+     * @param int $y column id
+     * @param int $clsCol class column id
+     * @return array
+     */
     public function classifieData($fileUrl, $x, $y, $clsCol) {
         $minX = null;
         $minY = null;

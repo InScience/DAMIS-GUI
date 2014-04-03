@@ -14,11 +14,22 @@ class Experiment {
 
     protected $em;
 
+    /**
+     * Service init with entity manager
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
+    /**
+     * Getting parameters with slugs
+     *
+     * @param array $parameterIds
+     * @return array|null|object
+     */
     public function getParameters(array $parameterIds) {
         $repository = $this->em->getRepository('DamisExperimentBundle:Parameter');
 
