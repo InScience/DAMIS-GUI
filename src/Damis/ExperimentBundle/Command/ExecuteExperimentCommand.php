@@ -295,7 +295,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         foreach($experimentsToCloe as $exCl){
             $output->writeln('==============================');
             $output->writeln('Experiment id : ' . $exCl->getId());
-            $output->writeln('Set to finished, has all tasks finished.');
+            $output->writeln('Set to error, has error in one of the tasks.');
             $exCl->setStatus($experimentStatus);//finished
         }
         $em->flush();
