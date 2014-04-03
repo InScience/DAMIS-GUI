@@ -69,7 +69,7 @@ class ExperimentController extends Controller
             ->findOneById($id);
 
         $data['workFlowState'] = $experiment->getGuiData();
-        $data['taskBoxesCount'] = explode('***', $data['workFlowState'])[2];
+        $data['taskBoxesCount'] = @explode('***', $data['workFlowState'])[2];
         $data['experimentId'] = $id;
         $data['experimentTitle'] = $experiment->getName();
 
@@ -133,7 +133,7 @@ class ExperimentController extends Controller
         else
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully updated!');
 
-        return [];
+        return ['experiment' => $experiment];
     }
 
     /**
