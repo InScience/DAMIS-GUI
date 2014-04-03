@@ -147,7 +147,7 @@
             if (componentType == 'TechnicalInfo') {
                 var boxId = window.taskBoxes.getBoxId(formWindow);
                 var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
-                if (datasetId == false || datasetId == undefined){
+                if (datasetId === false || datasetId === undefined){
                     this.toUnconnectedState(formWindow);
                 } else{
                     formWindow.dialog("option", "width", 'auto');
