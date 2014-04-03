@@ -57,6 +57,34 @@ class DatasetsController extends Controller
     }
 
     /**
+     * Delete datasets
+     *
+     * @Route("/delete.html", name="datasets_delete")
+     * @Method("POST")
+     * @Template()
+     */
+    public function deleteAction(Request $request)
+    {
+        $files = json_decode($request->request->get('file-delete-list'));
+        $em = $this->getDoctrine()->getManager();
+        foreach($files as $id){
+            $file = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+            if($file){
+                $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
+                if(!$inUse){
+                    unlink('.' . $file->getFilePath());
+                    $em->remove($file);
+                } else {
+                    $file->setHidden(true);
+                    $em->persist($file);
+                }
+                $em->flush();
+            }
+        }
+        return $this->redirect($this->generateUrl('datasets_list'));
+    }
+
+    /**
      * Upload new dataset
      *
      * @Route("/new.html", name="datasets_new")

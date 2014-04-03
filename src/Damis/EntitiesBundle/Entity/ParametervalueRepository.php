@@ -61,4 +61,16 @@ class ParametervalueRepository extends EntityRepository
 
         return $query->getQuery()->getOneOrNullResult();
     }
+
+    public function checkDatasets($id){
+        $query = $this->createQueryBuilder('pv')
+            ->select('pv')
+            ->leftJoin('pv.parameter', 'p')
+            ->andWhere('pv.parametervalue = :id')
+            ->andWhere('p.connectionType = 2')
+            ->setParameter('id', $id)
+            ->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

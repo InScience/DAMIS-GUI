@@ -155,3 +155,5 @@ Executing : Vykdoma
 Error : Klaida
 Fields marked with <span style='color:red;'>*</span> are mandatory : "<span style='color:red;'>*</span> Žvaigždute pažymėti laukai yra privalomi"
 Change title : Pakeisti pavadinimą
+Delete? : Ištrinti?
+These items will be permanently deleted and cannot be recovered. Are you sure? : Ar tikrai norite, kad pažymėti įrašai būtų negrįžtamai ištrinti?
