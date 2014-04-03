@@ -13,6 +13,14 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  */
 class EntityLogRepository extends EntityRepository
 {
+    /**
+     * Gets log entries for specific entity
+     *
+     * @param $entity
+     * @param null $action
+     * @param int $limit
+     * @return array
+     */
     public function getLogEntriesLimit($entity, $action = null, $limit = 10) {
 
         $wrapped = new EntityWrapper($entity, $this->_em);

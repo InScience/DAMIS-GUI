@@ -11,6 +11,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class WorkflowtaskRepository extends EntityRepository
 {
+    /**
+     * Get all tasks which can be run (experiment is set to executing, and tasks have not null in parameters)
+     *
+     * @param $limit
+     * @return array
+     */
     public function getRunnableTasks($limit)
     {
         $query = $this->createQueryBuilder('w')
@@ -27,6 +33,12 @@ class WorkflowtaskRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * Find all tasks which are unrunnable by nature (component type is 1[entry file] or 6[show information])
+     *
+     * @param $limit
+     * @return array
+     */
     public function getUnrunableTasks($limit)
     {
         $query = $this->createQueryBuilder('w')

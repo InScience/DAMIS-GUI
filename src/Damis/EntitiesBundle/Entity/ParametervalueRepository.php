@@ -11,6 +11,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class ParametervalueRepository extends EntityRepository
 {
+    /**
+     * Get parameter values for a task, ordered by component parameter values
+     *
+     * @param $workflowTask
+     * @return array
+     */
     public function getOrderedParameters($workflowTask)
     {
         $query = $this->createQueryBuilder('pv')
@@ -23,6 +29,13 @@ class ParametervalueRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * Get tasks parameter value, by parameters slug
+     *
+     * @param $task
+     * @param $slug
+     * @return mixed
+     */
     public function getValueBySlug($task, $slug){
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')
@@ -36,6 +49,13 @@ class ParametervalueRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Get tasks parameter, by parameter type
+     *
+     * @param $task
+     * @param $type
+     * @return mixed
+     */
     public function getParameterByType($task, $type){
         $query = $this->createQueryBuilder('pv')
             ->select('pv')
@@ -49,6 +69,13 @@ class ParametervalueRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Get tasks parameter value, by parameter type
+     *
+     * @param $task
+     * @param $type
+     * @return mixed
+     */
     public function getValueByType($task, $type){
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')

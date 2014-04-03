@@ -11,7 +11,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class ExperimentRepository extends EntityRepository
 {
-    public function getClosableExperiments($limit)
+    /**
+     * Finds specified limit of closable experiments (which have all successfully finished tasks) - for successfully finishing
+     *
+     * @param $limit
+     * @return array
+     */
+    public function getClosableExperiments($limit = 100)
     {
         $query = $this->createQueryBuilder('e')
             ->select('e')
@@ -23,7 +29,13 @@ class ExperimentRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getClosableErrExperiments($limit)
+    /**
+     * Finds specified limit of closable experiments (which have at least one task with error status) - for error status
+     *
+     * @param int $limit
+     * @return array
+     */
+    public function getClosableErrExperiments($limit = 100)
     {
         $query = $this->createQueryBuilder('e')
             ->select('e')

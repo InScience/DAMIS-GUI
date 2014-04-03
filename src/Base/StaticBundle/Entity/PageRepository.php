@@ -12,6 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class PageRepository extends EntityRepository
 {
+    /**
+     * Gets maximal position for text
+     *
+     * @param $group
+     * @return mixed
+     */
     public function getMaxTextPosition($group)
     {
         $query = $this->createQueryBuilder('p')
@@ -22,6 +28,13 @@ class PageRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Finds next possible position for specific text in a group, moving up
+     *
+     * @param $newPosition
+     * @param $group
+     * @return mixed
+     */
     public function getNextUpPosition($newPosition, $group)
     {
         $query = $this->createQueryBuilder('p')
@@ -36,6 +49,13 @@ class PageRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Finds next possible position for specific text in a group, moving down
+     *
+     * @param $newPosition
+     * @param $group
+     * @return mixed
+     */
     public function getNextDownPosition($newPosition, $group)
     {
         $query = $this->createQueryBuilder('p')

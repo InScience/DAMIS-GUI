@@ -11,6 +11,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class ComponentRepository extends EntityRepository
 {
+    /**
+     * Finds component of specified task(id)
+     * @param $task
+     * @return mixed
+     */
     public function getTasksComponent($task)
     {
         $query = $this->createQueryBuilder('c')
