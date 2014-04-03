@@ -183,7 +183,7 @@
 		executeDialog: function(action) {
 			var dialog = $("#exec-dialog");
 			dialog.dialog({
-				"title": 'Experiment settings',
+				"title": Translator.trans('Experiment settings', {}, 'ExperimentBundle'),
 				"modal": true,
 				"appendTo": "#experiment-form",
 				"buttons": [{
