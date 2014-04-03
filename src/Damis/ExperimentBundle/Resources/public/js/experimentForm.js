@@ -201,6 +201,7 @@
 						if (action == "execute") {
                             var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
                             $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
+                            $("#experiment-form input[name=experiment-execute]").val(1);
                             window.experimentForm.submit({});
 						} else {
                             var persistedStr = window.persistWorkflow.persistJsPlumbEntities();

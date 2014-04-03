@@ -11,7 +11,6 @@
                     </button>
                 </a>
                 </p>
-            {% else %}
             {% endif %}
             <div id="exec-params">
                 <p>{{'Maximum calculation time'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-max_calc_time" name="experiment-max_calc_time" type="text" value="2:00:00"></p>
@@ -19,6 +18,7 @@
                 <input id="id_experiment-workflow_state" name="experiment-workflow_state" type="hidden">
                 <input id="id_experiment-skip_validation" name="experiment-skip_validation" type="hidden">
                 <input id="id_experiment" name="experiment-id" type="hidden" value="{{ experimentId }}">
+                <input id="id_experiment-execute" name="experiment-execute" type="hidden" value="0">
             </div>
     </div>
     <div style="display:none">

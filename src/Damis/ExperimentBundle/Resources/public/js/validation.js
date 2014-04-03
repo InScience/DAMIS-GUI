@@ -130,9 +130,9 @@
 
 		validateFormErrors: function() {
             var error = false;
-            $.each($(".task-box"), function(taskBoxId, taskBox) {
-                var tb = $('#task-box-'+taskBoxId+'-form');
-                var type = window.componentSettings.getComponentDetails({boxId : 'task-box-'+taskBoxId})['type'];
+            $.each($(".task-box"), function(key, taskBox) {
+                var tb = $('#' + $(taskBox).attr('id') + '-form');
+                var type = window.componentSettings.details[$(taskBox).attr('data-componentid')]['type'];
                 if(type !== "UploadedFile" && type !== "NewFile"){
                     if(tb.find('.dynamic-container').find('ul li').length > 0){
                         $(taskBox).addClass("error");
