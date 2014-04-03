@@ -154,7 +154,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Wsdl function parameters: ' . print_r($params, true));
 
             //FOR TESTING PURPOSES ONLY
-            $params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
+            //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
 
             //----------------------------------------------------------------------------------------------------//
             // execute
