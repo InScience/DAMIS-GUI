@@ -124,11 +124,25 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             if ($task->getExperiment()->getMaxDuration() and $task->getExperiment()->getMaxDuration() instanceof DateTime)
                 $calcTime = $this->hoursToSecods($task->getExperiment()->getMaxDuration()->format('H:i:s'));
 
+            $proc = array();
+            if ($component->getWsdlCallFunction() == 'MLP' OR
+                $component->getWsdlCallFunction() == 'SMACOFMDS' OR
+                $component->getWsdlCallFunction() == 'SAMANN' OR
+                $component->getWsdlCallFunction() == 'SOM'
+            ){
+                if ($task->getExperiment()->getUseCpu())
+                    $proc['P'] = $task->getExperiment()->getUseCpu();
+                else
+                    $proc['P'] = 1;
+            }
+
+
             $params = array_merge(
                 array(
                     'X' => $this->getContainer()->getParameter('project_full_host') . $dataset->getFilePath(),
                 ),
                 $params,
+                $proc,
                 array(
                     'maxCalcTime' => $calcTime,
                 )
@@ -140,7 +154,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Wsdl function parameters: ' . print_r($params, true));
 
             //FOR TESTING PURPOSES ONLY
-            //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
+            $params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
 
             //----------------------------------------------------------------------------------------------------//
             // execute
