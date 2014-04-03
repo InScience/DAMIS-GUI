@@ -87,7 +87,7 @@
 		update: function(formWindow) {
             var boxId = window.taskBoxes.getBoxId(formWindow);
             var ancestor = window.taskBoxes.getAncestorTaskBoxId(boxId);
-            var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(ancestor);
+            var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
 			formWindow.find(".technical-details-container").remove();
 			var container = $("<div class=\"technical-details-container\"><img width=\"250px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
 			formWindow.append(container);
