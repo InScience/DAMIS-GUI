@@ -62,6 +62,12 @@ class ParametervalueRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Checks if dataser is in use in experiment
+     *
+     * @param int $id
+     * @return mixed
+     */
     public function checkDatasets($id){
         $query = $this->createQueryBuilder('pv')
             ->select('pv')
@@ -74,6 +80,12 @@ class ParametervalueRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Returns experiment datasets
+     *
+     * @param int $id
+     * @return array
+     */
     public function getExperimentDatasets($id){
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')

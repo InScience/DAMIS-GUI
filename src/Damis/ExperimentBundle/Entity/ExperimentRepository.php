@@ -35,7 +35,13 @@ class ExperimentRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-	public function getUserExperiments($user)
+    /**
+     * Returns all user experiments
+     *
+     * @param int $user
+     * @return \Doctrine\ORM\Query
+     */
+    public function getUserExperiments($user)
     {
         $query = $this->createQueryBuilder('e')
             ->select('e')
