@@ -72,7 +72,8 @@ class DatasetsController extends Controller
             if($file){
                 $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
                 if(!$inUse){
-                    unlink('.' . $file->getFilePath());
+                    if(file_exists('.' . $file->getFilePath()))
+                        unlink('.' . $file->getFilePath());
                     $em->remove($file);
                 } else {
                     $file->setHidden(true);

@@ -34,4 +34,15 @@ class ExperimentRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+	public function getUserExperiments($user)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e')
+            ->andWhere('e.user = :user')
+            ->setParameter('user', $user)
+            ->addOrderBy('e.id', 'DESC');
+
+        return $query->getQuery();
+    }
 }

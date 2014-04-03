@@ -3,7 +3,111 @@
 {% block body -%}
     {% include "BaseUserBundle::messages.html.twig" %}
 
-    <h1>{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</h1>
+    <h2>{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</h2>
 
-    {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
+    <div class="row" style="margin-top: 25px;">
+        <div class="col-lg-12">
+            {% if entities | length > 0 %}
+                <a data-toggle="modal" data-target="#confirmDelete" id="delete-button" class="btn btn-small btn-default datasets-btn" style="margin-bottom:10px;" title="{{ 'Delete' | trans({}, 'DatasetsBundle') }}" href="#">
+                    <i class=" glyphicon glyphicon-trash"></i>
+                </a>
+                <table class="table table-hover">
+                    <tr class="active">
+                        <th>
+                            <input id="select-all" type="checkbox">
+                        </th>
+                        <th>
+                            {{ 'Title' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Experiment status' | trans({}, 'ExperimentBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Actions' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                    </tr>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="experiment" value="{{ entity.id }}">
+                            </td>
+                            <td>
+                                {{ entity.name }}
+                            </td>
+                            <td nowrap="nowrap">
+                                {{ entity.status.experimentstatus | trans({}, 'ExperimentBundle')}}
+                            </td>
+                            <td nowrap="nowrap">
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="{{ path('edit_experiment',{'id' : entity.id}) }}">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </a>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'View results' | trans({}, 'ExperimentBundle') }}" href="{{ path('see_experiment', {'id' : entity.id}) }}">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="center-paginator">
+        {{ knp_pagination_render(entities) }}
+    </div>
+
+    <form id="experiment-delete" style="display:none;" action="{{ path('experiment_delete') }}" method="post">
+        <input id="experiment-delete-list" name="experiment-delete-list" type="text" value="">
+    </form>
+
+    <div class="modal fade" id="confirmDelete" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{{ 'Delete?'|trans({}, 'ExperimentBundle') }}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'These items will be permanently deleted and cannot be recovered. Are you sure?'|trans({}, 'ExperimentBundle') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        {{ 'Cancel'|trans({}, 'ExperimentBundle') }}</button>
+                    <button type="button" class="btn btn-default" id="confirm">
+                        {{ 'OK'|trans({}, 'ExperimentBundle') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#select-all').click(function (event) {
+
+            var selected = this.checked;
+            $(':checkbox').each(function () {
+                this.checked = selected;
+            });
+
+        });
+        $('#delete-button').click(function(event){
+            if($('input:checkbox[name=experiment]:checked').length == 0)
+                return false;
+            event.preventDefault();
+            var ids = [];
+            $('input:checkbox[name=experiment]:checked').each(function(key, box){
+                ids.push(box.value);
+            });
+            $('#experiment-delete-list').val(JSON.stringify(ids));
+
+            $('#confirmDelete').find('.modal-footer #confirm').on('click', function(){
+                $('#experiment-delete').submit();
+            });
+
+        });
+    </script>
 {% endblock %}

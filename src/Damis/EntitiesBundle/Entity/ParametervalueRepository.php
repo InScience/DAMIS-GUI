@@ -73,4 +73,17 @@ class ParametervalueRepository extends EntityRepository
 
         return $query->getQuery()->getOneOrNullResult();
     }
+
+    public function getExperimentDatasets($id){
+        $query = $this->createQueryBuilder('pv')
+            ->select('pv.parametervalue')
+            ->leftJoin('pv.parameter', 'p')
+            ->leftJoin('pv.workflowtask', 'w')
+            ->leftJoin('w.experiment', 'e')
+            ->andWhere('p.connectionType = 2')
+            ->andWhere('e.id = :id')
+            ->setParameter('id', $id);
+
+        return $query->getQuery()->getResult();
+    }
 }

@@ -303,4 +303,34 @@ class ExperimentController extends Controller
 
         return $data;
     }
+
+    /**
+     * Delete experiments
+     *
+     * @Route("/delete.html", name="experiment_delete")
+     * @Method("POST")
+     */
+    public function deleteAction(Request $request)
+    {
+        $experiments = json_decode($request->request->get('experiment-delete-list'));
+        $em = $this->getDoctrine()->getManager();
+        foreach($experiments as $id){
+            $experiment = $em->getRepository('DamisExperimentBundle:Experiment')->findOneById($id);
+            if($experiment){
+                $files = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getExperimentDatasets($id);
+                foreach($files as $fileId){
+                    $file = $em->getRepository('DamisDatasetsBundle:Dataset')
+                        ->findOneBy(array('datasetId' => $fileId, 'hidden' => true));
+                    if($file){
+                        if(file_exists('.' . $file->getFilePath()))
+                            unlink('.' . $file->getFilePath());
+                        $em->remove($file);
+                    }
+                }
+                $em->remove($experiment);
+                $em->flush();
+            }
+        }
+        return $this->redirect($this->generateUrl('experiments_history'));
+    }
 }
