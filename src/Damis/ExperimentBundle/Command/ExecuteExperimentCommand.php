@@ -285,6 +285,22 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         $em->flush();
 
         //----------------------------------------------------------------------------------------------------//
+        // find errored experiments and set to error
+        //----------------------------------------------------------------------------------------------------//
+
+        $experimentsToCloe = $em->getRepository('DamisExperimentBundle:Experiment')->getClosableErrExperiments(100);
+        $experimentStatus = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'ERROR']);
+        foreach($experimentsToCloe as $exCl){
+            $output->writeln('==============================');
+            $output->writeln('Experiment id : ' . $exCl->getId());
+            $output->writeln('Set to finished, has all tasks finished.');
+            $exCl->setStatus($experimentStatus);//finished
+        }
+        $em->flush();
+
+        //----------------------------------------------------------------------------------------------------//
 
         $output->writeln('==============================');
         $output->writeln('Executing finished');
