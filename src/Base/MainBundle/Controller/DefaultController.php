@@ -38,9 +38,9 @@ class DefaultController extends Controller
      * @Template()
      */
     public function localeEnAction(Request $request){
-        $request->getSession()->set('_locale', 'en_US');
+        $request->getSession()->set('_locale', 'en');
         $locale = $request->getLocale();
-        $request->setLocale('en_US');
+        $request->setLocale('en');
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 }
