@@ -170,6 +170,10 @@
 
             window.submitedForms = {};
 
+            {% for taskBox in tasksBoxsWithErrors %}
+                $("#" + taskBox).addClass("error");
+            {% endfor %}
+
         });
  })();
     </script>

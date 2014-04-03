@@ -289,17 +289,23 @@ class ExperimentController extends Controller
             ->getRepository('DamisExperimentBundle:Experiment')
             ->findOneById($id);
 
+        $tasksBoxsWithErrors = [];
         /** @var $task Workflowtask */
-        foreach($experiment->getWorkflowtasks() as $task)
+        foreach($experiment->getWorkflowtasks() as $task) {
             /** @var $value Parametervalue */
             foreach($task->getParameterValues() as $value)
                 if($value->getParameter()->getConnectionType()->getId() == 2)
                     $data['datasets'][$task->getTaskBox()] = $value->getParametervalue();
 
+            if($task->getWorkflowtaskisrunning() == 3)
+                $tasksBoxsWithErrors[] = $task->getTaskBox();
+        }
+
         $data['workFlowState'] = $experiment->getGuiData();
         $data['taskBoxesCount'] = explode('***', $data['workFlowState'])[2];
         $data['experimentId'] = $id;
         $data['experimentTitle'] = $experiment->getName();
+        $data['tasksBoxsWithErrors'] = $tasksBoxsWithErrors;
 
         return $data;
     }
