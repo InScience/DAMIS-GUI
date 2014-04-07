@@ -230,7 +230,7 @@ class ConvertController extends Controller
                     if(strpos(strtolower($row[0]), '@attribute') === 0){
                         $header = explode(' ', $row[0]);
                         if(!$first)
-                            $file .= ',';
+                            $file .= ';';
                         else
                             $first = false;
                         $file .= $header[1];
@@ -246,7 +246,7 @@ class ConvertController extends Controller
                 foreach($rows as $row){
                     foreach($row as $key => $value)
                         if($key > 0)
-                            $file .= ',' . $value;
+                            $file .= ';' . $value;
                         else
                             $file .= $value;
                     $file .= PHP_EOL;
