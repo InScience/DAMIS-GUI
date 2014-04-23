@@ -111,3 +111,5 @@ admin:
     role_admin: "Administratorius"
     positive: "Taip"
     negative: "Ne"
+
+User account is locked. : Vartotojas išjungtas

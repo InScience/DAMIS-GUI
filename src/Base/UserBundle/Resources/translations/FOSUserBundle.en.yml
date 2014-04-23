@@ -111,3 +111,5 @@ admin:
     role_admin: "Administrator"
     positive: "True"
     negative: "False"
+
+User account is locked. : User account is locked
