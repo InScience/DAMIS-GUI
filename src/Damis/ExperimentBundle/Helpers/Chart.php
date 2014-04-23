@@ -106,7 +106,7 @@ class Chart {
             $step = 1 * ($maxCls - $minCls) / $maxClasses;
             $groups = [];
             foreach(range($minCls, $maxCls, $step) as $group)
-                $groups[] = $group + ' - ' + ($group + $step);
+                $groups[] = $group . ' - ' . ($group + $step);
 
             $data = false;
             foreach ($helper->getRows($fileUrl, 'arff') as $row) {
