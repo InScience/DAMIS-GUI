@@ -197,6 +197,12 @@
                     "text": Translator.trans('OK', {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
 					"click": function(ev) {
+                        if($('#id_experiment-title').val() == ""){
+                            $('#id_experiment-title-error').show();
+                            return false;
+                        } else
+                            $('#id_experiment-title-error').hide();
+
 						$(this).dialog("close");
 						if (action == "execute") {
                             var persistedStr = window.persistWorkflow.persistJsPlumbEntities();

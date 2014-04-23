@@ -15,7 +15,7 @@ class DmaType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-        ->add('neighbour', 'number', [
+        ->add('neighbour', 'integer', [
                 'required' => true,
                 'data' => 1,
                 'attr' => array('class' => 'form-control'),
@@ -39,8 +39,13 @@ class DmaType extends AbstractType {
                 'required' => true,
                 'data' => 2,
                 'attr' => array('class' => 'form-control'),
+                'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
+                    new Assert\GreaterThanOrEqual([
+                        'value' => 1,
+                        'message' => 'This value type should be integer'
+                    ]),
                     new Assert\Type(array(
                         'type' => 'integer',
                         'message' => 'This value type should be integer'

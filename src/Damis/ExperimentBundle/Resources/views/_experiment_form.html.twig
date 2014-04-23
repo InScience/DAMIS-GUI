@@ -2,6 +2,9 @@
         <div id="exec-dialog" style="display:none;">
             <p>{{'Experiment title'| trans({}, 'ExperimentBundle') }}: <br/>
                 <input id="id_experiment-title" style="{% if experimentTitle %}display:none;{% endif %}" maxlength="255" name="experiment-title" type="text" value="{{ experimentTitle }}">
+                <p id="id_experiment-title-error" style="color:red; display:none;">
+                {{ 'Please enter experiment title'|trans({}, 'ExperimentBundle') }}
+                </p>
             {% if experimentTitle %}
                 <span id="experiment-title">{{ experimentTitle }}</span> <br/>
                 <a id="change-title">
