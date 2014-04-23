@@ -44,7 +44,7 @@ class ChartController extends Controller
                 "x" => $chart['x'],
                 "y" => $chart['y'],
                 "cls" => $chart['clsCol'],
-                "float_cls" => $chart['attributes'][$chart['clsCol']][0]['type'] == 'real',
+                "float_cls" => ($chart['attributes'][$chart['clsCol']][0]['type'] == 'real' || $chart['attributes'][$chart['clsCol']][0]['type'] == 'numeric'),
                 "minCls" => $chart['content']["minCls"],
                 "maxCls"=> $chart['content']["maxCls"],
             ];
