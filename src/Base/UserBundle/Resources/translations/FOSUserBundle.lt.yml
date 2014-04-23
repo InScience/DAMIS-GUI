@@ -34,7 +34,7 @@ profile:
 
 # Password change
 change_password:
-    submit: Pakeisti slaptažodi
+    submit: Pakeisti slaptažodį
     flash:
         success: Slaptažodis buvo pakeistas
 
@@ -60,7 +60,7 @@ registration:
 resetting:
     forgot: Pamiršote slaptažodį?
     password_already_requested: Slaptažodis šitam naudotojui jau buvo prašytas pakeisti per pastarąsias 24 valandas.
-    check_email: Buvo išsiūstas el. paštas adresu %email%. Jame rasite nuorodą kurią paspaudus galėsite pakeisti savo slaptažodi.
+    check_email: Buvo išsiųstas el. laiškas adresu %email%. Jame rasite nuorodą, kurią paspaudus galėsite pakeisti savo slaptažodį.
     request:
         invalid_username: Naudotojas arba el. paštas "%username%" neegzistuoja.
         username: "Naudotojo vardas arba el. paštas:"
