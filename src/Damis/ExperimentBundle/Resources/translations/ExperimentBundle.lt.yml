@@ -117,7 +117,7 @@ Add : pridėti
 Remove : pašalinti
 This component should be connected to an executed task in order to view results. : Techninė informacija negalima.
 There are errors in forms : Formose yra klaidų
-Not all components are connected : Yra nesujungtų komponentų
+Not all components are connected : Yra nesujungtų komponenčių
 Please select file : Prašome pasirinkti failą
 Too many file components : Failo komponentė galima tik viena
 File component is required : Failo komponentė yra privaloma
@@ -149,7 +149,7 @@ Data transformation : Duomenų normavimas
 Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
 Upload file for data analysis : Įkelkite norimą failą duomenų analizei
 Chart : Rezultatų grafinis vaizdavimas
-Finished : Pabaigta
+Finished : Įvykdytas
 Saved : Išsaugota
 Executing : Vykdoma
 Error : Klaida
