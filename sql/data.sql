@@ -6,7 +6,7 @@ INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
 ('Upload data', 1),
 ('Preprocessing', 2),
 ('Statistical primitives', 3),
-('Dimension reduction', 4),
+('Dimensionality reduction', 4),
 ('Classification, clustering', 5),
 ('View results', 6);
 

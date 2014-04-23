@@ -1,7 +1,7 @@
 Upload data : Duomenų įkėlimas
 Preprocessing : Pirminis apdorojimas
 Statistical primitives : Statistiniai primityvai
-Dimension reduction : Dimensijos mažinimas
+Dimensionality reduction : Dimensijos mažinimas
 Classification, clustering : Klasifikavimas, grupavimas
 View results : Rezultatų peržiūra
 Experiments : Eksperimentai
@@ -129,7 +129,7 @@ C4.5 classifier : C4.5 klasifikatorius
 Data cleaning : Duomenų valymas
 Diagonal majorization algorithm : Diagonalinio mažoravimo algoritmas  (DMA)
 Select uploaded file : Pasirinkti įkeltą failą
-Filter data : Duomenų filtravimas
+Filter data : Filtravimas
 k-means clustering : k-vidurkių klasterizavimo metodas
 Results matrix view : Rezultatų matricinis vaizdavimas
 Select file from MIDAS archive : Pasirinkti failą iš MIDAS archyvo
