@@ -220,16 +220,27 @@
 				});
 
                 //Checking if its connected to file
-                if(componentType === 'Filter' || componentType === 'Select') {
+                if(componentType === 'Filter' || componentType === 'Select' || componentType === 'NormData'
+                    || componentType === 'SplitData'|| $(ev.currentTarget).attr('data-componentid') == 13
+                    || $(ev.currentTarget).attr('data-componentid') == 14
+                    || $(ev.currentTarget).attr('data-componentid') == 7
+                    || $(ev.currentTarget).attr('data-componentid') == 8) {
                     var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
                     if(datasetId === false || datasetId === '')
                         window.taskBoxes.toUnconnectedState(formWindow);
-                    else {
+                    else if(!($(ev.currentTarget).attr('data-componentid') == 13
+                        || $(ev.currentTarget).attr('data-componentid') == 14
+                        || $(ev.currentTarget).attr('data-componentid') == 7
+                        || $(ev.currentTarget).attr('data-componentid') == 8)) {
                         if(window.submitedForms[formWindowId] == undefined
                             || window.submitedForms[formWindowId] != datasetId) {
                             window.taskBoxes.showConnectedForm(formWindow);
                             window.componentForm.update(formWindow, datasetId);
                         }
+                    } else{
+                        formWindow.find(".plot-container").remove();
+                        formWindow.find(".dynamic-container").show();
+                        window.componentNoForm.update(formWindow, datasetId);
                     }
                 }
 
