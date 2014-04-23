@@ -31,7 +31,7 @@ class Chart {
         $clsType = null;
         $arffCls = null;
         $attributes = [];
-        $maxClasses = 120;
+        $maxClasses = 99;
         $error = null;
         $helper = new ReadFile();
         $result = [];
@@ -109,6 +109,7 @@ class Chart {
                 $groups[] = $group . ' - ' . ($group + $step);
 
             $data = false;
+            $result = [];
             foreach ($helper->getRows($fileUrl, 'arff') as $row) {
                 if(!$data) {
                     if(strtolower($row[0]) == '@data')
