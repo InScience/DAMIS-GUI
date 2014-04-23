@@ -41,7 +41,7 @@
                                 <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="{{ path('edit_experiment',{'id' : entity.id}) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                {% if entity.status.experimentstatusid != 2 %}
+                                {% if entity.status.experimentstatusid != 2 and entity.status.experimentstatusid != 1 %}
                                     <a class="btn btn-small btn-default datasets-btn" title="{{ 'View results' | trans({}, 'ExperimentBundle') }}" href="{{ path('see_experiment', {'id' : entity.id}) }}">
                                         <i class="glyphicon glyphicon-eye-open"></i>
                                     </a>
