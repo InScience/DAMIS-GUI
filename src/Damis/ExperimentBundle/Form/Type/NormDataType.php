@@ -15,7 +15,7 @@ class NormDataType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
             $data = $_POST['normdata_type'];
-            if($object >= $data['b']) {
+            if($object >= $data['b'] && $data['normMeanStd'] == 1) {
                 $context->addViolation('Interval upper bound must be greater than lower', [], null);
             }
         };
@@ -43,8 +43,8 @@ class NormDataType extends AbstractType {
                     new NotBlank(),
                     new Callback([$dataValidator])
                 ],
-                'label' => 'First subset size',
-                'label_attr' => ['class' => 'col-md-9']
+                'label' => 'a',
+                'label_attr' => ['class' => 'col-md-1']
             ])
         ->add('b', 'number', [
                 'required' => true,
@@ -57,8 +57,8 @@ class NormDataType extends AbstractType {
                         'message' => 'Value must be greater than 0'
                     ]),
                 ],
-                'label' => 'Second subset size',
-                'label_attr' => ['class' => 'col-md-9']
+                'label' => 'b',
+                'label_attr' => ['class' => 'col-md-1']
             ]);
     }
 
