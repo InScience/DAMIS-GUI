@@ -30,7 +30,7 @@
                 <option value="-">-</option>
                 {% for attr in context.attrs %}
                     <option value="{{ loop.index0 }}" {% if loop.index0 == context.cls %}selected="selected"{% endif %}>
-                        {{ attr.0.name }} {{attr.0.type}}
+                        {{ attr.0.name }} ({{attr.0.type}})
                     </option>
                 {% endfor %}
             </select>
