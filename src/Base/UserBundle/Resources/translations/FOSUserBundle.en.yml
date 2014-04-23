@@ -109,6 +109,7 @@ admin:
     edit_user: "Edit user"
     role_user: "User"
     role_admin: "Administrator"
+    role_confirmed: "Confirmed user"
     positive: "True"
     negative: "False"
 

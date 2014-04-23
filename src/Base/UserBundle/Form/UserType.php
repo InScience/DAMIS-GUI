@@ -35,6 +35,7 @@ class UserType extends AbstractType
     private function refactorRoles()
     {
         //$result['ROLE_USER'] = 'admin.role_user'; //negalima panaikinti vartotojui tokios roles
+        $result['ROLE_CONFIRMED'] = 'admin.role_confirmed'; //negalima panaikinti vartotojui tokios roles
         $result['ROLE_ADMIN'] = 'admin.role_admin';
         return $result;
     }

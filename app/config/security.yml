@@ -4,7 +4,8 @@ security:
         Symfony\Component\Security\Core\User\User: plaintext
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
+        ROLE_CONFIRMED:   ROLE_USER
+        ROLE_ADMIN:       ROLE_USER, ROLE_CONFIRMED
 
     providers:
         fos_userbundle:
@@ -66,7 +67,7 @@ security:
         - { path: ^/page, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         #datasets bundle
-        - { path: ^/datasets, role: ROLE_USER }
+        - { path: ^/datasets, role: ROLE_CONFIRMED }
 
         #experiment bundle
-        - { path: ^/experiment, role: ROLE_USER }
+        - { path: ^/experiment, role: ROLE_CONFIRMED }

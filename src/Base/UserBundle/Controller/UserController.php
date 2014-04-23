@@ -70,7 +70,13 @@ class UserController extends Controller
         $column->setOperatorsVisible(false);
         $column->setDefaultOperator('like');
         $column->setTitle($this->get('translator')->trans('form.role', array(), 'FOSUserBundle'));
-        $column->setValues(array('ROLE_ADMIN' => $this->get('translator')->trans('admin.role_admin', array(), 'FOSUserBundle'), 'ROLE_USER' => $this->get('translator')->trans('admin.role_user', array(), 'FOSUserBundle')));
+        $column->setValues(
+            array(
+                'ROLE_ADMIN' => $this->get('translator')->trans('admin.role_admin', array(), 'FOSUserBundle'),
+                'ROLE_CONFIRMED' => $this->get('translator')->trans('admin.role_confirmed', array(), 'FOSUserBundle'),
+                'ROLE_USER' => $this->get('translator')->trans('admin.role_user', array(), 'FOSUserBundle')
+            )
+        );
 
         $column = $grid->getColumn('locked');
         $column->setTitle($this->get('translator')->trans('form.locked', array(), 'FOSUserBundle'));

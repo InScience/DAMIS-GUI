@@ -23,8 +23,14 @@
         {{ form_errors(edit_form.organisation) }}
         {{ form_widget(edit_form.organisation) }}
 
-        {{ form_errors(edit_form.roles) }}
-        {{ form_widget(edit_form.roles) }}
+        {% for child in edit_form.roles %}
+            <div class="checkbox">
+                {{ form_errors(child) }}
+                {{ form_widget(child) }}
+                {{ form_label(child) }}
+            </div>
+        {% endfor %}
+
 
         <div class="checkbox">
             {{ form_errors(edit_form.locked) }}
