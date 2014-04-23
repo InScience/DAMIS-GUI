@@ -3,6 +3,7 @@
 namespace Damis\DatasetsBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Damis\DatasetsBundle\Form\Validators as Asserts;
 use Doctrine\ORM\Mapping as ORM;
 use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
 
@@ -54,11 +55,12 @@ class Dataset
 
     /**
      * @var array
+     * @Asserts\FileExtension
      * @Assert\File(
      *     mimeTypes = {"application/octet-stream" ,"text/csv",
      *                      "text/tab-separated-values",
      *                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-     *                      "application/vnd.ms-excel", "text/plain"},
+     *                      "application/vnd.ms-excel", "text/plain", "application/zip"},
      *     mimeTypesMessage = "Please upload a valid type"
      * )
      * @ORM\Column(name="file", type="array", nullable=true)

@@ -5,6 +5,7 @@
         <li class="active"><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="#">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
+    {% include "DamisDatasetsBundle::messages.html.twig" %}
     <div class="row">
         <div class="col-lg-4" style="margin-top: 35px;">
             <form role="form" id="createDataset" action="{{ path('datasets_create') }}" method="post" {{ form_enctype(form) }}>

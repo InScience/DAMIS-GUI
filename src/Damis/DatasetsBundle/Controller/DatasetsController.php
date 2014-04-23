@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use ZipArchive;
 
 /**
  * Datasets controller.
@@ -120,9 +121,7 @@ class DatasetsController extends Controller
             $entity->setDatasetIsMidas(false);
             $em->persist($entity);
             $em->flush();
-            $this->uploadArff($entity->getDatasetId());
-            $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
-            return $this->redirect($this->generateUrl('datasets_list'));
+            return $this->uploadArff($entity->getDatasetId());
         }
 
         return array(
@@ -267,11 +266,50 @@ class DatasetsController extends Controller
             $format = explode('.', $entity->getFile()['fileName']);
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
-            if ($format == 'arff'){
+            if ($format == 'zip'){
+                $zip = new ZipArchive();
+                $res = $zip->open('./assets' . $entity->getFile()['fileName']);
+                $name = $zip->getNameIndex(0);
+                if($res === true){
+                    $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
+                    $zip->extractTo('.' . $path, $name);
+                    $zip->close();
+                    $format = explode('.', $name);
+                    $format = $format[count($format)-1];
+                    if ($format == 'arff'){
+                        $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
+                        $entity->setFilePath($dir . '.arff');
+                        $em->persist($entity);
+                        $em->flush();
+                        rename ( '.' . $path . '/' . $name , '.' . $dir . '.arff');
+                        $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+                        return $this->redirect($this->generateUrl('datasets_list'));
+                    }
+                    elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
+                        $fileReader = new ReadFile();
+                        $rows = $fileReader->getRows('.' . $path . '/' . $name , $format);
+                        unlink('.' . $path . '/' . $name);
+                    } elseif($format == 'xls' || $format == 'xlsx'){
+                        $objPHPExcel = PHPExcel_IOFactory::load('.' . $path . '/' . $name);
+                        $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                        array_unshift($rows, null);
+                        unlink('.' . $path . '/' . $name);
+                        unset($rows[0]);
+                    } else{
+                        $em->remove($entity);
+                        $em->flush();
+                        unlink('.' . $path . '/' . $name);
+                        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                        return $this->redirect($this->generateUrl('datasets_new'));
+                    }
+                }
+            }
+            elseif ($format == 'arff'){
                 $entity->setFilePath($entity->getFile()['path']);
                 $em->persist($entity);
                 $em->flush();
-                return true;
+                $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+                return $this->redirect($this->generateUrl('datasets_list'));
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
@@ -330,8 +368,11 @@ class DatasetsController extends Controller
             $entity->setFilePath($dir . ".arff");
             $em->persist($entity);
             $em->flush();
-            return true;
+
+            $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+            return $this->redirect($this->generateUrl('datasets_list'));
         }
-        return false;
+        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        return $this->redirect($this->generateUrl('datasets_new'));
     }
 }
