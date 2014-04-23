@@ -270,6 +270,11 @@ class DatasetsController extends Controller
                 $zip = new ZipArchive();
                 $res = $zip->open('./assets' . $entity->getFile()['fileName']);
                 $name = $zip->getNameIndex(0);
+                if($zip->numFiles > 1){
+                    $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                    return $this->redirect($this->generateUrl('datasets_new'));
+                }
+
                 if($res === true){
                     $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
                     $zip->extractTo('.' . $path, $name);
