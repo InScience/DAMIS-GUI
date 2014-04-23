@@ -94,7 +94,7 @@ class Chart {
                         $maxCls = (float) $row[$clsCol];
             }
 
-            if ($clsType == "string" or $clsType == "integer")
+            if ($clsType == "string" or $clsType == "integer" or $clsType == 'numeric')
                 continue;
 
             $classCell = $row[$clsCol];
