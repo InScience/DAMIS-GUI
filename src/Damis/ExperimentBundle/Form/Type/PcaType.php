@@ -19,6 +19,12 @@ class PcaType extends AbstractType {
                 $context->addViolation('Relative cumulative variance must be in interval (0; 100]', [], null);
             }
         };
+        $dataValidator2 = function($object, ExecutionContextInterface $context) use ($builder) {
+            $pca = $_POST['pca_type'];
+            if($pca['projType'] == 0 && ($object <= 0)) {
+                $context->addViolation('This value type should be integer', [], null);
+            }
+        };
         $builder
         ->add('projType', 'choice', [
                 'required' => false,
@@ -39,13 +45,15 @@ class PcaType extends AbstractType {
                 'required' => true,
                 'data' => 2,
                 'attr' => array('class' => 'form-control'),
+                'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Type(array(
                         'type' => 'integer',
                         'message' => 'This value type should be integer'
                     )),
-                    new Callback([$dataValidator])
+                    new Callback([$dataValidator]),
+                    new Callback([$dataValidator2])
                 ],
                 'label' => 'Space/Variance',
                 'label_attr' => ['class' => 'col-md-9']
