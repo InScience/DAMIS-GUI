@@ -31,7 +31,7 @@ class Chart {
         $clsType = null;
         $arffCls = null;
         $attributes = [];
-        $maxClasses = 99;
+        $maxClasses = 40;
         $error = null;
         $helper = new ReadFile();
         $result = [];
@@ -102,7 +102,7 @@ class Chart {
             $result[$classCell][] = [$row[$x], $row[$y]];
         }
 
-        if($clsType != 'string' and $clsType != 'integer' and $clsType != 'class' and $clsType != 'numeric') {
+        if($clsType != 'string' and $clsType != 'integer' and $clsType != 'class') {
             $step = 1 * ($maxCls - $minCls) / $maxClasses;
             $groups = [];
             foreach(range($minCls, $maxCls, $step) as $group)
