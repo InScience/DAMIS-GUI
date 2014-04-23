@@ -41,7 +41,7 @@ change_password:
 # Registration
 registration:
     check_email: Buvo išsiūstas el. paštas adresu %email%. Jame rasite nuorodą kurią aplankę aktyvuosite savo paskyrą.
-    confirmed: Sveikiname %username%, jusu paskyra buvo aktyvuota.
+    confirmed: Sveikiname, %username%, jūsų paskyra buvo aktyvuota.
     back: Gryžti i praeitą puslapi.
     submit: Registruotis
     flash:
