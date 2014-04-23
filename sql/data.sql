@@ -7,7 +7,7 @@ INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
 ('Preprocessing', 2),
 ('Statistical primitives', 3),
 ('Dimension reduction', 4),
-('Classification, grouping', 5),
+('Classification, clustering', 5),
 ('View results', 6);
 
 INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConnectionTypeID`) VALUES
