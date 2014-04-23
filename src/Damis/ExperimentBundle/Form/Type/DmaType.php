@@ -21,6 +21,10 @@ class DmaType extends AbstractType {
                 'attr' => array('class' => 'form-control'),
                 'constraints' => [
                     new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    )),
                     new Assert\Range([
                         'min' => 1,
                         'max' => 100,
