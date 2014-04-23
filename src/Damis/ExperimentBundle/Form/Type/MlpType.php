@@ -26,7 +26,7 @@ class MlpType extends AbstractType {
                 'data' => 100,
                 'constraints' => [
                     new Assert\Range([
-                        'min' => 0,
+                        'min' => 1,
                         'max' => 1000,
                         'minMessage' => 'Number of iteration must be in interval [1; 1000]',
                         'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
