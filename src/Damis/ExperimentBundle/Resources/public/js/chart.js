@@ -66,8 +66,13 @@
 
             if(dataContent['maxX'] - dataContent['minX'] < 5)
                 tickSizeX = Math.floor((dataContent['maxX'] - dataContent['minX']) / 2);
-            if(dataContent['minX'] - dataContent['maxX'] < 5)
+            if(dataContent['maxY'] - dataContent['minY'] < 5)
                 tickSizeY = Math.floor((dataContent['maxY'] - dataContent['minY']) / 2);
+
+            if(dataContent['maxX'] - dataContent['minX'] > 100)
+                tickSizeX = Math.floor((dataContent['maxX'] - dataContent['minX']) / 20);
+            if(dataContent['maxY'] - dataContent['minY'] > 50)
+                tickSizeY = Math.floor((dataContent['maxY'] - dataContent['minY']) / 10);
 
 			$.each(dataContent.data, function(idx, rec) {
 				data.push({
