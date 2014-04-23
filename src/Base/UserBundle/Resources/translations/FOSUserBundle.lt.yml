@@ -103,6 +103,7 @@ form:
     new_password: "Naujas slaptažodis"
     new_password_confirmation: "Patvirtinti"
     locked: "Išjungtas"
+    organisation: "Organizacija"
 
 admin:
     edit_user: "Koreguoti vartotoją"

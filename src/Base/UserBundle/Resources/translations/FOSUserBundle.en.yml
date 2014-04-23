@@ -103,6 +103,7 @@ form:
     new_password: "New password"
     new_password_confirmation: "Verification"
     locked: "Locked"
+    organisation: "Organisation"
 
 admin:
     edit_user: "Edit user"

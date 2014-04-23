@@ -48,6 +48,13 @@ class User extends BaseUser
     protected $surname = null;
 
     /**
+     * @var string
+     * @Gedmo\Versioned
+     * @ORM\Column(name="organisation", type="string", length=255, nullable=true)
+     */
+    protected $organisation = null;
+
+    /**
      * Set registeredAt
      *
      * @return User
@@ -178,4 +185,19 @@ class User extends BaseUser
         if ($this->getNameSurname()) return $this->getNameSurname();
             else return $this->getUsername();
     }
+
+    /**
+     * @param string $organisation
+     */
+    public function setOrganisation($organisation) {
+        $this->organisation = $organisation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganisation() {
+        return $this->organisation;
+    }
+
 }

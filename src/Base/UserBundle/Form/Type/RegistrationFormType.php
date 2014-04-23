@@ -9,9 +9,17 @@ class RegistrationFormType extends BaseType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+/*        įvesti savo vardą, įvesti savo pavardę,
+        Dabar svetainėje reikia įvesti tik naudotoją ir el. paštą.*/
+
+
         $builder
-            ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.username')))
-            ->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.email')))
+            ->add('username', null, array('required' => 'true', 'label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.username')))
+            ->add('name', null, array('required' => 'true', 'label' => 'form.name', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.name'),))
+            ->add('surname', null, array('required' => 'true', 'label' => 'form.surname', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.surname'),))
+            ->add('email', 'email', array('required' => 'true', 'label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.email')))
+            ->add('organisation', null, array('required' => 'true', 'label' => 'form.organisation', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.organisation'),))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',
                 'options' => array('translation_domain' => 'FOSUserBundle'),
