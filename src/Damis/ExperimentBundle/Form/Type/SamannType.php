@@ -73,7 +73,11 @@ class SamannType extends AbstractType {
                     new Assert\Type(array(
                         'type' => 'integer',
                         'message' => 'This value type should be integer'
-                    ))
+                    )),
+                    new Assert\GreaterThan([
+                        'value' => 0,
+                        'message' => 'Number of neurons in the hidden layer must be greater than 0'
+                    ]),
                 ],
                 'label' => 'Number of neurons in the hidden layer',
                 'label_attr' => ['class' => 'col-md-8']
