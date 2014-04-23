@@ -4,7 +4,7 @@
         <td style="padding: 5px;">X:
             <select class="x-attr" style="width: 100px;">
                 <option value="-">-</option>
-                {% for attr in context.attrs %}<option>{{ attr.0.type }}</option>
+                {% for attr in context.attrs %}
                     {% if attr.0.type == "integer" or attr.0.type == "real"  or attr.0.type == "numeric" %}
                         <option value="{{ loop.index0 }}" {% if loop.index0 == context.x %}selected="selected"{% endif %}>
                             {{ attr.0.name }}
@@ -30,7 +30,7 @@
                 <option value="-">-</option>
                 {% for attr in context.attrs %}
                     <option value="{{ loop.index0 }}" {% if loop.index0 == context.cls %}selected="selected"{% endif %}>
-                        {{ attr.0.name }} ({{attr.0.type}})
+                        {{ attr.0.name }}
                     </option>
                 {% endfor %}
             </select>
