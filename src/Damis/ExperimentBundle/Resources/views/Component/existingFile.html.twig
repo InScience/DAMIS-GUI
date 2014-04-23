@@ -22,7 +22,7 @@
                             <a href="{{ path('existing_file', {'order_by' : 'createdASC'}) }}"><i class="glyphicon glyphicon-chevron-up datasets-sort"></i></a>
                             <a href="{{ path('existing_file', {'order_by' : 'createdDESC'}) }}"><i class="glyphicon glyphicon-chevron-down datasets-sort"></i></a>
                         </th>
-                        <th>
+                        <th style="max-width: 300px;">
                             {{ 'Description' | trans({}, 'DatasetsBundle') }}
                         </th>
                     </tr>
@@ -39,8 +39,11 @@
                             <td nowrap="nowrap">
                                 {{ entity.datasetCreated | date('Y-m-d')}}
                             </td>
-                            <td>
-                                {{ entity.datasetDescription }}
+                            <td style="max-width: 300px;">
+                                {{ entity.datasetDescription | slice(0, 100) }}
+                                {% if entity.datasetDescription | length > 100 %}
+                                    {{ '...' }}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
