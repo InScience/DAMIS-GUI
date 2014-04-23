@@ -22,6 +22,7 @@ security:
                 csrf_provider: form.csrf_provider
                 login_path: /login.html
                 use_referer: true
+                default_target_path: /experiment/new.html
             logout:
                 path:   /logout.html
                 target: /
