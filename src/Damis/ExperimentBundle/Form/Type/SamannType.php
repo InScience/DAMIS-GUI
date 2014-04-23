@@ -64,16 +64,12 @@ class SamannType extends AbstractType {
                 'label' => 'Relative size of the training data',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-            ->add('nNeurons', 'integer', [
+            ->add('nNeurons', 'number', [
                 'required' => true,
                 'data' => 10,
                 'attr' => array('class' => 'form-control'),
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    )),
                     new Assert\GreaterThan([
                         'value' => 0,
                         'message' => 'Number of neurons in the hidden layer must be greater than 0'
