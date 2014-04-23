@@ -99,6 +99,10 @@ span.helptext{
 .about pre {
     display: inline;
 }
+.span6 p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 #wrap {
     min-height: 100%;
     height: auto !important;

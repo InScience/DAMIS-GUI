@@ -1,0 +1,11 @@
+{% if pages|length > 0 %}
+    <div class="static_pages">
+        {% for entity in pages %}
+            <div class="static_page">
+                {% if entity.text %}
+                    {{ entity.text|raw }}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

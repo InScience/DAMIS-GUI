@@ -19,7 +19,7 @@ class PageType extends AbstractType
             ->add('title', null, array('label' => 'form.title', 'translation_domain' => 'StaticBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.title'),))
             ->add('groupName', 'choice',
                 array(
-                    'choices' => array('help' => 'form.help'),
+                    'choices' => array('help' => 'form.help', 'front_page' => 'form.front_page'),
                     'required' => false, 'label' => 'form.group', 'translation_domain' => 'StaticBundle',
                     'attr' => array('class' => 'form-control', 'placeholder' => 'form.group'),
                 )
