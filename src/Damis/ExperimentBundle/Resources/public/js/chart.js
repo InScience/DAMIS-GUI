@@ -61,6 +61,14 @@
 		// renders the chart in place of plotPlaceholder
 		renderChart: function(plotContainer, plotPlaceholder, dataContent, colors, symbols) {
 			var data = [];
+            var tickSizeX = 5;
+            var tickSizeY = 5;
+
+            if(dataContent['maxX'] - dataContent['minX'] < 5)
+                tickSizeX = Math.floor((dataContent['maxX'] - dataContent['minX']) / 2);
+            if(dataContent['minX'] - dataContent['maxX'] < 5)
+                tickSizeY = Math.floor((dataContent['maxY'] - dataContent['minY']) / 2);
+
 			$.each(dataContent.data, function(idx, rec) {
 				data.push({
 					label: rec['group'],
@@ -90,12 +98,12 @@
 				xaxis: {
 					min: dataContent["minX"],
 					max: dataContent["maxX"],
-					tickSize: 5
+					tickSize: tickSizeX
 				},
 				yaxis: {
 					min: dataContent["minY"],
 					max: dataContent["maxY"],
-					tickSize: 5
+					tickSize: tickSizeY
 				}
 			};
 
