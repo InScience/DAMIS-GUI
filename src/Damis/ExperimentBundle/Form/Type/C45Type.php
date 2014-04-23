@@ -19,10 +19,6 @@ class C45Type extends AbstractType {
                 'attr' => array('class' => 'form-control'),
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\GreaterThan([
-                        'value' => 0,
-                        'message' => 'Confidence level must be in interval (0; 1]'
-                    ]),
                     new Assert\Range([
                         'min' => 0,
                         'max' => 1,
