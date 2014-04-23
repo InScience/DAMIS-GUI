@@ -64,13 +64,13 @@ resetting:
     request:
         invalid_username: Naudotojas arba el. paštas "%username%" neegzistuoja.
         username: "Naudotojo vardas arba el. paštas:"
-        submit: Nustatyti slaptažodi
+        submit: Nustatyti slaptažodį
     reset:
-        submit: Pakeisti slaptažodi
+        submit: Pakeisti slaptažodį
     flash:
         success: Slaptažodis pakeistas sėkmingai
     email:
-        subject: Nustatyti slaptažodi
+        subject: Nustatyti slaptažodį
         message: |
             Sveiki %username%!
 
