@@ -108,7 +108,7 @@ class SomMdsType extends AbstractType {
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0.00000001,
-                        'message' => 'Minimal stress change must be in interval [10-8; ∞)'
+                        'message' => 'Minimal stress change must be in interval [10^-8; ∞)'
                     ]),
                     new NotBlank()
                 ],
