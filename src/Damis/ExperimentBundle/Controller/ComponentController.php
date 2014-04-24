@@ -103,11 +103,13 @@ class ComponentController extends Controller
 
                 $formParam = strtolower($component->getFormType()) . '_type';
 
-                foreach($parameters as $parameter) {
-                    if(isset($requestParams[$formParam][$parameter->getSlug()]))
-                        $response[$parameter->getId()] = $requestParams[$formParam][$parameter->getSlug()];
+                /** @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
+                foreach($parameters as $parameter)
+                    if($parameter->getConnectionType()->getId() == 3)
+                        if(isset($requestParams[$formParam][$parameter->getSlug()]))
+                            $response[$parameter->getId()] = $requestParams[$formParam][$parameter->getSlug()];
 
-                }
+
                 $html = $this->renderView(
                     'DamisExperimentBundle:Component:' . strtolower($component->getFormType()) . '.html.twig',
                     [
