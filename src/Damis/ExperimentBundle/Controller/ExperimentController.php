@@ -242,7 +242,7 @@ class ExperimentController extends Controller
                     $wf['in'] = $value->getParametervalueid();
                 }
                 if ($parameter->getConnectionType()->getId() == '2'){
-                    $wf['out'] = $value->getParametervalueid();
+                    $wf['out'][$parameter->getSlug()] = $value->getParametervalueid();
                 }
 
             }
@@ -253,14 +253,27 @@ class ExperimentController extends Controller
 
         foreach($workflowsConnections as $conn){
             if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])){
-                if ( isset($workflowsSaved[$conn->sourceBoxId]['out']) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
-                    $valOut = $em
-                        ->getRepository('DamisEntitiesBundle:Parametervalue')
-                        ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out'] ]);
+                if ( (isset($workflowsSaved[$conn->sourceBoxId]['out']['Y']) or isset($workflowsSaved[$conn->sourceBoxId]['out']['Yalt'])) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
+                    //sugalvojom tokia logika:
+                    //jei nustaytas sourceAnchor tipas vadinasi tai yra Y connectionas
+                    //by default type = Right
+                    if (isset($conn->sourceAnchor->type) and ($conn->sourceAnchor->type == "Right")) {
+                        $valOut = $em
+                            ->getRepository('DamisEntitiesBundle:Parametervalue')
+                            ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Y'] ]);
 
-                    $valIn = $em
-                        ->getRepository('DamisEntitiesBundle:Parametervalue')
-                        ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
+                        $valIn = $em
+                            ->getRepository('DamisEntitiesBundle:Parametervalue')
+                            ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
+                    } else {
+                        $valOut = $em
+                            ->getRepository('DamisEntitiesBundle:Parametervalue')
+                            ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Yalt'] ]);
+
+                        $valIn = $em
+                            ->getRepository('DamisEntitiesBundle:Parametervalue')
+                            ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
+                    }
 
                     $connection = new Pvalueoutpvaluein;
                     $connection->setOutparametervalue($valOut);
