@@ -65,7 +65,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
 
             // filter out un callable functions
-            if (!$component->getWsdlRunHost()) {
+            if (!$component->getWsdlRunHost()) {//locally executable actions
                 if ($component->getWsdlCallFunction() == 'SELECT'){
                     $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
                     $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
@@ -112,12 +112,12 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $params = array();
 
             $inDatasetEntity = null;
-            $outDatasetEntity = null;
+            $outDatasetEntities = null;
             foreach($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value){
                 if ($value->getParameter()->getConnectionType()->getId() == 1)
                     $inDatasetEntity = $value;
                 if ($value->getParameter()->getConnectionType()->getId() == 2)
-                    $outDatasetEntity = $value;
+                    $outDatasetEntities[$value->getParameter()->getSlug()] = $value;
                 if ($value->getParameter()->getConnectionType()->getId() == 3)
                     $params[$value->getParameter()->getSlug()] = $value->getParametervalue();
             }
@@ -125,7 +125,6 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             if (!$inDatasetEntity) continue;
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDatasetEntity->getParametervalue()]);
             if (!$dataset) continue;
-
 
             $calcTime = 0;
             if ($task->getExperiment()->getMaxDuration() and $task->getExperiment()->getMaxDuration() instanceof DateTime)
@@ -142,7 +141,6 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 else
                     $proc['P'] = 1;
             }
-
 
             $params = array_merge(
                 array(
@@ -201,45 +199,90 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 if (isset($result['algorithmError']))
                     $task->setMessage($result['algorithmError']);
 
-                // save results file
+                // saing received files
                 $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
-                $temp_file = $temp_folder . '/' . basename($result['Y']);
-                $err = false;
+
+                //Y
+                $temp_file_y = $temp_folder . '/' . basename($result['Y']);
+                $err_y = false;
                 try {
-                    file_put_contents($temp_file, file_get_contents($result['Y']));
+                    file_put_contents($temp_file_y, file_get_contents($result['Y']));
                 } catch (Exception $e) {
-                    $err = true;
+                    $err_y = true;
                 }
 
-                if ($err == false) {
-                    //create dataset
-                    $file = new File($temp_file);
+                //Yalt
+                $err_yalt = false;
+                if (isset($result['Yalt'])){
+                    $temp_file_yalt = $temp_folder . '/' . basename($result['Yalt']);
+                    try {
+                        file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                    } catch (Exception $e) {
+                        $err_yalt = true;
+                    }
+                }
 
-                    $file_entity = new Dataset();
-                    $file_entity->setUserId($task->getExperiment()->getUser());
-                    $file_entity->setDatasetTitle('experiment result');
-                    $file_entity->setDatasetCreated(time());
-                    $file_entity->setDatasetIsMidas(false);
-                    $file_entity->setHidden(true);
-                    $em->persist($file_entity);
+                if ($err_y == false and $err_yalt == false) {
+                    //create dataset Y
+                    $file_y = new File($temp_file_y);
+
+                    $file_entity_y = new Dataset();
+                    $file_entity_y->setUserId($task->getExperiment()->getUser());
+                    $file_entity_y->setDatasetTitle('experiment result');
+                    $file_entity_y->setDatasetCreated(time());
+                    $file_entity_y->setDatasetIsMidas(false);
+                    $file_entity_y->setHidden(true);
+                    $em->persist($file_entity_y);
                     $em->flush();//HACK, ENTITY MUST BE PERSISTED, FOR MANUAL UPLOAD TO WORK
 
-                    $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-                    $mapping = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity, $ref_class, 'file');
-                    $file_data = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file);
-                    $file_entity->setFile($file_data);
-                    $file_entity->setFilePath($file_data['path']);
+                    $ref_class_y = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+                    $mapping_y = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity_y, $ref_class_y, 'file');
+                    $file_data_y = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping_y, $file_y);
+                    $file_entity_y->setFile($file_data_y);
+                    $file_entity_y->setFilePath($file_data_y['path']);
                     $em->flush();
 
-                    @unlink($temp_file);
+                    @unlink($temp_file_y);
+
+                    if (isset($result['Yalt'])){
+                        //create dataset Yalt
+                        $file_alt = new File($temp_file_yalt);
+
+                        $file_entity_alt = new Dataset();
+                        $file_entity_alt->setUserId($task->getExperiment()->getUser());
+                        $file_entity_alt->setDatasetTitle('experiment result');
+                        $file_entity_alt->setDatasetCreated(time());
+                        $file_entity_alt->setDatasetIsMidas(false);
+                        $file_entity_alt->setHidden(true);
+                        $em->persist($file_entity_alt);
+                        $em->flush();//HACK, ENTITY MUST BE PERSISTED, FOR MANUAL UPLOAD TO WORK
+
+                        $ref_class_alt = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+                        $mapping_alt = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity_alt, $ref_class_alt, 'file');
+                        $file_data_alt = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping_alt, $file_alt);
+                        $file_entity_alt->setFile($file_data_alt);
+                        $file_entity_alt->setFilePath($file_data_alt['path']);
+                        $em->flush();
+
+                        @unlink($temp_file_yalt);
+                    }
 
                     // set proper out and in if available and successfull
-                    if ($outDatasetEntity){
-                        $outDatasetEntity->setParametervalue($file_entity->getDatasetId());
+                    if ($outDatasetEntities['Y']){
+                        $outDatasetEntities['Y']->setParametervalue($file_entity_y->getDatasetId());
 
-                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntity->getParametervalueid()));
+                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Y']->getParametervalueid()));
                         foreach($inNexts as $inNext) {
-                            $inNext->getInparametervalue()->setParametervalue($file_entity->getDatasetId());
+                            $inNext->getInparametervalue()->setParametervalue($file_entity_y->getDatasetId());
+                        }
+                    }
+
+                    if ($outDatasetEntities['Yalt']){
+                        $outDatasetEntities['Yalt']->setParametervalue($file_entity_alt->getDatasetId());
+
+                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()));
+                        foreach($inNexts as $inNext) {
+                            $inNext->getInparametervalue()->setParametervalue($file_entity_alt->getDatasetId());
                         }
                     }
 
