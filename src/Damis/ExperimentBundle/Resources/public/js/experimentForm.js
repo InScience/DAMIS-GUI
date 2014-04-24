@@ -135,16 +135,18 @@
                 if(valid_form.length > 0)
                     valid_form.val(1);
                 else
-                    var elm = $("<input name=\"valid_form\" value=\"1\"/>");
-                $("#experiment-form input[name=experiment-execute]").val(1);
+                    var elm = $("<input name=\"valid_form\" value=\"1\" type=\"hidden\"/>");
             }
             else {
+                var changed = form.find('input[name=workflow_changed]');
+                //if(changed.length > 0)
+                 //   changed.val(0);
                 var valid_form = form.find("input[name=valid_form]");
                 $("#experiment-form input[name=experiment-execute]").val(0);
                 if(valid_form.length > 0)
                     valid_form.val(0);
                 else
-                    var elm = $("<input name=\"valid_form\" value=\"0\"/>");
+                    var elm = $("<input name=\"valid_form\" value=\"0\" type=\"hidden\"/>");
             }
             form.find("#exec-params").append(elm);
 			var data = form.serialize();

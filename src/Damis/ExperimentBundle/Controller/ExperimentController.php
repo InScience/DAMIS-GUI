@@ -88,7 +88,7 @@ class ExperimentController extends Controller
     {
         $params = $request->request->all();
 
-        $isValid = $params['valid_form'];
+        $isValid = $params['valid_form'] == 1 ? true : false;
         $isChanged = isset($params['workflow_changed']);
         if($isChanged)
             $isChanged = $params['workflow_changed'] == 1 ? true : false;
@@ -101,7 +101,7 @@ class ExperimentController extends Controller
         else
             $experiment = false;
 
-        $isNew = !(boolean)$experiment;
+        $isNew = !(boolean)$experiment;//var_dump($isNew, $isValid, $isChanged,($params['experiment-execute'] > 0)); die;
         if ($isNew)
             $experiment = new Experiment();
 
@@ -120,13 +120,36 @@ class ExperimentController extends Controller
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
+        if(!$isNew)
+            $oldStatus = $experiment->getStatus();
 
-        if(!$isExecution || $isChanged)
+        if($isExecution && $isChanged && $isValid && !$isNew)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(2);
+        elseif(!$isExecution && $isChanged && $isValid && $isNew)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(1);
+        elseif($isExecution && $isChanged && $isValid && $isNew)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(2);
+        elseif(!$isExecution && $isChanged && $isValid && !$isNew)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(1);
+        elseif($isExecution && !$isChanged && $isValid)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(2);
+        elseif(!$isExecution && !$isChanged && $isValid)
+            $experimentStatus = $oldStatus;
+        elseif($isChanged && !$isValid)
+            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(1);
+        elseif(!$isChanged && !$isValid)
             $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
                 ->findOneByExperimentstatusid(1);
         else
             $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
                 ->findOneByExperimentstatusid(2);
+
 
         if($experimentStatus)
             $experiment->setStatus($experimentStatus);

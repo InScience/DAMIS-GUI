@@ -178,14 +178,14 @@
                 if(changed.length > 0)
                     changed.val(1);
                 else{
-                    var changed = $("<input name=\"workflow_changed\" value=\"1\"/>");
+                    var changed = $("<input name=\"workflow_changed\" value=\"1\" type=\"hidden\"/>");
                     excForm.find("#exec-params").append(changed);
                 }
             } else {
                 if(changed.length > 0)
                     changed.val(0);
                 else{
-                    var changed = $("<input name=\"workflow_changed\" value=\"0\"/>");
+                    var changed = $("<input name=\"workflow_changed\" value=\"0\" type=\"hidden\"/>");
                     excForm.find("#exec-params").append(changed);
                 }
             }
