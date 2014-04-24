@@ -89,6 +89,9 @@ class ExperimentController extends Controller
         $params = $request->request->all();
 
         $isValid = $params['valid_form'];
+        $isChanged = isset($params['workflow_changed']);
+        if($isChanged)
+            $isChanged = $params['workflow_changed'] == 1 ? true : false;
 
         /* @var $experiment Experiment */
         if($params['experiment-id'])
@@ -100,8 +103,6 @@ class ExperimentController extends Controller
 
         $isNew = !(boolean)$experiment;
         if ($isNew)
-            $experiment = new Experiment();
-        elseif($experiment->getStatus()->getExperimentstatus() != 'SAVED')
             $experiment = new Experiment();
 
         $experiment->setName($params['experiment-title']);
@@ -120,7 +121,7 @@ class ExperimentController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        if(!$isExecution)
+        if(!$isExecution || $isChanged)
             $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
                 ->findOneByExperimentstatusid(1);
         else

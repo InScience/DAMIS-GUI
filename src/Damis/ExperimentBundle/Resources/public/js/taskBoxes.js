@@ -171,6 +171,25 @@
 			var clusterIcoUrl = componentDetails['cluster_ico'];
 			var icoUrl = componentDetails['ico'];
 
+            var formType = componentDetails['type'];
+            var excForm = $("#experiment-form");
+            var changed = excForm.find('input[name=workflow_changed]')
+            if(formType !== 'TechnicalInfo' && formType !== 'Matrix' && formType !== 'Chart'){
+                if(changed.length > 0)
+                    changed.val(1);
+                else{
+                    var changed = $("<input name=\"workflow_changed\" value=\"1\"/>");
+                    excForm.find("#exec-params").append(changed);
+                }
+            } else {
+                if(changed.length > 0)
+                    changed.val(0);
+                else{
+                    var changed = $("<input name=\"workflow_changed\" value=\"0\"/>");
+                    excForm.find("#exec-params").append(changed);
+                }
+            }
+
 			var taskBox = $(window.taskBoxes.assembleBoxHTML(componentLabel, icoUrl, clusterIcoUrl, componentId));
 			taskBox.appendTo(taskContainer);
 			taskBox.css("left", ui.position.left + "px");
@@ -200,6 +219,7 @@
 			closeIco.on("click", function(ev) {
 				var taskBox = $(ev.target).closest(".task-box");
 				window.taskBoxes.removeTaskBox(taskBox);
+                return false;
 			});
 
 			// open dialog on dbclick
