@@ -36,7 +36,7 @@ $(function() {
         timer = setTimeout(function(){
             _tooltip = $(ev.currentTarget);
             $(ev.currentTarget).popover('hide');
-        }, 1000);
+        }, 3000);
     });
 
 
