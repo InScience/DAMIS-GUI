@@ -130,8 +130,9 @@ class ComponentController extends Controller
                 ->getRepository('DamisExperimentBundle:Parameter')
                 ->findBy(['component' => $id]);
 
+            /** @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
             foreach($parameters as $parameter)
-                if($parameter->getSlug())
+                if($parameter->getSlug() && $parameter->getConnectionType()->getId() == 3)
                     $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
 
         }
