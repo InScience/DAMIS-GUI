@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExperimentController extends Controller
 {
@@ -87,6 +88,8 @@ class ExperimentController extends Controller
     {
         $params = $request->request->all();
 
+        $isValid = $params['valid_form'];
+
         /* @var $experiment Experiment */
         if($params['experiment-id'])
             $experiment = $this->getDoctrine()
@@ -131,13 +134,13 @@ class ExperimentController extends Controller
 
         if($isExecution)
             $this->populate($experiment->getId());
-
-        if($isNew)
+        if($isValid){
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
+        }
+        if($isValid)
+            return ['experiment' => $experiment];
         else
-            $this->get('session')->getFlashBag()->add('success', 'Experiment successfully updated!');
-
-        return ['experiment' => $experiment];
+            return new Response($experiment->getId());
     }
 
     /**

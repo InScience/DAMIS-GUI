@@ -130,6 +130,23 @@
                 var valid = true;
 			} else
                 var valid = window.validation.validate();
+            if(valid){
+                var valid_form = form.find("input[name=valid_form]");
+                if(valid_form.length > 0)
+                    valid_form.val(1);
+                else
+                    var elm = $("<input name=\"valid_form\" value=\"1\"/>");
+                $("#experiment-form input[name=experiment-execute]").val(1);
+            }
+            else {
+                var valid_form = form.find("input[name=valid_form]");
+                $("#experiment-form input[name=experiment-execute]").val(0);
+                if(valid_form.length > 0)
+                    valid_form.val(0);
+                else
+                    var elm = $("<input name=\"valid_form\" value=\"0\"/>");
+            }
+            form.find("#exec-params").append(elm);
 			var data = form.serialize();
             if(valid)
                 $.post(form.attr("action"), data, function(resp) {
@@ -141,6 +158,17 @@
                     //replace the existing form with the validated one
                     $("#experiment-form").remove();
                     $("#workflow-editor-container").before(resp);
+
+                    //run standard initialization
+                    window.experimentForm.init();
+                    window.experimentForm.reinitExperimentForm();
+                });
+            else
+                $.post(form.attr("action"), data, function(resp) {
+                    if (!/<[a-z][\s\S]*>/i.test(resp)) {
+                        form.find('input#id_experiment').val(resp);
+                        return;
+                    }
 
                     //run standard initialization
                     window.experimentForm.init();
