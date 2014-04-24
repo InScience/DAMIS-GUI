@@ -1,7 +1,7 @@
 $(function() {
     var timer;
     var tooltips = $(".component-tooltip");
-    var tooltip;
+    var _tooltip;
 
     $.each(tooltips, function(idx, el) {
         $(el).popover({
@@ -27,14 +27,14 @@ $(function() {
 
         mouseleave: function (ev) {
             timer = setTimeout(function(){
-                tooltip.popover('hide');
+                _tooltip.popover('hide');
             }, 1000);
         }
     }, '.popover-content, .popover-title');
 
     tooltips.on('mouseout',  function(ev){
         timer = setTimeout(function(){
-            tooltip = $(ev.currentTarget);
+            _tooltip = $(ev.currentTarget);
             $(ev.currentTarget).popover('hide');
         }, 1000);
     });
