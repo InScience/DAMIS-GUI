@@ -74,7 +74,7 @@
 				} else if (connectionType === "OUTPUT_CONNECTION") {
 					//add output endpoint
 					window.endpoints.addEndpoint(false, taskBox, outAnchors[oIdx], {
-						oParamNo: idx,
+						oParamNo: oIdx,
 						oTaskBoxId: taskBoxId
 					});
 					oIdx++;

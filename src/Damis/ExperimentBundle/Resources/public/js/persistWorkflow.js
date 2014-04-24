@@ -13,9 +13,15 @@
 
 				var endpoints = [];
 				$.each(jsPlumb.getEndpoints(boxId), function(eIdx, e) {
+                    var type;
+                    if(e.anchor.type == undefined)
+                        type = [e.anchor.x, e.anchor.y, 0, 0, 0, 0, e.anchor.cssClass];
+                    else
+                        type = e.anchor.type;
+
 					endpoints.push({
 						parameters: e.getParameters(),
-						anchor: e.anchor.type,
+						anchor: type,
 						isTarget: e.isTarget
 					});
 				});
