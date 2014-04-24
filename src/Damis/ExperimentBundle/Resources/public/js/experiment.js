@@ -18,23 +18,27 @@ $(function() {
         });
     });
 
-    tooltips.on('mouseout',  function(ev){
-        var tooltipsWithText = $(".popover");
-        tooltipsWithText.on('mouseenter', function() {
+    $(document).on({
+
+        mouseenter: function () {
             clearTimeout(timer);
-        });
-        tooltipsWithText.on('mouseout', function() {
+        },
+
+        mouseleave: function (ev) {
             timer = setTimeout(function(){
                 $(this).data('isShowing',"false");
-                $(ev.currentTarget).popover('hide');
-            }, 10);
-        });
+                $(ev.currentTarget).parent().css('display','none');
+            }, 2000);
+        }
+    }, '.popover-content, .popover-title');
+
+    tooltips.on('mouseout',  function(ev){
         timer = setTimeout(function(){
             $(this).data('isShowing',"false");
             $(ev.currentTarget).popover('hide');
-        }, 10);
+        }, 2000);
     });
-//
+
 
     // Tabs init
     $("#cluster-tabs li").click(function(){
