@@ -312,7 +312,7 @@ class ExperimentController extends Controller
             /** @var $value Parametervalue */
             foreach($task->getParameterValues() as $value)
                 if($value->getParameter()->getConnectionType()->getId() == 2)
-                    $data['datasets'][$task->getTaskBox()] = $value->getParametervalue();
+                    $data['datasets'][$task->getTaskBox()][] = $value->getParametervalue();
 
             if($task->getWorkflowtaskisrunning() == 3)
                 $tasksBoxsWithErrors[] = $task->getTaskBox();

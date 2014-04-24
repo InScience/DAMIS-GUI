@@ -113,7 +113,10 @@
 
             window.datasets = {};
             {% for taskBox, dataset in datasets %}
-                window.datasets['{{ taskBox}}'] = '{{ dataset }}';
+                window.datasets['{{taskBox}}'] = [];
+                {% for ds in dataset %}
+                    window.datasets['{{ taskBox}}'].push('{{ds}}');
+                {% endfor %}
             {% endfor %}
             window.experimentForm.params = {
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}

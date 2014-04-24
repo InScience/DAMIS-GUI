@@ -297,7 +297,14 @@
                 .find('input[name$=value]')
                 .val();
 
-            var datasetValue = window.datasets[ancestor];
+            var datasetValue = undefined;
+            var datasets = window.datasets[ancestor];
+            if(datasets.length == 1) {
+                datasetValue = datasets[0];
+            } else {
+                var id = this.getConnectionId(taskBox);
+                datasetValue = datasets[id];
+            }
 
             if(datasetValue == undefined && inputValue == undefined) {
                 var ancestorComponent = window.componentSettings.getComponentDetails({boxId : ancestor});
@@ -319,6 +326,22 @@
                 return false;
             else
                 return connections[0].sourceId;
+        },
+
+        getConnectionId : function(taskBox) {
+            var connections = jsPlumb.getConnections({
+                target: taskBox
+            });
+
+            if(connections.length == 0)
+                return false;
+
+            var endpoints = jsPlumb.getEndpoints(connections[0].sourceId);
+
+            for (var index = 0; index < endpoints.length; ++index)
+                if(connections[0].endpoints[0] == endpoints[index] || connections[0].endpoints[1] == endpoints[index])
+                    return index - 1;
+
         },
 
         toUnconnectedState: function(formWindow) {
