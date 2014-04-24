@@ -21,7 +21,15 @@
                         <a href="#">{{ cluster.name | trans({}, 'ExperimentBundle')}}</a>
                         <span>
                             <i class="component-tooltip cluster-tooltip glyphicon glyphicon-info-sign" data-placement="bottom"
-                               data-content="{{ (cluster.description) | trans({}, 'ExperimentBundle')}}" style="cursor: pointer">
+                               data-content="{{ (cluster.description) | trans({}, 'ExperimentBundle')}}
+                               </br></br>
+                               {{ 'Cluster home' | trans({}, 'ExperimentBundle')}}:
+                               </br>
+                               <a href='{{ (cluster.clusterUrl) }}'>{{ (cluster.clusterUrl) }}</a>
+                               </br></br>
+                               {{ 'Cluster workload' | trans({}, 'ExperimentBundle')}}:
+                               </br>
+                               <a href='{{ (cluster.workloadUrl) }}'>{{ (cluster.workloadUrl) }}</a>" style="cursor: pointer">
                                 <span style="display: none;">{{ 'Cluster information' | trans({}, 'ExperimentBundle') }}</span>
                             </i>
                         </span>

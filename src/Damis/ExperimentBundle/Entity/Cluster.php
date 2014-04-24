@@ -29,6 +29,20 @@ class Cluster
     /**
      * @var string
      *
+     * @ORM\Column(name="WorkloadUrl", type="string", length=255, nullable=true)
+     */
+    private $workloadUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ClusterUrl", type="string", length=255, nullable=true)
+     */
+    private $clusterUrl;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="ClusterDescription", type="string", length=500, nullable=true)
      */
     private $description;
@@ -70,7 +84,7 @@ class Cluster
     /**
      * Set workloadhost
      *
-     * @param string $workloadhost
+     * @param string $workloadHost
      * @return Cluster
      */
     public function setWorkloadHost($workloadHost)
@@ -122,4 +136,37 @@ class Cluster
     {
         return $this->id;
     }
+
+    /**
+     * @param string $clusterUrl
+     */
+    public function setClusterUrl($clusterUrl)
+    {
+        $this->clusterUrl = $clusterUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClusterUrl()
+    {
+        return $this->clusterUrl;
+    }
+
+    /**
+     * @param string $workloadUrl
+     */
+    public function setWorkloadUrl($workloadUrl)
+    {
+        $this->workloadUrl = $workloadUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkloadUrl()
+    {
+        return $this->workloadUrl;
+    }
+
 }
