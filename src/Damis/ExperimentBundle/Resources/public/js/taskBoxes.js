@@ -50,7 +50,7 @@
 			// Add new endpoints for input/output parameters
 			var parameters = formWindow.find('.parameter-values');
 
-			var outAnchors = ["Right", "BottomRight", "TopCenter"];
+			var outAnchors = ["Right", [1, 0.3, 0, 0, 0, 0, "right" ], "TopCenter"];
 			var oIdx = 0;
 			var inAnchors = ["Left", "BottomLeft", "BottomCenter"];
 			var iIdx = 0;
