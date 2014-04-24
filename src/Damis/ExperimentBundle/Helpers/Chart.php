@@ -105,11 +105,13 @@ class Chart {
         if($clsType != 'string' and $clsType != 'integer' and $clsType != 'class') {
             $step = 1 * ($maxCls - $minCls) / $maxClasses;
             $groups = [];
-            foreach(range($minCls, $maxCls, $step) as $group)
+            $result = [];
+            foreach(range($minCls, $maxCls, $step) as $group){
                 $groups[] = $group . ' - ' . ($group + $step);
+                $result[$group . ' - ' . ($group + $step)] = [];
+            }
 
             $data = false;
-            $result = [];
             foreach ($helper->getRows($fileUrl, 'arff') as $row) {
                 if(!$data) {
                     if(strtolower($row[0]) == '@data')
