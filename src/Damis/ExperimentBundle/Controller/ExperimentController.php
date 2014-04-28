@@ -41,6 +41,11 @@ class ExperimentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findAll();
 
+        $nextName = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DamisExperimentBundle:Experiment')
+            ->getNextExperimentNameNumber();
+
 
         return [
             'clusters' => $clusters,
@@ -49,7 +54,7 @@ class ExperimentController extends Controller
             'workFlowState' => null,
             'taskBoxesCount' => 0,
             'experimentId' => null,
-            'experiemntTitle' => null
+            'experimentTitle' => 'exp' . $nextName
         ];
     }
 
