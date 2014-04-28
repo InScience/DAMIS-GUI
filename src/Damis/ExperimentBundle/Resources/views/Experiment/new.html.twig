@@ -188,5 +188,11 @@
         });
  })();
     </script>
+    <script>
+        $('#experiment-form').keypress(function(event){
+            if (event.keyCode == 10 || event.keyCode == 13)
+                event.preventDefault();
+        });
+    </script>
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ExperimentBundle'}) }}?locales=lt,lt_LT"></script>
 {% endblock %}

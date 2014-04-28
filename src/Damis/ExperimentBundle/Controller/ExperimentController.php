@@ -92,8 +92,9 @@ class ExperimentController extends Controller
     public function saveAction(Request $request)
     {
         $params = $request->request->all();
-
-        $isValid = $params['valid_form'] == 1 ? true : false;
+        $isValid = isset($params['valid_form']);
+        if($isValid)
+            $isValid = $params['valid_form'] == 1 ? true : false;
         $isChanged = isset($params['workflow_changed']);
         if($isChanged)
             $isChanged = $params['workflow_changed'] == 1 ? true : false;
