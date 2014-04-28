@@ -23,3 +23,5 @@ Number of percents in interval [0; 100] : Skaičius procentais intervale [0;100]
 Confidence level must be in interval (0; 1] : Pasikliovimo lygmuo intervale (0; 1]
 Please select attributes : Prašome pasirinkti požymius
 Number of neurons in the hidden layer must be greater than 0 : Paslėptojo sluoksnio neuronų skaičius turi būti didesnis už 0
+The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}. : Failas yra per didelis. Maksimalus dydis yra {{ limit }} {{ suffix }}.
+The file is too large. : Byla per didelė.
