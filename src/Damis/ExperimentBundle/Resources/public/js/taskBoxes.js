@@ -299,12 +299,13 @@
 
             var datasetValue = undefined;
             var datasets = window.datasets[ancestor];
-            if(datasets.length == 1) {
-                datasetValue = datasets[0];
-            } else {
-                var id = this.getConnectionId(taskBox);
-                datasetValue = datasets[id];
-            }
+            if(datasets != undefined)
+                if(datasets.length == 1) {
+                    datasetValue = datasets[0];
+                } else {
+                    var id = this.getConnectionId(taskBox);
+                    datasetValue = datasets[id];
+                }
 
             if(datasetValue == undefined && inputValue == undefined) {
                 var ancestorComponent = window.componentSettings.getComponentDetails({boxId : ancestor});
