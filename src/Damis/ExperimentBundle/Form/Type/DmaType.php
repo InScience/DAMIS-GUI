@@ -5,10 +5,8 @@ namespace Damis\ExperimentBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class DmaType extends AbstractType {
 
@@ -80,7 +78,7 @@ class DmaType extends AbstractType {
             'data' => '0.0001',
             'constraints' => [
                 new Assert\GreaterThanOrEqual([
-                    'value' => 0.0001,
+                    'value' => 0.00000001,
                     'message' => 'Minimal stress change must be in interval [10^-8; ∞)'
                 ]),
                 new NotBlank()
