@@ -4,9 +4,14 @@ namespace Damis\ExperimentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
+use Damis\ExperimentBundle\Entity\Component;
 use Damis\EntitiesBundle\Entity\Workflowtask;
 use Damis\EntitiesBundle\Entity\Parametervalue;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
 
