@@ -44,8 +44,8 @@
 		updatePrefixes: function(parameterPrefixesUrl, callback, params) {
 			// pass current task forms prefixes to get parameter
 			// formsets prefixes
-			var taskFormPrefixes = []
-			var taskIds = []
+			var taskFormPrefixes = [];
+			var taskIds = [];
 			$.each($(".task-window .task-form"), function(taskBoxIdx, taskForm) {
 				var name = $(taskForm).find("input,select,textarea,label").attr("name");
 				var taskFormPrefix = /tasks-\d+/g;
@@ -90,10 +90,13 @@
 			// iterate through existing task boxes
 			// in the order of creation (asume, it is reflected
 			// in DOM order)
-			var updatedForms = $("#experiment-form .inline");
-			$.each($(".task-box"), function(taskBoxId, taskBox) {
-				taskForm = $(updatedForms[taskBoxId + 1]);
-				parameterFormset = $(taskForm.next(".parameter-values"));
+			var updatedForms = $('#experiment-form').find('.inline');
+            var taskBoxSelector = $(".task-box");
+            var taskForm;
+            var parameterFormset;
+			$.each(taskBoxSelector, function(taskBoxId, taskBox) {
+                taskForm = $(updatedForms[taskBoxId + 1]);
+                parameterFormset = $(taskForm.next(".parameter-values"));
 				// mark the task box as conataining errors
 				if (taskForm.find(".errorlist").length > 0 || parameterFormset.find(".errorlist").length > 0) {
 					$(taskBox).addClass("error");
@@ -110,7 +113,7 @@
 				window.taskBoxes.setBoxName($(taskBox).attr("id"), componentLabel);
 				window.taskBoxes.addTaskBoxEventHandlers($(taskBox));
 			});
-			$.each($(".task-box"), function(taskBoxId, taskBox) {
+			$.each(taskBoxSelector, function(taskBoxId) {
 				//restore parameter bindings from server to client representation
 				taskForm = $(updatedForms[taskBoxId + 1]);
 				parameterFormset = $(taskForm.next(".parameter-values"));
@@ -125,28 +128,27 @@
 			window.experimentForm.bindingToServer();
 
 			var form = $("#experiment-form");
+            var valid = false;
 			if (params["skipValidation"]) {
 				form.find("input[name=experiment-skip_validation]").val("True");
-                var valid = true;
+                valid = true;
 			} else
-                var valid = window.validation.validate();
+                valid = window.validation.validate();
+
+            var valid_form = form.find("input[name=valid_form]");
+            var elm;
             if(valid){
-                var valid_form = form.find("input[name=valid_form]");
                 if(valid_form.length > 0)
                     valid_form.val(1);
                 else
-                    var elm = $("<input name=\"valid_form\" value=\"1\" type=\"hidden\"/>");
+                    elm = $("<input name=\"valid_form\" value=\"1\" type=\"hidden\"/>");
             }
             else {
-                var changed = form.find('input[name=workflow_changed]');
-                //if(changed.length > 0)
-                 //   changed.val(0);
-                var valid_form = form.find("input[name=valid_form]");
-                $("#experiment-form input[name=experiment-execute]").val(0);
+                $('#experiment-form').find('input[name=experiment-execute]').val(0);
                 if(valid_form.length > 0)
                     valid_form.val(0);
                 else
-                    var elm = $("<input name=\"valid_form\" value=\"0\" type=\"hidden\"/>");
+                    elm = $("<input name=\"valid_form\" value=\"0\" type=\"hidden\"/>");
             }
             form.find("#exec-params").append(elm);
 			var data = form.serialize();
@@ -193,18 +195,19 @@
 			});
 
 			//assign new experiment handler
-			$('#new-experiment-btn').click(function(ev) {
-				window.location = params['experimentNewUrl'];
+			$('#new-experiment-btn').click(function() {
+				if(confirm(Translator.trans('Do you really want to clear experiment workflow?', {}, 'ExperimentBundle')))
+                    window.location = params['experimentNewUrl'];
 			});
 
 			// open save dialog
-			$('#save-btn').click(function(ev) {
+			$('#save-btn').click(function() {
 				// hide all experiment params except title
 				window.experimentForm.executeDialog("save");
 			});
 
 			// open execute dialog
-			$('#execute-btn').click(function(ev) {
+			$('#execute-btn').click(function() {
 				window.experimentForm.executeDialog("execute");
 			});
 
@@ -219,14 +222,14 @@
 				"buttons": [{
                     "text":  Translator.trans('Cancel', {}, 'ExperimentBundle'),
 					"class": "btn",
-					"click": function(ev) {
+					"click": function() {
 						$(this).dialog("close");
 					}
 				},
 				{
                     "text": Translator.trans('OK', {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
-					"click": function(ev) {
+					"click": function() {
                         if($('#id_experiment-title').val() == ""){
                             $('#id_experiment-title-error').show();
                             return false;
@@ -234,19 +237,20 @@
                             $('#id_experiment-title-error').hide();
 
 						$(this).dialog("close");
+                        var experimentForm = $('#experiment-form');
+                        var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
 						if (action == "execute") {
-                            var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
-                            $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
-                            $("#experiment-form input[name=experiment-execute]").val(1);
+                            experimentForm.find('input[name=experiment-workflow_state]').val(persistedStr);
+                            experimentForm.find('input[name=experiment-execute]').val(1);
                             window.experimentForm.submit({});
 						} else {
-                            var persistedStr = window.persistWorkflow.persistJsPlumbEntities();
-                            $("#experiment-form input[name=experiment-workflow_state]").val(persistedStr);
-                            $("#experiment-form input[name=experiment-execute]").val(0);
+                            experimentForm.find('input[name=experiment-workflow_state]').val(persistedStr);
+                            experimentForm.find('input[name=experiment-execute]').val(0);
                             window.experimentForm.submit({
                                 "skipValidation": true
                             });
 						}
+                        return true;
 					}
 				}],
 				"open": function() {
@@ -276,8 +280,7 @@
 		// and task box id
 		getParameter: function(parameterNum, taskBoxId) {
 			var taskFormWindow = $("#" + window.taskBoxes.getFormWindowId(taskBoxId));
-			var paramForm = $(taskFormWindow.find(".parameter-values").find("div")[parameterNum]);
-			return paramForm;
+            return $(taskFormWindow.find(".parameter-values").find("div")[parameterNum]);
 		},
 
 		//returns parameter value field in parameter form
@@ -296,8 +299,7 @@
 			if (oParamAddr) {
 				var parts = oParamAddr.split(",");
 				var oParam = window.experimentForm.getParameter(parts[0], parts[1]);
-				var oParamField = window.experimentForm.getParameterValue(oParam);
-				return oParamField;
+                return window.experimentForm.getParameterValue(oParam);
 			}
 			return null;
 		}
