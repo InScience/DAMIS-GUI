@@ -1,3 +1,5 @@
+<script src="{{ asset('bundles/basestatic/js/pages.js') }}" type="text/javascript"></script>
+
 <script type="text/javascript">
 
     tinymce.init({
@@ -25,7 +27,14 @@
         toolbar_items_size: 'small',
         width: "568px",
         height: "300px",
-        body_class: "tinymce_body"
+        body_class: "tinymce_body",
+        setup : function(ed) {
+            ed.on('change', function(e) {
+                unsaved = true;
+            });
+        }
     });
 
 </script>
+
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'StaticBundle'}) }}?locales=lt,lt_LT"></script>

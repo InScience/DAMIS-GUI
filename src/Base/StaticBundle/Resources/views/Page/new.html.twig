@@ -37,4 +37,5 @@
 {% block javascripts %}
     {{ parent() }}
     {% include "BaseMainBundle::jsTinymce.html.twig" %}
+    <script src="{{ asset('bundles/basestatic/js/pages.js') }}" type="text/javascript"></script>
 {% endblock %}
