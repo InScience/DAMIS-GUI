@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class SomMdsType extends AbstractType {
 
@@ -77,6 +76,19 @@ class SomMdsType extends AbstractType {
                 'required' => true,
                 'data' => 2,
                 'attr' => array('class' => 'form-control'),
+                'constraints' => [
+                    new Assert\Range([
+                        'min' => 2,
+                        'max' => 2,
+                        'minMessage' => 'MDS projection should be equal to 2',
+                        'maxMessage' => 'MDS projection should be equal to 2'
+                    ]),
+                    new NotBlank(),
+                    new Assert\Type(array(
+                        'type' => 'integer',
+                        'message' => 'This value type should be integer'
+                    ))
+                ],
                 'read_only' => true,
                 'label' => 'Projection space of MDS',
                 'label_attr' => ['class' => 'col-md-9']

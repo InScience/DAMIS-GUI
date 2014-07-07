@@ -28,7 +28,7 @@
             dialog.closest(".ui-dialog").find("button").attr("disabled", "disabled");
 
             this.url = Routing.generate('component_form', {id : componentInput.val() });
-            var data = {}
+            var data = {};
             if (window.params.getParams(window.taskBoxes.getBoxId(dialog)))
                 data['data'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId(dialog)));
 
@@ -66,8 +66,13 @@
             },
                 {
                     "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
+
                     "class": "btn",
                     "click": function(ev) {
+                        window.componentForm.isValid($(this));
+                        if(!window.componentForm.valid) {
+                            window.componentForm.update($(this), null);
+                        }
                         $(this).dialog("close");
                     }
                 }];
@@ -86,6 +91,10 @@
                     "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
                     "class": "btn",
                     "click": function(ev) {
+                        window.componentForm.isValid($(this));
+                        if(!window.componentForm.valid) {
+                            window.componentForm.update($(this), null);
+                        }
                         $(this).dialog("close");
                     }
                 }];
