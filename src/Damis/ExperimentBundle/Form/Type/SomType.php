@@ -5,10 +5,8 @@ namespace Damis\ExperimentBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class SomType extends AbstractType {
 
@@ -17,9 +15,8 @@ class SomType extends AbstractType {
         ->add('rows', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
                 'constraints' => [
-                    new NotBlank(),
                     new Assert\Range([
                         'min' => 3,
                         'max' => 100,
@@ -29,7 +26,8 @@ class SomType extends AbstractType {
                     new Assert\Type(array(
                         'type' => 'integer',
                         'message' => 'This value type should be integer'
-                    ))
+                    )),
+                    new NotBlank()
                 ],
                 'label' => 'Number of rows',
                 'label_attr' => ['class' => 'col-md-9']
@@ -37,7 +35,7 @@ class SomType extends AbstractType {
             ->add('columns', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
@@ -57,7 +55,7 @@ class SomType extends AbstractType {
         ->add('eHat', 'integer', [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
