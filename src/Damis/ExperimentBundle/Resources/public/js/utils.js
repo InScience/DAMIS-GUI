@@ -3,7 +3,7 @@
 		showProgress: function() {
 			var spinner = $("#spinner");
 			if (spinner.length == 0) {
-				var spinner = $('<div id="spinner" style="display: none; background-color: rgba(0, 0, 0, 0.6); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:9999"/>');
+				spinner = $('<div id="spinner" style="display: none; background-color: rgba(0, 0, 0, 0.6); width:100%; height:100%; position:fixed; top:0; left:0; z-index:9999"/>');
 				$("body").append(spinner);
 				setTimeout(function() {
 					if (spinner.length > 0) {
@@ -35,14 +35,14 @@
 						"buttons": [{
 							"text": gettext("Cancel"),
 							"class": "btn btn-primary",
-							"click": function(ev) {
+							"click": function() {
 								$(this).dialog("close");
 							}
 						},
 						{
 							"text": gettext("OK"),
 							"class": "btn",
-							"click": function(ev) {
+							"click": function() {
 								$(this).dialog("close");
 								$(formSelector).submit();
 							}
@@ -63,7 +63,7 @@
             var fileInput = $("input#datasets_newtype_file");
             var titleInput = $("input[name='datasets_newtype[datasetTitle]']");
             titleInput.on("change", window.utils.titleChanged);
-            fileInput.on("change", function (ev) {
+            fileInput.on("change", function () {
                 var fileName = $(this).val();
                 // put the uploaded file name next to the upload button
                 var stdFileName = fileName.replace(/\\/g, "/");
@@ -84,7 +84,7 @@
 		},
 
 		// adds a flag that the input was changed by the user
-		titleChanged: function(ev) {
+		titleChanged: function() {
 			if ($(this).val()) {
 				$(this).addClass("changed");
 			} else {
@@ -97,7 +97,7 @@
 		initToggleSectionBtn: function(container) {
 			// toggle file form visibility on click of a button
 			var newFileBtn = container.find(".toggle-btn");
-			newFileBtn.on("click", function(ev) {
+			newFileBtn.on("click", function() {
 				var newFileForm = container.find(".toggle-section");
 				newFileForm.show();
 				newFileBtn.hide();
@@ -107,20 +107,21 @@
 		formatStr: function(str, args) {
 			var newStr = str;
 			for (var key in args) {
-				newStr = newStr.replace(new RegExp("{" + key + "}", "g"), args[key]);
+                if(args.hasOwnProperty(key))
+				    newStr = newStr.replace(new RegExp("{" + key + "}", "g"), args[key]);
 			}
 			return newStr;
 		},
 
         countChange: function(context){
-            $(context).on('change', 'input#mlp_type_trainingData', window.utils.percentagesCount);
-            $(context).on('change', 'input#mlp_type_testData', window.utils.percentagesCount);
+            $(context).on('change', 'input#mlp_type_dL', window.utils.percentagesCount);
+            $(context).on('change', 'input#mlp_type_dT', window.utils.percentagesCount);
         },
 
         percentagesCount : function(ev) {
-            var used = 100 - parseFloat($('input#mlp_type_trainingData').val())
-                - parseFloat($('input#mlp_type_testData').val());
-            $('input#mlp_type_validationData').val(used);
+            var used = 100 - parseFloat($('input#mlp_type_dL').val())
+                - parseFloat($('input#mlp_type_dT').val());
+            $('input#mlp_type_dV').val(used);
         }
 	}
 })();
