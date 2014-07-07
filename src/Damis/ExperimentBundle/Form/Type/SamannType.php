@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class SamannType extends AbstractType {
 
@@ -74,6 +73,11 @@ class SamannType extends AbstractType {
                         'value' => 0,
                         'message' => 'Number of neurons in the hidden layer must be greater than 0'
                     ]),
+                    new Assert\Regex(array(
+                        'pattern' => '/^[0-9]+$/',
+                        'match' =>  true,
+                        'message' => 'This value type should be integer'
+                    ))
                 ],
                 'label' => 'Number of neurons in the hidden layer',
                 'label_attr' => ['class' => 'col-md-8']
