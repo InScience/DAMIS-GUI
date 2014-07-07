@@ -61,6 +61,13 @@
     box-shadow: 2px 2px 19px #6D2E2E; -o-box-shadow: 2px 2px 19px #6D2E2E; -webkit-box-shadow: 2px 2px 19px #6D2E2E; -moz-box-shadow: 2px 2px 19px #6D2E2E; opacity:0.6; filter:alpha(opacity=60);
 }
 
+.task-box.done {
+    width: auto; border:1px solid #3aa62c; box-shadow: 2px 2px 19px #8dd487; -o-box-shadow: 2px 2px 19px #8dd487; -webkit-box-shadow: 2px 2px 19px #8dd487; -moz-box-shadow: 2px 2px 19px #8dd487; background-color:#eeeeef; color: #A60000;
+}
+
+.task-box.done:hover {
+    box-shadow: 2px 2px 19px #346d30; -o-box-shadow: 2px 2px 19px #346d30; -webkit-box-shadow: 2px 2px 19px #346d30; -moz-box-shadow: 2px 2px 19px #346d30; opacity:0.6; filter:alpha(opacity=60);
+}
 .prototype-box { position: relative; /* to be contained inside #toolbar */ display: inline-block; margin-right: 4px; vertical-align: top; padding-bottom: 4px;}
 .prototype-box.last { margin-right: 0px;}
 

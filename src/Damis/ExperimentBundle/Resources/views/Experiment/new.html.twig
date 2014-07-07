@@ -185,6 +185,10 @@
                 $("#" + "{{ taskBox }}").addClass("error");
             {% endfor %}
 
+            {% for taskBox in executedTasksBoxs %}
+            $("#" + "{{ taskBox }}").addClass("done");
+            {% endfor %}
+
         });
  })();
     </script>

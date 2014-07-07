@@ -2,17 +2,11 @@
 
 namespace Damis\ExperimentBundle\Controller;
 
-use Damis\ExperimentBundle\Entity\Experimentstatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
-use Damis\ExperimentBundle\Entity\Component;
 use Damis\EntitiesBundle\Entity\Workflowtask;
 use Damis\EntitiesBundle\Entity\Parametervalue;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -336,6 +330,7 @@ class ExperimentController extends Controller
             ->findOneById($id);
 
         $tasksBoxsWithErrors = [];
+        $executedTasksBoxs = [];
         /** @var $task Workflowtask */
         foreach($experiment->getWorkflowtasks() as $task) {
             /** @var $value Parametervalue */
@@ -343,8 +338,10 @@ class ExperimentController extends Controller
                 if($value->getParameter()->getConnectionType()->getId() == 2)
                     $data['datasets'][$task->getTaskBox()][] = $value->getParametervalue();
 
-            if($task->getWorkflowtaskisrunning() == 3)
+            if(in_array($task->getWorkflowtaskisrunning(), [1, 3]))
                 $tasksBoxsWithErrors[] = $task->getTaskBox();
+            elseif($task->getWorkflowtaskisrunning() == 2)
+                $executedTasksBoxs[] = $task->getTaskBox();
         }
 
         $data['workFlowState'] = $experiment->getGuiData();
@@ -352,6 +349,7 @@ class ExperimentController extends Controller
         $data['experimentId'] = $id;
         $data['experimentTitle'] = $experiment->getName();
         $data['tasksBoxsWithErrors'] = $tasksBoxsWithErrors;
+        $data['executedTasksBoxs'] = $executedTasksBoxs;
 
         return $data;
     }
