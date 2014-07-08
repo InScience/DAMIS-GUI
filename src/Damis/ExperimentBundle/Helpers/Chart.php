@@ -40,9 +40,9 @@ class Chart {
             $colName = $attr['name'];
             $colType = $attr['type'];
             $attributes[] = [$attr];
-            if($x == null && $colType != 'string')
+            if($x === null && $colType != 'string')
                 $x = $key;
-            elseif($y == null && $colType != 'string')
+            elseif($y === null && $colType != 'string')
                 $y = $key;
 
             if(strtolower($colType) == 'class' || strtolower($colName) == 'class')

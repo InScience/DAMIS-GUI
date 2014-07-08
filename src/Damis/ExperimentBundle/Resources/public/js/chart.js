@@ -16,14 +16,15 @@
 		},
 
 		notConnectedButtons: function() {
-			var buttons = [{
-				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
-				"class": "btn",
-				"click": function(ev) {
-					$(this).dialog("close");
-				}
-			}];
-			return buttons;
+            return [
+                {
+                    "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
+                    "class": "btn",
+                    "click": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ];
 		},
 
 		// all buttons for this component
@@ -31,13 +32,12 @@
 			var buttons = [{
 				"text": Translator.trans('Download', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
-				"click": function(ev) {
+				"click": function() {
 					window.chart.downloadChart($(this));
 				}
 			}];
 			var errorButtons = window.chart.notConnectedButtons();
-			var result = buttons.concat(errorButtons);
-			return result;
+            return buttons.concat(errorButtons);
 		},
 
 		// custom color palette, rotates through a range of hue values
@@ -92,11 +92,14 @@
 						radius: 3
 					}
 				},
-				legend: {
+                coordinate: {
+                    type: "rectangular"
+                },
+                legend: {
 					show: false
 				},
 				grid: {
-					backgroundColor: "#ffffff",
+
 					clickable: true,
 					hoverable: true
 				},
@@ -112,7 +115,7 @@
 				}
 			};
 
-			var plot = $.plot(plotPlaceholder, data, options);
+			$.plot(plotPlaceholder, data, options);
 
 			$(plotPlaceholder).bind("plotclick", function(event, pos, item) {
 				if (item) {
@@ -176,7 +179,7 @@
 				"buttons": [{
 					"text": Translator.trans("OK", {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
-					"click": function(ev) {
+					"click": function() {
 						// TODO: show progress indicator
 						var canvas = formWindow.find(".plot-container").find("canvas")[0];
 						var image;
@@ -205,7 +208,7 @@
 				{
 					"text": Translator.trans("Cancel", {}, 'ExperimentBundle'),
 					"class": "btn",
-					"click": function(ev) {
+					"click": function() {
 						$(this).dialog("destroy");
 					}
 				}
@@ -255,7 +258,7 @@
 						"value": shape[0],
 						"selected": (selected ? "selected=\"selected\"": ""),
 						"label": shape[1]
-					}
+					};
 					shapeSelect.append(window.utils.formatStr(optionPattern, args));
 				});
 
@@ -317,8 +320,7 @@
 				shapeSelector.val(symbolValues[0]);
 			}
 
-			// only one of these tables in the selector will be present 
-			var renderChoicesDataTable = plotContainer.find(".render-choices, .float-cls-choices").dataTable({
+			plotContainer.find(".render-choices, .float-cls-choices").dataTable({
 				"sScrollY": 400,
 				"bScrollCollapse": true,
 				"bInfo": false,
