@@ -62,7 +62,7 @@
 }
 
 .task-box.done {
-    width: auto; border:1px solid #3aa62c; box-shadow: 2px 2px 19px #8dd487; -o-box-shadow: 2px 2px 19px #8dd487; -webkit-box-shadow: 2px 2px 19px #8dd487; -moz-box-shadow: 2px 2px 19px #8dd487; background-color:#eeeeef; color: #A60000;
+    width: auto; border:1px solid #3aa62c; box-shadow: 2px 2px 19px #8dd487; -o-box-shadow: 2px 2px 19px #8dd487; -webkit-box-shadow: 2px 2px 19px #8dd487; -moz-box-shadow: 2px 2px 19px #8dd487; background-color:#eeeeef; color: #3aa62c;
 }
 
 .task-box.done:hover {
