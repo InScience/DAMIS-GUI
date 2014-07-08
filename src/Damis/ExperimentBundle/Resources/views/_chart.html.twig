@@ -1,5 +1,5 @@
-<div style="width: 614px;">
-    <table class="attribute-choices" style="margin: auto; 20px;">
+<div style="width: 614px;height: 300px; margin: auto;">
+    <table class="attribute-choices" style="margin: auto;">
         <tbody>
         <td style="padding: 5px;">X:
             <select class="x-attr" style="width: 100px;">
@@ -41,7 +41,7 @@
 {% if not error %}
     <div class="results-container" style="width: 600px; height: 300px; margin: auto;"></div>
     {% if context.float_cls %}
-        <table class="float-cls-choices chart-choices" style="margin: auto; text-align: center">
+        <table class="float-cls-choices chart-choices" style="margin: auto; text-align: center;width: 600px; height: 300px;">
             <thead>
             <tr>
                 <th>{{ 'Color' | trans({}, 'ExperimentBundle')}}</th>
@@ -74,7 +74,7 @@
             </tbody>
         </table>
     {% else %}
-        <table class="render-choices chart-choices" style="margin: auto; text-align: center">
+        <table class="render-choices chart-choices" style="margin: auto; text-align: center; width: 600px; height: 300px;">
             <thead>
             <tr>
                 <th>{{ 'Class' | trans({}, 'ExperimentBundle')}}</th>
