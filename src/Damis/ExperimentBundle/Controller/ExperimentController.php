@@ -6,15 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
 use Damis\EntitiesBundle\Entity\Workflowtask;
 use Damis\EntitiesBundle\Entity\Parametervalue;
-use /** @noinspection PhpUnusedAliasInspection */
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use /** @noinspection PhpUnusedAliasInspection */
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use /** @noinspection PhpUnusedAliasInspection */
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use /** @noinspection PhpUnusedAliasInspection */
-    Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
 
