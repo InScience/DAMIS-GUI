@@ -107,7 +107,7 @@ class Parametervalue
     /**
      * Set parameter
      *
-     * @param \Damis\EntitiesBundle\Entity\Parameter $parameter
+     * @param \Damis\ExperimentBundle\Entity\Parameter $parameter
      * @return Parametervalue
      */
     public function setParameter(\Damis\ExperimentBundle\Entity\Parameter $parameter = null)
@@ -120,7 +120,7 @@ class Parametervalue
     /**
      * Get parameter
      *
-     * @return \Damis\EntitiesBundle\Entity\Parameter
+     * @return \Damis\ExperimentBundle\Entity\Parameter
      */
     public function getParameter()
     {

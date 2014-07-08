@@ -4,14 +4,17 @@ namespace Damis\ExperimentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
-use Damis\ExperimentBundle\Entity\Component;
 use Damis\EntitiesBundle\Entity\Workflowtask;
 use Damis\EntitiesBundle\Entity\Parametervalue;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use /** @noinspection PhpUnusedAliasInspection */
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use /** @noinspection PhpUnusedAliasInspection */
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use /** @noinspection PhpUnusedAliasInspection */
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use /** @noinspection PhpUnusedAliasInspection */
+    Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,10 +43,12 @@ class ExperimentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findAll();
 
-        $nextName = $this->getDoctrine()
+        /** @var $experimentRepository \Damis\ExperimentBundle\Entity\ExperimentRepository */
+        $experimentRepository = $this->getDoctrine()
             ->getManager()
-            ->getRepository('DamisExperimentBundle:Experiment')
-            ->getNextExperimentNameNumber();
+            ->getRepository('DamisExperimentBundle:Experiment');
+
+        $nextName = $experimentRepository->getNextExperimentNameNumber();
 
 
         return [
@@ -106,7 +111,7 @@ class ExperimentController extends Controller
         else
             $experiment = false;
 
-        $isNew = !(boolean)$experiment;//var_dump($isNew, $isValid, $isChanged,($params['experiment-execute'] > 0)); die;
+        $isNew = !(boolean)$experiment;
         if ($isNew)
             $experiment = new Experiment();
 
@@ -125,6 +130,7 @@ class ExperimentController extends Controller
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
+        $oldStatus = false;
         if(!$isNew)
             $oldStatus = $experiment->getStatus();
 
@@ -143,7 +149,7 @@ class ExperimentController extends Controller
         elseif($isExecution && !$isChanged && $isValid)
             $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
                 ->findOneByExperimentstatusid(2);
-        elseif(!$isExecution && !$isChanged && $isValid)
+        elseif(!$isExecution && !$isChanged && $isValid && !$isNew)
             $experimentStatus = $oldStatus;
         elseif($isChanged && !$isValid)
             $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
@@ -217,7 +223,6 @@ class ExperimentController extends Controller
         $guiDataExploded = explode('***', $experiment->getGuiData());
         $workflows = json_decode($guiDataExploded[0]);
         $workflowsConnections = json_decode($guiDataExploded[1]);
-        $workflowCount = $guiDataExploded[2];
 
         //remove workflotasks at first, this should remove parametervalues and parametervaluein-out too
         foreach($experiment->getWorkflowtasks() as $task){
@@ -290,18 +295,22 @@ class ExperimentController extends Controller
                     //jei nustaytas sourceAnchor tipas vadinasi tai yra Y connectionas
                     //by default type = Right
                     if (isset($conn->sourceAnchor->type) and ($conn->sourceAnchor->type == "Right")) {
+                        /** @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valOut = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Y'] ]);
 
+                        /** @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valIn = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
                     } else {
+                        /** @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valOut = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Yalt'] ]);
 
+                        /** @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valIn = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
@@ -338,7 +347,7 @@ class ExperimentController extends Controller
         $executedTasksBoxs = [];
         /** @var $task Workflowtask */
         foreach($experiment->getWorkflowtasks() as $task) {
-            /** @var $value Parametervalue */
+            /** @var $value \Damis\EntitiesBundle\Entity\Parametervalue */
             foreach($task->getParameterValues() as $value)
                 if($value->getParameter()->getConnectionType()->getId() == 2)
                     $data['datasets'][$task->getTaskBox()][] = $value->getParametervalue();
@@ -374,6 +383,7 @@ class ExperimentController extends Controller
             if($experiment){
                 $files = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getExperimentDatasets($id);
                 foreach($files as $fileId){
+                    /** @var $file \Damis\DatasetsBundle\Entity\Dataset */
                     $file = $em->getRepository('DamisDatasetsBundle:Dataset')
                         ->findOneBy(array('datasetId' => $fileId, 'hidden' => true));
                     if($file){
