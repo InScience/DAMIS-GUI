@@ -233,6 +233,49 @@ class DatasetsController extends Controller
                 $entity->setDatasetIsMidas(false);
                 $em->persist($entity);
                 $em->flush();
+                $format = explode('.', $entity->getFile()['fileName']);
+                $format = $format[count($format)-1];
+                if ($format == 'zip'){
+                    $zip = new ZipArchive();
+                    $res = $zip->open('./assets' . $entity->getFile()['fileName']);
+                    $name = $zip->getNameIndex(0);
+                    if($zip->numFiles > 1){
+                        $em->remove($entity);
+                        $em->flush();
+                        $form->get('file')
+                            ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
+                        return [
+                            'form' => $form->createView(),
+                            'file' => null
+                        ];
+                    }
+                    if($res === true){
+                        $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
+                        $zip->extractTo('.' . $path, $name);
+                        $zip->close();
+                        $format = explode('.', $name);
+                        $format = $format[count($format)-1];
+                        if($format != 'arff' && $format != 'txt' && $format != 'tab' && $format != 'csv' && $format != 'xls' && $format != 'xlsx'){
+                            $form->get('file')
+                                ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
+                            $em->remove($entity);
+                            $em->flush();
+                            return [
+                                'form' => $form->createView(),
+                                'file' => nul
+                            ];
+                        }
+                    } else{
+                        $form->get('file')
+                            ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
+                        $em->remove($entity);
+                        $em->flush();
+                        return [
+                            'form' => $form->createView(),
+                            'file' => null
+                        ];
+                    }
+                }
                 $this->uploadArff($entity->getDatasetId());
                 return [
                     'form' => $form->createView(),
@@ -271,7 +314,9 @@ class DatasetsController extends Controller
                 $res = $zip->open('./assets' . $entity->getFile()['fileName']);
                 $name = $zip->getNameIndex(0);
                 if($zip->numFiles > 1){
-                    $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                    $em->remove($entity);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
                     return $this->redirect($this->generateUrl('datasets_new'));
                 }
 
@@ -287,7 +332,7 @@ class DatasetsController extends Controller
                         $em->persist($entity);
                         $em->flush();
                         rename ( '.' . $path . '/' . $name , '.' . $dir . '.arff');
-                        $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+                        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
                         return $this->redirect($this->generateUrl('datasets_list'));
                     }
                     elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
@@ -304,7 +349,7 @@ class DatasetsController extends Controller
                         $em->remove($entity);
                         $em->flush();
                         unlink('.' . $path . '/' . $name);
-                        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
                         return $this->redirect($this->generateUrl('datasets_new'));
                     }
                 }
@@ -313,7 +358,7 @@ class DatasetsController extends Controller
                 $entity->setFilePath($entity->getFile()['path']);
                 $em->persist($entity);
                 $em->flush();
-                $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
                 return $this->redirect($this->generateUrl('datasets_list'));
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
@@ -374,10 +419,10 @@ class DatasetsController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('success', 'Dataset successfully uploaded!');
+            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
             return $this->redirect($this->generateUrl('datasets_list'));
         }
-        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
         return $this->redirect($this->generateUrl('datasets_new'));
     }
 }

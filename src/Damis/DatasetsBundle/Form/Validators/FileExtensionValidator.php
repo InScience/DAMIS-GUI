@@ -10,7 +10,12 @@ class FileExtensionValidator extends ConstraintValidator {
     public function validate($value, Constraint $constraint) {
 
         if ($value !== null) {
-            if ($this->endsWith($value->getClientOriginalName(), '.ini'))
+            if (!$this->endsWith($value->getClientOriginalName(), '.txt')
+                && !$this->endsWith($value->getClientOriginalName(), '.tab')
+                && !$this->endsWith($value->getClientOriginalName(), '.csv')
+                && !$this->endsWith($value->getClientOriginalName(), '.arff')
+                && !$this->endsWith($value->getClientOriginalName(), '.zip')
+            )
                 $this->context->addViolation($constraint->invalid_type);
         }
 
