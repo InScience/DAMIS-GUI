@@ -29,8 +29,26 @@ class ReadFile {
 
         if($format == 'tab')
             $delimiter = "\t";
-        else
-            $delimiter = ',';
+        else{
+            $delimiters = array(
+                'comma'     => ",",
+                'semicolon' => ";",
+                'space'       => " ",
+            );
+            $content = file_get_contents($path);
+            $content = explode("\n",$content);
+            reset($content);
+            $firstKey = key($content);
+            foreach ($delimiters as $key => $delim) {
+                $res[$key] = substr_count($content[$firstKey], $delim);
+            }
+            arsort($res);
+
+            reset($res);
+            $first_key = key($res);
+
+            $delimiter = $delimiters[$first_key];
+        }
 
         if (($handle = fopen($path, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
