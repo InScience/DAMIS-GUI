@@ -164,3 +164,4 @@ Cluster home : Klasterio svetainė
 Cluster workload : Klasterio apkrovimas
 MDS projection should be equal to 2 : MDS projekcijų skaičius turi būti lygus 2
 Do you really want to clear experiment workflow? : Ar tikrai norite išvalyti darbalaukį?
+Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas –procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą
