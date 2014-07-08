@@ -62,7 +62,6 @@
 			// an indicator field: "connection_type"
 			$.each(parameters.find('div'), function(idx) {
 				var connectionType = $(this).find("input[id$='connection_type']").val();
-				var paramName = "<span>" + $(this).find("span").text() + "</span>";
 
 				if (connectionType === "INPUT_CONNECTION") {
 					//add input endpoint
@@ -137,7 +136,7 @@
 			return [{
 				"text": Translator.trans('OK', {}, 'ExperimentBundle'),
 				"class": "btn btn-primary",
-				"click": function(ev) {
+				"click": function() {
 					// TODO: send to server for processing
 					$(this).dialog("close");
 				}
@@ -145,7 +144,7 @@
 			{
 				"text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 				"class": "btn",
-				"click": function(ev) {
+				"click": function() {
 					// TODO: discard any changes
 					$(this).dialog("close");
 				}
@@ -156,7 +155,7 @@
 		// create a new task box and modal window, assign event handlers 
 		createTaskBox: function(ev, ui, taskContainer) {
 			// create a task form for this box
-			var addTaskBtn = $("a.add-row")
+			var addTaskBtn = $("a.add-row");
 			addTaskBtn.click();
 			var taskForm = addTaskBtn.prev();
 
@@ -173,19 +172,19 @@
 
             var formType = componentDetails['type'];
             var excForm = $("#experiment-form");
-            var changed = excForm.find('input[name=workflow_changed]')
+            var changed = excForm.find('input[name=workflow_changed]');
             if(formType !== 'TechnicalInfo' && formType !== 'Matrix' && formType !== 'Chart'){
                 if(changed.length > 0)
                     changed.val(1);
                 else{
-                    var changed = $("<input name=\"workflow_changed\" value=\"1\" type=\"hidden\"/>");
+                    changed = $("<input name=\"workflow_changed\" value=\"1\" type=\"hidden\"/>");
                     excForm.find("#exec-params").append(changed);
                 }
             } else {
                 if(changed.length > 0)
                     changed.val(0);
                 else{
-                    var changed = $("<input name=\"workflow_changed\" value=\"0\" type=\"hidden\"/>");
+                    changed = $("<input name=\"workflow_changed\" value=\"0\" type=\"hidden\"/>");
                     excForm.find("#exec-params").append(changed);
                 }
             }
@@ -239,14 +238,15 @@
 					}
 				});
 
-                //Checking if its connected to file
+                //Checking if its connected to component
                 if(componentType === 'Filter' || componentType === 'Select' || componentType === 'NormData'
                     || componentType === 'SplitData'|| $(ev.currentTarget).attr('data-componentid') == 13
                     || $(ev.currentTarget).attr('data-componentid') == 14
                     || $(ev.currentTarget).attr('data-componentid') == 7
                     || $(ev.currentTarget).attr('data-componentid') == 8) {
+                    var isConnected = window.taskBoxes.getAncestorTaskBoxId(boxId);
                     var datasetId = window.taskBoxes.getConnectedTaskBoxDatasetId(boxId);
-                    if(datasetId === false || datasetId === '')
+                    if(isConnected === false || isConnected == '')
                         window.taskBoxes.toUnconnectedState(formWindow);
                     else if(!($(ev.currentTarget).attr('data-componentid') == 13
                         || $(ev.currentTarget).attr('data-componentid') == 14
@@ -343,12 +343,13 @@
                 if(connections[0].endpoints[0] == endpoints[index] || connections[0].endpoints[1] == endpoints[index])
                     return index - 1;
 
+            return false;
         },
 
         toUnconnectedState: function(formWindow) {
             formWindow.find(".plot-container").remove();
             formWindow.find(".dynamic-container").hide();
-            var container = $("<div class=\"plot-container\">" + Translator.trans("This component should be connected to a selected file", {}, 'ExperimentBundle') + "</div>");
+            var container = $("<div class=\"plot-container\">" + Translator.trans("This component should be connected to another component", {}, 'ExperimentBundle') + "</div>");
             formWindow.append(container);
             formWindow.dialog("option", "buttons", window.chart.notConnectedButtons());
             formWindow.dialog("option", "width", "auto");
