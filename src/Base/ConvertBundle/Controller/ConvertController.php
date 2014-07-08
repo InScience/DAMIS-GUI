@@ -35,12 +35,24 @@ class ConvertController extends Controller
             $filename = $entity->getDatasetTitle();
             if ($format == 'arff'){
                 $content = file_get_contents('.' . $entity->getFilePath());
-                $content = str_replace(strtok($content, "\n"), '@relation ' . $filename, $content);
-                $response = new Response($content);
+                $content = explode("\n",$content);
+                reset($content);
+                $firstKey = key($content);
+                if(strpos(strtolower($content[$firstKey]), '@relation') === 0)
+                    $content[$firstKey] = '@relation ' . $filename;
+                else {
+                    $content[$firstKey] = '@relation ' . $filename . "\n" . $content[$firstKey];
+                }
+                $fileContent = '';
+                foreach($content as $row){
+                    $fileContent .= $row . "\n";
+                }
+                $response = new Response($fileContent);
                 $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.arff"', $filename));
 
                 return $response;
+
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
