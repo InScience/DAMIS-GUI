@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class RelativeMdsType extends AbstractType {
 
@@ -16,7 +15,7 @@ class RelativeMdsType extends AbstractType {
         ->add('d', 'integer', [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0,
@@ -34,7 +33,7 @@ class RelativeMdsType extends AbstractType {
         ->add('maxIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
@@ -54,7 +53,7 @@ class RelativeMdsType extends AbstractType {
         ->add('noOfBaseVectors', 'integer', [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
