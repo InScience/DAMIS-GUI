@@ -320,7 +320,6 @@
 			// only one of these tables in the selector will be present 
 			var renderChoicesDataTable = plotContainer.find(".render-choices, .float-cls-choices").dataTable({
 				"sScrollY": 400,
-                "sWidth" : 600,
 				"bScrollCollapse": true,
 				"bInfo": false,
 				"bPaginate": false,

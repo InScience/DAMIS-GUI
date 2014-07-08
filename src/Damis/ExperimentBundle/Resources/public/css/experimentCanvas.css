@@ -148,3 +148,8 @@ table {max-width: none}
 .popover { width: 276px; }
 .tab-content { overflow: visible; }
 .file-content-table td, .file-content-table th {padding: 4px; border: 1px solid #bbb}
+
+div.dataTables_scroll {
+    margin: auto;
+    width:600px;
+}
