@@ -243,7 +243,7 @@ class DatasetsController extends Controller
                         $em->remove($entity);
                         $em->flush();
                         $form->get('file')
-                            ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
+                            ->addError(new FormError($this->get('translator')->trans('Too many files in zip!', array(), 'DatasetsBundle')));
                         return [
                             'form' => $form->createView(),
                             'file' => null
@@ -267,7 +267,7 @@ class DatasetsController extends Controller
                         }
                     } else{
                         $form->get('file')
-                            ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
+                            ->addError(new FormError($this->get('translator')->trans('Error!', array(), 'DatasetsBundle')));
                         $em->remove($entity);
                         $em->flush();
                         return [
@@ -422,7 +422,7 @@ class DatasetsController extends Controller
             $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
             return $this->redirect($this->generateUrl('datasets_list'));
         }
-        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error!', array(), 'DatasetsBundle'));
         return $this->redirect($this->generateUrl('datasets_new'));
     }
 }

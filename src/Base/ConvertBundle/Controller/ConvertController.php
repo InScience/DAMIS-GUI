@@ -29,7 +29,7 @@ class ConvertController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
-        if($entity){
+        if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
@@ -129,7 +129,7 @@ class ConvertController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
-        if($entity){
+        if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
@@ -158,9 +158,12 @@ class ConvertController extends Controller
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.txt"', $filename));
 
                 return $response;
+            }else {
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirect($this->generateUrl('datasets_list'));
             }
         }
-        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        $this->get('session')->getFlashBag()->add('error', 'Error!');
         return $this->redirect($this->generateUrl('datasets_list'));
     }
     /**
@@ -179,7 +182,7 @@ class ConvertController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
-        if($entity){
+        if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
@@ -208,9 +211,12 @@ class ConvertController extends Controller
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.tab"', $filename));
 
                 return $response;
+            } else{
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirect($this->generateUrl('datasets_list'));
             }
         }
-        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        $this->get('session')->getFlashBag()->add('error', 'Error!');
         return $this->redirect($this->generateUrl('datasets_list'));
     }
     /**
@@ -229,7 +235,7 @@ class ConvertController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
-        if($entity){
+        if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
@@ -245,6 +251,8 @@ class ConvertController extends Controller
                             $file .= ';';
                         else
                             $first = false;
+                        if(!isset($header[1]))
+                            $header[1] = '';
                         $file .= $header[1];
                     }
                     if(strtolower($row[0]) != '@data'){
@@ -268,9 +276,12 @@ class ConvertController extends Controller
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.csv"', $filename));
 
                 return $response;
+            } else{
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirect($this->generateUrl('datasets_list'));
             }
         }
-        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        $this->get('session')->getFlashBag()->add('error', 'Error!');
         return $this->redirect($this->generateUrl('datasets_list'));
     }
     /**
@@ -289,7 +300,7 @@ class ConvertController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('userId' => $user, 'datasetId' => $id));
-        if($entity){
+        if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
@@ -302,6 +313,8 @@ class ConvertController extends Controller
                 foreach($rows as $key => $row){
                     if(strpos(strtolower($row[0]), '@attribute') === 0){
                         $header = explode(' ', $row[0]);
+                        if(!isset($header[1]))
+                            $header[1] = '';
                         $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($colCount , 1, $header[1]);
                         $colCount++;
                     }
@@ -330,9 +343,12 @@ class ConvertController extends Controller
                 $objWriter->save('php://output');
 
                 return new Response();
+            } else {
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirect($this->generateUrl('datasets_list'));
             }
         }
-        $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+        $this->get('session')->getFlashBag()->add('error', 'Error!');
         return $this->redirect($this->generateUrl('datasets_list'));
     }
 }

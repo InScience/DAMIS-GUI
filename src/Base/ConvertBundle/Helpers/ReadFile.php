@@ -37,10 +37,8 @@ class ReadFile {
             );
             $content = file_get_contents($path);
             $content = explode("\n",$content);
-            reset($content);
-            $firstKey = key($content);
             foreach ($delimiters as $key => $delim) {
-                $res[$key] = substr_count($content[$firstKey], $delim);
+                $res[$key] = substr_count(trim($content[(int)floor(count($content)/ 2)]), $delim);
             }
             arsort($res);
 
@@ -60,7 +58,6 @@ class ReadFile {
             }
             fclose($handle);
         }
-
         return $rows;
     }
 

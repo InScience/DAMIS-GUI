@@ -14,6 +14,8 @@ class FileExtensionValidator extends ConstraintValidator {
                 && !$this->endsWith($value->getClientOriginalName(), '.tab')
                 && !$this->endsWith($value->getClientOriginalName(), '.csv')
                 && !$this->endsWith($value->getClientOriginalName(), '.arff')
+                && !$this->endsWith($value->getClientOriginalName(), '.xls')
+                && !$this->endsWith($value->getClientOriginalName(), '.xlsx')
                 && !$this->endsWith($value->getClientOriginalName(), '.zip')
             )
                 $this->context->addViolation($constraint->invalid_type);
