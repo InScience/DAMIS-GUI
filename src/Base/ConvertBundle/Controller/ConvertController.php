@@ -337,7 +337,7 @@ class ConvertController extends Controller
                 }
                 $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
 
-                header('Content-type: application/vnd.ms-excel');
+                header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 header('Content-Disposition: attachment;' . sprintf('filename="%s.xlsx"', $filename));
 
                 $objWriter->save('php://output');
