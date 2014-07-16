@@ -26,7 +26,13 @@ class ReadFile {
     function getRows($path, $format) {
         $row = 0;
         $rows = array();
-
+        $memoryLimit = ini_get('memory_limit');
+        $suffix = '';
+        sscanf ($memoryLimit, '%u%c', $number, $suffix);
+        if (isset ($suffix))
+        {
+            $number = $number * pow (1024, strpos (' KMG', $suffix));
+        }
         if($format == 'tab')
             $delimiter = "\t";
         else{
@@ -50,6 +56,10 @@ class ReadFile {
 
         if (($handle = fopen($path, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
+                if(memory_get_usage(true) > $number - 1000000){
+                    return false;
+                }
+
                 $num = count($data);
                 $row++;
                 for ($c = 0; $c < $num; $c++) {

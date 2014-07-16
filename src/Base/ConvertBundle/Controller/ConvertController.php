@@ -33,7 +33,14 @@ class ConvertController extends Controller
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
+            $fileReader = new ReadFile();
             if ($format == 'arff'){
+                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
+                unset($rows);
                 $content = file_get_contents('.' . $entity->getFilePath());
                 $content = explode("\n",$content);
                 reset($content);
@@ -55,8 +62,11 @@ class ConvertController extends Controller
 
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
-                $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' . $entity->getFile()['fileName'] , $format);
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
             } elseif($format == 'xls' || $format == 'xlsx'){
                 $objPHPExcel = PHPExcel_IOFactory::load('.' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
@@ -136,6 +146,10 @@ class ConvertController extends Controller
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' .$entity->getFilePath(), 'arff');
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
                 foreach($rows as $key => $row){
                     if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
@@ -189,6 +203,10 @@ class ConvertController extends Controller
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
                 foreach($rows as $key => $row){
                     if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
@@ -242,6 +260,10 @@ class ConvertController extends Controller
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
                 $file = '';
                 $first = true;
                 foreach($rows as $key => $row){
@@ -307,6 +329,10 @@ class ConvertController extends Controller
             if ($format == 'arff'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('.' . $entity->getFilePath(), 'arff');
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
                 $objPHPExcel = new PHPExcel();
                 $objPHPExcel->setActiveSheetIndex(0);
                 $colCount = 0;

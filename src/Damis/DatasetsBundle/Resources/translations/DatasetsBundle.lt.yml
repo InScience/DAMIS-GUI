@@ -30,3 +30,5 @@ Delete : Ištrinti
 Dataset successfully updated! : Failas atnaujintas!
 Error! : Klaida!
 Too many files in zip! : Per daug failų zipe!
+Dataset is too large! : Failas yra per didelis!
+Exceeded memory limit! : Viršitas atminties limitas!

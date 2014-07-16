@@ -74,7 +74,8 @@ class DatasetsController extends Controller
                 $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
                 if(!$inUse){
                     if(file_exists('.' . $file->getFilePath()))
-                        unlink('.' . $file->getFilePath());
+                        if($file->getFilePath())
+                            unlink('.' . $file->getFilePath());
                     $em->remove($file);
                 } else {
                     $file->setHidden(true);
@@ -326,9 +327,19 @@ class DatasetsController extends Controller
                     $zip->close();
                     $format = explode('.', $name);
                     $format = $format[count($format)-1];
+                    $fileReader = new ReadFile();
                     if ($format == 'arff'){
                         $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
                         $entity->setFilePath($dir . '.arff');
+                        $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                        if($rows === false){
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                            $em->remove($entity);
+                            $em->flush();
+                            unlink('.' . $path . '/' . $name);
+                            return $this->redirect($this->generateUrl('datasets_list'));
+                        }
+                        unset($rows);
                         $em->persist($entity);
                         $em->flush();
                         rename ( '.' . $path . '/' . $name , '.' . $dir . '.arff');
@@ -336,8 +347,14 @@ class DatasetsController extends Controller
                         return $this->redirect($this->generateUrl('datasets_list'));
                     }
                     elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
-                        $fileReader = new ReadFile();
                         $rows = $fileReader->getRows('.' . $path . '/' . $name , $format);
+                        if($rows === false){
+                            $em->remove($entity);
+                            $em->flush();
+                            unlink('.' . $path . '/' . $name);
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+                            return $this->redirect($this->generateUrl('datasets_list'));
+                        }
                         unlink('.' . $path . '/' . $name);
                     } elseif($format == 'xls' || $format == 'xlsx'){
                         $objPHPExcel = PHPExcel_IOFactory::load('.' . $path . '/' . $name);
@@ -356,6 +373,15 @@ class DatasetsController extends Controller
             }
             elseif ($format == 'arff'){
                 $entity->setFilePath($entity->getFile()['path']);
+                $fileReader = new ReadFile();
+                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    $em->remove($entity);
+                    $em->flush();
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
+                unset($rows);
                 $em->persist($entity);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
@@ -364,6 +390,12 @@ class DatasetsController extends Controller
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
                 $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
+                if($rows === false){
+                    $em->remove($entity);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
             } elseif($format == 'xls' || $format == 'xlsx'){
                 $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
