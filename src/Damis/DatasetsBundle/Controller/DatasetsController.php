@@ -302,6 +302,13 @@ class DatasetsController extends Controller
      */
     public function uploadArff($id)
     {
+        $memoryLimit = ini_get('memory_limit');
+        $suffix = '';
+        sscanf ($memoryLimit, '%u%c', $number, $suffix);
+        if (isset ($suffix))
+        {
+            $number = $number * pow (1024, strpos (' KMG', $suffix));
+        }
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
@@ -373,9 +380,7 @@ class DatasetsController extends Controller
             }
             elseif ($format == 'arff'){
                 $entity->setFilePath($entity->getFile()['path']);
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
-                if($rows === false){
+                if($entity->getFile()['size'] * 4.8 > $number){
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     $em->remove($entity);
                     $em->flush();
@@ -389,13 +394,13 @@ class DatasetsController extends Controller
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
-                if($rows === false){
+                if($entity->getFile()['size'] * 4.8 > $number){
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
+                $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
             } elseif($format == 'xls' || $format == 'xlsx'){
                 $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
