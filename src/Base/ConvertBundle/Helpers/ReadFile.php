@@ -33,7 +33,7 @@ class ReadFile {
         {
             $number = $number * pow (1024, strpos (' KMG', $suffix));
         }
-        if(memory_get_usage(true) + filesize($path) * 5 > $number)
+        if(memory_get_usage(true) + filesize($path) * 5.8 > $number)
             return false;
         if($format == 'tab')
             $delimiter = "\t";

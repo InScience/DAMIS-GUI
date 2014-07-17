@@ -380,7 +380,7 @@ class DatasetsController extends Controller
             }
             elseif ($format == 'arff'){
                 $entity->setFilePath($entity->getFile()['path']);
-                if(memory_get_usage(true) + $entity->getFile()['size'] * 5 > $number){
+                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     $em->remove($entity);
                     $em->flush();
@@ -394,7 +394,7 @@ class DatasetsController extends Controller
             }
             elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
                 $fileReader = new ReadFile();
-                if(memory_get_usage(true) + $entity->getFile()['size'] * 5 > $number){
+                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
