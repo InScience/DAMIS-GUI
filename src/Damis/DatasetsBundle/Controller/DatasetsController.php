@@ -387,6 +387,16 @@ class DatasetsController extends Controller
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
                 unset($rows);
+                $fileReader = new ReadFile();
+                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    $em->remove($entity);
+                    $em->flush();
+                    unlink('.' . $entity->getFile()['fileName']);
+                    return $this->redirect($this->generateUrl('datasets_list'));
+                }
+                unset($rows);
                 $em->persist($entity);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
