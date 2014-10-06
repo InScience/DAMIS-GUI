@@ -1,28 +1,352 @@
-CREATE TABLE users (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(255) NOT NULL, username_canonical VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, email_canonical VARCHAR(255) NOT NULL, enabled TINYINT(1) NOT NULL, salt VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, last_login DATETIME DEFAULT NULL, locked TINYINT(1) NOT NULL, expired TINYINT(1) NOT NULL, expires_at DATETIME DEFAULT NULL, confirmation_token VARCHAR(255) DEFAULT NULL, password_requested_at DATETIME DEFAULT NULL, roles LONGTEXT NOT NULL COMMENT '(DC2Type:array)', credentials_expired TINYINT(1) NOT NULL, credentials_expire_at DATETIME DEFAULT NULL, registeredAt DATETIME NOT NULL, name VARCHAR(255) DEFAULT NULL, surname VARCHAR(255) DEFAULT NULL, organisation VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_1483A5E992FC23A8 (username_canonical), UNIQUE INDEX UNIQ_1483A5E9A0D96FBF (email_canonical), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE parametervalue (ParameterValue VARCHAR(255) DEFAULT NULL, ParameterValueID INT AUTO_INCREMENT NOT NULL, WorkflowTaskID INT DEFAULT NULL, ParameterID INT DEFAULT NULL, INDEX IDX_EF5C2B2A199F0DB9 (WorkflowTaskID), INDEX IDX_EF5C2B2A5A8577F9 (ParameterID), UNIQUE INDEX PARAMETERVALUE_PK (ParameterValueID), PRIMARY KEY(ParameterValueID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE pvalueoutpvaluein (InParameterValueID INT NOT NULL, OutParameterValueID INT DEFAULT NULL, INDEX IDX_A522F8AE88C1F20 (OutParameterValueID), PRIMARY KEY(InParameterValueID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE workflowtask (WorkflowTaskIsRunning INT NOT NULL, WorkflowTaskID INT AUTO_INCREMENT NOT NULL, TaskBox VARCHAR(256) DEFAULT NULL, Message LONGTEXT DEFAULT NULL, ExecutionTime DOUBLE PRECISION DEFAULT NULL, ExperimentID INT DEFAULT NULL, INDEX IDX_5F598CF2BAA1BE51 (ExperimentID), UNIQUE INDEX WORKFLOWTASK_PK (WorkflowTaskID), PRIMARY KEY(WorkflowTaskID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE cluster (ClusterName VARCHAR(80) NOT NULL, ClusterWorkloadHost VARCHAR(255) NOT NULL, ClusterDescription VARCHAR(500) DEFAULT NULL, ClusterID INT AUTO_INCREMENT NOT NULL, PRIMARY KEY(ClusterID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE component (ComponentName VARCHAR(80) NOT NULL, ComponentIcon VARCHAR(255) NOT NULL, ComponentWSDLRunHost VARCHAR(255) DEFAULT NULL, ComponentWSDLCallFunction VARCHAR(80) NOT NULL, ComponentDescription VARCHAR(500) DEFAULT NULL, ComponentAltDescription VARCHAR(80) DEFAULT NULL, ComponentLabelLT VARCHAR(255) DEFAULT NULL, ComponentLabelEN VARCHAR(255) DEFAULT NULL, ComponentID INT AUTO_INCREMENT NOT NULL, FormType VARCHAR(255) DEFAULT NULL, ClusterID INT DEFAULT NULL, ComponentTypeID INT DEFAULT NULL, INDEX IDX_49FEA157B26192BE (ClusterID), INDEX IDX_49FEA1576ACDD642 (ComponentTypeID), UNIQUE INDEX COMPONENT_PK (ComponentID), PRIMARY KEY(ComponentID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE componenttype (ComponentType VARCHAR(80) NOT NULL, ComponentTypeID INT AUTO_INCREMENT NOT NULL, UNIQUE INDEX COMPONENTTYPE_PK (ComponentTypeID), PRIMARY KEY(ComponentTypeID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE experiment (ExperimentName VARCHAR(80) NOT NULL, ExperimentMaxDuration TIME DEFAULT NULL, ExpermentStart INT DEFAULT NULL, ExperimentFinish INT DEFAULT NULL, ExperimentUseCPU INT DEFAULT NULL, ExperimentUsePrimaryMemory INT DEFAULT NULL, ExperimentUseSecMemory INT DEFAULT NULL, ExperimentGUIData LONGTEXT DEFAULT NULL, ExperimentID INT AUTO_INCREMENT NOT NULL, ExperimentStatusID INT DEFAULT NULL, UserID INT DEFAULT NULL, INDEX IDX_136F58B234472C01 (ExperimentStatusID), INDEX IDX_136F58B258746832 (UserID), UNIQUE INDEX EXPERIMENT_PK (ExperimentID), PRIMARY KEY(ExperimentID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE experimentstatus (ExperimentStatus VARCHAR(80) NOT NULL, ExperimentStatusID INT AUTO_INCREMENT NOT NULL, UNIQUE INDEX EXPERIMENTSTATUS_PK (ExperimentStatusID), PRIMARY KEY(ExperimentStatusID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE parameter (ParameterName VARCHAR(80) NOT NULL, ParameterIsRequired INT NOT NULL, ParameterDefault VARCHAR(80) DEFAULT NULL, ParameterDescription VARCHAR(500) DEFAULT NULL, ParameterLabelLT VARCHAR(255) DEFAULT NULL, ParameterLabelEN VARCHAR(255) DEFAULT NULL, ParameterID INT AUTO_INCREMENT NOT NULL, ParameterSlug VARCHAR(255) DEFAULT NULL, ParameterPosition INT DEFAULT NULL, ParameterTypeID INT DEFAULT NULL, ParameterConnectionTypeID INT DEFAULT NULL, ComponentID INT DEFAULT NULL, INDEX IDX_2A979110D50E99E0 (ParameterTypeID), INDEX IDX_2A97911010C17FF9 (ParameterConnectionTypeID), INDEX IDX_2A979110C364FDFE (ComponentID), UNIQUE INDEX PARAMETER_PK (ParameterID), PRIMARY KEY(ParameterID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE parameterconnectiontype (ParameterConnectionType VARCHAR(80) NOT NULL, ParameterConnectionTypeID INT AUTO_INCREMENT NOT NULL, UNIQUE INDEX PARAMETERCONNECTIONTYPE_PK (ParameterConnectionTypeID), PRIMARY KEY(ParameterConnectionTypeID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE parametertype (ParameterType VARCHAR(80) NOT NULL, ParameterTypeID INT AUTO_INCREMENT NOT NULL, UNIQUE INDEX PARAMETERTYPE_PK (ParameterTypeID), PRIMARY KEY(ParameterTypeID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE page (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, slug VARCHAR(128) NOT NULL, groupName VARCHAR(255) DEFAULT NULL, text LONGTEXT DEFAULT NULL, position INT NOT NULL, created DATETIME NOT NULL, updated DATETIME NOT NULL, language enum('lt', 'en'), UNIQUE INDEX UNIQ_140AB620989D9B62 (slug), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE dataset (DatasetIsMIDAS INT NOT NULL, DatasetTitle VARCHAR(80) NOT NULL, DatasetCreated INT NOT NULL, DatasetFilePath VARCHAR(255) DEFAULT NULL, DatasetUpdated INT DEFAULT NULL, file LONGTEXT DEFAULT NULL COMMENT '(DC2Type:array)', DatasetDescription VARCHAR(500) DEFAULT NULL, DatasetID INT AUTO_INCREMENT NOT NULL, Hidden INT DEFAULT NULL, UserID INT DEFAULT NULL, INDEX IDX_B7A041D058746832 (UserID), UNIQUE INDEX DATASET_PK (DatasetID), PRIMARY KEY(DatasetID)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-CREATE TABLE entity_log (id INT AUTO_INCREMENT NOT NULL, action VARCHAR(8) NOT NULL, logged_at DATETIME NOT NULL, object_id VARCHAR(64) DEFAULT NULL, object_class VARCHAR(255) NOT NULL, version INT NOT NULL, data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:array)', username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-ALTER TABLE parametervalue ADD CONSTRAINT FK_EF5C2B2A199F0DB9 FOREIGN KEY (WorkflowTaskID) REFERENCES workflowtask (WorkflowTaskID) ON DELETE CASCADE;
-ALTER TABLE parametervalue ADD CONSTRAINT FK_EF5C2B2A5A8577F9 FOREIGN KEY (ParameterID) REFERENCES parameter (ParameterID);
-ALTER TABLE pvalueoutpvaluein ADD CONSTRAINT FK_A522F8AEF169B8E2 FOREIGN KEY (InParameterValueID) REFERENCES parametervalue (ParameterValueID) ON DELETE CASCADE;
-ALTER TABLE pvalueoutpvaluein ADD CONSTRAINT FK_A522F8AE88C1F20 FOREIGN KEY (OutParameterValueID) REFERENCES parametervalue (ParameterValueID) ON DELETE CASCADE;
-ALTER TABLE workflowtask ADD CONSTRAINT FK_5F598CF2BAA1BE51 FOREIGN KEY (ExperimentID) REFERENCES experiment (ExperimentID) ON DELETE CASCADE;
-ALTER TABLE component ADD CONSTRAINT FK_49FEA157B26192BE FOREIGN KEY (ClusterID) REFERENCES cluster (ClusterID);
-ALTER TABLE component ADD CONSTRAINT FK_49FEA1576ACDD642 FOREIGN KEY (ComponentTypeID) REFERENCES componenttype (ComponentTypeID);
-ALTER TABLE experiment ADD CONSTRAINT FK_136F58B234472C01 FOREIGN KEY (ExperimentStatusID) REFERENCES experimentstatus (ExperimentStatusID);
-ALTER TABLE experiment ADD CONSTRAINT FK_136F58B258746832 FOREIGN KEY (UserID) REFERENCES users (id);
-ALTER TABLE parameter ADD CONSTRAINT FK_2A979110D50E99E0 FOREIGN KEY (ParameterTypeID) REFERENCES parametertype (ParameterTypeID);
-ALTER TABLE parameter ADD CONSTRAINT FK_2A97911010C17FF9 FOREIGN KEY (ParameterConnectionTypeID) REFERENCES parameterconnectiontype (ParameterConnectionTypeID);
-ALTER TABLE parameter ADD CONSTRAINT FK_2A979110C364FDFE FOREIGN KEY (ComponentID) REFERENCES component (ComponentID);
-ALTER TABLE dataset ADD CONSTRAINT FK_B7A041D058746832 FOREIGN KEY (UserID) REFERENCES users (id);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `damis`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cluster`
+--
+
+CREATE TABLE IF NOT EXISTS `cluster` (
+  `ClusterName` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ClusterWorkloadHost` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `ClusterDescription` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ClusterID` int(11) NOT NULL AUTO_INCREMENT,
+  `WorkloadUrl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ClusterUrl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`ClusterID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `component`
+--
+
+CREATE TABLE IF NOT EXISTS `component` (
+  `ComponentName` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ComponentIcon` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `ComponentWSDLRunHost` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ComponentWSDLCallFunction` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ComponentDescription` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ComponentAltDescription` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ComponentLabelLT` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ComponentLabelEN` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ComponentID` int(11) NOT NULL AUTO_INCREMENT,
+  `FormType` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ClusterID` int(11) DEFAULT NULL,
+  `ComponentTypeID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ComponentID`),
+  UNIQUE KEY `COMPONENT_PK` (`ComponentID`),
+  KEY `IDX_49FEA157B26192BE` (`ClusterID`),
+  KEY `IDX_49FEA1576ACDD642` (`ComponentTypeID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=47 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `componenttype`
+--
+
+CREATE TABLE IF NOT EXISTS `componenttype` (
+  `ComponentType` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ComponentTypeID` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ComponentTypeID`),
+  UNIQUE KEY `COMPONENTTYPE_PK` (`ComponentTypeID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dataset`
+--
+
+CREATE TABLE IF NOT EXISTS `dataset` (
+  `DatasetIsMIDAS` int(11) NOT NULL,
+  `DatasetTitle` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `DatasetCreated` int(11) NOT NULL,
+  `DatasetFilePath` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `DatasetUpdated` int(11) DEFAULT NULL,
+  `file` longtext COLLATE utf8_unicode_ci COMMENT '(DC2Type:array)',
+  `DatasetDescription` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `DatasetID` int(11) NOT NULL AUTO_INCREMENT,
+  `Hidden` int(11) DEFAULT NULL,
+  `UserID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`DatasetID`),
+  UNIQUE KEY `DATASET_PK` (`DatasetID`),
+  KEY `IDX_B7A041D058746832` (`UserID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=447 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entity_log`
+--
+
+CREATE TABLE IF NOT EXISTS `entity_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
+  `logged_at` datetime NOT NULL,
+  `object_id` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `object_class` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `version` int(11) NOT NULL,
+  `data` longtext COLLATE utf8_unicode_ci COMMENT '(DC2Type:array)',
+  `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=132 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `experiment`
+--
+
+CREATE TABLE IF NOT EXISTS `experiment` (
+  `ExperimentName` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ExperimentMaxDuration` time DEFAULT NULL,
+  `ExpermentStart` int(11) DEFAULT NULL,
+  `ExperimentFinish` int(11) DEFAULT NULL,
+  `ExperimentUseCPU` int(11) DEFAULT NULL,
+  `ExperimentUsePrimaryMemory` int(11) DEFAULT NULL,
+  `ExperimentUseSecMemory` int(11) DEFAULT NULL,
+  `ExperimentGUIData` longtext COLLATE utf8_unicode_ci,
+  `ExperimentID` int(11) NOT NULL AUTO_INCREMENT,
+  `ExperimentStatusID` int(11) DEFAULT NULL,
+  `UserID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ExperimentID`),
+  UNIQUE KEY `EXPERIMENT_PK` (`ExperimentID`),
+  KEY `IDX_136F58B234472C01` (`ExperimentStatusID`),
+  KEY `IDX_136F58B258746832` (`UserID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=348 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `experimentstatus`
+--
+
+CREATE TABLE IF NOT EXISTS `experimentstatus` (
+  `ExperimentStatus` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ExperimentStatusID` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ExperimentStatusID`),
+  UNIQUE KEY `EXPERIMENTSTATUS_PK` (`ExperimentStatusID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `page`
+--
+
+CREATE TABLE IF NOT EXISTS `page` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `slug` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `groupName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `text` longtext COLLATE utf8_unicode_ci,
+  `position` int(11) NOT NULL,
+  `created` datetime NOT NULL,
+  `updated` datetime NOT NULL,
+  `language` enum('lt','en') COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_140AB620989D9B62` (`slug`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parameter`
+--
+
+CREATE TABLE IF NOT EXISTS `parameter` (
+  `ParameterName` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ParameterIsRequired` int(11) NOT NULL,
+  `ParameterDefault` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterDescription` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterLabelLT` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterLabelEN` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterID` int(11) NOT NULL AUTO_INCREMENT,
+  `ParameterSlug` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterPosition` int(11) DEFAULT NULL,
+  `ParameterTypeID` int(11) DEFAULT NULL,
+  `ParameterConnectionTypeID` int(11) DEFAULT NULL,
+  `ComponentID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ParameterID`),
+  UNIQUE KEY `PARAMETER_PK` (`ParameterID`),
+  KEY `IDX_2A979110D50E99E0` (`ParameterTypeID`),
+  KEY `IDX_2A97911010C17FF9` (`ParameterConnectionTypeID`),
+  KEY `IDX_2A979110C364FDFE` (`ComponentID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=191 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parameterconnectiontype`
+--
+
+CREATE TABLE IF NOT EXISTS `parameterconnectiontype` (
+  `ParameterConnectionType` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ParameterConnectionTypeID` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ParameterConnectionTypeID`),
+  UNIQUE KEY `PARAMETERCONNECTIONTYPE_PK` (`ParameterConnectionTypeID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parametertype`
+--
+
+CREATE TABLE IF NOT EXISTS `parametertype` (
+  `ParameterType` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `ParameterTypeID` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ParameterTypeID`),
+  UNIQUE KEY `PARAMETERTYPE_PK` (`ParameterTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parametervalue`
+--
+
+CREATE TABLE IF NOT EXISTS `parametervalue` (
+  `ParameterValue` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ParameterValueID` int(11) NOT NULL AUTO_INCREMENT,
+  `WorkflowTaskID` int(11) DEFAULT NULL,
+  `ParameterID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ParameterValueID`),
+  UNIQUE KEY `PARAMETERVALUE_PK` (`ParameterValueID`),
+  KEY `IDX_EF5C2B2A199F0DB9` (`WorkflowTaskID`),
+  KEY `IDX_EF5C2B2A5A8577F9` (`ParameterID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4469 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pvalueoutpvaluein`
+--
+
+CREATE TABLE IF NOT EXISTS `pvalueoutpvaluein` (
+  `InParameterValueID` int(11) NOT NULL,
+  `OutParameterValueID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`InParameterValueID`),
+  KEY `IDX_A522F8AE88C1F20` (`OutParameterValueID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `username_canonical` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email_canonical` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `salt` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL,
+  `expired` tinyint(1) NOT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `confirmation_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password_requested_at` datetime DEFAULT NULL,
+  `roles` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT '(DC2Type:array)',
+  `credentials_expired` tinyint(1) NOT NULL,
+  `credentials_expire_at` datetime DEFAULT NULL,
+  `registeredAt` datetime NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `surname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `organisation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_1483A5E992FC23A8` (`username_canonical`),
+  UNIQUE KEY `UNIQ_1483A5E9A0D96FBF` (`email_canonical`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `workflowtask`
+--
+
+CREATE TABLE IF NOT EXISTS `workflowtask` (
+  `WorkflowTaskIsRunning` int(11) NOT NULL,
+  `WorkflowTaskID` int(11) NOT NULL AUTO_INCREMENT,
+  `TaskBox` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Message` longtext COLLATE utf8_unicode_ci,
+  `ExecutionTime` double DEFAULT NULL,
+  `ExperimentID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`WorkflowTaskID`),
+  UNIQUE KEY `WORKFLOWTASK_PK` (`WorkflowTaskID`),
+  KEY `IDX_5F598CF2BAA1BE51` (`ExperimentID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1884 ;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `component`
+--
+ALTER TABLE `component`
+  ADD CONSTRAINT `FK_49FEA1576ACDD642` FOREIGN KEY (`ComponentTypeID`) REFERENCES `componenttype` (`ComponentTypeID`),
+  ADD CONSTRAINT `FK_49FEA157B26192BE` FOREIGN KEY (`ClusterID`) REFERENCES `cluster` (`ClusterID`);
+
+--
+-- Constraints for table `dataset`
+--
+ALTER TABLE `dataset`
+  ADD CONSTRAINT `FK_B7A041D058746832` FOREIGN KEY (`UserID`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `experiment`
+--
+ALTER TABLE `experiment`
+  ADD CONSTRAINT `FK_136F58B234472C01` FOREIGN KEY (`ExperimentStatusID`) REFERENCES `experimentstatus` (`ExperimentStatusID`),
+  ADD CONSTRAINT `FK_136F58B258746832` FOREIGN KEY (`UserID`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `parameter`
+--
+ALTER TABLE `parameter`
+  ADD CONSTRAINT `FK_2A97911010C17FF9` FOREIGN KEY (`ParameterConnectionTypeID`) REFERENCES `parameterconnectiontype` (`ParameterConnectionTypeID`),
+  ADD CONSTRAINT `FK_2A979110C364FDFE` FOREIGN KEY (`ComponentID`) REFERENCES `component` (`ComponentID`),
+  ADD CONSTRAINT `FK_2A979110D50E99E0` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parametertype` (`ParameterTypeID`);
+
+--
+-- Constraints for table `parametervalue`
+--
+ALTER TABLE `parametervalue`
+  ADD CONSTRAINT `FK_EF5C2B2A199F0DB9` FOREIGN KEY (`WorkflowTaskID`) REFERENCES `workflowtask` (`WorkflowTaskID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_EF5C2B2A5A8577F9` FOREIGN KEY (`ParameterID`) REFERENCES `parameter` (`ParameterID`);
+
+--
+-- Constraints for table `pvalueoutpvaluein`
+--
+ALTER TABLE `pvalueoutpvaluein`
+  ADD CONSTRAINT `FK_A522F8AE88C1F20` FOREIGN KEY (`OutParameterValueID`) REFERENCES `parametervalue` (`ParameterValueID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_A522F8AEF169B8E2` FOREIGN KEY (`InParameterValueID`) REFERENCES `parametervalue` (`ParameterValueID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `workflowtask`
+--
+ALTER TABLE `workflowtask`
+  ADD CONSTRAINT `FK_5F598CF2BAA1BE51` FOREIGN KEY (`ExperimentID`) REFERENCES `experiment` (`ExperimentID`) ON DELETE CASCADE;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
