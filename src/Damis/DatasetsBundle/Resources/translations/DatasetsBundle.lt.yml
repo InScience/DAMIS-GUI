@@ -8,27 +8,27 @@ Upload dataset : Įkelti duomenis
 Change : Pakeisti
 Select file : Pasirinkti
 Remove : Pašalinti
-Download CSV file : Atsisiųsti CSV formatu
-Download TXT file : Atsisiųsti TXT formatu
-Download ARFF file : Atsisiųsti ARFF formatu
-Download TAB file : Atsisiųsti TAB formatu
-Download XLSX file : Atsisiųsti XLSX formatu
+Download CSV file : Atsisiųsti failą CSV formatu
+Download TXT file : Atsisiųsti failą TXT formatu
+Download ARFF file : Atsisiųsti failą ARFF formatu
+Download TAB file : Atsisiųsti failą TAB formatu
+Download XLSX file : Atsisiųsti failą XLSX formatu
 Edit : Redaguoti
 Actions : Veiksmai
 Download : Atsisiuntimas
 Created : Sukurta
 Size : Dydis
-Dataset successfully uploaded! : Failas sėkmingai įkeltas!
-Dataset used in the experiment: Eksperimentui naudojamas failas
+Dataset successfully uploaded! : Duomenų failas sėkmingai įkeltas!
+Dataset used in the experiment: Eksperimentui naudojamas duomenų failas
 New file: Naujas failas
-Dataset successfully uploaded! : Failas sėkmingai įkeltas!
-Dataset has wrong format! : Failo plėtinys neteisingas!
+Dataset successfully uploaded! : Duomenų failas sėkmingai įkeltas!
+Dataset has wrong format! : Neteisingas duomenų failo plėtinys!
 Save : Išsaugoti
 This field is required : Šis laukas yra privalomas
 Please select file : Prašome pasirinkti failą
 Delete : Ištrinti
-Dataset successfully updated! : Failas atnaujintas!
+Dataset successfully updated! : Duomenų failas atnaujintas!
 Error! : Klaida!
-Too many files in zip! : Per daug failų zipe!
-Dataset is too large! : Failas yra per didelis!
-Exceeded memory limit! : Viršitas atminties limitas!
+Too many files in zip! : Per daug failų zip pakete!
+Dataset is too large! : Duomenų failas yra per didelis!
+Exceeded memory limit! : Viršytas atminties limitas!

@@ -46,14 +46,14 @@ Relative number of basis objects : Bazinis objektų skaičius
 Select Basis objects strategy : Bazinių objektų parinkimas
 Random : Atsitiktinis
 By line based on PCA : Pagal PCA(dimensija 1)
-By line based on max variable : Pagal dydžiausių požymių dispersiją
+By line based on max variable : Pagal didžiausią požymių dispersiją
 Clean data: Valymas
 Component does not have control parameters: Ši komponentė neturi valdymo parametrų
 Choose uploaded file : Pasirinkti įkeltą failą
-Space : Dimensiją
+Space : Dimensija
 Attribute relative cumulative variance : Požymių santykinę suminę dispersiją
 Space/Variance : Dimensija/dispersija
-Choose PCA projection : Pasirinkite PCA projekcijos
+Choose PCA projection : Pasirinkite PCA projekciją
 Relative number of neighbours : Santykinis kaimynų skaičius
 Maximum number of cluster : Maksimalus klasterių skaičius
 Transpose data : Transponavimas
@@ -74,7 +74,7 @@ Cross: Kryžiukas
 This component should be connected to a selected file or an executed task in order to view results : Komponentė turi būti sujungta su failo komponente arba eksperimentas turi būti įvykdytas
 This component should be connected to a selected file : Komponentė turi būti sujungta su failo komponente
 Cross: Kryžiukas
-Choose object sort type : Pasirinkite objektų rikiavimą
+Choose object sort type : Pasirinkite objektų rikiavimo būdą
 Order left intact : Tvarka nekeičiama
 Set splitting to files parameter values : Nurodykite skaidymo į failus parametrų reikšmes
 First subset size : Pirmojo poaibio dydis
@@ -88,10 +88,10 @@ Norm data : Normavimas
 Does apply Seidel modification? : Ar taikyti Zeidelio modifikaciją?
 Yes : Taip
 No : Ne
-Relative size of the training data : Apmokymų aibės dydis
+Relative size of the training data : Mokymo aibės dydis
 Number of neurons in the hidden layer : Paslėptojo sluoksnio neuronų skaičius
 Value of the learning rate : Mokymo greičio parametras
-Number of training epochs : Mokymų epochų skaičius
+Number of training epochs : Mokymo epochų skaičius
 Number of columns : Stulpelių skaičius
 Number of rows : Eilučių skaičius
 Confidence level : Pasikliovimo lygmuo
@@ -101,10 +101,10 @@ This component should be connected to a selected file or an executed task in ord
 This functionality will be negotiated during the 6th activity. : Funkcionalumas bus derinamas 6 veiklos įgyvendinimo metu.
 Object No. : Objekto nr.
 Matrix view : Matricinis vaizdavimas
-Choose filtering result: Pairinkite filtravimo rezultatą
+Choose filtering result: Pasirinkite filtravimo rezultatą
 Attribute: Požymis
 Attributes : Požymiai
-Selected attributes : Atrinkti požymiai
+Selected attributes : Pasirinkti požymiai
 Class attribute : Klasės požymis
 Feature selection : Požymių atrinkimas
 Technical details : Techninė informacija
@@ -123,7 +123,7 @@ Too many file components : Failo komponentė galima tik viena
 File component is required : Failo komponentė yra privaloma
 There are loops : Vykdymo grafe ciklai negalimi
 MII Cluster : MII klasteris
-Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstitųjų skaičiavimų klasteris
+Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstytųjų skaičiavimų klasteris
 Supercomputer of Vilnius University Faculty of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos fakulteto paskirstytųjų skaičiavimų superkompiuteris
 C4.5 classifier : C4.5 klasifikatorius
 Data cleaning : Duomenų valymas
@@ -144,7 +144,7 @@ SOM for Multidimensional Data Visualization : Saviorganizuojančių neuroninių 
 Split a file into given number of parts : Failo padalinimas į kelis smulkesnius
 Splits nominal feature into several features : Kategorinį požymį išskaido į kelis požymius
 The set of statistical primitives : Statistinių primityvų skaičiavimas
-Show all component's outputs' values : Pateikti visų komponentės išeičių reikšmes
+Show all component's outputs' values : Pateikti visas komponentės išeičių reikšmes
 Data transformation : Duomenų normavimas
 Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
 Upload file for data analysis : Įkelkite norimą failą duomenų analizei
@@ -162,8 +162,8 @@ Experiment settings : Eksperimento nustatymai
 Please enter experiment title : Prašome įvesti eksperimento pavadinimą
 Cluster home : Klasterio svetainė
 Cluster workload : Klasterio apkrovimas
-MDS projection should be equal to 2 : MDS projekcijų skaičius turi būti lygus 2
+MDS projection should be equal to 2 : MDS projekcijos skaičius turi būti lygus 2
 Do you really want to clear experiment workflow? : Ar tikrai norite išvalyti darbalaukį?
-Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas –procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą
+Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas – procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą
 Value cannot be negative : Reikšmė negali būti neigiama
 This component should be connected to another component : Ši komponentė turi būti sujungta su kita komponente
