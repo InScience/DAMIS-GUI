@@ -1,4 +1,4 @@
-Please upload a valid type : Prašome pasirinkti tinkamą failo tipą
+Please upload a valid type : Prašome pasirinkti tinkamą failo tipą (arff, txt, tab, csv, xls, xlsx).
 Number of iteration must be in interval [1; 1000]: Maksimalus iteracijų skaičius intervale [1; 1000]
 Number of hidden neurons at level 1 must be greater than 1: Neuronų skaičius pirmame sluoksnyje turi būti didesnis už 1
 Number of hidden neurons at level 2, 3 cannot be negative: Neuronų skaičius 2-ame ir 3-iame sluoksnyje negali būti neigiamas
@@ -24,4 +24,4 @@ Confidence level must be in interval (0; 1] : Pasikliovimo lygmuo intervale (0; 
 Please select attributes : Prašome pasirinkti požymius
 Number of neurons in the hidden layer must be greater than 0 : Paslėptojo sluoksnio neuronų skaičius turi būti didesnis už 0
 The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}. : Failas yra per didelis. Maksimalus dydis yra {{ limit }} {{ suffix }}.
-The file is too large. : Failas per didelė.
+The file is too large. : Failas per didelis.

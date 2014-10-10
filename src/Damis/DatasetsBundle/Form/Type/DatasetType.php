@@ -27,6 +27,7 @@ class DatasetType extends AbstractType {
                             'class' => 'form-control',
                             'rows' => 4,
                             'cols' => 40)))
+                // File validation is past to Entity\Dataset
                 ->add('file', 'file', array(
                         'label' => 'File',
                         ));
