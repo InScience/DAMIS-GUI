@@ -56,7 +56,7 @@ class ReadFile {
             $first_key = key($res);
 
             $delimiter = $delimiters[$first_key];
-            }
+        }
 
         if (($handle = fopen($path, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
@@ -72,7 +72,7 @@ class ReadFile {
                 }
             }
             fclose($handle);
-        }     
+        }
         return $rows;
     }
 
