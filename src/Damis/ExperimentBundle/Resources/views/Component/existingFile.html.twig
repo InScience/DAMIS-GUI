@@ -49,6 +49,12 @@
                     {% endfor %}
                 </table>
             {% else %}
+                <table>
+                    <tr>
+                        <td>{{ 'There is no existing file in your dataset.' | trans({}, 'DatasetsBundle') }}</td>
+                    </tr>
+                    
+                </table>
             {% endif %}
         </div>
     </div>
