@@ -16,7 +16,7 @@ class DmaType extends AbstractType {
         ->add('neighbour', 'integer', [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Type(array(
@@ -36,7 +36,7 @@ class DmaType extends AbstractType {
         ->add('d', 'integer', [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
@@ -55,6 +55,7 @@ class DmaType extends AbstractType {
         ->add('maxIteration', 'integer', [
             'required' => true,
             'data' => 100,
+            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
@@ -69,7 +70,6 @@ class DmaType extends AbstractType {
                 ))
             ],
             'label' => 'Maximum number of iteration',
-            'attr' => ['class' => 'form-control'],
             'label_attr' => ['class' => 'col-md-9']
         ])
         ->add('eps', 'text', [

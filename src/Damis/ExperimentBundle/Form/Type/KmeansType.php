@@ -18,6 +18,7 @@ class KmeansType extends AbstractType {
         ->add('maxIteration', 'integer', [
             'required' => true,
             'data' => 100,
+            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
@@ -32,11 +33,11 @@ class KmeansType extends AbstractType {
                 ))
             ],
             'label' => 'Maximum number of iteration',
-            'attr' => ['class' => 'form-control'],
             'label_attr' => ['class' => 'col-md-9']
         ])->add('kMax', 'integer', [
             'required' => true,
             'data' => 10,
+            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
@@ -51,7 +52,6 @@ class KmeansType extends AbstractType {
                 ))
             ],
             'label' => 'Maximum number of cluster',
-            'attr' => ['class' => 'form-control'],
             'label_attr' => ['class' => 'col-md-9']
         ]);
     }

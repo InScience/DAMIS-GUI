@@ -15,7 +15,7 @@ class SomMdsType extends AbstractType {
         ->add('rows', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 3,
@@ -35,7 +35,7 @@ class SomMdsType extends AbstractType {
         ->add('columns', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 3,
@@ -55,7 +55,7 @@ class SomMdsType extends AbstractType {
         ->add('eHat', 'integer', [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
@@ -75,7 +75,7 @@ class SomMdsType extends AbstractType {
         ->add('mdsProjection', 'integer', [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 2, 'max' => 2),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 2,
@@ -96,7 +96,7 @@ class SomMdsType extends AbstractType {
         ->add('mdsIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,

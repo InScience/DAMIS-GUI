@@ -24,6 +24,7 @@ class MlpType extends AbstractType {
         ->add('maxIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
@@ -38,13 +39,13 @@ class MlpType extends AbstractType {
                     ))
                 ],
                 'label' => 'Maximum number of iteration',
-                'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'col-md-7']
             ])
         ->add('h1pNo', 'integer', [
                 'required' => true,
                 'precision' => 0,
                 'data' => 5,
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 1,
@@ -57,11 +58,11 @@ class MlpType extends AbstractType {
                     ))
                 ],
                 'label' => 'First layer',
-                'attr' => ['class' => 'form-control']
             ])
         ->add('h2pNo', 'integer', [
                 'required' => true,
                 'data' => 0,
+                'attr' => array('class' => 'form-control', 'min' => 0),
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0,
@@ -74,11 +75,11 @@ class MlpType extends AbstractType {
                     ))
                 ],
                 'label' => 'Second layer',
-                'attr' => ['class' => 'form-control']
             ])
         ->add('h3pNo', 'integer', [
                 'required' => true,
                 'data' => 0,
+                'attr' => array('class' => 'form-control', 'min' => 0),
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0,
@@ -91,7 +92,6 @@ class MlpType extends AbstractType {
                     ))
                 ],
                 'label' => 'Third layer',
-                'attr' => ['class' => 'form-control']
             ])
         ->add('dL', 'number', [
                 'required' => true,

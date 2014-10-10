@@ -32,7 +32,7 @@ class SplitDataType extends AbstractType {
         ->add('firstSubsetPerc', 'integer', [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 1000),  
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
@@ -52,7 +52,7 @@ class SplitDataType extends AbstractType {
         ->add('secondSubsetPerc', 'integer', [
                 'required' => true,
                 'data' => 20,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'read_only' => true,
                 'constraints' => [
                     new NotBlank(),

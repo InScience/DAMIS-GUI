@@ -16,7 +16,7 @@ class SamannType extends AbstractType {
                 'required' => true,
                 'data' => 2,
                 'read_only' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Type(array(
@@ -30,7 +30,7 @@ class SamannType extends AbstractType {
         ->add('maxIteration', 'integer', [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,

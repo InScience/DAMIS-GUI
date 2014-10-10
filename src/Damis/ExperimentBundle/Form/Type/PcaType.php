@@ -44,7 +44,7 @@ class PcaType extends AbstractType {
         ->add('d', 'integer', [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1),
                 'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
