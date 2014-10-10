@@ -150,15 +150,27 @@ class ConvertController extends Controller
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
+                $file = '';
+                $first = true;
                 foreach($rows as $key => $row){
+                    if(strpos(strtolower($row[0]), '@attribute') === 0){
+                        $header = explode(' ', $row[0]);
+                        if(!$first)
+                            $file .= ',';
+                        else
+                            $first = false;
+                        if(!isset($header[1]))
+                            $header[1] = '';
+                        $file .= $header[1];
+                    }
                     if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
+                        $file .= PHP_EOL;
                         unset($rows[$key]);
                         break;
                     }
                 }
-                $file = '';
                 foreach($rows as $row){
                     foreach($row as $key => $value)
                         if($key > 0)
@@ -207,15 +219,27 @@ class ConvertController extends Controller
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
+                $file = '';
+                $first = true;
                 foreach($rows as $key => $row){
+                    if(strpos(strtolower($row[0]), '@attribute') === 0){
+                        $header = explode(' ', $row[0]);
+                        if(!$first)
+                            $file .= "\t";
+                        else
+                            $first = false;
+                        if(!isset($header[1]))
+                            $header[1] = '';
+                        $file .= $header[1];
+                    }
                     if(strtolower($row[0]) != '@data'){
                         unset($rows[$key]);
                     } else {
+                        $file .= PHP_EOL;
                         unset($rows[$key]);
                         break;
                     }
                 }
-                $file = '';
                 foreach($rows as $row){
                     foreach($row as $key => $value)
                         if($key > 0)
