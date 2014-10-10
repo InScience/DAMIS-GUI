@@ -41,10 +41,12 @@ class ReadFile {
             $delimiters = array(
                 'comma'     => ",",
                 'semicolon' => ";",
-                'space'       => " ",
+                'space'     => " ",
+                'tab'       => "\t"
             );
             $content = file_get_contents($path);
-            $content = explode("\n",$content);
+            $content = explode("\n", $content);
+            // Find most often delimeter
             foreach ($delimiters as $key => $delim) {
                 $res[$key] = substr_count(trim($content[(int)floor(count($content)/ 2)]), $delim);
             }
@@ -54,7 +56,7 @@ class ReadFile {
             $first_key = key($res);
 
             $delimiter = $delimiters[$first_key];
-        }
+            }
 
         if (($handle = fopen($path, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
@@ -65,11 +67,12 @@ class ReadFile {
                 $num = count($data);
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
-                    $rows[$row][] = $data[$c];
+                    if (!empty($data[$c]))
+                        $rows[$row][] = trim($data[$c]);
                 }
             }
             fclose($handle);
-        }
+        }     
         return $rows;
     }
 
