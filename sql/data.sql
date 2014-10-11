@@ -1,5 +1,5 @@
 INSERT INTO `cluster` (`ClusterName`, `ClusterWorkloadHost`, `ClusterDescription`, `ClusterID`, `ClusterUrl`, `WorkloadUrl`) VALUES
-('MII Cluster', 'test', 'Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics', 1, 'http://cluster.mii.lt/', 'http://cluster.mii.lt/ganglia/'),
+('MII Cluster', 'test', 'Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics', 1, 'http://hpc.mii.vu.lt/', 'http://hpc.mii.vu.lt/ganglia/'),
 ('MIF VU SK2', 'test', 'Supercomputer of Vilnius University Faculty of Mathematics and Informatics', 2,'http://mif.vu.lt/cluster/', 'http://k007.mif.vu.lt/ganglia2/');
 
 INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
