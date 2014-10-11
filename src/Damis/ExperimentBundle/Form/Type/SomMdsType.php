@@ -15,7 +15,7 @@ class SomMdsType extends AbstractType {
         ->add('rows', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 1000),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 3,
@@ -35,7 +35,7 @@ class SomMdsType extends AbstractType {
         ->add('columns', 'integer', [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 1000),
+                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 3,

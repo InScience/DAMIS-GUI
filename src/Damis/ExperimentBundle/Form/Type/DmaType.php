@@ -16,7 +16,7 @@ class DmaType extends AbstractType {
         ->add('neighbour', 'integer', [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control', 'min' => 1),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Type(array(

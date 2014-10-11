@@ -51,7 +51,7 @@ class RdfType extends AbstractType {
             ])
         ->add('dT', 'integer', [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),
                 'read_only' => true,
                 'data' => 20,
                 'constraints' => [
