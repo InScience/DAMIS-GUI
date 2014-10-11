@@ -37,6 +37,8 @@ class ReadFile {
             return false;
         if($format == 'tab')
             $delimiter = "\t";
+        elseif ($format == 'arff') 
+            $delimiter = ",";
         else{
             $delimiters = array(
                 'comma'     => ",",

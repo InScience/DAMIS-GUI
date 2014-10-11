@@ -85,22 +85,32 @@ class ConvertController extends Controller
                 }
             }
             $arff = '';
-            $arff .= '@relation ' . $filename . PHP_EOL;
+            $arff .= '@relation ' . $filename . PHP_EOL;       
             if($hasHeaders){
                 foreach($rows[1] as $key => $header){
-                    if(is_int($rows[2][$key] + 0))
-                        $arff .= '@attribute ' . $header . ' ' . 'integer' . PHP_EOL;
-                    else if(is_float($rows[2][$key] + 0))
-                        $arff .= '@attribute ' . $header . ' ' . 'real' . PHP_EOL;
-
+                    // Remove spaces in header, to fit arff format
+                    $header = preg_replace('/\s+/', '_', $header);
+                    
+                    // Check string is numeric or normal string
+                    if (is_numeric($rows[2][$key])) {
+                        if(is_int($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . $header . ' ' . 'integer' . PHP_EOL;
+                        else if(is_float($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . $header . ' ' . 'real' . PHP_EOL;
+                    } else {
+                        $arff .= '@attribute ' . $header . ' ' . 'string' . PHP_EOL;
+                    }
                 }
             } else {
                 foreach($rows[1] as $key => $header){
-                    if(is_int($rows[2][$key] + 0))
-                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'integer' . PHP_EOL;
-                    else if(is_float($rows[2][$key] + 0))
-                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'real' . PHP_EOL;
-
+                    if (is_numeric($rows[2][$key])) {
+                        if(is_int($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'integer' . PHP_EOL;
+                        else if(is_float($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'real' . PHP_EOL;
+                    } else {
+                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'string' . PHP_EOL;
+                    }
                 }
             }
             $arff .= '@data' . PHP_EOL;
