@@ -138,6 +138,8 @@ class Dataset
      */
     public function setDatasetTitle($datasetTitle)
     {
+        // Remove spaces in title, to fit arff format
+        $datasetTitle = preg_replace('/\s+/', '_', $datasetTitle);
         $this->datasetTitle = $datasetTitle;
 
         return $this;
