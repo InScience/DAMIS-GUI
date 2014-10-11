@@ -9,6 +9,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
+/**
+ * This class is currently unused
+ */
 class C45Type extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
