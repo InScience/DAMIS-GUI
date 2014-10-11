@@ -40,7 +40,7 @@ change_password:
 
 # Registration
 registration:
-    check_email: Buvo išsiųstas el. paštas adresu %email%. Jame rasite nuorodą, kurią aplankę aktyvuosite savo paskyrą.
+    check_email: Buvo išsiųstas el. pašto adresu %email%. Jame rasite nuorodą, kurią aplankę aktyvuosite savo paskyrą.
     confirmed: Sveikiname, %username%, jūsų paskyra buvo aktyvuota.
     back: Grįžti į ankstesnį puslapį.
     submit: Registruotis
