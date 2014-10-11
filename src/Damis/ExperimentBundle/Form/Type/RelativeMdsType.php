@@ -53,7 +53,7 @@ class RelativeMdsType extends AbstractType {
         ->add('noOfBaseVectors', 'integer', [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
+                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
