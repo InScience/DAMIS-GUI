@@ -33,7 +33,8 @@
         "apy/datagrid-bundle": "dev-master",
         "liuggio/excelbundle": ">=1.0.4",
         "iphp/filestore-bundle": "dev-master",
-        "willdurand/js-translation-bundle": "@stable"
+        "willdurand/js-translation-bundle": "@stable",
+        "guzzle/guzzle": "~3.9"
     },
     "scripts": {
         "post-install-cmd": [

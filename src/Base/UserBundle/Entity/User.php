@@ -55,6 +55,13 @@ class User extends BaseUser
     protected $organisation = null;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="user_id", type="string", length=255, nullable=true)
+     */
+    protected $userId;
+
+    /**
      * Set registeredAt
      *
      * @return User
@@ -198,6 +205,22 @@ class User extends BaseUser
      */
     public function getOrganisation() {
         return $this->organisation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param string $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
     }
 
 }
