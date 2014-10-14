@@ -277,7 +277,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                         }
                     }
 
-                    if (issset($outDatasetEntities['Yalt'])){
+                    if (isset($outDatasetEntities['Yalt'])){
                         $outDatasetEntities['Yalt']->setParametervalue($file_entity_alt->getDatasetId());
 
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()));
