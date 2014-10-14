@@ -30,16 +30,16 @@ class DefaultController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $data = $request->request->all(); var_dump($data); die;
+        //$data = $request->request->all();
         $data = [
-            'sessionToken' => 1,
-            'sessionFinishDate' => '2014-10-13',
-            'name' => 'Deividas',
-            'surName' => 'Jankauskas',
-            'userEmail' => 'deividasjank3@gmail.com',
+            'sessionToken' => '3rcv2m8q60ebgbmmkoqcdvcbm',
+            'sessionFinishDate' => '2014-10-13T14:32:17',
+            'name' => 'Vardas123',
+            'surName' => 'Pavarde123',
+            'userEmail' => 'null',
             'userId' => 'midas1',
-            'timeStamp' => time(),
-            'signature' => 'sadasda'
+            'timeStamp' => '2014-10-13T14:14:17',
+            'signature' => 'B14QJud0joY6GEjOZ0eh+t+O0QWDXXrD6ZEJ0hWC2LMfbP4CL4c3zIb7QRH9g05hGXYaWWczFPdFEsf+lGem4vn1LCNGGZN+fQkG0zCM3uyNqdW+Uui641/0KuxiaIU0Iz3SNvHJ9p3R/SVbj+2sk85MAHylrLfRp1WU22hZYvt2nMuT0cVroqUW+kJepjYkHd0DPS00ZYf3WzkuZKfjy90YGvEZxWOgtPhIYWh7NCqiu+TG3vVns2p7ThiX4qsw+TiSHUXmVVN1jOaHwAyIqDtTLKDK5mkmaTjtvuP2CA957CsId0084huE0Z6D7werKZgC9e+zDisb3bYtCpLs1w==',
         ];
         $sessionToken = $data['sessionToken'];
         $sessionFinishDate = $data['sessionFinishDate'];
@@ -50,17 +50,30 @@ class DefaultController extends Controller
         $timeStamp = $data['timeStamp'];
         $signature = $data['signature'];
 
-        $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/ssomidas.cer","r");
-        $pubKey = fread($fp,8192);
+        $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
+        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
         fclose($fp);
-        openssl_get_publickey($pubKey);
-        /*
-        * NOTE:  Here you use the $pub_key value (converted, I guess)
-        */
-        openssl_public_decrypt($signature, $decriptedSignature, $pubKey);
-        //@todo check data
-        if(false){
+        $key = openssl_get_publickey($pubKey);
+        $details = openssl_pkey_get_details($key);
+        openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
+        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['userEmail'] . $data['sessionToken'];
 
+        if(!$tmpSignature === $decriptedSignature){
+            $post = [
+                'sourceUrl' => 'http://damis.lt/midaslogin.html',
+                'sessionToken' => '',
+                'timeStamp' => time()
+            ];
+            $tmp = $post['sourceUrl'] . $post['timeStamp'];
+            openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
+            //var_dump($encriptedSignature); die;
+            $client = new Client('http://midas.insoft.lt:8888');
+            $req = $client->post('/web/public-app.html#/login?sourceUrl=http:%2F%2Fd.damis.lt%2midaslogin.html', array(), array($post));
+            try {
+              //  $req->send()->getBody(true);
+            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                var_dump('Error! ' . $e->getMessage());
+            }
         }
         $em = $this->getDoctrine()->getManager();
         /** @var User $user */
@@ -87,8 +100,10 @@ class DefaultController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
         return $this->redirect($this->generateUrl('experiments_history'));
-    } /**
-     * @Route("/midaslogin2.html", name="midas_login")
+    }
+
+    /**
+     * @Route("/midaslogin2.html", name="midas_login2")
      * @Method("GET")
      * @Template()
      */
