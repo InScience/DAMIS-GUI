@@ -268,7 +268,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     }
 
                     // set proper out and in if available and successfull
-                    if ($outDatasetEntities['Y']){
+                    if (isset($outDatasetEntities['Y'])){
                         $outDatasetEntities['Y']->setParametervalue($file_entity_y->getDatasetId());
 
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Y']->getParametervalueid()));
@@ -277,7 +277,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                         }
                     }
 
-                    if ($outDatasetEntities['Yalt']){
+                    if (issset($outDatasetEntities['Yalt'])){
                         $outDatasetEntities['Yalt']->setParametervalue($file_entity_alt->getDatasetId());
 
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()));
