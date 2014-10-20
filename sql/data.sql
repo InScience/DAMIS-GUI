@@ -16,8 +16,8 @@ INSERT INTO `parameterconnectiontype` (`ParameterConnectionType`, `ParameterConn
 ('INPUT_VALUE', 3);
 
 INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost`, `ComponentWSDLCallFunction`,
-`ComponentDescription`, `ComponentAltDescription`, `ComponentLabelLT`, `ComponentLabelEN`, `ComponentID`, `ClusterID`,
-`ComponentTypeID`, `FormType`) VALUES
+`ComponentDescription`, `ComponentAltDescription`, `ComponentLabelLT`, `ComponentLabelEN`, `ComponentID`, `FormType`, `ClusterID`,
+`ComponentTypeID) VALUES
 ('Upload new file', 'upload-file-ico-1.jpeg', NULL, 'UPLOAD FILE', 'Upload file for data analysis', NULL, NULL, NULL, 1, 'NewFile', 1, 1),
 ('Upload new file', 'upload-file-ico-1.jpeg', NULL, 'UPLOAD FILE', 'Upload file for data analysis', NULL, NULL, NULL, 2, 'NewFile', 2, 1),
 ('Choose uploaded file', 'existing-file-ico.jpeg', NULL, 'EXISTING FILE', 'Select uploaded file', NULL, NULL, NULL, 3, 'UploadedFile', 1, 1),

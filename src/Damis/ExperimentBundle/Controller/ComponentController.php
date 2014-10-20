@@ -213,7 +213,13 @@ class ComponentController extends Controller
     {
         $client = new Client('http://midas.insoft.lt:8888/');
 
-        $sessionToken = '8s4d10h1p7ivopk2buvos9bg0a';
+        $session = $request->getSession();
+        if($session->has('sessionToken'))
+            $sessionToken = $session->get('sessionToken');
+        else {
+            echo('Prašome prisijungti prie midas');
+            die;
+        }
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
         $id  = $request->get('id');
@@ -246,7 +252,6 @@ class ComponentController extends Controller
             if($response->getStatusCode() == 200)
                 $files = json_decode($response->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-
             $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
                  $req->send()->getBody(true);

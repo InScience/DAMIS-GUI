@@ -18,3 +18,6 @@ form:
   language: Kalba
   front_page: Pradinis puslapis
 You have unsaved changes on this page. :  Yra neišsaugotų pakeitimų.
+User with this email already exists : Vartotojas su tokiu el. paštu egzistuoja
+Logged out successfully : Atsijungta sėkmingai
+Error when logging out : Atsijungiant įvyko klaida

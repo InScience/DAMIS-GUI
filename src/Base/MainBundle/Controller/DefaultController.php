@@ -29,9 +29,9 @@ class DefaultController extends Controller
      * @Template()
      */
     public function loginAction(Request $request)
-    { var_dump( $request->request->all()); die;
-        //$data = $request->request->all();
-        $data = [
+    {
+        $data = $request->request->all();
+      /*  $data = [
             'sessionToken' => '3rcv2m8q60ebgbmmkoqcdvcbm',
             'sessionFinishDate' => '2014-10-13T14:32:17',
             'name' => 'Vardas123',
@@ -40,7 +40,7 @@ class DefaultController extends Controller
             'userId' => 'midas1',
             'timeStamp' => '2014-10-13T14:14:17',
             'signature' => 'B14QJud0joY6GEjOZ0eh+t+O0QWDXXrD6ZEJ0hWC2LMfbP4CL4c3zIb7QRH9g05hGXYaWWczFPdFEsf+lGem4vn1LCNGGZN+fQkG0zCM3uyNqdW+Uui641/0KuxiaIU0Iz3SNvHJ9p3R/SVbj+2sk85MAHylrLfRp1WU22hZYvt2nMuT0cVroqUW+kJepjYkHd0DPS00ZYf3WzkuZKfjy90YGvEZxWOgtPhIYWh7NCqiu+TG3vVns2p7ThiX4qsw+TiSHUXmVVN1jOaHwAyIqDtTLKDK5mkmaTjtvuP2CA957CsId0084huE0Z6D7werKZgC9e+zDisb3bYtCpLs1w==',
-        ];
+        ];*/
         $sessionToken = $data['sessionToken'];
         $sessionFinishDate = $data['sessionFinishDate'];
         $name = $data['name'];
@@ -56,7 +56,7 @@ class DefaultController extends Controller
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
         openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
-        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['userEmail'] . $data['sessionToken'];
+        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['userEmail'] . $data['sessionToken'] . $data['userId'];
 
         if(!$tmpSignature === $decriptedSignature){
             $post = [
@@ -80,11 +80,20 @@ class DefaultController extends Controller
         $user = $em->getRepository('BaseUserBundle:User')->findOneBy(array('userId' => $userId));
 
         if(!$user){
+            if($userEmail){
+                $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
+                if($emailExist){
+                    $this->get('session')->getFlashBag()->add('error', 'User with this email already exists');
+                    return $this->redirect($this->generateUrl('base_main_default_index'));
+                }
+            }
             $user = new User();
             $user->setPassword($userEmail);
         }
         $user->setName($name);
         $user->setSurname($surname);
+        if(!$userEmail)
+            $userEmail = $userId . 'user@midas.lt';
         $user->setEmail($userEmail);
         $user->setUserId($userId);
         if(!$user->hasRole('ROLE_CONFIRMED'))
@@ -92,7 +101,8 @@ class DefaultController extends Controller
         $user->setUsername($userEmail);
         $em->persist($user);
         $em->flush();
-
+        $session = $request->getSession();
+        $session->set('sessionToken', $sessionToken);
         $token = new UsernamePasswordToken($user, null, "main", $user->getRoles());
         $this->get("security.context")->setToken($token);
 
@@ -103,32 +113,31 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/midaslogin2.html", name="midas_login2")
+     * @Route("/midaslogout.html", name="midas_logout")
      * @Method("GET")
      * @Template()
      */
-    public function login2Action(Request $request)
+    public function logoutAction(Request $request)
     {
-        $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
-        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
-        fclose($fp);
-        $key = openssl_get_publickey($pubKey);
-        $details = openssl_pkey_get_details($key);
-        $post = [
-            'sourceUrl' => 'http://damis.lt/midaslogin.html',
-            'sessionToken' => 'trh6g6afhs5cmpmppd4vgio26k',
-            'timeStamp' => time()
-        ];
-        $tmp = $post['sourceUrl'] . $post['timeStamp'];
-        openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
-    //    var_dump($encriptedSignature); die;
-        $client = new Client('http://midas.insoft.lt:8888');
-        $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+        $session = $request->getSession();
+        if($session->has('sessionToken'))
+            $sessionToken = $session->get('sessionToken');
+        else {
+            return $this->redirect($this->generateUrl('base_main_default_index'));
+        }
+        $client = new Client('http://midas.insoft.lt:8887');
+        $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
-            $req->send()->getBody(true);
+            $data = json_encode($req->send()->getBody(true), true);
+            if($data['type'] == 'success'){
+                $this->get('session')->getFlashBag()->add('success', 'Logged out successfully');
+            } else {
+                $this->get('session')->getFlashBag()->add('error', 'Error when logging out');
+            }
+            return $this->redirect($this->generateUrl('base_main_default_index'));
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             var_dump('Error! ' . $e->getMessage()); die;
-        } die;
+        }
 
     }
 
