@@ -1,14 +1,10 @@
 {% block body %}
     <div class="row">
         <div class="col-lg-12">
-            {% if file != null %}
-                <div class="message">
-                    {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a>
-                </div>
-            {% endif %}
             <input type="hidden" value="{{ path }}" name="folderPath">
             {% if path %}
                 {% set pathes = path|split('/') %}
+                {% set back ='' %}
                 {% for pat in pathes %}
                     {% if loop.index0 < (pathes|length -2) %}
                         {% set back = back ~  pat ~ '/' %}

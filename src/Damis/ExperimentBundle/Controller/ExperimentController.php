@@ -2,6 +2,7 @@
 
 namespace Damis\ExperimentBundle\Controller;
 
+use Guzzle\Http\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
 use Damis\EntitiesBundle\Entity\Workflowtask;
@@ -260,13 +261,31 @@ class ExperimentController extends Controller
                         if (!isset($form->id) or !isset($form->value)){
                             continue;
                         }
-
                         if ($form->id == $parameter->getId())
                             if(is_array($form->value))
                                 $value->setParametervalue(json_encode($form->value));
                             else
                                 $value->setParametervalue($form->value);
                     }
+                }
+                if(isset(json_decode($value->getParametervalue(), true)['path']) && strpos(json_decode($value->getParametervalue(), true)['path'] , '/') !== FALSE){
+                    $data = json_decode($value->getParametervalue(), true);
+                    $client = new Client($this->container->getParameter('midas_url'));
+                    $session = $this->get('request')->getSession();
+                    if($session->has('sessionToken'))
+                        $sessionToken = $session->get('sessionToken');
+                    else {
+                        //       echo('Prašome prisijungti prie midas');
+                        //       die;
+                    } $sessionToken = 'kvcupftoet2djo04ebsh886ipj';
+                    $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+                    try {
+                        var_dump($req->send()->getBody(true));
+//issaugoti faila ir uzsetinti parametrui dataseto ID
+                    } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+
+                    }
+               // die('s');
                 }
                 $em->persist($value);
                 $em->flush();

@@ -1,13 +1,13 @@
 <div style="display:none;">
-    <span title="">{{parameter.getTitle | trans({}, 'ExperimentBundle') }}
+    <span title="">{{parameter.name | trans({}, 'ExperimentBundle') }}
 
-        <span class="helptext">( {{ parameter.getName }})<br></span>
+        <span class="helptext">( {{ parameter.name }})<br></span>
 
 
         <input id="value" name="value" type="text">
-        <input id="id" name="id" type="text" value="{{ parameter.getId }}">
+        <input id="id" name="id" type="text" value="{{ parameter.id }}">
     <input id="source_ref" name="source_ref" type="hidden" />
     </span>
-    <input id="form-connection_type" type="hidden" value="{{ parameter.connectionType.getType }}"
+    <input id="form-connection_type" type="hidden" value="{{ parameter.connectionType.type }}"
            name="form-connection_type"/>
 </div>

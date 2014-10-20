@@ -44,7 +44,7 @@
 
             for(var box in boxes){
                 var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
-                if(type !== "UploadedFile" && type !== "NewFile"){
+                if(type !== "UploadedFile" && type !== "MidasFile" && type !== "NewFile"){
                     if(!error)
                         error = this.validateConnections(box);
                     else

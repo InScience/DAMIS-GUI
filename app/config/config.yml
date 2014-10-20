@@ -34,7 +34,7 @@ twig:
     globals:
         project: "%project%"
         login_form: true
-        
+
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
@@ -141,4 +141,4 @@ knp_paginator:
         pagination: BaseStaticBundle:General:paginator.html.twig
 
 base_user:
-    midas_url: "http://midas.insoft.lt:8887"
+    midas_url: "http://midas.insoft.lt:8888"

@@ -220,9 +220,10 @@ class ComponentController extends Controller
             echo('Prašome prisijungti prie midas');
             die;
         }
+        //$sessionToken = 'kvcupftoet2djo04ebsh886ipj';
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
-        $id  = $request->get('id');
+        $id = $request->get('id');
 
         $data = json_decode($request->get('data'));
         if($request->get('data') && !empty($data) && $request->get('edit') != 1){
