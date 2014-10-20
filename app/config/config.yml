@@ -110,7 +110,6 @@ twig:
     globals:
         project: "%project%"
         login_form: true
-        midas_url: "http://midas.insoft.lt:8887"
 
 apy_data_grid:
     pagerfanta:
@@ -142,3 +141,6 @@ knp_paginator:
         page_name: page
     template:
         pagination: BaseStaticBundle:General:paginator.html.twig
+
+base_user:
+    midas_url: "http://midas.insoft.lt:8887"

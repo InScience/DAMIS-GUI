@@ -58,7 +58,7 @@ class DefaultController extends Controller
             $tmp = $post['sourceUrl'] . $post['timeStamp'];
             openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
             //var_dump($encriptedSignature); die;
-            $client = new Client($this->container->getParameter('twig')->getGlobals()['midas_url']);
+            $client = new Client($this->container->getParameter('midas_url'));
             $req = $client->post('/web/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
               //  $req->send()->getBody(true);
@@ -116,7 +116,7 @@ class DefaultController extends Controller
         else {
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
-        $client = new Client($this->container->getParameter('twig')->getGlobals()['midas_url']);
+        $client = new Client($this->container->getParameter('midas_url'));
         $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
             $data = json_encode($req->send()->getBody(true), true);
