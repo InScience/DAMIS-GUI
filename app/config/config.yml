@@ -31,7 +31,10 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-
+    globals:
+        project: "%project%"
+        login_form: true
+        
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
@@ -105,11 +108,6 @@ fos_user:
     registration:
         form:
             type: base_user_registration
-
-twig:
-    globals:
-        project: "%project%"
-        login_form: true
 
 apy_data_grid:
     pagerfanta:
