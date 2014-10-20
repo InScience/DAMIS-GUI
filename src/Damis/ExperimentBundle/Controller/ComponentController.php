@@ -211,7 +211,7 @@ class ComponentController extends Controller
      */
     public function existingMidasFileAction(Request $request)
     {
-        $client = new Client('http://midas.insoft.lt:8887/');
+        $client = new Client($this->container->getParameter('twig')->getGlobals()['midas_url']);
 
         $session = $request->getSession();
         if($session->has('sessionToken'))

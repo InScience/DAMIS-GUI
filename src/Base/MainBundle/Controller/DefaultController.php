@@ -31,16 +31,7 @@ class DefaultController extends Controller
     public function loginAction(Request $request)
     {
         $data = $request->request->all();
-      /*  $data = [
-            'sessionToken' => '3rcv2m8q60ebgbmmkoqcdvcbm',
-            'sessionFinishDate' => '2014-10-13T14:32:17',
-            'name' => 'Vardas123',
-            'surName' => 'Pavarde123',
-            'userEmail' => 'null',
-            'userId' => 'midas1',
-            'timeStamp' => '2014-10-13T14:14:17',
-            'signature' => 'B14QJud0joY6GEjOZ0eh+t+O0QWDXXrD6ZEJ0hWC2LMfbP4CL4c3zIb7QRH9g05hGXYaWWczFPdFEsf+lGem4vn1LCNGGZN+fQkG0zCM3uyNqdW+Uui641/0KuxiaIU0Iz3SNvHJ9p3R/SVbj+2sk85MAHylrLfRp1WU22hZYvt2nMuT0cVroqUW+kJepjYkHd0DPS00ZYf3WzkuZKfjy90YGvEZxWOgtPhIYWh7NCqiu+TG3vVns2p7ThiX4qsw+TiSHUXmVVN1jOaHwAyIqDtTLKDK5mkmaTjtvuP2CA957CsId0084huE0Z6D7werKZgC9e+zDisb3bYtCpLs1w==',
-        ];*/
+
         $sessionToken = $data['sessionToken'];
         $sessionFinishDate = $data['sessionFinishDate'];
         $name = $data['name'];
@@ -67,7 +58,7 @@ class DefaultController extends Controller
             $tmp = $post['sourceUrl'] . $post['timeStamp'];
             openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
             //var_dump($encriptedSignature); die;
-            $client = new Client('http://midas.insoft.lt:8888');
+            $client = new Client($this->container->getParameter('twig')->getGlobals()['midas_url']);
             $req = $client->post('/web/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
               //  $req->send()->getBody(true);
@@ -125,7 +116,7 @@ class DefaultController extends Controller
         else {
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
-        $client = new Client('http://midas.insoft.lt:8887');
+        $client = new Client($this->container->getParameter('twig')->getGlobals()['midas_url']);
         $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
             $data = json_encode($req->send()->getBody(true), true);

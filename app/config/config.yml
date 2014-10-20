@@ -110,6 +110,7 @@ twig:
     globals:
         project: "%project%"
         login_form: true
+        midas_url: "http://midas.insoft.lt:8887"
 
 apy_data_grid:
     pagerfanta:
