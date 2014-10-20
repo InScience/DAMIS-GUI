@@ -29,7 +29,7 @@ class DefaultController extends Controller
      * @Template()
      */
     public function loginAction(Request $request)
-    {
+    { var_dump( $request->request->all()); die;
         //$data = $request->request->all();
         $data = [
             'sessionToken' => '3rcv2m8q60ebgbmmkoqcdvcbm',
@@ -61,14 +61,14 @@ class DefaultController extends Controller
         if(!$tmpSignature === $decriptedSignature){
             $post = [
                 'sourceUrl' => 'http://damis.lt/midaslogin.html',
-                'sessionToken' => '',
+                'sessionToken' => 'trh6g6afhs5cmpmppd4vgio26k',
                 'timeStamp' => time()
             ];
             $tmp = $post['sourceUrl'] . $post['timeStamp'];
             openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
             //var_dump($encriptedSignature); die;
             $client = new Client('http://midas.insoft.lt:8888');
-            $req = $client->post('/web/public-app.html#/login?sourceUrl=http:%2F%2Fd.damis.lt%2midaslogin.html', array(), array($post));
+            $req = $client->post('/web/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
               //  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -109,13 +109,25 @@ class DefaultController extends Controller
      */
     public function login2Action(Request $request)
     {
-
+        $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
+        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
+        fclose($fp);
+        $key = openssl_get_publickey($pubKey);
+        $details = openssl_pkey_get_details($key);
+        $post = [
+            'sourceUrl' => 'http://damis.lt/midaslogin.html',
+            'sessionToken' => 'trh6g6afhs5cmpmppd4vgio26k',
+            'timeStamp' => time()
+        ];
+        $tmp = $post['sourceUrl'] . $post['timeStamp'];
+        openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
+    //    var_dump($encriptedSignature); die;
         $client = new Client('http://midas.insoft.lt:8888');
-        $req = $client->post('/web/public-app.html#/login?sourceUrl=http:%2F%2Fd.damis.lt%2Fapp_dev.php%2midaslogin.html', array(), array());
+        $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
         try {
             $req->send()->getBody(true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            var_dump('Error! ' . $e->getMessage());
+            var_dump('Error! ' . $e->getMessage()); die;
         } die;
 
     }

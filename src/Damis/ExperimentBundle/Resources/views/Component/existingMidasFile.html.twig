@@ -1,0 +1,84 @@
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            {% if file != null %}
+                <div class="message">
+                    {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a>
+                </div>
+            {% endif %}
+            <input type="hidden" value="{{ path }}" name="folderPath">
+            {% if path %}
+                {% set pathes = path|split('/') %}
+                {% for pat in pathes %}
+                    {% if loop.index0 < (pathes|length -2) %}
+                        {% set back = back ~  pat ~ '/' %}
+                    {% endif %}
+                    {% if loop.last %}
+                        {% if pat == "/" %}
+                            <a href="{{ path('existing_midas_file', {'path' : '', 'edit' : 1}) }}"> &larr; </a>
+                        {% else %}
+                            <a href="{{ path('existing_midas_file', {'path' : back, 'edit' : 1}) }}"> &larr; </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if files | length > 0 %}
+                <table class="table table-hover">
+                    <tr class="active">
+                        <th>
+                            {{ 'Title' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Modified' | trans({}, 'DatasetsBundle') }}
+                        </th>
+                    </tr>
+                        {% for file in files.list.folderDetailsList %}
+                            {% set name = {'name' : file.name, 'path' : file.path, 'page' : page}|json_encode %}
+                            <tr>
+                                <td>
+                                    {% if file.type == "FILE" %}
+                                        <input type="radio" {% if name == selected %} checked {% endif %}
+                                               value="{{ name }}" name="dataset_pk">
+                                        {{ file.name }}
+                                    {% else %}
+                                        <a href="{{ path('existing_midas_file', {'page' : previous, 'path' : file.path, 'edit' : 1}) }}"> {{ file.name }} </a>
+                                    {% endif %}
+                                </td>
+                                <td nowrap="nowrap">
+                                    {{ (file.modifyDate / 1000) |number_format(0, "", "")| date('Y-m-d') }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                </table>
+            {% else %}
+                <table>
+                    <tr>
+                        <td>{{ 'There is no existing file in your dataset.' | trans({}, 'DatasetsBundle') }}</td>
+                    </tr>
+                </table>
+            {% endif %}
+            {% if pageCount > 1 %}
+                <div class="center-paginator">
+                    <ul class="pagination">
+                        {% if previous != 0 %}
+                            <li><a href="{{ path('existing_midas_file', {'page' : previous, 'edit' : 1}) }}">&laquo;</a></li>
+                        {% else %}
+                            <li class="disabled"><a href="{{ path('existing_midas_file', {'page' : previous, 'path' : path, 'edit' : 1}) }}">&laquo;</a></li>
+                        {% endif %}
+
+                        {% for i in 1..pageCount %}
+                            <li {% if i == page %}class="active"{% endif %}><a href="{{ path('existing_midas_file', {'page' : i, 'path' : path, 'edit' : 1}) }}">{{ i }}</a></li>
+                        {% endfor %}
+
+                        {% if next <= pageCount %}
+                            <li><a href="{{ path('existing_midas_file', {'page' : next, 'path' : path, 'edit' : 1}) }}">&raquo;</a></li>
+                        {% else %}
+                            <li class="disabled"><a href="{{ path('existing_midas_file', {'page' : next, 'path' : path, 'edit' : 1}) }}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

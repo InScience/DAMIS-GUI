@@ -9,7 +9,7 @@
 
         init: function(componentType, formWindow) {
             if (componentType !='NewFile' && componentType != 'NoForm' && componentType != 'Chart'
-                && componentType != 'UploadedFile' && componentType != 'Matrix' && componentType != 'TechnicalInfo') {
+                && componentType != 'UploadedFile' && componentType != 'MidasFile' && componentType != 'Matrix' && componentType != 'TechnicalInfo') {
                 this.update(formWindow, null);
             }
         },

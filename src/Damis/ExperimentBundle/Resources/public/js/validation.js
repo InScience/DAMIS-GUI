@@ -15,7 +15,7 @@
             for(var box in boxes){
                 $('#' + box).removeClass('error');
                 var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
-                if(type === "UploadedFile" || type === "NewFile"){
+                if(type === "UploadedFile" || type === "MidasFile" || type === "NewFile"){
                     fileNumbers++;
                     if(!error)
                         error = this.validateFileChosen(box);
@@ -68,7 +68,7 @@
 
             for(var box in boxes){
                 var type = window.componentSettings.getComponentDetails({componentId : boxes[box].componentId})['type'];
-                if(type !== "UploadedFile" && type !== "NewFile"){
+                if(type !== "UploadedFile" && type !== "MidasFile" && type !== "NewFile"){
                     if(!error)
                         error = this.validateLoops(box);
                     else
@@ -133,7 +133,7 @@
             $.each($(".task-box"), function(key, taskBox) {
                 var tb = $('#' + $(taskBox).attr('id') + '-form');
                 var type = window.componentSettings.details[$(taskBox).attr('data-componentid')]['type'];
-                if(type !== "UploadedFile" && type !== "NewFile"){
+                if(type !== "UploadedFile" && type !== "MidasFile" && type !== "NewFile"){
                     if(tb.find('.dynamic-container').find('ul li').length > 0){
                         $(taskBox).addClass("error");
                         error = true;

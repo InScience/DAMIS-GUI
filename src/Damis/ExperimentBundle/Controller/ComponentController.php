@@ -6,6 +6,7 @@ use Base\ConvertBundle\Helpers\ReadFile;
 use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
+use Guzzle\Http\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -198,6 +199,71 @@ class ComponentController extends Controller
             'entities' => $pagination,
             'selected' => $id,
             'file' => $entity
+        );
+    }
+
+    /**
+     * User midas datasets list window
+     *
+     * @Route("/experiment/component/existingMidasFile.html", name="existing_midas_file", options={"expose" = true})
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function existingMidasFileAction(Request $request)
+    {
+        $client = new Client('http://midas.insoft.lt:8888/');
+
+        $sessionToken = '8s4d10h1p7ivopk2buvos9bg0a';
+        $page = ($request->get('page')) ? $request->get('page') : 1;
+        $path = ($request->get('path')) ? $request->get('path') : '';
+        $id  = $request->get('id');
+
+        $data = json_decode($request->get('data'));
+        if($request->get('data') && !empty($data) && $request->get('edit') != 1){
+            $id = json_decode($request->get('data'))[0]->value;
+            $path = json_decode($id, true)['path'];
+            $page = json_decode($id, true)['page'];
+
+            $folders = explode('/', $path);
+            $count = count($folders);
+            $path = '';
+            foreach($folders as $key => $p){
+                if($key < $count - 1)
+                    $path .= $p . '/';
+            }
+        }
+        $post = array(
+            'path' => $path,
+            'page' => $page,
+            'pageSize' => 10,
+            'repositoryType' => 'research'
+        );
+        $files = [];
+        $req = $client->post('/web/action/research/folders',
+            array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+        try {
+            $response = $req->send();
+            if($response->getStatusCode() == 200)
+                $files = json_decode($response->getBody(true), true);
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+
+            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            try {
+                 $req->send()->getBody(true);
+            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                var_dump('Error! ' . $e->getMessage()); die;
+            }
+        }
+
+        $pageCount = $files['list']['pageCount'];
+        return array(
+            'files' => $files,
+            'page' => $page,
+            'pageCount' => $pageCount,
+            'previous' => $page - 1,
+            'next' => $page + 1,
+            'path' => $path,
+            'selected' => $id
         );
     }
 
