@@ -131,6 +131,7 @@ class DefaultController extends Controller
             $data = json_encode($req->send()->getBody(true), true);
             if($data['type'] == 'success'){
                 $this->get('session')->getFlashBag()->add('success', 'Logged out successfully');
+                $session->remove('sessionToken');
             } else {
                 $this->get('session')->getFlashBag()->add('error', 'Error when logging out');
             }

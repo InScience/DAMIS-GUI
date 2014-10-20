@@ -211,7 +211,7 @@ class ComponentController extends Controller
      */
     public function existingMidasFileAction(Request $request)
     {
-        $client = new Client('http://midas.insoft.lt:8888/');
+        $client = new Client('http://midas.insoft.lt:8887/');
 
         $session = $request->getSession();
         if($session->has('sessionToken'))
