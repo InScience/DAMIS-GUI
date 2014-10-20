@@ -123,7 +123,7 @@ class DefaultController extends Controller
         if($session->has('sessionToken'))
             $sessionToken = $session->get('sessionToken');
         else {
-            return $this->redirect($this->generateUrl('base_main_default_index'));
+            return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
         $client = new Client('http://midas.insoft.lt:8887');
         $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
@@ -134,7 +134,7 @@ class DefaultController extends Controller
             } else {
                 $this->get('session')->getFlashBag()->add('error', 'Error when logging out');
             }
-            return $this->redirect($this->generateUrl('base_main_default_index'));
+            return $this->redirect($this->generateUrl('fos_user_security_logout'));
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             var_dump('Error! ' . $e->getMessage()); die;
         }

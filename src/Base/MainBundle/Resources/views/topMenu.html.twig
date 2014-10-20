@@ -18,7 +18,7 @@
             <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'profile.title'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></a></li>
             <li><a href="{{ path('fos_user_change_password') }}">{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></a></li>
             <li class="divider"></li>
-            <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-log-out"></span></a></li>
+            <li><a href="{{ path('midas_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-log-out"></span></a></li>
         </ul>
     </li>
     {% if app.user and is_granted("ROLE_ADMIN") %}
