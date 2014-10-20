@@ -1,8 +1,10 @@
 Please upload a valid type : Prašome pasirinkti tinkamą failo tipą (arff, txt, tab, csv, xls, xlsx).
 Number of iteration must be in interval [1; 1000]: Maksimalus iteracijų skaičius intervale [1; 1000]
 Number of hidden neurons at level 1 must be greater than 1: Neuronų skaičius pirmame sluoksnyje turi būti didesnis už 1
-Number of hidden neurons at level 2, 3 cannot be negative: Neuronų skaičius 2-ame ir 3-iame sluoksnyje negali būti neigiamas
-Sum of data fields should be 100%: Mokymo, testavimo ir validavimo laukų reikšmių suma turi būti 100%
+Number of hidden neurons at level 2 cannot be negative: Neuronų skaičius 2-ame sluoksnyje negali būti neigiamas
+Training data size k must be in interval [1; 100] % : Mokymo aibės dydis k turi būti intervale [1; 100] %
+Cross validation fold number k must be in interval [2; 100] : Kryžminio validavimo parametras k turi būti intervale [2, 100]
+Sum of training and testing data fields should be 100%: Mokymo ir testavimo laukų reikšmių suma turi būti 100%
 This value type should be integer: Šios reikšmės tipas turi būti sveikas skaičius
 SOM rows and columns quantity must be in interval [3; 100] : SOM eilučių ir stulpelių reikšmė yra sveikas skaičius intervale [3; 100]
 Number of SOM training epochs must be in interval [1; 1000] : Epochų skaičius intervale [1; 1000]
@@ -12,14 +14,15 @@ Relative basis object quantity must be in interval (0; 100] % : Santykinis bazin
 This value should not be blank. : Ši reikšmė negali būti tuščia.
 Relative cumulative variance must be in interval (0; 100] : Santykinės dispersijos galimos reikšmės intervale (0; 100] %
 Relative neighbor quantity must be in interval (0; 100] % : Santykinis kaimynų skaičius  intervale (0; 100] %
-Number of cluster must be in interval [1; 100] : Maksimalus klasterių skaičius intervale [1; 100]
-Number of percents must be in interval [0; 100] : Poaibio dydis procentais intervale [0; 100]
+Number of cluster must be in interval [1; 100] : Maksimalus klasterių skaičius intervale turi būti [1; 100]
+Number of percents must be in interval [0; 100] : Poaibio dydis procentais intervale turi būti [0; 100]
 Value must be greater than 0 : Reikšmė negali būti neigiama
 Interval upper bound must be greater than lower : Intervalo viršutinis rėžis turi būti didesnis nei apatinis
 Relative size of the training data must be in interval (0; 100] % : Apmokymo aibės dydis intervale (0; 100] %
 Number of training epochs mus be in interval [1; 1000] : Epochų skaičius intervale [1; 1000]
 Rows and columns quantity must be in interval [3; 100] : Eilučių ir stulpelių skaičius intervale [3; 100]
-Number of percents in interval [0; 100] : Skaičius procentais intervale [0;100]
+Number of percents in interval [0; 100] : Skaičius procentais turi būti intervale [0; 100]
+Number of percents in interval [1; 100] : Skaičius procentais turi būti intervale [1; 100]
 Confidence level must be in interval (0; 1] : Pasikliovimo lygmuo intervale (0; 1]
 Resistance to noise must be in interval (0; 1] : Atsparumas triukšmui intervale (0; 1]
 Please select attributes : Prašome pasirinkti požymius

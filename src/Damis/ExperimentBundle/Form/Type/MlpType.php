@@ -13,10 +13,19 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 class MlpType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        // Validate parameter of qty
         $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
             $mlp = $_POST['mlp_type'];
-            if($object + $mlp['dT'] + $mlp['dV'] != 100) {
-                $context->addViolation('Sum of data fields should be 100%', [], null);
+            // Training and testing sets
+            if ($mlp['kFoldValidation'] == '0') {
+                if($mlp['qty'] < 1 || $mlp['qty'] > 100) {
+                    $context->addViolation('Training data size k must be in interval [1; 100] %', [], null);
+                }
+            // K fold training
+            } else if ($mlp['kFoldValidation'] == '1') {
+                if($mlp['qty'] < 2 || $mlp['qty'] > 100) {
+                    $context->addViolation('Cross validation fold number k must be in interval [2; 100]', [], null);
+                }
             }
         };
 
@@ -66,7 +75,7 @@ class MlpType extends AbstractType {
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 0,
-                        'message' => 'Number of hidden neurons at level 2, 3 cannot be negative'
+                        'message' => 'Number of hidden neurons at level 2 cannot be negative'
                     ]),
                     new NotBlank(),
                     new Assert\Type(array(
@@ -76,62 +85,31 @@ class MlpType extends AbstractType {
                 ],
                 'label' => 'Second layer',
             ])
-        ->add('h3pNo', 'integer', [
-                'required' => true,
+        ->add('kFoldValidation', 'choice', [
+                'required' => false,
+                'empty_value' => false,
                 'data' => 0,
-                'attr' => array('class' => 'form-control', 'min' => 0),
+                'expanded' => true,
+                'choices' => array(
+                    0 => 'Size of training sets (%)',
+                    1 => 'Number of cross validation folds'
+                ),
                 'constraints' => [
-                    new Assert\GreaterThanOrEqual([
-                        'value' => 0,
-                        'message' => 'Number of hidden neurons at level 2, 3 cannot be negative'
-                    ]),
-                    new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new NotBlank()
                 ],
-                'label' => 'Third layer',
+                'label' => 'Select training parameter k',
+                'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('dL', 'number', [
+        ->add('qty', 'number', [
                 'required' => true,
-                'data' => 80,
+                'data' => 90,
                 'constraints' => [
-                    new Assert\GreaterThanOrEqual([
-                        'value' => 1,
-                    ]),
                     new NotBlank(),
                     new Callback([$dataValidator])
                 ],
-                'label' =>'Size of training data',
+                'label' =>'Parameter k',
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'col-md-7']
-            ])
-        ->add('dT', 'number', [
-                'required' => true,
-                'data' => 10,
-                'constraints' => [
-                    new Assert\GreaterThanOrEqual([
-                        'value' => 1,
-                    ]),
-                    new NotBlank()
-                ],
-                'label' =>'Size of test data',
-                'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'col-md-7']
-            ])
-        ->add('dV', 'number', [
-                'required' => true,
-                'data' => 10,
-                'constraints' => [
-                    new Assert\GreaterThanOrEqual([
-                        'value' => 1,
-                    ]),
-                    new NotBlank()
-                ],
-                'label' =>'Size of validation data',
-                'attr' => ['class' => 'form-control', 'readonly' => true],
-                'label_attr' => ['class' => 'col-md-7'],
             ]);
     }
 

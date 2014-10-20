@@ -37,7 +37,7 @@ class KmeansType extends AbstractType {
         ])->add('kMax', 'integer', [
             'required' => true,
             'data' => 10,
-            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,

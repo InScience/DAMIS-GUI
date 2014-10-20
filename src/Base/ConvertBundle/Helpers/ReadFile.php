@@ -69,7 +69,8 @@ class ReadFile {
                 $num = count($data);
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
-                    if (!empty($data[$c]))
+                    // String should be not empty. If string is '0', empty funktion return true
+                    if (!empty($data[$c]) || $data[$c] == '0')
                         $rows[$row][] = trim($data[$c]);
                 }
             }

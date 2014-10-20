@@ -35,7 +35,7 @@ class C45Type extends AbstractType {
         ->add('dL', 'integer', [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
                         'min' => 0,
@@ -54,7 +54,7 @@ class C45Type extends AbstractType {
             ])
         ->add('dT', 'integer', [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'read_only' => true,
                 'data' => 20,
                 'constraints' => [

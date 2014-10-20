@@ -32,13 +32,13 @@ class RdfType extends AbstractType {
         ->add('dL', 'integer', [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'constraints' => [
                     new Assert\Range([
-                        'min' => 0,
+                        'min' => 1,
                         'max' => 100,
-                        'minMessage' => 'Number of percents in interval [0; 100]',
-                        'maxMessage' => 'Number of percents in interval [0; 100]'
+                        'minMessage' => 'Number of percents in interval [1; 100]',
+                        'maxMessage' => 'Number of percents in interval [1; 100]'
                     ]),
                     new NotBlank(),
                     new Assert\Type(array(
@@ -51,15 +51,15 @@ class RdfType extends AbstractType {
             ])
         ->add('dT', 'integer', [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
                 'read_only' => true,
                 'data' => 20,
                 'constraints' => [
                     new Assert\Range([
-                        'min' => 0,
+                        'min' => 1,
                         'max' => 100,
-                        'minMessage' => 'Number of percents in interval [0; 100]',
-                        'maxMessage' => 'Number of percents in interval [0; 100]'
+                        'minMessage' => 'Number of percents in interval [1; 100]',
+                        'maxMessage' => 'Number of percents in interval [1; 100]'
                     ]),
                     new NotBlank()
                 ],

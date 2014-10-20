@@ -31,10 +31,12 @@ Maximum number of iteration: Maksimalus iteracijų skaičius
 Number of hidden layers: Neuronų skaičius paslėptuose sluoksniuose
 First layer: 1-as sluoksnis
 Second layer: 2-as sluoksnis
-Third layer: 3-as sluoksnis
+Select training parameter k : Pasirinkite mokymo parametrą k reiškmę
+Size of training sets (%) : Mokymo aibės dydis k (%)
+Number of cross validation folds : Kryžminio validavimo parametras k
 Size of training data: Mokymo objektų kiekis
 Size of test data: Testavimo objektų kiekis
-Size of validation data: Validavimo objektų kiekis
+Parameter k: Parametras k
 Number of rows of SOM : SOM eilučių skaičius
 Number of columns of SOM : SOM stulpelių skaičius
 Number of SOM training epochs : SOM mokymų epochų skaičius
@@ -95,7 +97,7 @@ Number of training epochs : Mokymo epochų skaičius
 Number of columns : Stulpelių skaičius
 Number of rows : Eilučių skaičius
 Confidence level : Pasikliovimo lygmuo
-Resistance to noise : Atsparumas trukšmui
+Resistance to noise : Atsparumas triukšmui
 Size of training data : Mokymo objektų kiekis
 Size of test data : Testavimo objektų kiekis
 This component should be connected to a selected file or an executed task in order to view results. : Norėdami peržiūrėti rezultatus, turite sujungti komponentę su pasirinktu failu arba įvykdyta komponente.
@@ -126,6 +128,7 @@ There are loops : Vykdymo grafe ciklai negalimi
 MII Cluster : MII klasteris
 Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstytųjų skaičiavimų klasteris
 Supercomputer of Vilnius University Faculty of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos fakulteto paskirstytųjų skaičiavimų superkompiuteris
+C4.5 classifier : C4.5 klasifikatorius
 RDF classifier : RDF klasifikatorius
 Data cleaning : Duomenų valymas
 Diagonal majorization algorithm : Diagonalinio mažoravimo algoritmas  (DMA)

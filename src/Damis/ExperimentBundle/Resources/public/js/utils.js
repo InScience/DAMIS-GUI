@@ -113,15 +113,14 @@
 			return newStr;
 		},
 
+        // MLP functions
         countChange: function(context){
-            $(context).on('change', 'input#mlp_type_dL', window.utils.percentagesCount);
-            $(context).on('change', 'input#mlp_type_dT', window.utils.percentagesCount);
+            //$(context).on('change', 'input#mlp_type_qty', window.utils.percentagesCount);
         },
-
+                
         percentagesCount : function(ev) {
-            var used = 100 - parseFloat($('input#mlp_type_dL').val())
-                - parseFloat($('input#mlp_type_dT').val());
-            $('input#mlp_type_dV').val(used);
+            //var used = 100 - parseFloat($('input#mlp_type_qty').val());
+            //$('input#mlp_type_fakedT').val(used);
         }
 	}
 })();
