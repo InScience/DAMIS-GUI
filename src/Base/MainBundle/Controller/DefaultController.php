@@ -36,7 +36,7 @@ class DefaultController extends Controller
         $sessionFinishDate = $data['sessionFinishDate'];
         $name = $data['name'];
         $surname = $data['surName'];
-        $userEmail = $data['userEmail'];
+        $userEmail = $data['email'];
         $userId = $data['userId'];
         $timeStamp = $data['timeStamp'];
         $signature = $data['signature'];
@@ -47,7 +47,7 @@ class DefaultController extends Controller
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
         openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
-        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['userEmail'] . $data['sessionToken'] . $data['userId'];
+        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['email'] . $data['sessionToken'] . $data['userId'];
 
         if(!$tmpSignature === $decriptedSignature){
             $post = [

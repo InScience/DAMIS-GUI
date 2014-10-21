@@ -5,14 +5,17 @@ namespace Damis\DatasetsBundle\Controller;
 use Base\ConvertBundle\Helpers\ReadFile;
 use Damis\DatasetsBundle\Form\Type\DatasetType;
 use Damis\DatasetsBundle\Entity\Dataset;
+use Guzzle\Http\Client;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use PHPExcel_IOFactory;
+use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use ZipArchive;
 
@@ -102,6 +105,79 @@ class DatasetsController extends Controller
             'form' => $form->createView()
         );
     }
+
+    /**
+     * Upload new dataset from MIDAS
+     *
+     * @Route("/midasnew.html", name="datasets_midas_new")
+     * @Method("GET")
+     * @Template()
+     */
+    public function newMidasAction(Request $request)
+    {
+        $client = new Client($this->container->getParameter('midas_url'));
+        $notLogged = false;
+        $session = $request->getSession();
+        $sessionToken = '';
+        if($session->has('sessionToken'))
+            $sessionToken = $session->get('sessionToken');
+        else {
+            $notLogged = true;
+        }
+        $page = ($request->get('page')) ? $request->get('page') : 1;
+        $path = ($request->get('path')) ? $request->get('path') : '';
+        $id = $request->get('id');
+
+        $data = json_decode($request->get('data'));
+        if($request->get('data') && !empty($data) && $request->get('edit') != 1){
+            $id = json_decode($request->get('data'))[0]->value;
+            $path = json_decode($id, true)['path'];
+            $page = json_decode($id, true)['page'];
+
+            $folders = explode('/', $path);
+            $count = count($folders);
+            $path = '';
+            foreach($folders as $key => $p){
+                if($key < $count - 1)
+                    $path .= $p . '/';
+            }
+        }
+        $post = array(
+            'path' => $path,
+            'page' => $page,
+            'pageSize' => 10,
+            'repositoryType' => 'research'
+        );
+        $files = [];
+        $req = $client->post('/web/action/research/folders',
+            array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+        try {
+            $response = $req->send();
+            if($response->getStatusCode() == 200)
+                $files = json_decode($response->getBody(true), true);
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            try {
+                $req->send()->getBody(true);
+            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                $notLogged = true;
+            }
+        }
+        if(isset($files['list']))
+            $pageCount = $files['list']['pageCount'];
+        else
+            $pageCount = 0;
+        return array(
+            'notLogged' => $notLogged,
+            'files' => $files,
+            'page' => $page,
+            'pageCount' => $pageCount,
+            'previous' => $page - 1,
+            'next' => $page + 1,
+            'path' => $path,
+            'selected' => $id
+        );
+    }
     /**
      * Create new dataset
      *
@@ -128,6 +204,62 @@ class DatasetsController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * Create new midas dataset
+     *
+     * @Route("/createmidas.html", name="datasets_create_midas")
+     * @Method("POST")
+     * @Template("DamisDatasetsBundle:Datasets:newMidas.html.twig")
+     */
+    public function createMidasAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $client = new Client($this->container->getParameter('midas_url'));
+        $data = json_decode($request->request->get('dataset_pk'), true);
+        $session = $request->getSession();
+        if($session->has('sessionToken'))
+            $sessionToken = $session->get('sessionToken');
+        else {
+            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+            return $this->redirect($this->generateUrl('datasets_midas_new'));
+        }
+        $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+        try {
+            $body = $req->send()->getBody(true);
+            $file = new Dataset();
+            $file->setDatasetTitle(basename($data['name']));
+            $file->setDatasetCreated(time());
+            $user = $this->get('security.context')->getToken()->getUser();
+            $file->setUserId($user);
+            $file->setDatasetIsMidas(true);
+            $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $data['name'];
+            $em->persist($file);
+            $em->flush();
+            $fp = fopen($temp_file,"w");
+            fwrite($fp, $body);
+            fclose($fp);
+
+            $file2 = new File($temp_file);
+
+            $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+            $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $ref_class, 'file');
+            $file_data = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
+
+            $org_file_name = basename($data['name']);
+            $file_data['originalName'] = $org_file_name;
+
+            $file->setFile($file_data);
+            $em->persist($file);
+            $em->flush();
+            unlink($temp_file);
+            return $this->uploadArff($file->getDatasetId());
+
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+            return $this->redirect($this->generateUrl('datasets_midas_new'));
+        }
     }
 
     /**
