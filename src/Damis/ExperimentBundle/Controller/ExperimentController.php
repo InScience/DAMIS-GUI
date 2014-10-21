@@ -2,7 +2,11 @@
 
 namespace Damis\ExperimentBundle\Controller;
 
+use Base\ConvertBundle\Helpers\ReadFile;
+use Damis\DatasetsBundle\Entity\Dataset;
 use Guzzle\Http\Client;
+use PHPExcel_IOFactory;
+use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Damis\ExperimentBundle\Entity\Experiment;
 use Damis\EntitiesBundle\Entity\Workflowtask;
@@ -10,10 +14,12 @@ use Damis\EntitiesBundle\Entity\Parametervalue;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
+use ZipArchive;
 
 class ExperimentController extends Controller
 {
@@ -275,17 +281,48 @@ class ExperimentController extends Controller
                     if($session->has('sessionToken'))
                         $sessionToken = $session->get('sessionToken');
                     else {
-                        //       echo('Prašome prisijungti prie midas');
-                        //       die;
-                    } $sessionToken = 'kvcupftoet2djo04ebsh886ipj';
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+                        return false;
+                    }
+                    //$sessionToken = 'b3k96m3jqonfmc3ilemo4db0oh';
                     $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
                     try {
-                        var_dump($req->send()->getBody(true));
-//issaugoti faila ir uzsetinti parametrui dataseto ID
-                    } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                        $body = $req->send()->getBody(true);
+                        $file = new Dataset();
+                        $file->setDatasetTitle(basename($data['name']));
+                        $file->setDatasetCreated(time());
+                        $user = $this->get('security.context')->getToken()->getUser();
+                        $file->setUserId($user);
+                        $file->setDatasetIsMidas(true);
+                        $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $data['name'];
+                        $em->persist($file);
+                        $em->flush();
+                        $fp = fopen($temp_file,"w");
+                        fwrite($fp, $body);
+                        fclose($fp);
 
+                        $file2 = new File($temp_file);
+
+                        $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+                        $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $ref_class, 'file');
+                        $file_data = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
+
+                        $org_file_name = basename($data['name']);
+                        $file_data['originalName'] = $org_file_name;
+
+                        $file->setFile($file_data);
+                        $em->persist($file);
+                        $em->flush();
+                        unlink($temp_file);
+                        $value->setParametervalue($file->getDatasetId());
+                        $response = $this->uploadArff($file->getDatasetId());
+                        if(!$response)
+                            return false;
+                    } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+                        return false;
                     }
-               // die('s');
+
                 }
                 $em->persist($value);
                 $em->flush();
@@ -412,5 +449,195 @@ class ExperimentController extends Controller
             }
         }
         return $this->redirect($this->generateUrl('experiments_history'));
+    }
+
+    /**
+     * When uploading csv/txt/tab/xls/xlsx types to arff
+     * convert it and save
+     *
+     * @param String $id
+     * @return boolean
+     */
+    public function uploadArff($id)
+    {
+        $memoryLimit = ini_get('memory_limit');
+        $suffix = '';
+        sscanf ($memoryLimit, '%u%c', $number, $suffix);
+        if (isset ($suffix))
+        {
+            $number = $number * pow (1024, strpos (' KMG', $suffix));
+        }
+        $user = $this->get('security.context')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
+            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+        if($entity){
+            $format = explode('.', $entity->getFile()['fileName']);
+            $format = $format[count($format)-1];
+            $filename = $entity->getDatasetTitle();
+            if ($format == 'zip'){
+                $zip = new ZipArchive();
+                $res = $zip->open('./assets' . $entity->getFile()['fileName']);
+                $name = $zip->getNameIndex(0);
+                if($zip->numFiles > 1){
+                    $em->remove($entity);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+                    return false;
+                }
+
+                if($res === true){
+                    $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
+                    $zip->extractTo('.' . $path, $name);
+                    $zip->close();
+                    $format = explode('.', $name);
+                    $format = $format[count($format)-1];
+                    $fileReader = new ReadFile();
+                    if ($format == 'arff'){
+                        $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
+                        $entity->setFilePath($dir . '.arff');
+                        $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                        if($rows === false){
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                            $em->remove($entity);
+                            $em->flush();
+                            unlink('.' . $path . '/' . $name);
+                            return false;
+                        }
+                        unset($rows);
+                        $em->persist($entity);
+                        $em->flush();
+                        rename ( '.' . $path . '/' . $name , '.' . $dir . '.arff');
+                        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+                        return true;
+                    }
+                    elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
+                        $rows = $fileReader->getRows('.' . $path . '/' . $name , $format);
+                        if($rows === false){
+                            $em->remove($entity);
+                            $em->flush();
+                            unlink('.' . $path . '/' . $name);
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+                            return false;
+                        }
+                        unlink('.' . $path . '/' . $name);
+                    } elseif($format == 'xls' || $format == 'xlsx'){
+                        $objPHPExcel = PHPExcel_IOFactory::load('.' . $path . '/' . $name);
+                        $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                        array_unshift($rows, null);
+                        unlink('.' . $path . '/' . $name);
+                        unset($rows[0]);
+                    } else{
+                        $em->remove($entity);
+                        $em->flush();
+                        unlink('.' . $path . '/' . $name);
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+                        return false;
+                    }
+                }
+            }
+            elseif ($format == 'arff'){
+                $entity->setFilePath($entity->getFile()['path']);
+                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    $em->remove($entity);
+                    $em->flush();
+                    return false;
+                }
+                unset($rows);
+                $fileReader = new ReadFile();
+                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
+                if($rows === false){
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
+                    $em->remove($entity);
+                    $em->flush();
+                    unlink('.' . $entity->getFile()['fileName']);
+                    return false;
+                }
+                unset($rows);
+                $em->persist($entity);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+                return true;
+            }
+            elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
+                $fileReader = new ReadFile();
+                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
+                    $em->remove($entity);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+                    return false;
+                }
+                $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
+            } elseif($format == 'xls' || $format == 'xlsx'){
+                $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
+                $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                array_unshift($rows, null);
+                unset($rows[0]);
+            } else{
+                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return false;
+            }
+            $hasHeaders = false;
+            if(!empty($rows)){
+                foreach($rows[1] as $header){
+                    if(!(is_numeric($header))){
+                        $hasHeaders = true;
+                    }
+                }
+            }
+            $arff = '';
+            $arff .= '@relation ' . $filename . PHP_EOL;
+            if($hasHeaders){
+                foreach($rows[1] as $key => $header){
+                    // Remove spaces in header, to fit arff format
+                    $header = preg_replace('/\s+/', '_', $header);
+
+                    // Check string is numeric or normal string
+                    if (is_numeric($rows[2][$key])) {
+                        if(is_int($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . $header . ' ' . 'integer' . PHP_EOL;
+                        else if(is_float($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . $header . ' ' . 'real' . PHP_EOL;
+                    } else {
+                        $arff .= '@attribute ' . $header . ' ' . 'string' . PHP_EOL;
+                    }
+                }
+            } else {
+                foreach($rows[1] as $key => $header){
+                    if (is_numeric($rows[2][$key])) {
+                        if(is_int($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'integer' . PHP_EOL;
+                        else if(is_float($rows[2][$key] + 0))
+                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'real' . PHP_EOL;
+                    } else {
+                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'string' . PHP_EOL;
+                    }
+                }
+            }
+            $arff .= '@data' . PHP_EOL;
+            if($hasHeaders)
+                unset($rows[1]);
+            foreach($rows as $row){
+                foreach($row as $key => $value)
+                    if($key > 0)
+                        $arff .= ',' . $value;
+                    else
+                        $arff .= $value;
+                $arff .= PHP_EOL;
+            }
+            $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
+            $fp = fopen($_SERVER['DOCUMENT_ROOT'] . $dir . ".arff","w+");
+            fwrite($fp, $arff);
+            fclose($fp);
+            $entity->setFilePath($dir . ".arff");
+            $em->persist($entity);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+            return true;
+        }
+        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error!', array(), 'DatasetsBundle'));
+        return false;
     }
 }
