@@ -185,24 +185,21 @@
 						var image;
 						var format = $(this).find("input[name=file-type]:checked").val();
 						var dst = $(this).find("input[name=file-destination]:checked").val();
-						if (dst == "midas") {
-							$(this).find(".not-implemented").show();
-						} else {
-							image = canvas.toDataURL();
-							//image = image.replace("image/png", "image/octet-stream");
-							var url = Routing.generate('dataset_chart');
+                        var path = $(this).find('input[name="folderPath"]').val();
+                        image = canvas.toDataURL();
+                        //image = image.replace("image/png", "image/octet-stream");
+                        var url = Routing.generate('dataset_chart', {dst : dst, path : path});
 
-							// POST to server to obtain a downloadable result
-							var imageInput = $("<input name=\"image\" value=\"" + image + "\"/>");
-							var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
-							var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
-							myForm.append(imageInput);
-							myForm.append(formatInput);
-							$("body").append(myForm);
-							myForm.submit();
-							myForm.remove();
-							$(this).dialog("destroy");
-						}
+                        // POST to server to obtain a downloadable result
+                        var imageInput = $("<input name=\"image\" value=\"" + image + "\"/>");
+                        var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
+                        var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
+                        myForm.append(imageInput);
+                        myForm.append(formatInput);
+                        $("body").append(myForm);
+                        myForm.submit();
+                        myForm.remove();
+                        $(this).dialog("destroy");
 					}
 				},
 				{

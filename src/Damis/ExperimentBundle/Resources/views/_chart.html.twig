@@ -111,9 +111,47 @@
             <tr>
                 <td style="padding:5px">
                     <input type="radio" name="file-destination" value="midas" />{{ 'MIDAS' | trans({}, 'ExperimentBundle')}}
+                    <input type="hidden" name="folderPath" value="" />
                     <span style="display: none;" class="not-implemented helptext">{{ 'This functionality will be negotiated during the 6th activity.' | trans({}, 'ExperimentBundle')}}</span>
                 </td>
             </tr>
             </tbody></table>
     </div>
 </div>
+<script>
+    $('input[type=radio][value=midas]').click(function(){
+
+        $('<div class="folderDialog"></div>').dialog({
+            "title": Translator.trans("Select destination", {}, 'ExperimentBundle'),
+            "minWidth": 450,
+            autoOpen: true,
+            modal: true,
+            "buttons": [{
+                "text": Translator.trans("OK", {}, 'ExperimentBundle'),
+                "class": "btn btn-primary",
+                "click": function(ev) {
+                    var path = $('input[type=radio][name="folder_path"]:checked').val(); console.log(path);
+                    $('input[name="folderPath"]').val(path);console.log($('input[name="folderPath"]').val());
+                    $(this).dialog("destroy");
+                }
+            },
+                {
+                    "text": Translator.trans("Cancel", {}, 'ExperimentBundle'),
+                    "class": "btn",
+                    "click": function(ev) {
+                        $(this).dialog("destroy");
+                    }
+                }]
+        });
+        var container = $("<div class=\"technical-details-container\"><img width=\"420px\" src=\"/bundles/damisexperiment/images/loading.gif\"/></div>");
+        var url = Routing.generate('existing_midas_folders');
+        $('.folderDialog').append(container);
+        $.ajax({
+            url: url,
+            context: container
+        }).done(function(resp) {
+            $('.folderDialog').html(resp);
+
+        });
+    });
+</script>
