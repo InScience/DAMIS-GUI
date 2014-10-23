@@ -52,20 +52,19 @@
                                 var data = window.matrixView.getOutputParamDetails(formWindow);
                                 var format = $(this).find("input[name=file-type]:checked").val();
                                 var dst = $(this).find("input[name=file-destination]:checked").val();
-                                if (dst == 'midas') {
-                                    $(this).find(".not-implemented").show();
-                                } else {
-                                    var url = Routing.generate('technical_information',{id : data["dataset_url"]});
+                                var path = $(this).find('input[name="folderPath"]').val();
 
-                                    // POST to server to obtain a downloadable result
-                                    var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
-                                    var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
-                                    myForm.append(formatInput);
-                                    $("body").append(myForm);
-                                    myForm.submit();
-                                    myForm.remove();
-                                    $(this).dialog("destroy");
-                                }
+                                var url = Routing.generate('technical_information',{id : data["dataset_url"], dst : dst, path : path});
+
+                                // POST to server to obtain a downloadable result
+
+                                var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
+                                var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
+                                myForm.append(formatInput);
+                                $("body").append(myForm);
+                                myForm.submit();
+                                myForm.remove();
+                                $(this).dialog("destroy");
                             }
                         },
                             {
@@ -95,7 +94,7 @@
             if(!datasetId)
                 datasetId = 'undefined';
             var url = Routing.generate('technical_information',
-                {id : datasetId, experimentId : $('#id_experiment').val(), taskBox: ancestor});
+                {id : datasetId, dst : false, experimentId : $('#id_experiment').val(), taskBox: ancestor});
 			$.ajax({
 				url: url,
 				data: data,

@@ -3,6 +3,7 @@
 namespace Base\ConvertBundle\Controller;
 
 use Base\ConvertBundle\Helpers\ReadFile;
+use Guzzle\Http\Message\Request;
 use PHPExcel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -350,7 +351,7 @@ class ConvertController extends Controller
      * @Route("{id}/convert/xls.html", name="convert_xls")
      * @Template()
      */
-    public function convertToXlsAction($id)
+    public function convertToXlsAction($id, $midas = 0)
     {
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
@@ -397,6 +398,12 @@ class ConvertController extends Controller
                 }
                 $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
 
+
+                if($midas == 1){
+                    $tempFile = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $id;
+                    $objWriter->save($tempFile);
+                    return new Response($tempFile);
+                }
                 header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 header('Content-Disposition: attachment;' . sprintf('filename="%s.xlsx"', $filename));
 

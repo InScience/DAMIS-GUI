@@ -44,21 +44,19 @@
                                 var data = window.matrixView.getOutputParamDetails(formWindow);
 								var format = $(this).find("input[name=file-type]:checked").val();
 								var dst = $(this).find("input[name=file-destination]:checked").val();
-								if (dst == 'midas') {
-									$(this).find(".not-implemented").show();
-								} else {
-                                    //image = image.replace("image/png", "image/octet-stream");
-                                    var url = Routing.generate('matrix_view',{id : data["dataset_url"]});
+                                var path = $(this).find('input[name="folderPath"]').val();
+                                //image = image.replace("image/png", "image/octet-stream");
+                                var url = Routing.generate('matrix_view',{id : data["dataset_url"], dst : dst, path : path});
 
-                                    // POST to server to obtain a downloadable result
-                                    var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
-                                    var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
-                                    myForm.append(formatInput);
-                                    $("body").append(myForm);
-                                    myForm.submit();
-                                    myForm.remove();
-                                    $(this).dialog("destroy");
-								}
+                                // POST to server to obtain a downloadable result
+                                var formatInput = $("<input name=\"format\" value=\"" + format + "\"/>");
+                                var myForm = $("<form method=\"post\" action=\"" + url + "\"></form>");
+                                myForm.append(formatInput);
+                                $("body").append(myForm);
+                                myForm.submit();
+                                myForm.remove();
+                                $(this).dialog("destroy");
+
 							}
 						},
 						{

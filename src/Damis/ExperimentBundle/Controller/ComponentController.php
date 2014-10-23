@@ -3,6 +3,8 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Base\ConvertBundle\Helpers\ReadFile;
+use CURLFile;
+use Damis\DatasetsBundle\Entity\Dataset;
 use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
@@ -12,6 +14,7 @@ use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Damis\ExperimentBundle\Form\Type\FilterType;
@@ -273,6 +276,78 @@ class ComponentController extends Controller
         );
     }
 
+
+    /**
+     * User midas datasets list
+     *
+     * @Route("/experiment/component/existingMidasFolders.html", name="existing_midas_folders", options={"expose" = true})
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function midasFoldersAction(Request $request)
+    {
+        $client = new Client($this->container->getParameter('midas_url'));
+
+        $session = $request->getSession();
+        if($session->has('sessionToken'))
+            $sessionToken = $session->get('sessionToken');
+        else {
+            echo('Prašome prisijungti prie midas');
+            die;
+        }
+        //$sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
+        $page = ($request->get('page')) ? $request->get('page') : 1;
+        $path = ($request->get('path')) ? $request->get('path') : '';
+        $id = $request->get('id');
+
+        $data = json_decode($request->get('data'));
+        if($request->get('data') && !empty($data) && $request->get('edit') != 1){
+            $id = json_decode($request->get('data'))[0]->value;
+            $path = json_decode($id, true)['path'];
+            $page = json_decode($id, true)['page'];
+
+            $folders = explode('/', $path);
+            $count = count($folders);
+            $path = '';
+            foreach($folders as $key => $p){
+                if($key < $count - 1)
+                    $path .= $p . '/';
+            }
+        }
+        $post = array(
+            'path' => $path,
+            'page' => $page,
+            'pageSize' => 10,
+            'repositoryType' => 'research'
+        );
+        $files = [];
+        $req = $client->post('/web/action/research/folders',
+            array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+        try {
+            $response = $req->send();
+            if($response->getStatusCode() == 200)
+                $files = json_decode($response->getBody(true), true);
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            try {
+                $req->send()->getBody(true);
+            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                var_dump('Error! ' . $e->getMessage()); die;
+            }
+        }
+
+        $pageCount = $files['list']['pageCount'];
+        return array(
+            'files' => $files,
+            'page' => $page,
+            'pageCount' => $pageCount,
+            'previous' => $page - 1,
+            'next' => $page + 1,
+            'path' => $path,
+            'selected' => $id
+        );
+    }
+
     /**
      * Matrix view
      *
@@ -291,7 +366,70 @@ class ComponentController extends Controller
         else {
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
             if($request->isMethod('POST')) {
-                return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+                if($request->get('dst') == 'user-computer')
+                    return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+                else if ($request->get('dst') == 'midas') {
+                    /** @var Response $response2 */
+                    $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo'. ucfirst($request->get('format')), array(
+                        'id'  => $id,
+                    ));
+                    if($request->get('format') == 'xls' || $request->get('format') == 'xlsx') {
+                        $temp_file = $response2->getContent();
+                    } else {
+                        $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../' . time() . $id;
+                        $fp = fopen($temp_file, "w");
+                        fwrite($fp, $response2->getContent());
+                        fclose($fp);
+                    }
+                    $client = new Client($this->container->getParameter('midas_url'));
+                    $session = $this->get('request')->getSession();
+                    if($session->has('sessionToken'))
+                        $sessionToken = $session->get('sessionToken');
+                    else {
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+                        return $this->redirect($request->headers->get('referer'));
+                    }
+                  //  $sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
+                    $post = array(
+                        'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']). $id . '.'.$request->get('format'),
+                        'path' => json_decode($request->get('path'), true)['path'],
+                        'repositoryType' => 'research',
+                        'size' => $entity->getFile()['size']
+                    );
+                    $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+
+                    try {
+                        $response = json_decode($req->send()->getBody(true), true);
+                        if($response['type'] == 'error'){
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                            return $this->redirect($request->headers->get('referer'));
+                        }
+
+                        $fileId = $response['file']['id'];
+                        $header = array('Content-Type: multipart/form-data', 'Authorization:' . $sessionToken);
+
+                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']).$id. '.'.$request->get('format'));
+
+                        $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
+
+                        $resource = curl_init();
+                        curl_setopt($resource, CURLOPT_URL, 'http://midas.insoft.lt:8888/web/action/file-explorer/file/slice');
+                        curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
+                        curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($resource, CURLOPT_POST, 1);
+                        curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
+
+                        $result = curl_exec($resource);
+
+                        curl_close($resource);
+                        unlink($temp_file);
+                        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('File uploaded successfully', array(), 'DatasetsBundle'));
+                        return $this->redirect($request->headers->get('referer'));
+                    } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+                        return $this->redirect($request->headers->get('referer'));
+                    }
+                }
             } else {
                 $helper = new ReadFile();
                 $rows = $helper->getRows('.' . $entity->getFilePath(), 'arff');
@@ -340,18 +478,85 @@ class ComponentController extends Controller
         $entity = null;
         $message = '';
         $runtime = '';
-         if($id == 'undefined')
+        /** @var Dataset $entity */
+        if($id == 'undefined')
             $id = null;
         else
             $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
 
         if($request->isMethod('POST')) {
-            return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+            if($request->get('dst') == 'user-computer')
+                return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
+            else if ($request->get('dst') == 'midas') {
+                /** @var Response $response2 */
+                $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo'. ucfirst($request->get('format')), array(
+                    'id'  => $id,
+                    'midas' => 1
+                ));
+                if($request->get('format') == 'xls' || $request->get('format') == 'xlsx') {
+                    $temp_file = $response2->getContent();
+                } else {
+                    $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../' . time() . $id;
+                    $fp = fopen($temp_file, "w");
+                    fwrite($fp, $response2->getContent());
+                    fclose($fp);
+                }
+                $client = new Client($this->container->getParameter('midas_url'));
+                $session = $this->get('request')->getSession();
+                if($session->has('sessionToken'))
+                    $sessionToken = $session->get('sessionToken');
+                else {
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+                     return $this->redirect($request->headers->get('referer'));
+                }
+              //  $sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
+                $post = array(
+                    'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']). $id . '.'.$request->get('format'),
+                    'path' => json_decode($request->get('path'), true)['path'],
+                    'repositoryType' => 'research',
+                    'size' => $entity->getFile()['size']
+                );
+                $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+
+                try {
+                    $response = json_decode($req->send()->getBody(true), true);
+                    if($response['type'] == 'error'){
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                        return $this->redirect($request->headers->get('referer'));
+                    }
+
+                    $fileId = $response['file']['id'];
+                    $header = array('Content-Type: multipart/form-data', 'Authorization:' . $sessionToken);
+
+                    $file = new CURLFile($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']).$id. '.'.$request->get('format'));
+
+                    $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
+
+                    $resource = curl_init();
+                    curl_setopt($resource, CURLOPT_URL, 'http://midas.insoft.lt:8888/web/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
+                    curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($resource, CURLOPT_POST, 1);
+                    curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
+
+                    $result = curl_exec($resource);
+
+                    curl_close($resource);
+                    unlink($temp_file);
+                    $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('File uploaded successfully', array(), 'DatasetsBundle'));
+                    return $this->redirect($request->headers->get('referer'));
+                } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+                    return $this->redirect($request->headers->get('referer'));
+                }
+            }
         } else {
             $workflow = $em->getRepository('DamisEntitiesBundle:Workflowtask')
                 ->findOneBy(array('experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')));
-            $runtime = $workflow->getExecutionTime();
-            $message = $workflow->getMessage();
+            if($workflow){
+                $runtime = $workflow->getExecutionTime();
+                $message = $workflow->getMessage();
+            }
         }
 
         return array(
