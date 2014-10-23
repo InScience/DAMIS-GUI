@@ -23,11 +23,11 @@ class NormDataType extends AbstractType {
         ->add('normMeanStd', 'choice', [
                 'empty_value' => false,
                 'required' => false,
-                'data' => 0,
+                'data' => 1,
                 'expanded' => true,
                 'choices' => array(
-                    0 => 'Mean a, Standard deviation b',
-                    1 => 'Interval [a;b]'
+                    1 => 'Mean a, Standard deviation b',
+                    0 => 'Interval [a;b]'
                 ),
                 'constraints' => [
                     new NotBlank()

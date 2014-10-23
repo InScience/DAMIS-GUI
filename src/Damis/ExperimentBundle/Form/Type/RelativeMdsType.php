@@ -72,6 +72,7 @@ class RelativeMdsType extends AbstractType {
             ])
         ->add('selStrategy', 'choice', [
                 'empty_value' => false,
+                'data' => 0,
                 'choices' => array(
                     0 => 'Random',
                     1 => 'By line based on PCA',
