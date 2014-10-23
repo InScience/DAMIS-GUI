@@ -72,11 +72,11 @@ class RelativeMdsType extends AbstractType {
             ])
         ->add('selStrategy', 'choice', [
                 'empty_value' => false,
-                'data' => 0,
+                'data' => 1,
                 'choices' => array(
-                    0 => 'Random',
-                    1 => 'By line based on PCA',
-                    2 => 'By line based on max variable'
+                    1 => 'Random',
+                    2 => 'By line based on PCA',
+                    3 => 'By line based on max variable'
                 ),
                 'attr' => array('class' => 'form-control'),
                 'label' => 'Select Basis objects strategy',
