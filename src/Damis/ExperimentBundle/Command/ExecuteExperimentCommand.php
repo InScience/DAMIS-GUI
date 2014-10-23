@@ -169,7 +169,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $client = new \SoapClient($component->getWsdlRunHost(),
                 array(
                     'trace' => 1,
-                    'exception' => 0
+                    'exception' => 0,
+                    'connection_timeout' => 3600
                 )
             );
 

@@ -51,3 +51,6 @@ DirectorySlash Off
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>
+
+# Php socket timeout
+php_value default_socket_timeout 6000
