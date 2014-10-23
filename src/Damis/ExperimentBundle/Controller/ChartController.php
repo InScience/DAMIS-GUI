@@ -158,16 +158,18 @@ class ChartController extends Controller
     private function _getImageFilePath($image, $format)
     {
         $image = str_replace(' ', '+', $image);
+        // To create unique file
+        $id = time();
 
         $data = base64_decode($image);
 
         $imageInfo = $image; // Your method to get the data
         $image = fopen($imageInfo, 'wb');
         file_put_contents(realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart.' . $format, $image);
+                . '/cache/chart' . $id . '.' . $format, $image);
         fclose($image);
 
         return realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart.' . $format;
+                . '/cache/chart' . $id . '.' . $format;
     }
 }
