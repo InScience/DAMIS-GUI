@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Damis\ExperimentBundle\Form\Type\FilterType;
 use Symfony\Component\HttpFoundation\Response;
+use Guzzle\Http\Client;
+use CURLFile;
 
 class ChartController extends Controller
 {
@@ -49,10 +51,10 @@ class ChartController extends Controller
                 $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileinfo['basename']);
                         
                 $post = array(
-                    'name' => $name,
+                    'name' => $name . '.' . $request->get('format'),
                     'path' => json_decode($request->get('path'), true)['path'],
                     'repositoryType' => 'research',
-                    'size' => $entity->getFile()['size']
+                    'size' => filesize($temp_file)
                 );
                 $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
 
