@@ -246,6 +246,7 @@ class ComponentController extends Controller
             'path' => $path,
             'page' => $page,
             'pageSize' => 10,
+            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
             'repositoryType' => 'research'
         );
         $files = [];
@@ -413,7 +414,7 @@ class ComponentController extends Controller
                         $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                         $resource = curl_init();
-                        curl_setopt($resource, CURLOPT_URL, 'http://midas.insoft.lt:8888/web/action/file-explorer/file/slice');
+                        curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
                         curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                         curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                         curl_setopt($resource, CURLOPT_POST, 1);
@@ -533,7 +534,7 @@ class ComponentController extends Controller
                     $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, 'http://midas.insoft.lt:8888/web/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);
