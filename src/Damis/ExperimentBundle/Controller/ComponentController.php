@@ -319,6 +319,7 @@ class ComponentController extends Controller
             'path' => $path,
             'page' => $page,
             'pageSize' => 10,
+            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
             'repositoryType' => 'research'
         );
         $files = [];
