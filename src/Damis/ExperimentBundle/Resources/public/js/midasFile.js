@@ -115,7 +115,7 @@
 		}
 	}
     $(document).on('click', ".toggle-btn", function(e){
-        window.midasFile.update($(this).parent().parent().parent().find('.task-window'), null);
+        window.midasFile.update($(this).parent().parent().parent().find('.task-window'), Routing.generate('existing_midas_file', {'id' : 'undefined', 'path' : '', 'edit' : 1}));
     });
 })();
 
