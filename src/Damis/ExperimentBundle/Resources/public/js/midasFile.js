@@ -39,7 +39,7 @@
 
 				// bind paging handler
 				container.find("a").on("click", function(ev) {
-                    if(!ev.hasClass('fileView')) {
+                    if(!$(this).hasClass('fileView')) {
                         ev.preventDefault();
                         var page_url = $(this).attr("href");
                         if (!page_url.match(/.*#.*/g)) {
