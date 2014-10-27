@@ -75,7 +75,7 @@ class DefaultController extends Controller
                 $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
                 if($emailExist){
                     $this->get('session')->getFlashBag()->add('error', 'User with this email already exists');
-                    return $this->redirect($this->generateUrl('base_main_default_index'));
+                    return $this->redirect($this->generateUrl('fos_user_security_login'));
                 }
             }
             $user = new User();

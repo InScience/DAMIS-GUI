@@ -289,16 +289,11 @@ class ComponentController extends Controller
         $data = json_decode($request->get('data'));
         if($request->get('data') && !empty($data) && $request->get('edit') != 1){
             $id = json_decode($request->get('data'))[0]->value;
-            $path = json_decode($id, true)['path'];
-            $page = json_decode($id, true)['page'];
-
-            $folders = explode('/', $path);
-            $count = count($folders);
-            $path = '';
-            foreach($folders as $key => $p){
-                if($key < $count - 1)
-                    $path .= $p . '/';
-            }
+            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+            return [
+                'file' => $dataset,
+                'files' => null
+            ];
         }
         $post = array(
             'path' => $path,
