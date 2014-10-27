@@ -39,11 +39,13 @@
 
 				// bind paging handler
 				container.find("a").on("click", function(ev) {
-					ev.preventDefault();
-					var page_url = $(this).attr("href");
-					if (!page_url.match(/.*#.*/g)) {
-						window.midasFile.update(dialog, page_url);
-					}
+                    if(!ev.hasClass('fileView')) {
+                        ev.preventDefault();
+                        var page_url = $(this).attr("href");
+                        if (!page_url.match(/.*#.*/g)) {
+                            window.midasFile.update(dialog, page_url);
+                        }
+                    }
 				});
 
 				window.utils.initToggleSectionBtn(container);
