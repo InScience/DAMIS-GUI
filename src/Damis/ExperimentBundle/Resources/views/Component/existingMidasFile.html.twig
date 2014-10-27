@@ -1,4 +1,11 @@
 {% block body %}
+    {% if file != null %}
+        <div class="message">
+            {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a>
+        </div>
+        <input type="hidden" name="dataset_url" value="{{ file.datasetId }}" />
+        <button type="button" class="toggle-btn btn">{{'New file' | trans({}, 'DatasetsBundle') }}</button>
+    {% else %}
     <div class="row">
         <div class="col-lg-12">
             <input type="hidden" value="{{ path }}" name="folderPath">
@@ -37,7 +44,7 @@
                                                value="{{ name }}" name="dataset_pk">
                                         {{ file.name }}
                                     {% else %}
-                                        <a href="{{ path('existing_midas_file', {'page' : previous, 'path' : file.path, 'edit' : 1}) }}"> {{ file.name }} </a>
+                                        <a href="{{ path('existing_midas_file', {'page' : 1, 'path' : file.path, 'edit' : 1}) }}"> {{ file.name }} </a>
                                     {% endif %}
                                 </td>
                                 <td nowrap="nowrap">
@@ -76,5 +83,5 @@
             {% endif %}
         </div>
     </div>
-
+    {% endif %}
 {% endblock %}

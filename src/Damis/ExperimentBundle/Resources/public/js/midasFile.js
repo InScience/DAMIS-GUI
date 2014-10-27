@@ -80,10 +80,27 @@
 
                         window.params.addParam(window.taskBoxes.getBoxId($(this)), id, datasetId);
                         window.datasets[window.taskBoxes.getBoxId($(this))] = datasetId;
+                        data = {};
 						valueInput.val(datasetId);
-						window.midasFile.update($(this), null, datasetId, path);
+                        if (window.params.getParams(window.taskBoxes.getBoxId($(this)))) {
+                            data['data'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId($(this))));
+                        }
+                        url = Routing.generate('existing_midas_file', {'id' : id, 'path' : path});
+                        $.ajax({
+                            url: url,
+                            data: data,
+                            context: container,
+                            method: "POST"
+                        }).done(function(resp){
+                            var container = $(this);
+                            container.html(resp);
+                            var currDatasetInput = $('input[name="dataset_url"]').val();
+                            window.params.addParam(window.taskBoxes.getBoxId($(this).parent()), id, currDatasetInput);
+                            window.datasets[window.taskBoxes.getBoxId($(this).parent())] = currDatasetInput;
+                        });
 					}
-					$(this).dialog("close");
+                    if($('.toggle-btn').is(':visible'))
+                        $(this).dialog("close");
 				}
 			},
 			{
@@ -97,5 +114,8 @@
 			return buttons;
 		}
 	}
+    $(document).on('click', ".toggle-btn", function(e){
+        window.midasFile.update($(this).parent().parent().parent().find('.task-window'), null);
+    });
 })();
 
