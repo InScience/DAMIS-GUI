@@ -274,56 +274,6 @@ class ExperimentController extends Controller
                                 $value->setParametervalue($form->value);
                     }
                 }
-                if(isset(json_decode($value->getParametervalue(), true)['path']) && strpos(json_decode($value->getParametervalue(), true)['path'] , '/') !== FALSE){
-                    $data = json_decode($value->getParametervalue(), true);
-                    $client = new Client($this->container->getParameter('midas_url'));
-                    $session = $this->get('request')->getSession();
-                    if($session->has('sessionToken'))
-                        $sessionToken = $session->get('sessionToken');
-                    else {
-                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
-                        return false;
-                    }
-                    //$sessionToken = 'b3k96m3jqonfmc3ilemo4db0oh';
-                    $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
-                    try {
-                        $body = $req->send()->getBody(true);
-                        $file = new Dataset();
-                        $file->setDatasetTitle(basename($data['name']));
-                        $file->setDatasetCreated(time());
-                        $user = $this->get('security.context')->getToken()->getUser();
-                        $file->setUserId($user);
-                        $file->setDatasetIsMidas(true);
-                        $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $data['name'];
-                        $em->persist($file);
-                        $em->flush();
-                        $fp = fopen($temp_file,"w");
-                        fwrite($fp, $body);
-                        fclose($fp);
-
-                        $file2 = new File($temp_file);
-
-                        $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-                        $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $ref_class, 'file');
-                        $file_data = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
-
-                        $org_file_name = basename($data['name']);
-                        $file_data['originalName'] = $org_file_name;
-
-                        $file->setFile($file_data);
-                        $em->persist($file);
-                        $em->flush();
-                        unlink($temp_file);
-                        $value->setParametervalue($file->getDatasetId());
-                        $response = $this->uploadArff($file->getDatasetId());
-                        if(!$response)
-                            return false;
-                    } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
-                        return false;
-                    }
-
-                }
                 $em->persist($value);
                 $em->flush();
 
