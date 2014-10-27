@@ -219,6 +219,10 @@ class DatasetsController extends Controller
         $em = $this->getDoctrine()->getManager();
         $client = new Client($this->container->getParameter('midas_url'));
         $data = json_decode($request->request->get('dataset_pk'), true);
+        if(!$data){
+            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('File is not selected', array(), 'DatasetsBundle'));
+               return $this->redirect($this->generateUrl('datasets_midas_new'));
+        }
         $session = $request->getSession();
         if($session->has('sessionToken'))
             $sessionToken = $session->get('sessionToken');
