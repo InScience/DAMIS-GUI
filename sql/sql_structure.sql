@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `dataset` (
   PRIMARY KEY (`DatasetID`),
   UNIQUE KEY `DATASET_PK` (`DatasetID`),
   KEY `IDX_B7A041D058746832` (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=447 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `entity_log` (
   `data` longtext COLLATE utf8_unicode_ci COMMENT '(DC2Type:array)',
   `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=132 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `experiment` (
   UNIQUE KEY `EXPERIMENT_PK` (`ExperimentID`),
   KEY `IDX_136F58B234472C01` (`ExperimentStatusID`),
   KEY `IDX_136F58B258746832` (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=348 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `experimentstatus` (
   `ExperimentStatusID` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`ExperimentStatusID`),
   UNIQUE KEY `EXPERIMENTSTATUS_PK` (`ExperimentStatusID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `page` (
   `language` enum('lt','en') COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_140AB620989D9B62` (`slug`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `parametervalue` (
   UNIQUE KEY `PARAMETERVALUE_PK` (`ParameterValueID`),
   KEY `IDX_EF5C2B2A199F0DB9` (`WorkflowTaskID`),
   KEY `IDX_EF5C2B2A5A8577F9` (`ParameterID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4469 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `workflowtask` (
   PRIMARY KEY (`WorkflowTaskID`),
   UNIQUE KEY `WORKFLOWTASK_PK` (`WorkflowTaskID`),
   KEY `IDX_5F598CF2BAA1BE51` (`ExperimentID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1884 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Constraints for dumped tables
