@@ -229,7 +229,8 @@ class ComponentController extends Controller
     //    $sessionToken = 'g47n5tpirgmhom6k0n015kmgp2';
         if($request->getMethod() == "POST"){
             $data = json_decode(json_decode($request->get('data'), true)[0]['value'], true);
-            $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+            //$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+            $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
             try {
                 $body = $req->send()->getBody(true);
                 $file = new Dataset();
@@ -284,6 +285,7 @@ class ComponentController extends Controller
         }
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
+        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research';
         $id = $request->get('id');
 
         $data = json_decode($request->get('data'));
@@ -296,11 +298,12 @@ class ComponentController extends Controller
             ];
         }
         $post = array(
-            'path' => $path,
+            //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
             'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
-            'repositoryType' => 'research'
+            //'repositoryType' => 'research'
+            'uuid' => $uuid
         );
         $files = [];
         $req = $client->post('/web/action/research/folders',
@@ -318,7 +321,7 @@ class ComponentController extends Controller
             }
         }
 
-        $pageCount = $files['list']['pageCount'];
+        $pageCount = $files['details']['pageCount'];
         return array(
             'file' => null,
             'files' => $files,
@@ -327,6 +330,7 @@ class ComponentController extends Controller
             'previous' => $page - 1,
             'next' => $page + 1,
             'path' => $path,
+            'uuid' => $uuid,
             'selected' => $id
         );
     }
@@ -340,19 +344,20 @@ class ComponentController extends Controller
      * @Template()
      */
     public function midasFoldersAction(Request $request)
-    {
+   {
         $client = new Client($this->container->getParameter('midas_url'));
 
         $session = $request->getSession();
+        $sessionToken = '';
         if($session->has('sessionToken'))
             $sessionToken = $session->get('sessionToken');
         else {
             echo('Prašome prisijungti prie midas');
             die;
         }
-       // $sessionToken = 'g47n5tpirgmhom6k0n015kmgp2';
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
+        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research';
         $id = $request->get('id');
 
         $data = json_decode($request->get('data'));
@@ -370,13 +375,15 @@ class ComponentController extends Controller
             }
         }
         $post = array(
-            'path' => $path,
+            //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
             'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
-            'repositoryType' => 'research'
+            //'repositoryType' => 'research'
+            'uuid' => $uuid
         );
         $files = [];
+        
         $req = $client->post('/web/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
         try {
@@ -391,8 +398,10 @@ class ComponentController extends Controller
                 var_dump('Error! ' . $e->getMessage()); die;
             }
         }
-
-        $pageCount = $files['list']['pageCount'];
+        if(isset($files['details']))
+            $pageCount = $files['details']['pageCount'];
+        else
+            $pageCount = 0;
         return array(
             'files' => $files,
             'page' => $page,
@@ -400,10 +409,11 @@ class ComponentController extends Controller
             'previous' => $page - 1,
             'next' => $page + 1,
             'path' => $path,
+            'uuid' => $uuid,
             'selected' => $id
         );
     }
-
+    
     /**
      * Matrix view
      *
@@ -448,8 +458,9 @@ class ComponentController extends Controller
                   //  $sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
                     $post = array(
                         'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']). $id . '.'.$request->get('format'),
-                        'path' => json_decode($request->get('path'), true)['path'],
-                        'repositoryType' => 'research',
+                        //'path' => json_decode($request->get('path'), true)['path'],
+                        //'repositoryType' => 'research',
+                        'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                         'size' => $entity->getFile()['size']
                     );
                     $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
@@ -568,8 +579,9 @@ class ComponentController extends Controller
               //  $sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
                 $post = array(
                     'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']). $id . '.'.$request->get('format'),
-                    'path' => json_decode($request->get('path'), true)['path'],
-                    'repositoryType' => 'research',
+                    //'path' => json_decode($request->get('path'), true)['path'],
+                    //'repositoryType' => 'research',
+                    'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                     'size' => $entity->getFile()['size']
                 );
                 $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));

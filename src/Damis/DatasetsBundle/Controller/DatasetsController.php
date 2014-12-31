@@ -126,6 +126,7 @@ class DatasetsController extends Controller
         }
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
+        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research';
         $id = $request->get('id');
 
         $data = json_decode($request->get('data'));
@@ -143,13 +144,15 @@ class DatasetsController extends Controller
             }
         }
         $post = array(
-            'path' => $path,
+            //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
             'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
-            'repositoryType' => 'research'
+            //'repositoryType' => 'research'
+            'uuid' => $uuid
         );
         $files = [];
+        
         $req = $client->post('/web/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
         try {
@@ -164,8 +167,8 @@ class DatasetsController extends Controller
                 $notLogged = true;
             }
         }
-        if(isset($files['list']))
-            $pageCount = $files['list']['pageCount'];
+        if(isset($files['details']))
+            $pageCount = $files['details']['pageCount'];
         else
             $pageCount = 0;
         return array(
@@ -176,6 +179,7 @@ class DatasetsController extends Controller
             'previous' => $page - 1,
             'next' => $page + 1,
             'path' => $path,
+            'uuid' => $uuid,
             'selected' => $id
         );
     }
@@ -230,7 +234,9 @@ class DatasetsController extends Controller
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
             return $this->redirect($this->generateUrl('datasets_midas_new'));
         }
-        $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+        //$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+		//http://test.midas.lt/web/action/file-explorer/file?name=HBK&idCSV=1104&Authorization=3to1oofbek6s9ljo8d038qe96p
+		$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
         try {
             $body = $req->send()->getBody(true);
             $file = new Dataset();

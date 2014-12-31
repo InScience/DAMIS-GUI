@@ -52,8 +52,9 @@ class ChartController extends Controller
                         
                 $post = array(
                     'name' => $name . '.' . $request->get('format'),
-                    'path' => json_decode($request->get('path'), true)['path'],
-                    'repositoryType' => 'research',
+                    //'path' => json_decode($request->get('path'), true)['path'],
+                    //'repositoryType' => 'research',
+                    'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                     'size' => filesize($temp_file)
                 );
                 $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));

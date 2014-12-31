@@ -36,8 +36,8 @@
                             {{ 'Modified' | trans({}, 'DatasetsBundle') }}
                         </th>
                     </tr>
-                    {% for file in files.list.folderDetailsList %}
-                        {% set name = {'name' : file.name, 'path' : file.path, 'page' : page}|json_encode %}
+                    {% for file in files.details.folderDetailsList %}
+                        {% set name = {'name' : file.name, 'path' : file.path, 'page' : page, 'uuid' : file.uuid, 'idCSV' : file.resourceId	}|json_encode %}
                         <tr>
                             <td>
                                 {% if file.type == "FILE" %}
@@ -45,7 +45,7 @@
                                            value="{{ name }}" name="dataset_pk">
                                     {{ file.name }}
                                 {% else %}
-                                    <a href="{{ path('datasets_midas_new', {'page' : previous, 'path' : file.path, 'edit' : 1}) }}"> {{ file.name }} </a>
+                                    <a href="{{ path('datasets_midas_new', {'page' : previous, 'path' : file.path, 'uuid' : file.uuid, 'edit' : 1}) }}"> {{ file.name }} </a>
                                 {% endif %}
                             </td>
                             <td nowrap="nowrap">
@@ -67,17 +67,17 @@
                         {% if previous != 0 %}
                             <li><a href="{{ path('datasets_midas_new', {'page' : previous, 'edit' : 1}) }}">&laquo;</a></li>
                         {% else %}
-                            <li class="disabled"><a href="{{ path('datasets_midas_new', {'page' : previous, 'path' : path, 'edit' : 1}) }}">&laquo;</a></li>
+                            <li class="disabled"><a href="{{ path('datasets_midas_new', {'page' : previous, 'path' : path, 'uuid' : uuid, 'edit' : 1}) }}">&laquo;</a></li>
                         {% endif %}
 
                         {% for i in 1..pageCount %}
-                            <li {% if i == page %}class="active"{% endif %}><a href="{{ path('datasets_midas_new', {'page' : i, 'path' : path, 'edit' : 1}) }}">{{ i }}</a></li>
+                            <li {% if i == page %}class="active"{% endif %}><a href="{{ path('datasets_midas_new', {'page' : i, 'path' : path, 'uuid' : uuid, 'edit' : 1}) }}">{{ i }}</a></li>
                         {% endfor %}
 
                         {% if next <= pageCount %}
-                            <li><a href="{{ path('datasets_midas_new', {'page' : next, 'path' : path, 'edit' : 1}) }}">&raquo;</a></li>
+                            <li><a href="{{ path('datasets_midas_new', {'page' : next, 'path' : path, 'uuid' : uuid, 'edit' : 1}) }}">&raquo;</a></li>
                         {% else %}
-                            <li class="disabled"><a href="{{ path('datasets_midas_new', {'page' : next, 'path' : path, 'edit' : 1}) }}">&raquo;</a></li>
+                            <li class="disabled"><a href="{{ path('datasets_midas_new', {'page' : next, 'path' : path, 'uuid' : uuid, 'edit' : 1}) }}">&raquo;</a></li>
                         {% endif %}
                     </ul>
                 </div>
