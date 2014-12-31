@@ -120,12 +120,14 @@
             {% endfor %}
 
             window.datasets = {};
+            {% if datasets is defined %}
             {% for taskBox, dataset in datasets %}
                 window.datasets['{{taskBox}}'] = [];
                 {% for ds in dataset %}
                     window.datasets['{{ taskBox}}'].push('{{ds}}');
                 {% endfor %}
             {% endfor %}
+            {% endif %}
             window.experimentForm.params = {
                 {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
                 experimentNewUrl: "{{ path('new_experiment') }}",
@@ -180,7 +182,8 @@
                 canvas: "#flowchart-container"});
 
             window.submitedForms = {};
-
+            
+            {% if tasksBoxsWithErrors is defined %}
             {% for taskBox in tasksBoxsWithErrors %}
                 $("#" + "{{ taskBox }}").addClass("error");
             {% endfor %}
@@ -188,7 +191,7 @@
             {% for taskBox in executedTasksBoxs %}
             $("#" + "{{ taskBox }}").addClass("done");
             {% endfor %}
-
+            {% endif %}
         });
  })();
     </script>
