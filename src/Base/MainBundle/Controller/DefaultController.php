@@ -25,31 +25,32 @@ class DefaultController extends Controller
 
     /**
      * @Route("/midaslogin.html", name="midas_login")
-     * @Method({"GET", "POST"})
+     * @Method({"POST"})
      * @Template()
      */
     public function loginAction(Request $request)
     {
-        $data = $request->request->all();
-
-        $sessionToken = $data['sessionToken'];
-        $sessionFinishDate = $data['sessionFinishDate'];
-        $name = $data['name'];
-        $surname = $data['surName'];
-        $userEmail = $data['email'];
-        $userId = $data['userId'];
-        $timeStamp = $data['timeStamp'];
-        $signature = $data['signature'];
-
+        $sessionToken = $request->get('sessionToken', null);
+		$sessionFinishDate = $request->get('sessionFinishDate', null);
+		$name = $request->get('name', null);
+		$surname = $request->get('surName', null);
+		$userEmail = $request->get('email', null);
+		$userId = $request->get('userId', null);
+		$timeStamp = $request->get('timeStamp', null);
+		$signature = $request->get('signature', null);
+		
         $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
         $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
         fclose($fp);
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
         openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
-        $tmpSignature = $data['timeStamp'] . $data['name'] . $data['surName'] . $data['sessionFinishDate'] . $data['email'] . $data['sessionToken'] . $data['userId'];
+		$tmpSignature = $timeStamp . $name . $surname . $sessionFinishDate . $userEmail . $sessionToken . $userId;
 
-        if(!$tmpSignature === $decriptedSignature){
+        if(!$sessionToken || !$signature || ($tmpSignature !== $decriptedSignature)){
+            // Unset older session data 
+            $this->get("security.context")->setToken(null);
+			/*
             $post = [
                 'sourceUrl' => 'http://damis.lt/midaslogin.html',
                 'sessionToken' => 'trh6g6afhs5cmpmppd4vgio26k',
@@ -65,6 +66,9 @@ class DefaultController extends Controller
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
                 var_dump('Error! ' . $e->getMessage());
             }
+			*/
+            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS user login request parameters are wrong!', array(), 'general'));
+            return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
         $em = $this->getDoctrine()->getManager();
         /** @var User $user */
@@ -72,10 +76,36 @@ class DefaultController extends Controller
 
         if(!$user){
             if($userEmail){
+                /* @var $emailExist \Base\UserBundle\Entity\User */;
                 $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
                 if($emailExist){
-                    $this->get('session')->getFlashBag()->add('error', 'User with this email already exists');
-                    return $this->redirect($this->generateUrl('fos_user_security_login'));
+                    // Remove older user with same email  if this user was form MIDAS
+                    if ($emailExist->getUserId() > 0) {
+                        // Remove user datasets
+                        $files = $em->getRepository('DamisDatasetsBundle:Dataset')->findByUserId($emailExist->getId());
+                        foreach($files as $file){
+                            if($file){
+                                if(file_exists('.' . $file->getFilePath()))
+                                    if($file->getFilePath())
+                                        unlink('.' . $file->getFilePath());
+                                $em->remove($file);
+                                $em->flush();
+                            }
+                        }
+                        // Remove Eksperiments
+                        $experiments = $em->getRepository('DamisExperimentBundle:Experiment')->findByUser($emailExist->getId());
+                        foreach($experiments as $experiment){
+                            if($experiment){
+                                $em->remove($experiment);
+                                $em->flush();
+                            }
+                        }                        
+                        $em->remove($emailExist);
+                        $em->flush();
+                    } else {
+                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('User with this email already exists!', array(), 'general'));
+                        return $this->redirect($this->generateUrl('fos_user_security_login'));
+                    }
                 }
             }
             $user = new User();
@@ -119,12 +149,12 @@ class DefaultController extends Controller
         $client = new Client($this->container->getParameter('midas_url'));
         $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
-            $data = json_encode($req->send()->getBody(true), true);
+            $data = json_decode($req->send()->getBody(true), true);
             if($data['type'] == 'success'){
-                $this->get('session')->getFlashBag()->add('success', 'Logged out successfully');
+                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Logged out successfully', array(), 'general'));
                 $session->remove('sessionToken');
             } else {
-                $this->get('session')->getFlashBag()->add('error', 'Error when logging out');
+                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error when logging out', array(), 'general'));
             }
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {

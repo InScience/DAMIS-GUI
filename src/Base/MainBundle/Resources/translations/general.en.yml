@@ -4,3 +4,8 @@ en_US: English
 en: English
 cron: Cron
 pages: Pages
+#Default controller translations
+MIDAS user login request parameters are wrong! : MIDAS user login request parameters are wrong!
+User with this email already exists!: User with this email already exists!. Please remove user or change user email
+Logged out successfully : Logged out successfully
+Error when logging out : Error when logging out

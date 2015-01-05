@@ -4,3 +4,8 @@ en_US: English
 en: English
 cron: Cron
 pages: Puslapiai
+#Default controller translations
+MIDAS user login request parameters are wrong! : MIDAS varotojo prisijungimo duomenys yra neteisingi!
+User with this email already exists! : Varotojas su tokiu pašto adresu egzisuoja DAMIS sistemoje. Prašome pašalinti vartotoją iš DAMIS arba pasikeiskite pašto savo adresą
+Logged out successfully : Prisijungta sėkmingai
+Error when logging out : Klaida atsijungiant nuo sistemos
