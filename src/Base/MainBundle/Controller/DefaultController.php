@@ -115,7 +115,11 @@ class DefaultController extends Controller
         $user->setSurname($surname);
         if(!$userEmail)
             $userEmail = $userId . 'user@midas.lt';
-        $user->setEmail($userEmail);
+         /* @var $emailExist \Base\UserBundle\Entity\User */;
+        $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
+        if(!$emailExist){
+            $user->setEmail($userEmail);
+        }        
         $user->setUserId($userId);
         if(!$user->hasRole('ROLE_CONFIRMED'))
             $user->addRole('ROLE_CONFIRMED');

@@ -147,7 +147,7 @@ class DatasetsController extends Controller
             //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
-            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
+            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'),  // can be added also zip
             //'repositoryType' => 'research'
             'uuid' => $uuid
         );
