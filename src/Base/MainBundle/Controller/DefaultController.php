@@ -130,7 +130,9 @@ class DefaultController extends Controller
         $session->set('sessionToken', $sessionToken);
         $token = new UsernamePasswordToken($user, null, "main", $user->getRoles());
         $this->get("security.context")->setToken($token);
-
+        //@TODO Chrome not always store session cookie correctly
+        if (empty($_COOKIE))
+            die($this->get('translator')->trans('Please use another browser. This browser has problems with cookies!', array(), 'general'));
         $request = $this->get("request");
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
