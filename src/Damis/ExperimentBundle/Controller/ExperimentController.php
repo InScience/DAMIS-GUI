@@ -130,6 +130,7 @@ class ExperimentController extends Controller
             $experiment->setUseCpu($params['experiment-p']);
             $experiment->setUsePrimaryMemory($params['experiment-ram']);
             $experiment->setUseSecMemory($params['experiment-hdd']);
+            $experiment->setStart(strtotime($params['experiment-start']));
         }
 
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
