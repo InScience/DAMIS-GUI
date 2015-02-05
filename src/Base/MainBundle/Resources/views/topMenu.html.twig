@@ -3,6 +3,9 @@
         <li><a href="{{ path('new_experiment') }}">{{ 'Create experiment' | trans({}, 'ExperimentBundle') }} <span class="glyphicon glyphicon-plus"></span></a></li>
         <li><a href="{{ path('experiments_history') }}">{{ 'Experiments' | trans({}, 'ExperimentBundle') }} <span class="glyphicon glyphicon-list"></span></a></li>
         <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }} <span class="glyphicon glyphicon-file"></span></a></li>
+        {% if is_damis_algorithm_enabled %}
+        <li><a href="{{ path('algorithm_list') }}">{{ 'Algorithms list' | trans({}, 'AlgorithmBundle') }} <span class="glyphicon glyphicon-cloud-upload"></span></a></li>
+        {% endif %}
     {% else %}
     {% endif %}
 </ul>

@@ -31,6 +31,7 @@ class AppKernel extends Kernel
             new Base\ConvertBundle\BaseConvertBundle(),
             new Base\StaticBundle\BaseStaticBundle(),
             new Damis\DatasetsBundle\DamisDatasetsBundle(),
+            new Damis\AlgorithmBundle\DamisAlgorithmBundle(),
             new Base\LogBundle\BaseLogBundle(),
             new Iphp\FileStoreBundle\IphpFileStoreBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),

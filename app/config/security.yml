@@ -69,5 +69,8 @@ security:
         #datasets bundle
         - { path: ^/datasets, role: ROLE_CONFIRMED }
 
+        #algorithm bundle
+        - { path: ^/algorithm, role: ROLE_CONFIRMED }
+        
         #experiment bundle
         - { path: ^/experiment, role: ROLE_CONFIRMED }

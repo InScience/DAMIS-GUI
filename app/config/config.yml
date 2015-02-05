@@ -34,6 +34,7 @@ twig:
     globals:
         project: "%project%"
         login_form: true
+        is_damis_algorithm_enabled: %is_damis_algorithm_enabled%
 
 # Assetic Configuration
 assetic:
@@ -132,6 +133,18 @@ iphp_file_store:
                     params: { field: userIdMd5Dataset }
             delete_on_remove: true
             overwrite_duplicates: true
+        algorithmfile:
+            upload_dir:  %kernel.root_dir%/../web/assets
+            upload_path: /assets
+            namer:
+                translit: ~
+                property:
+                    params: { field : fileIdMd5 }
+            directory_namer:
+                property:
+                    params: { field: userIdMd5File }
+            delete_on_remove: true
+            overwrite_duplicates: true            
 
 knp_paginator:
     page_range: 13

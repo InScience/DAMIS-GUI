@@ -297,6 +297,26 @@ CREATE TABLE IF NOT EXISTS `workflowtask` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
+-- Table structure for table `useralgorithm`
+--
+
+CREATE TABLE IF NOT EXISTS `useralgorithm` (
+`id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `file_title` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `file_created` int(11) NOT NULL,
+  `file_path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_updated` int(11) DEFAULT NULL,
+  `file` longtext COLLATE utf8_unicode_ci COMMENT '(DC2Type:array)',
+  `file_description` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hidden` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `USER_ALGORITHM_FILE_PK` (`id`),
+  KEY `IDX_5B486DD9A76ED395` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+
+--
 -- Constraints for dumped tables
 --
 
@@ -347,6 +367,12 @@ ALTER TABLE `pvalueoutpvaluein`
 --
 ALTER TABLE `workflowtask`
   ADD CONSTRAINT `FK_5F598CF2BAA1BE51` FOREIGN KEY (`ExperimentID`) REFERENCES `experiment` (`ExperimentID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `useralgorithm`
+--
+ALTER TABLE `useralgorithm`
+  ADD CONSTRAINT `FK_5B486DD9A76ED395` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
