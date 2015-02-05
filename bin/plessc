@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+SRC_DIR="`pwd`"
+cd "`dirname "$0"`"
+cd "../vendor/leafo/lessphp"
+BIN_TARGET="`pwd`/plessc"
+cd "$SRC_DIR"
+"$BIN_TARGET" "$@"
