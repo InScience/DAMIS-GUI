@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cbb21b386255318b21953cf04eab5c73",
+    "hash": "aa54df61689cd16592906a132306ca6b",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -69,26 +69,22 @@
         },
         {
             "name": "bcc/cron-manager-bundle",
-            "version": "v2.4.0",
+            "version": "v2.6",
             "target-dir": "BCC/CronManagerBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michelsalib/BCCCronManagerBundle.git",
-                "reference": "3de2272d5a0a4492f5c8557da4a0805525c0dea1"
+                "reference": "f5a991af566fc027e56d9d81824a5fdc1cf30ce6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michelsalib/BCCCronManagerBundle/zipball/3de2272d5a0a4492f5c8557da4a0805525c0dea1",
-                "reference": "3de2272d5a0a4492f5c8557da4a0805525c0dea1",
+                "url": "https://api.github.com/repos/michelsalib/BCCCronManagerBundle/zipball/f5a991af566fc027e56d9d81824a5fdc1cf30ce6",
+                "reference": "f5a991af566fc027e56d9d81824a5fdc1cf30ce6",
                 "shasum": ""
             },
             "require": {
-                "components/jquery": "1.*",
-                "leafo/lessphp": "dev-master",
-                "ptachoire/cssembed": "~1.0",
-                "symfony/assetic-bundle": "~2.3",
-                "symfony/symfony": "~2.4",
-                "twbs/bootstrap": "2.3.*"
+                "symfony/assetic-bundle": "~2",
+                "symfony/symfony": "~2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -112,7 +108,7 @@
             "keywords": [
                 "cron management"
             ],
-            "time": "2014-01-06 09:25:24"
+            "time": "2014-12-01 11:58:12"
         },
         {
             "name": "behat/transliterator",
@@ -153,51 +149,6 @@
                 "transliterator"
             ],
             "time": "2014-05-15 22:08:22"
-        },
-        {
-            "name": "components/jquery",
-            "version": "1.11.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/components/jquery.git",
-                "reference": "d7dfc1aa3edf92038a24862888b46b4d0e74faba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/d7dfc1aa3edf92038a24862888b46b4d0e74faba",
-                "reference": "d7dfc1aa3edf92038a24862888b46b4d0e74faba",
-                "shasum": ""
-            },
-            "require": {
-                "robloach/component-installer": "*"
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "scripts": [
-                        "jquery.js"
-                    ],
-                    "files": [
-                        "jquery.min.js",
-                        "jquery-migrate.js",
-                        "jquery-migrate.min.js",
-                        "jquery.min.map"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "John Resig",
-                    "email": "jeresig@gmail.com"
-                }
-            ],
-            "description": "jQuery JavaScript Library",
-            "homepage": "http://jquery.com",
-            "time": "2014-12-23 06:54:15"
         },
         {
             "name": "doctrine/annotations",
@@ -2474,91 +2425,6 @@
             "time": "2012-12-21 11:40:51"
         },
         {
-            "name": "ptachoire/cssembed",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/krichprollsch/phpCssEmbed.git",
-                "reference": "406c6d5b846cafa9186f9944a6210d0e6fed154b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/krichprollsch/phpCssEmbed/zipball/406c6d5b846cafa9186f9944a6210d0e6fed154b",
-                "reference": "406c6d5b846cafa9186f9944a6210d0e6fed154b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "CssEmbed": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Pierre Tachoire",
-                    "email": "pierre.tachoire@gmail.com"
-                }
-            ],
-            "description": "Css url embed library.",
-            "homepage": "https://github.com/krichprollsch/phpCssEmbed",
-            "keywords": [
-                "css",
-                "url"
-            ],
-            "time": "2013-07-22 20:01:48"
-        },
-        {
-            "name": "robloach/component-installer",
-            "version": "0.0.12",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/RobLoach/component-installer.git",
-                "reference": "1864f25db21fc173e02a359f646acd596c1b0460"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/RobLoach/component-installer/zipball/1864f25db21fc173e02a359f646acd596c1b0460",
-                "reference": "1864f25db21fc173e02a359f646acd596c1b0460",
-                "shasum": ""
-            },
-            "require": {
-                "kriswallsmith/assetic": "1.*",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "composer/composer": "1.*"
-            },
-            "type": "composer-installer",
-            "extra": {
-                "class": "ComponentInstaller\\Installer"
-            },
-            "autoload": {
-                "psr-0": {
-                    "ComponentInstaller": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rob Loach",
-                    "email": "robloach@gmail.com",
-                    "homepage": "http://robloach.net"
-                }
-            ],
-            "description": "Allows installation of Components via Composer.",
-            "time": "2013-08-31 23:46:48"
-        },
-        {
             "name": "sensio/distribution-bundle",
             "version": "v2.3.9",
             "target-dir": "Sensio/Bundle/DistributionBundle",
@@ -3117,33 +2983,6 @@
                 "framework"
             ],
             "time": "2015-02-02 18:02:30"
-        },
-        {
-            "name": "twbs/bootstrap",
-            "version": "v2.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "b4c4072679943773a7582daa63f545ba818fa627"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/b4c4072679943773a7582daa63f545ba818fa627",
-                "reference": "b4c4072679943773a7582daa63f545ba818fa627",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Sleek, intuitive, and powerful front-end framework for faster and easier web development.",
-            "homepage": "http://twbs.github.com/bootstrap/",
-            "keywords": [
-                "bootstrap",
-                "css"
-            ],
-            "time": "2013-07-27 06:36:38"
         },
         {
             "name": "twig/extensions",
