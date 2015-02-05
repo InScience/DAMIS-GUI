@@ -21,7 +21,7 @@
                 <p>{{ 'Processor number'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-p" name="experiment-p" type="text" value="1"></p>
                 <p>{{ 'Primary memory (RAM)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-ram" name="experiment-ram" type="text" value="1000">&nbsp;MB</p>
                 <p>{{ 'Secondary memory (HDD)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-hdd" name="experiment-hdd" type="text" value="1000">&nbsp;MB</p>
-                <p>{{ 'Start experiment from'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-start" name="experiment-start" type="text" value="2015-01-26 16:15"></p>
+                <p>{{ 'Start experiment from'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-start" name="experiment-start" type="text" value="{{ "now"|date("Y-m-d H:i") }}"></p>
                 <input id="id_experiment-workflow_state" name="experiment-workflow_state" type="hidden">
                 <input id="id_experiment-skip_validation" name="experiment-skip_validation" type="hidden">
                 <input id="id_experiment" name="experiment-id" type="hidden" value="{{ experimentId }}">
