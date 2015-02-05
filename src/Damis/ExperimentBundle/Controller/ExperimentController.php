@@ -128,6 +128,8 @@ class ExperimentController extends Controller
         if($isExecution) {
             $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
             $experiment->setUseCpu($params['experiment-p']);
+            $experiment->setUsePrimaryMemory($params['experiment-ram']);
+            $experiment->setUseSecMemory($params['experiment-hdd']);
         }
 
         $experiment->setUser($this->get('security.context')->getToken()->getUser());

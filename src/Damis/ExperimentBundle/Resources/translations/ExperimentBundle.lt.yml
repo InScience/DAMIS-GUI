@@ -16,6 +16,8 @@ Experiment status: Statusas
 Experiment title: Eksperimento pavadinimas
 Maximum calculation time: Maksimalus skaičiavimo laikas
 Processor number: Procesorių skaičius
+Primary memory (RAM): Pirminė atmintis (RAM)
+Secondary memory (HDD): Antrinė admintis (HDD)
 Experiment successfully created! : Eksperimentas sėkmingai išsaugotas!
 Experiment successfully updated! : Eksperimentas sėkmingai atnaujintas!
 Filter data: Filtravimas
