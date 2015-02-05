@@ -16,3 +16,4 @@ parameters:
     project_domain: .something
     project_email: info@something.lt
     project_full_host: http://www.something.lt
+    is_damis_algorithm_enabled: true
