@@ -297,11 +297,52 @@ class ComponentController extends Controller
                 'files' => null
             ];
         }
+		// Default path
+		if (!$path) {
+			$files = array('details' => 
+				array('folderDetailsList' =>
+					array(
+						0 => 
+							array (
+								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'path' => 'publishedResearch',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'publishedResearch',
+								 'resourceId'	=> ''
+							),
+						1 => 
+							array (
+								 'name' => $this->get('translator')->trans('Not published research'),
+								 'path' => 'research',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'research',
+								 'resourceId'	=> ''
+							)
+					)
+				));
+			return array(
+				'file' => null,
+				'files' => $files,
+				'page' => 0,
+				'pageCount' => 1,
+				'totalFiles' => 0,
+				'previous' => 0,
+				'next' => 0,
+				'path' => $path,
+				'uuid' => '',
+				'selected' => 0
+			);			
+		}
+		/// Else if $path is selected        
         $post = array(
             //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
-            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'),  // can be added also zip
+            //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'),  // can be added also zip
             //'repositoryType' => 'research'
             'uuid' => $uuid
         );
@@ -322,6 +363,14 @@ class ComponentController extends Controller
         }
 
         $pageCount = $files['details']['pageCount'];
+		// Remove bad files
+		$extensions = array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip');
+		$tmpItems = $files['details']['folderDetailsList'];
+		foreach ($tmpItems as $nr => $item) {
+			if ($item['type'] == 'FILE' && !in_array(pathinfo($item['name'], PATHINFO_EXTENSION), $extensions)) {
+				unset($files['details']['folderDetailsList'][$nr]);
+			}
+		}
         return array(
             'file' => null,
             'files' => $files,
@@ -374,11 +423,51 @@ class ComponentController extends Controller
                     $path .= $p . '/';
             }
         }
+		// Default path
+		if (!$path) {
+			$files = array('details' => 
+				array('folderDetailsList' =>
+					array(
+						0 => 
+							array (
+								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'path' => 'publishedResearch',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'publishedResearch',
+								 'resourceId'	=> ''
+							),
+						1 => 
+							array (
+								 'name' => $this->get('translator')->trans('Not published research'),
+								 'path' => 'research',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'research',
+								 'resourceId'	=> ''
+							)
+					)
+				));
+			return array(
+				'files' => $files,
+				'page' => 0,
+				'pageCount' => 1,
+				'totalFiles' => 0,
+				'previous' => 0,
+				'next' => 0,
+				'path' => $path,
+				'uuid' => '',
+				'selected' => 0
+			);			
+		}
+		/// Else if $path is selected   		
         $post = array(
             //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
-            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff'),  // can be added also zip
+            //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'),
             //'repositoryType' => 'research'
             'uuid' => $uuid
         );
@@ -395,6 +484,7 @@ class ComponentController extends Controller
             try {
                 $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+				/* @TODO remove var_dump */
                 var_dump('Error! ' . $e->getMessage()); die;
             }
         }

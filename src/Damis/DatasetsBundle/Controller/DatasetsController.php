@@ -126,7 +126,7 @@ class DatasetsController extends Controller
         }
         $page = ($request->get('page')) ? $request->get('page') : 1;
         $path = ($request->get('path')) ? $request->get('path') : '';
-        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research';
+        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research'; // publishedResearch,research a067ccd3-5fbc-4000-8e76-8570b7a5c632 (temp)
         $id = $request->get('id');
 
         $data = json_decode($request->get('data'));
@@ -143,11 +143,55 @@ class DatasetsController extends Controller
                     $path .= $p . '/';
             }
         }
+		// Default path
+		if (!$path) {
+			$files = array('details' => 
+				array('folderDetailsList' =>
+					array(
+						0 => 
+							array (
+								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'path' => 'publishedResearch',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'publishedResearch',
+								 'resourceId'	=> ''
+							),
+						1 => 
+							array (
+								 'name' => $this->get('translator')->trans('Not published research'),
+								 'path' => 'research',
+								 'type' => 'RESEARCH',
+								 'modifyDate' => time() * 1000,
+								 'page' => 0,
+								 'uuid' => 'research',
+								 'resourceId'	=> ''
+							)
+					)
+				));
+			return array(
+				'notLogged' => $notLogged,
+				'files' => $files,
+				'page' => 0,
+				'pageCount' => 1,
+				'totalFiles' => 0,
+				'previous' => 0,
+				'next' => 0,
+				'path' => $path,
+				'uuid' => '',
+				'selected' => 0
+			);			
+		} else {
+            
+            
+        }
+		/// Else if $path is selected
         $post = array(
             //'path' => $path,
             'page' => $page,
             'pageSize' => 10,
-            'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'),  // can be added also zip
+            //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'), // Folders are excluded if we use this parameter
             //'repositoryType' => 'research'
             'uuid' => $uuid
         );
@@ -166,16 +210,32 @@ class DatasetsController extends Controller
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
                 $notLogged = true;
             }
-        }
-        if(isset($files['details']))
-            $pageCount = $files['details']['pageCount'];
-        else
+        }	
+        if(isset($files['details'])) {
+			$pageCount = $files['details']['pageCount'];
+			$totalFiles= $files['details']['totalElements'];
+			// Remove bad files
+			$extensions = array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip');
+			$tmpItems = $files['details']['folderDetailsList'];
+			foreach ($tmpItems as $nr => $item) {
+				if ($item['type'] == 'FILE' && !in_array(pathinfo($item['name'], PATHINFO_EXTENSION), $extensions)) {
+					unset($files['details']['folderDetailsList'][$nr]);
+					$totalFiles--;
+				}
+				if ($item['type'] != 'FILE') {
+					$totalFiles--;
+				}
+			}
+		} else {
             $pageCount = 0;
+			$totalFiles = 0;
+		}
         return array(
             'notLogged' => $notLogged,
             'files' => $files,
             'page' => $page,
             'pageCount' => $pageCount,
+			'totalFiles' => $totalFiles,
             'previous' => $page - 1,
             'next' => $page + 1,
             'path' => $path,

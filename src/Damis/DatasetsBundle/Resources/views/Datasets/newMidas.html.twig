@@ -6,9 +6,9 @@
         <li class="active"><a href="{{ path('datasets_midas_new') }}">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
     {% include "DamisDatasetsBundle::messages.html.twig" %}
-    {% if not notLogged %}
+    {% if not notLogged %}  
     <form role="form" id="createDataset" action="{{ path('datasets_create_midas') }}" method="post" style="margin-top: 20px;">
-        <div class="col-lg-12">
+        <div class="col-lg-12">  
             <input type="hidden" value="{{ path }}" name="folderPath">
             {% if path %}
                 {% set pathes = path|split('/') %}
@@ -21,12 +21,14 @@
                         {% if pat == "/" %}
                             <a href="{{ path('datasets_midas_new', {'path' : '', 'edit' : 1}) }}"> &larr; </a>
                         {% else %}
-                            <a href="{{ path('datasets_midas_new', {'path' : back, 'edit' : 1}) }}"> &larr; </a>
+                            <!-- Due MIDAS changes it is imposible to navigate with PATH -->
+                            <!-- <a href="{{ path('datasets_midas_new', {'path' : back, 'edit' : 1}) }}"> &larr; </a> -->
+                            <a href="{{ path('datasets_midas_new', {'path' : '', 'edit' : 1}) }}"> &larr; </a>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
+            {% else %}      
             {% endif %}
-            {% if files | length > 0 %}
                 <table class="table table-hover">
                     <tr class="active">
                         <th>
@@ -36,6 +38,7 @@
                             {{ 'Modified' | trans({}, 'DatasetsBundle') }}
                         </th>
                     </tr>
+            {% if pageCount > 0 %}                    
                     {% for file in files.details.folderDetailsList %}
                         {% set name = {'name' : file.name, 'path' : file.path, 'page' : page, 'uuid' : file.uuid, 'idCSV' : file.resourceId	}|json_encode %}
                         <tr>
@@ -83,7 +86,9 @@
                 </div>
             {% endif %}
         </div>
+        {% if totalFiles > 0 %}
         <button style="margin-left: 15px;" type="submit" class="btn btn-primary">{{ 'Upload dataset' | trans({}, 'DatasetsBundle') }}</button>
+        {% endif %}
     </form>
     {% else %}
         <p style="margin-top: 20px;">

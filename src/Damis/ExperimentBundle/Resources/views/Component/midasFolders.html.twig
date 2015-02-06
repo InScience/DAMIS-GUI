@@ -13,7 +13,9 @@
                         {% if pat == "/" %}
                             <a href="{{ path('existing_midas_folders', {'path' : '', 'edit' : 1}) }}"> &larr; </a>
                         {% else %}
-                            <a href="{{ path('existing_midas_folders', {'path' : back, 'edit' : 1}) }}"> &larr; </a>
+                            <!-- Due MIDAS changes it is imposible to navigate with PATH -->
+                            <!-- <a href="{{ path('existing_midas_folders', {'path' : back, 'edit' : 1}) }}"> &larr; </a> -->
+                            <a href="{{ path('existing_midas_folders', {'path' : '', 'edit' : 1}) }}"> &larr; </a>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
@@ -29,10 +31,14 @@
                             {% set name = {'name' : file.name, 'path' : file.path, 'page' : page, 'uuid' : file.uuid, 'idCSV' : file.resourceId	}|json_encode %}
                             <tr>
                                 <td>
-                                    {% if file.type != "FILE" %}
+                                    {% if file.type != "FILE" and file.uuid != "research" and file.uuid != "publishedResearch"  %}
                                         <input type="radio" {% if name == selected %} checked {% endif %}
                                                value="{{ name }}" name="folder_path">
                                         <a href="{{ path('existing_midas_folders', {'page' : previous, 'path' : file.path, 'uuid' : file.uuid, 'idCSV' : file.resourceId, 'edit' : 1}) }}"> {{ file.name }} </a>
+                                    {% else %}
+                                        {% if file.uuid == "research" or file.uuid == "publishedResearch" %}
+                                        <a href="{{ path('existing_midas_folders', {'page' : previous, 'path' : file.path, 'uuid' : file.uuid, 'idCSV' : file.resourceId, 'edit' : 1}) }}"> {{ file.name }} </a>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>
