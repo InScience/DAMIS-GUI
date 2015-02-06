@@ -173,3 +173,6 @@ Do you really want to clear experiment workflow? : Ar tikrai norite išvalyti da
 Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas – procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą
 Value cannot be negative : Reikšmė negali būti neigiama
 This component should be connected to another component : Ši komponentė turi būti sujungta su kita komponente
+REPOSITORY_NOT_FOUND : MIDAS nurodytas tyrimas nerastas, prašome bandyti dar kartą.
+PERM_NotGranted : Jūs neturite teisių išsaugoti duomenis nurodytame MIDAS kataloge.
+FILE_ResearchSpaceIsFull : MIDAS tyrimų edvė yra pilna, duomenys bus išsaugoti laikinojoje erdvėje.

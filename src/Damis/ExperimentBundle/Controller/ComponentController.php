@@ -358,6 +358,7 @@ class ComponentController extends Controller
             try {
                  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                /* @TODO remove var_dump */
                 var_dump('Error! ' . $e->getMessage()); die;
             }
         }
@@ -525,7 +526,7 @@ class ComponentController extends Controller
                 if($request->get('dst') == 'user-computer')
                     return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
                 else if ($request->get('dst') == 'midas') {
-                    /** @var Response $response2 */
+                    /** @var $response2 Response */
                     $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo'. ucfirst($request->get('format')), array(
                         'id'  => $id,
                     ));

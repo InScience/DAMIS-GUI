@@ -1,1 +1,4 @@
 Maximum number of cluster: Number of clusters
+REPOSITORY_NOT_FOUND : MIDAS system has no such path. Please, try again.
+PERM_NotGranted : You havn't write permission to selected folder.
+FILE_ResearchSpaceIsFull : MIDAS research space is full. All data will be saved in temporary directory.
