@@ -304,7 +304,7 @@ class ComponentController extends Controller
 					array(
 						0 => 
 							array (
-								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
 								 'path' => 'publishedResearch',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
@@ -314,7 +314,7 @@ class ComponentController extends Controller
 							),
 						1 => 
 							array (
-								 'name' => $this->get('translator')->trans('Not published research'),
+								 'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
 								 'path' => 'research',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
@@ -358,7 +358,7 @@ class ComponentController extends Controller
             try {
                  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                echo $this->get('translator')->trans('It is impossible access MIDAS. Please relogin to MIDAS'); die;
+                echo $this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', array(), 'ExperimentBundle'); die;
                 //var_dump('Error! ' . $e->getMessage()); die;
             }
         }
@@ -431,7 +431,7 @@ class ComponentController extends Controller
 					array(
 						0 => 
 							array (
-								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
 								 'path' => 'publishedResearch',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
@@ -441,7 +441,7 @@ class ComponentController extends Controller
 							),
 						1 => 
 							array (
-								 'name' => $this->get('translator')->trans('Not published research'),
+								 'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
 								 'path' => 'research',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
@@ -485,7 +485,7 @@ class ComponentController extends Controller
             try {
                 $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                echo $this->get('translator')->trans('It is impossible access MIDAS. Please relogin to MIDAS'); die;
+                echo $this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', array(), 'ExperimentBundle'); die;
                 //var_dump('Error! ' . $e->getMessage()); die;
             }
         }

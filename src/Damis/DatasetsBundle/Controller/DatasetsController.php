@@ -114,7 +114,7 @@ class DatasetsController extends Controller
      * @Template()
      */
     public function newMidasAction(Request $request)
-    {
+    {     
         $client = new Client($this->container->getParameter('midas_url'));
         $notLogged = false;
         $session = $request->getSession();
@@ -150,7 +150,7 @@ class DatasetsController extends Controller
 					array(
 						0 => 
 							array (
-								 'name' =>  $this->get('translator')->trans('Published research'),
+								 'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
 								 'path' => 'publishedResearch',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
@@ -160,7 +160,7 @@ class DatasetsController extends Controller
 							),
 						1 => 
 							array (
-								 'name' => $this->get('translator')->trans('Not published research'),
+								 'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
 								 'path' => 'research',
 								 'type' => 'RESEARCH',
 								 'modifyDate' => time() * 1000,
