@@ -167,7 +167,9 @@ class DefaultController extends Controller
             }
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            var_dump('Error! ' . $e->getMessage()); die;
+            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error when logging out', array(), 'general'));
+			// Logout anyway
+            return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
 
     }
