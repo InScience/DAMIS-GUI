@@ -358,8 +358,8 @@ class ComponentController extends Controller
             try {
                  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                /* @TODO remove var_dump */
-                var_dump('Error! ' . $e->getMessage()); die;
+                echo $this->get('translator')->trans('It is impossible access MIDAS. Please relogin to MIDAS'); die;
+                //var_dump('Error! ' . $e->getMessage()); die;
             }
         }
 
@@ -485,8 +485,8 @@ class ComponentController extends Controller
             try {
                 $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-				/* @TODO remove var_dump */
-                var_dump('Error! ' . $e->getMessage()); die;
+                echo $this->get('translator')->trans('It is impossible access MIDAS. Please relogin to MIDAS'); die;
+                //var_dump('Error! ' . $e->getMessage()); die;
             }
         }
         if(isset($files['details']))

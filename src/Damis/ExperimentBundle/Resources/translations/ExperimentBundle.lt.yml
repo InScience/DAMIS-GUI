@@ -176,3 +176,4 @@ This component should be connected to another component : Ši komponentė turi b
 REPOSITORY_NOT_FOUND : MIDAS nurodytas tyrimas nerastas, prašome bandyti dar kartą.
 PERM_NotGranted : Jūs neturite teisių išsaugoti duomenis nurodytame MIDAS kataloge.
 FILE_ResearchSpaceIsFull : MIDAS tyrimų edvė yra pilna, duomenys bus išsaugoti laikinojoje erdvėje.
+It is impossible access MIDAS. Please relogin to MIDAS: Negalima prisijungti prie MIDAS sistemos. Prašome prisijungti prie MIDAS iš naujo
