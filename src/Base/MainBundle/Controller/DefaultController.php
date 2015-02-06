@@ -38,16 +38,19 @@ class DefaultController extends Controller
 		$userId = $request->get('userId', null);
 		$timeStamp = $request->get('timeStamp', null);
 		$signature = $request->get('signature', null);
-		
+
         $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
         $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
         fclose($fp);
+        $signatureAlg = 'SHA256';  // also posible sha256WithRSAEncryption, SHA256, RSA-SHA256
+        // What is signed
+        $tmpSignature = $timeStamp . $name . $surname . $sessionFinishDate . $userEmail . $sessionToken . $userId;
+        
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
-        openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
-		$tmpSignature = $timeStamp . $name . $surname . $sessionFinishDate . $userEmail . $sessionToken . $userId;
-
-        if(!$sessionToken || !$signature || ($tmpSignature !== $decriptedSignature)){
+        //openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
+		
+        if(!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode($signature, true), $pubKey, $signatureAlg)){
             // Unset older session data 
             $this->get("security.context")->setToken(null);
 			/*
