@@ -3,3 +3,8 @@ services:
         class: Damis\DatasetsBundle\Twig\DatasetsExtension
         tags:
             - { name: twig.extension }
+    midas_service:
+        class:  Damis\DatasetsBundle\Controller\MidasController
+        arguments:
+            session: @session
+            container: @service_container

@@ -41,3 +41,5 @@ Error uploading file : Failas nebuvo nusiųstas į MIDAS
 File is not selected : Failas nepasirinktas.
 Published research : Publikuoti tyrimai
 Not published research : Nepublikuoti tyrimai
+Error when getting temporal directory id : Klaida jungiantis prie MIDAS. Bandykite prisijungti prie MIDAS tuomet kartokite duomenų išsaugojimą
+Midas login session is over. Please login to MIDAS and try again. : Midas sesija nutrūko. Prašome prisijungti prie MIDAS ir bandyti dar kartą.
