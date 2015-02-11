@@ -44,3 +44,6 @@ Published research : Publikuoti tyrimai
 Not published research : Nepublikuoti tyrimai
 Error when getting temporal directory id : Klaida jungiantis prie MIDAS. Bandykite prisijungti prie MIDAS tuomet kartokite duomenų išsaugojimą
 Midas login session is over. Please login to MIDAS and try again. : Midas sesija nutrūko. Prašome prisijungti prie MIDAS ir bandyti dar kartą.
+REPOSITORY_NOT_FOUND : MIDAS nurodytas tyrimas nerastas, prašome bandyti dar kartą.
+PERM_NotGranted : Jūs neturite teisių išsaugoti duomenis nurodytame MIDAS kataloge.
+FILE_ResearchSpaceIsFull : MIDAS tyrimų edvė yra pilna, duomenys bus išsaugoti laikinojoje erdvėje.
