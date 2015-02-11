@@ -179,7 +179,7 @@ echo http_build_query($post);
 
             curl_close($resource);
 
-            $this->session->getFlashBag()->add('success', $this->container->get('translator')->trans('File uploaded successfully', array(), 'DatasetsBundle'));
+            $this->session->getFlashBag()->add('success', $this->container->get('translator')->trans('Not enough space in main directory. File uploaded successfully to your temporal MIDAS directory', array(), 'DatasetsBundle'));
             return 1;            
             
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
