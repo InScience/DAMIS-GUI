@@ -1,6 +1,9 @@
 <?php
 
-namespace { $loader = require_once __DIR__.'/autoload.php'; }
+namespace {
+    error_reporting(error_reporting() & ~E_USER_DEPRECATED);
+    $loader = require_once __DIR__.'/autoload.php';
+}
 
  
 namespace Symfony\Component\HttpFoundation
@@ -336,8 +339,8 @@ $files = $data;
 foreach (self::$fileKeys as $k) {
 unset($files[$k]);
 }
-foreach (array_keys($data['name']) as $key) {
-$files[$key] = $this->fixPhpFilesArray(array('error'=> $data['error'][$key],'name'=> $data['name'][$key],'type'=> $data['type'][$key],'tmp_name'=> $data['tmp_name'][$key],'size'=> $data['size'][$key],
+foreach ($data['name'] as $key => $name) {
+$files[$key] = $this->fixPhpFilesArray(array('error'=> $data['error'][$key],'name'=> $name,'type'=> $data['type'][$key],'tmp_name'=> $data['tmp_name'][$key],'size'=> $data['size'][$key],
 ));
 }
 return $files;
@@ -731,7 +734,7 @@ $this->session = $session;
 public function getClientIps()
 {
 $ip = $this->server->get('REMOTE_ADDR');
-if (!self::$trustedProxies) {
+if (!$this->isFromTrustedProxy()) {
 return array($ip);
 }
 if (!self::$trustedHeaders[self::HEADER_CLIENT_IP] || !$this->headers->has(self::$trustedHeaders[self::HEADER_CLIENT_IP])) {
@@ -786,7 +789,7 @@ return $this->isSecure() ?'https':'http';
 }
 public function getPort()
 {
-if (self::$trustedProxies) {
+if ($this->isFromTrustedProxy()) {
 if (self::$trustedHeaders[self::HEADER_CLIENT_PORT] && $port = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PORT])) {
 return $port;
 }
@@ -801,7 +804,7 @@ $pos = strpos($host,':', strrpos($host,']'));
 $pos = strrpos($host,':');
 }
 if (false !== $pos) {
-return intval(substr($host, $pos + 1));
+return (int) substr($host, $pos + 1);
 }
 return'https'=== $this->getScheme() ? 443 : 80;
 }
@@ -862,7 +865,7 @@ return''=== $qs ? null : $qs;
 }
 public function isSecure()
 {
-if (self::$trustedProxies && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
+if ($this->isFromTrustedProxy() && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
 return in_array(strtolower(current(explode(',', $proto))), array('https','on','ssl','1'));
 }
 $https = $this->server->get('HTTPS');
@@ -870,7 +873,7 @@ return !empty($https) &&'off'!== strtolower($https);
 }
 public function getHost()
 {
-if (self::$trustedProxies && self::$trustedHeaders[self::HEADER_CLIENT_HOST] && $host = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_HOST])) {
+if ($this->isFromTrustedProxy() && self::$trustedHeaders[self::HEADER_CLIENT_HOST] && $host = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_HOST])) {
 $elements = explode(',', $host);
 $host = $elements[count($elements) - 1];
 } elseif (!$host = $this->headers->get('HOST')) {
@@ -1043,13 +1046,13 @@ $this->languages = array();
 foreach (array_keys($languages) as $lang) {
 if (strstr($lang,'-')) {
 $codes = explode('-', $lang);
-if ($codes[0] =='i') {
+if ('i'=== $codes[0]) {
 if (count($codes) > 1) {
 $lang = $codes[1];
 }
 } else {
 for ($i = 0, $max = count($codes); $i < $max; $i++) {
-if ($i == 0) {
+if ($i === 0) {
 $lang = strtolower($codes[0]);
 } else {
 $lang .='_'.strtoupper($codes[$i]);
@@ -1214,7 +1217,7 @@ if (0 !== strpos(rawurldecode($string), $prefix)) {
 return false;
 }
 $len = strlen($prefix);
-if (preg_match("#^(%[[:xdigit:]]{2}|.){{$len}}#", $string, $match)) {
+if (preg_match(sprintf('#^(%%[[:xdigit:]]{2}|.){%d}#', $len), $string, $match)) {
 return $match[0];
 }
 return false;
@@ -1229,6 +1232,10 @@ throw new \LogicException('The Request factory must return an instance of Symfon
 return $request;
 }
 return new static($query, $request, $attributes, $cookies, $files, $server, $content);
+}
+private function isFromTrustedProxy()
+{
+return self::$trustedProxies && IpUtils::checkIp($this->server->get('REMOTE_ADDR'), self::$trustedProxies);
 }
 }
 }
@@ -1770,7 +1777,7 @@ ob_end_clean();
 protected function ensureIEOverSSLCompatibility(Request $request)
 {
 if (false !== stripos($this->headers->get('Content-Disposition'),'attachment') && preg_match('/MSIE (.*?);/i', $request->server->get('HTTP_USER_AGENT'), $match) == 1 && true === $request->isSecure()) {
-if (intval(preg_replace("/(MSIE )(.*?);/","$2", $match[0])) < 9) {
+if ((int) preg_replace('/(MSIE )(.*?);/','$2', $match[0]) < 9) {
 $this->headers->remove('Cache-Control');
 }
 }
@@ -2304,11 +2311,11 @@ protected $booted = false;
 protected $name;
 protected $startTime;
 protected $loadClassCache;
-const VERSION ='2.6.4';
-const VERSION_ID ='20604';
+const VERSION ='2.6.6';
+const VERSION_ID ='20606';
 const MAJOR_VERSION ='2';
 const MINOR_VERSION ='6';
-const RELEASE_VERSION ='4';
+const RELEASE_VERSION ='6';
 const EXTRA_VERSION ='';
 public function __construct($environment, $debug)
 {
@@ -2599,7 +2606,7 @@ protected function buildContainer()
 {
 foreach (array('cache'=> $this->getCacheDir(),'logs'=> $this->getLogDir()) as $name => $dir) {
 if (!is_dir($dir)) {
-if (false === @mkdir($dir, 0777, true)) {
+if (false === @mkdir($dir, 0777, true) && !is_dir($dir)) {
 throw new \RuntimeException(sprintf("Unable to create the %s directory (%s)\n", $name, $dir));
 }
 } elseif (!is_writable($dir)) {
@@ -3085,7 +3092,7 @@ $a = array();
 foreach ($var as $k => $v) {
 $a[] = sprintf('%s => %s', $k, $this->varToString($v));
 }
-return sprintf("Array(%s)", implode(', ', $a));
+return sprintf('Array(%s)', implode(', ', $a));
 }
 if (is_resource($var)) {
 return sprintf('Resource(%s)', get_resource_type($var));
