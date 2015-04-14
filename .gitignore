@@ -18,3 +18,4 @@ app/config/parameters.yml
 
 .idea/*
 nbproject/*
+/scripts/
