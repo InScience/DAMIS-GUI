@@ -70,7 +70,7 @@ class ExperimentRepository extends EntityRepository
      * @return string
      */
     public function getNextExperimentNameNumber() {
-        $em = $this->getEntityManager();
+        $em = $this->getManager();
         $dql = $em->createQuery("
             SELECT SUBSTRING(tbl.name, 1, 3) as name, SUBSTRING(tbl.name FROM 4) as nr
             FROM DamisExperimentBundle:Experiment tbl

@@ -135,7 +135,7 @@ class ReadFile {
      */
     public function selectFeatures($datasetId, $attr, $class, $userId, $container)
     {
-        $em = $container->get('doctrine')->getEntityManager();
+        $em = $container->get('doctrine')->getManager();
         $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
         $rows = @$this->getRows($container->get('kernel')->getRootDir() . '/../web' . $dataset->getFilePath(), 'arff');
         $nr = 0;
