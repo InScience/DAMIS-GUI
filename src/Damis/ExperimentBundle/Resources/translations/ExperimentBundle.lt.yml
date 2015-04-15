@@ -131,30 +131,30 @@ MII Cluster : MII klasteris
 Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstytųjų skaičiavimų klasteris
 Supercomputer of Vilnius University Faculty of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos fakulteto paskirstytųjų skaičiavimų superkompiuteris
 C4.5 classifier : C4.5 klasifikatorius
-RDF classifier : RDF klasifikatorius
-Data cleaning : Duomenų valymas
-Diagonal majorization algorithm : Diagonalinio mažoravimo algoritmas  (DMA)
-Select uploaded file : Pasirinkti įkeltą failą
-Filter data : Filtravimas
-k-means clustering : k-vidurkių klasterizavimo metodas
-Results matrix view : Rezultatų matricinis vaizdavimas
-Select file from MIDAS archive : Pasirinkti failą iš MIDAS archyvo
-Multilayer perceptron : Daugiasluoksnis perceptronas
-Principal Component Analysis : Pagrindinių komponenčių analizė (PCA)
-SAMANN algorithm : SAMANN algoritmas
-Relative Multidimensional Scaling (MDS)  algorithm : Santykinių daugiamačių skalių (MDS) algoritmas
-Select features : Požymių atrinkimas
-SMACOF (MDS) algorithm : SMACOF (MDS) algoritmas
-Self-Organizing Map (SOM) : Saviorganizuojantis neuroninis tinklas (SOM)
-SOM for Multidimensional Data Visualization : Saviorganizuojančių neuroninių tinklų junginys su daugiamatėmis skalėmis
-Split a file into given number of parts : Failo padalinimas į kelis smulkesnius
+RDF classifier : RDF komponentė klasifikuoja duomenis naudojant klasifikavimo medžius. Pagrindinė atsitiktinio miško formavimo idėja - suformuoti tikslų klasifikatorių, apjungiant sprendimus daugelio binarinių sprendimų medžių, užaugintų naudojant skirtingus duomenų poaibius iš originalios duomenų aibės, ir atsitiktinai parinktus požymių poaibius iš požymių aibės. Toks binarinių medžių rinkinys pasižymi atsparumu persimokymui ir, medžių skaičiui augant, bendros klaidos konvergavimu iki stabilios reikšmės.
+Data cleaning : Pašalinami duomenų įrašai su trūkstamomis reikšmėmis. 
+Diagonal majorization algorithm : MDS metodo tikslas – rasti optimalias daugiamačius duomenis atitinkančių taškų projekcijas mažos dimensijos erdvėje, siekiant išlaikyti duomenų tarpusavio panašumą. Diagonalinio mažoravimo algoritmas (DMA) yra SMACOF algoritmo modifikacija, kurioje naudojama paprastesnė mažoravimo funkcija. Modifikacija DMA skirta atvaizduoti didesnėms duomenų aibėms. 
+Select uploaded file : Duomenų analizei pasirenkamas vienas iš jau įkeltų į DAMIS failų
+Filter data description: Filtravimo komponentė atrenka (arba pašalina) išskirtis duomenyse.
+k-means clustering : K-vidurkių komponentė grupuoja duomenis k-vidurkių metodu. K-vidurkių metodas yra grupavimo algoritmas, skirtas suskirstyti duomenų aibę į kompaktiškas grupes, esančias kuo toliau viena nuo kitos. Paprastai nurodomas parametras k, pasakantis į kiek grupių reikia padalinti vektorių aibę.
+Results matrix view :   Komponentė, kurios pagalba naudotojas gali peržiūrėti duomenis ar algoritmų rezultatus matricos (lentelės) pavidalu, kai ši komponentė yra sujungta su failo įkėlimo ar algoritmo komponente. Naudotojas rezultatus mato tik kai įvykdytas eksperimentas. 
+Select file from MIDAS archive : "Norimo failo įkėlimas iš MIDAS duomenų analizei. Tinkami failo formatai: tab, txt, csv, xls, xlsx, xml, arff arba archyvas zip (archyve tik vienas failas)."
+Multilayer perceptron : MLP komponentė klasifikuoja duomenis naudojant daugiasluoksnį neuroninį tinklą. Daugiasluoksnis perceptronas (MLP) (angl. multilayer perceptron) yra tiesioginio sklidimo neuroninis tinklas, apmokomas klaidos sklidimo atgal (angl. error back-propagation) metodu. Daugiasluoksnis perceptronas taikomas klasifikavimo uždaviniams spręsti.
+Principal Component Analysis : PCA komponentė sumažina duomenų dimensiją iki pasirinkto skaičiaus atlikdama pagrindinių komponenčių analizę. PCA idėja – sumažinti duomenų dimensiją atliekant tiesinę transformaciją ir atsisakant dalies po transformacijos gautų naujų komponenčių, kurių dispersijos yra mažiausios.
+SAMANN algorithm : SAMMAN komponentė įgyvendina daugiamačių skalių metodą taikant dirbtinius tiesioginio skleidimo neuroninius tinklus.
+Relative Multidimensional Scaling (MDS)  algorithm :  MDS metodo tikslas – rasti optimalias daugiamačius duomenis atitinkančių taškų projekcijas mažos dimensijos erdvėje, siekiant išlaikyti duomenų tarpusavio panašumą. Santykinių daugiamačių skalių algoritmas (angl. Relative MDS) skirtas didelių aibių bei naujų taškų priklausančių daugiamatei erdvei vizualizavimui, naudojant prieš tai apskaičiuotą bazinių taškų projekciją.
+Select features : Požymių atrinkimo komponentė suformuoja naują duomenų aibę, sudarytą tik iš pasirinktų analizuojamos aibės požymių (atributų) reikšmių. Taip pat numatyta naujajame faile klase paskelbti bet kokį pasirinktą požymį.
+SMACOF (MDS) algorithm : MDS metodo tikslas – rasti optimalias daugiamačius duomenis atitinkančių taškų projekcijas mažos dimensijos erdvėje, siekiant išlaikyti duomenų tarpusavio panašumą. „SMACOF (MDS)“ – tai daugiamačių skalių metodas, kuriam pritaikytas vienas geriausių SMACOF optimizavimo algoritmų, taikomų daugiamačių skalių paklaidos minimizavimui. Algoritmas yra paprastas, bet efektyvus, kadangi garantuoja paklaidos funkcijos konvergavimą į lokalų minimumą su tiesiniu konvergavimo greičiu.
+Self-Organizing Map (SOM) : SOM komponentė klasterizuoja (grupuoja) duomenis pagal saviorganizuojančių neuroninių tinklų algoritmą. SOM tinklo tikslas – išlaikyti duomenų kaimyniškumus, t. y. taškai, esantys arti įėjimo vektorių erdvėje, turi būti atvaizduojami arti vieni kitų ir SOM žemėlapyje.
+SOM for Multidimensional Data Visualization : SOM-MDS komponentė įgyvendina saviorganizuojančių neuroninių tinklų ir daugiamačių skalių metodo junginį, kuris prieš duomenų dimensijos sumažinimą duomenis klasterizuoja.
+Split a file into given number of parts : Pradinės duomenų aibės skaidymas į smulkesnius poaibius. Gautuosius poaibius galima apdoroti lygiagrečiai arba nagrinėti vieną iš jų
 Splits nominal feature into several features : Kategorinį požymį išskaido į kelis požymius
-The set of statistical primitives : Statistinių primityvų skaičiavimas
-Show all component's outputs' values : Pateikti visas komponentės išeičių reikšmes
-Data transformation : Duomenų normavimas
+The set of statistical primitives : Apskaičiuojami duomenų failo statistiniai primityvai: min, max, vidurkis, mediana, standartinis nuokrypis
+Show all component's outputs' values : "Komponentė, skirta įvykdyto eksperimento techninei informacijai peržiūrėti: skaičiavimo laikui, gautos paklaidos ir kt. Naudotojas rezultatus mato tik kai įvykdytas eksperimentas."
+Data transformation : Normavimas – tai duomenų reikšmių keitimas kitomis suvienodinant jų mastelius. Galimi du normavimo būdai: normavimas pagal vidurkį ir dispersiją, kai reikšmės pakeičiamos taip, kad kiekvieno požymio vidurkiai būtų lygūs 0, o dispersija – 1; normavimas į norimą intervalą – reikšmių intervalų keitimas, kai reikšmės pakeičiamos taip, kad kiekvieno požymio minimalios ir maksimalios reikšmės būtų intervale [a, b].
 Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
-Upload file for data analysis : Įkelkite norimą failą duomenų analizei
-Chart : Rezultatų grafinis vaizdavimas
+Upload file for data analysis :  Norimo failo įkėlimas iš asmeninio kompiuterio duomenų analizei. Tinkami failo formatai: tab, txt, csv, xls, xlsx, xml, arff arba archyvas zip (archyve tik vienas failas).
+Chart : Komponentė, kurios pagalba naudotojas gali peržiūrėti rezultatų grafiką, sujungus su vykdyto algoritmo komponente ir spragtelėjus ją du kartus. Atsidariusiame grafike naudotojas gali matyti grafiką.
 Finished : Įvykdytas
 Saved : Išsaugota
 Executing : Vykdoma
@@ -170,7 +170,7 @@ Cluster home : Klasterio svetainė
 Cluster workload : Klasterio apkrovimas
 MDS projection should be equal to 2 : MDS projekcijos skaičius turi būti lygus 2
 Do you really want to clear experiment workflow? : Ar tikrai norite išvalyti darbalaukį?
-Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas – procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą
+Transpose (rotate) data from rows to columns or vice versa : Duomenų transponavimas – procesas, kurio metu gaunama nauja duomenų matrica iš pradinės, pakeičiant kiekvieną jos eilutę (stulpelį) stulpeliu (eilute) turinčiu tą patį indeksą.
 Value cannot be negative : Reikšmė negali būti neigiama
 This component should be connected to another component : Ši komponentė turi būti sujungta su kita komponente
 It is impossible access MIDAS. Please re-login to MIDAS : Negalima prisijungti prie MIDAS sistemos. Prašome prisijungti prie MIDAS iš naujo.
