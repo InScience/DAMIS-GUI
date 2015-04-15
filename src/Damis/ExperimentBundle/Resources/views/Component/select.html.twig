@@ -75,7 +75,7 @@
             $('.shuttle-control-src-dst').tooltip();
             $('.shuttle-control-dst-src').tooltip();
 
-            {% if form_data['selAttr']|length > 0 %}
+            {% if (form_data['selAttr'] is defined) and (form_data['selAttr']|length > 0) %}
             var attrId = 0;
             {% for attrId in form_data['selAttr'] %}
             attrId = {{ attrId }};
