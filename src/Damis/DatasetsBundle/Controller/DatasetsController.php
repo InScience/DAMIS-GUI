@@ -197,14 +197,14 @@ class DatasetsController extends Controller
         );
         $files = [];
         
-        $req = $client->post('/web/action/research/folders',
+        $req = $client->post('/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
         try {
             $response = $req->send();
             if($response->getStatusCode() == 200)
                 $files = json_decode($response->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            $req = $client->post('/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
                 $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -294,9 +294,9 @@ class DatasetsController extends Controller
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
             return $this->redirect($this->generateUrl('datasets_midas_new'));
         }
-        //$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
-		//http://test.midas.lt/web/action/file-explorer/file?name=HBK&idCSV=1104&Authorization=3to1oofbek6s9ljo8d038qe96p
-		$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
+        //$req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+		//http://test.midas.lt/action/file-explorer/file?name=HBK&idCSV=1104&Authorization=3to1oofbek6s9ljo8d038qe96p
+		$req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
         try {
             $body = $req->send()->getBody(true);
             $file = new Dataset();
