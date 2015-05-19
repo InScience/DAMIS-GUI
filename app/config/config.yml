@@ -152,7 +152,3 @@ knp_paginator:
         page_name: page
     template:
         pagination: BaseStaticBundle:General:paginator.html.twig
-
-# these parameters should be set in parameters.yml
-#base_user:
-#    midas_url: "http://midas.insoft.lt:8888"
