@@ -57,7 +57,7 @@ class ChartController extends Controller
                     'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                     'size' => filesize($temp_file)
                 );
-                $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+                $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
 
                 try {
                     $response = json_decode($req->send()->getBody(true), true);
@@ -74,7 +74,7 @@ class ChartController extends Controller
                     $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/action/file-explorer/file/slice');
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);

@@ -17,3 +17,6 @@ parameters:
     project_email: info@something.lt
     project_full_host: http://www.something.lt
     is_damis_algorithm_enabled: true
+    service_provider_code: damis
+base_user:
+    midas_url: 'https://www.midas.lt'

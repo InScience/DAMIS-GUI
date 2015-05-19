@@ -87,7 +87,7 @@ echo        $toSign = $sourceUrl . $sessionToken . $timeStamp . $serviceProvider
            
 echo http_build_query($post);            
             $post =  http_build_query ($post);
-            $req = $client->post('/web/action/authentication/sso', array('Content-Type' => 'multipart/form-data;charset=utf-8'), $post);
+            $req = $client->post('/action/authentication/sso', array('Content-Type' => 'multipart/form-data;charset=utf-8'), $post);
             var_dump($req);
             //
             // What is signed
@@ -127,7 +127,7 @@ echo http_build_query($post);
         );
         
         try {
-            $req = $client->post('/web/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
+            $req = $client->post('/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
             $response = json_decode($req->send()->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Error when getting temporal directory id', array(), 'DatasetsBundle'));
@@ -153,7 +153,7 @@ echo http_build_query($post);
         );
         try {
             // Initialization
-            $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+            $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
             $response = json_decode($req->send()->getBody(true), true);
 
             if($response['type'] == 'error'){
@@ -169,7 +169,7 @@ echo http_build_query($post);
             $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
             $resource = curl_init();
-            curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
+            curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/action/file-explorer/file/slice');
             curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
             curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($resource, CURLOPT_POST, 1);

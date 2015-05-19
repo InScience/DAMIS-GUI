@@ -229,8 +229,8 @@ class ComponentController extends Controller
     //    $sessionToken = 'g47n5tpirgmhom6k0n015kmgp2';
         if($request->getMethod() == "POST"){
             $data = json_decode(json_decode($request->get('data'), true)[0]['value'], true);
-            //$req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
-            $req = $client->get('/web/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
+            //$req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
+            $req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
             try {
                 $body = $req->send()->getBody(true);
                 $file = new Dataset();
@@ -347,14 +347,14 @@ class ComponentController extends Controller
             'uuid' => $uuid
         );
         $files = [];
-        $req = $client->post('/web/action/research/folders',
+        $req = $client->post('/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
         try {
             $response = $req->send();
             if($response->getStatusCode() == 200)
                 $files = json_decode($response->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            $req = $client->post('/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
                  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -474,14 +474,14 @@ class ComponentController extends Controller
         );
         $files = [];
         
-        $req = $client->post('/web/action/research/folders',
+        $req = $client->post('/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
         try {
             $response = $req->send();
             if($response->getStatusCode() == 200)
                 $files = json_decode($response->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $req = $client->post('/web/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
+            $req = $client->post('/action/authentication/session/' . $sessionToken . '/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
             try {
                 $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -554,7 +554,7 @@ class ComponentController extends Controller
                         'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                         'size' => $entity->getFile()['size']
                     );
-                    $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+                    $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
 
                     try {
                         $response = json_decode($req->send()->getBody(true), true);
@@ -576,7 +576,7 @@ class ComponentController extends Controller
                         $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                         $resource = curl_init();
-                        curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
+                        curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/action/file-explorer/file/slice');
                         curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                         curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                         curl_setopt($resource, CURLOPT_POST, 1);
@@ -680,7 +680,7 @@ class ComponentController extends Controller
                     'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
                     'size' => $entity->getFile()['size']
                 );
-                $req = $client->post('/web/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+                $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
 
                 try {
                     $response = json_decode($req->send()->getBody(true), true);
@@ -702,7 +702,7 @@ class ComponentController extends Controller
                     $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/web/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/action/file-explorer/file/slice');
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);

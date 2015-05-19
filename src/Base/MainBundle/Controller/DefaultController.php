@@ -63,7 +63,7 @@ class DefaultController extends Controller
             openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
             //var_dump($encriptedSignature); die;
             $client = new Client($this->container->getParameter('midas_url'));
-            $req = $client->post('/web/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), $post);
+            $req = $client->post('/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), $post);
             try {
               //  $req->send()->getBody(true);
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -156,7 +156,7 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
         $client = new Client($this->container->getParameter('midas_url'));
-        $req = $client->delete('/web/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
+        $req = $client->delete('/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
             $data = json_decode($req->send()->getBody(true), true);
             if($data['type'] == 'success'){
