@@ -53,23 +53,6 @@ class DefaultController extends Controller
         if(!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode($signature, true), $pubKey, $signatureAlg)){
             // Unset older session data 
             $this->get("security.context")->setToken(null);
-			/*
-            $post = [
-                'sourceUrl' => 'http://damis.lt/midaslogin.html',
-                'sessionToken' => 'trh6g6afhs5cmpmppd4vgio26k',
-                'timeStamp' => time()
-            ];
-            $tmp = $post['sourceUrl'] . $post['timeStamp'];
-            openssl_public_decrypt($tmp, $encriptedSignature, $details['key']);
-            //var_dump($encriptedSignature); die;
-            $client = new Client($this->container->getParameter('midas_url'));
-            $req = $client->post('/action/login', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), $post);
-            try {
-              //  $req->send()->getBody(true);
-            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                var_dump('Error! ' . $e->getMessage());
-            }
-			*/
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS user login request parameters are wrong!', array(), 'general'));
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
@@ -77,12 +60,13 @@ class DefaultController extends Controller
         /** @var User $user */
         $user = $em->getRepository('BaseUserBundle:User')->findOneBy(array('userId' => $userId));
 
+        $isUserNew = false;
         if(!$user){
             if($userEmail){
                 /* @var $emailExist \Base\UserBundle\Entity\User */;
                 $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
                 if($emailExist){
-                    // Remove older user with same email  if this user was form MIDAS
+                    // Remove older user with same email if this user was form MIDAS
                     if ($emailExist->getUserId() > 0) {
                         // Remove user datasets
                         $files = $em->getRepository('DamisDatasetsBundle:Dataset')->findByUserId($emailExist->getId());
@@ -113,6 +97,7 @@ class DefaultController extends Controller
             }
             $user = new User();
             $user->setPassword($userEmail);
+            $isUserNew = true;
         }
         $user->setName($name);
         $user->setSurname($surname);
@@ -139,7 +124,11 @@ class DefaultController extends Controller
         $request = $this->get("request");
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-        return $this->redirect($this->generateUrl('experiments_history'));
+        if ($isUserNew) {
+            return $this->redirect($this->generateUrl('page_show', array('slug' => $this->container->getParameter('first_time_page'))));
+        } else {
+            return $this->redirect($this->generateUrl('experiments_history'));
+        }
     }
 
     /**
