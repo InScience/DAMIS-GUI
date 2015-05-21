@@ -223,7 +223,7 @@ class ComponentController extends Controller
         if($session->has('sessionToken'))
             $sessionToken = $session->get('sessionToken');
         else {
-            echo('Prašome prisijungti prie midas');
+            echo $this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', array(), 'ExperimentBundle');
             die;
         }
     //    $sessionToken = 'g47n5tpirgmhom6k0n015kmgp2';
@@ -402,7 +402,7 @@ class ComponentController extends Controller
         if($session->has('sessionToken'))
             $sessionToken = $session->get('sessionToken');
         else {
-            echo('Prašome prisijungti prie midas');
+            echo $this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', array(), 'ExperimentBundle');
             die;
         }
         $page = ($request->get('page')) ? $request->get('page') : 1;
