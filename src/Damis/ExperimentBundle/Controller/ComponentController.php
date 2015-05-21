@@ -563,7 +563,8 @@ class ComponentController extends Controller
                             if ($response["msgCode"] == 'FILE_ResearchSpaceIsFull') {
                                 $this->get("midas_service")->saveInTempDir($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']).$id. '.'.$request->get('format'));
                             } else {
-                                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
+                                    . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
                             }
                             return $this->redirect($request->headers->get('referer'));
                         }
@@ -689,7 +690,8 @@ class ComponentController extends Controller
                         if ($response["msgCode"] == 'FILE_ResearchSpaceIsFull') {
                             $this->get("midas_service")->saveInTempDir($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity->getFile()['originalName']).$id. '.'.$request->get('format'));
                         } else {
-                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
+                                    . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
                         }
                         return $this->redirect($request->headers->get('referer'));
                     }
