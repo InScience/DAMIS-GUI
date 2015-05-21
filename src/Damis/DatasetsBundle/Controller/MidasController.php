@@ -105,7 +105,7 @@ echo http_build_query($post);
      */
     public function checkSession()
     {
-        if($this->session->has('sessionToken'))
+        if ($this->session->has('sessionToken') && !empty($this->session->get('sessionToken')))
             $sessionToken = $this->session->get('sessionToken');
         else {
             // User is not from midas
@@ -127,8 +127,13 @@ echo http_build_query($post);
             $req = $client->post('/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
             $response = json_decode($req->send()->getBody(true), true);
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
-                                . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
+            if (!empty($response["msgCodeTranslation"])){
+                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
+                                            . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
+            }  else {
+                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS session was lost', array(), 'DatasetsBundle'));
+                $this->session->set('sessionToken', null);
+            }
             return 0;
         }        
     }
