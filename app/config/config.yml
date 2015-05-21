@@ -35,6 +35,7 @@ twig:
         project: "%project%"
         login_form: true
         is_damis_algorithm_enabled: %is_damis_algorithm_enabled%
+        design_style: %design_style%
 
 # Assetic Configuration
 assetic:

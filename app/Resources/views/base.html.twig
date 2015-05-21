@@ -1,8 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ app.request.locale }}" lang="{{ app.request.locale }}">
 
 <head>
-    <meta charset="UTF-8" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="content-language" content="{{ app.request.locale }}"/>
 
@@ -24,6 +23,10 @@
             <link href="{{ asset('/css/fileType.css') }}" rel="stylesheet" />
             <link href="{{ asset('/css/jquery.dataTables.css') }}" rel="stylesheet" />
             <link href="{{ asset('/css/grid-style.css?v=140312') }}" rel="stylesheet" />
+            
+        {% if design_style == "midas" %}
+             <link href="{{ asset('/css/midas.css') }}" rel="stylesheet" />
+        {% endif %}
     {% endblock %}
 </head>
 
@@ -60,6 +63,9 @@
         <div class="container container-footer">
             <p class="text-muted">
                 <a href="http://www.inscience.lt" target="_blank">InScience.LT </a>
+                {% if design_style == "midas" %}
+                    <a href="http://www.vu.lt" target="_blank">Vilniaus universitetas </a>
+                {% endif %}
                 <a href="https://github.com/InScience/DAMIS-GUI" target="_blank">Source code</a>
                 <a href="https://www.gnu.org/licenses/agpl.txt" rel="license" class="helptext" target="_blank"> (aGPL) </a>
             </p>

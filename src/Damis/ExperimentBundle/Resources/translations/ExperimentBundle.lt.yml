@@ -180,4 +180,3 @@ Transpose (rotate) data from rows to columns or vice versa : Duomenų transponav
 Value cannot be negative : Reikšmė negali būti neigiama
 This component should be connected to another component : Ši komponentė turi būti sujungta su kita komponente
 It is impossible access MIDAS. Please re-login to MIDAS : Negalima prisijungti prie MIDAS sistemos. Prašome prisijungti prie MIDAS iš naujo.
-MIDAS session was lost: MIDAS sessija pasibaigė, prašome prisijungti prie MIDAS iš naujo.

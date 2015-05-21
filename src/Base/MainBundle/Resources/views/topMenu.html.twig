@@ -41,14 +41,26 @@
 
 {{ render(controller('BaseStaticBundle:Page:staticMenu', {groupName : 'help'})) }}
 
+{% if design_style == "midas" %}
+<li class="language_box">
+    <ul><li>
+    {% if app.request.locale == "lt" %}
+        <a href="{{ path('change_locale_en') }}">{{ ("anglų"|trans({}, 'general'))|upper }}</a>
+    {% else %}
+        <a href="{{ path('change_locale_lt') }}">{{ ("lt"|trans({}, 'general'))|upper }}</a>
+    {% endif %}
+        </li>
+    </ul>
+</li>
+{% else %}
 <li class="dropdown">
     <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ app.request.locale|trans({}, 'general') }} <b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li><a href="{{ path('change_locale_lt') }}">{{ 'lt_LT'|trans({}, 'general') }}</a></li>
         <li><a href="{{ path('change_locale_en') }}">{{ 'en_US'|trans({}, 'general') }}</a></li>
     </ul>
-</li>
-
+</li>    
+{% endif %}
 </ul>
 
 
