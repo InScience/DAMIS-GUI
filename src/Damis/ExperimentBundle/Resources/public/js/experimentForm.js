@@ -238,12 +238,45 @@
                     "text": Translator.trans('OK', {}, 'ExperimentBundle'),
 					"class": "btn btn-primary",
 					"click": function() {
-                        if($('#id_experiment-title').val() == ""){
+                        if ($('#id_experiment-title').val() == ""){
                             $('#id_experiment-title-error').show();
                             return false;
                         } else
                             $('#id_experiment-title-error').hide();
-
+                        
+                        if (parseInt($('#id_experiment-p').val()) > 0){
+                            $('#id_experiment-p-error').hide();
+                        } else {
+                            $('#id_experiment-p-error').show();
+                            return false;
+                        }
+                        if (parseInt($('#id_experiment-ram').val()) > 0){
+                            $('#id_experiment-ram-error').hide();
+                        } else {
+                            $('#id_experiment-ram-error').show();
+                            return false;
+                        }                            
+                        if (parseInt($('#id_experiment-hdd').val()) > 0){
+                            $('#id_experiment-hdd-error').hide();
+                        } else {
+                            $('#id_experiment-hdd-error').show();
+                            return false;
+                        }
+                        var pattern = /(\d{1,2})\:(\d{1,2})\:(\d{1,2})/;
+                        if (($('#id_experiment-max_calc_time').val()).match(pattern)){
+                            $('#id_experiment-max_calc_time-error').hide();
+                        } else {
+                            $('#id_experiment-max_calc_time-error').show();
+                            return false;
+                        }                        
+                        var pattern2 = /(\d{4})\-(\d{1,2})\-(\d{1,2})\ (\d{1,2}):(\d{1,2})/;
+                        if (($('#id_experiment-start').val()).match(pattern2)){
+                            $('#id_experiment-start-error').hide();
+                        } else {
+                            $('#id_experiment-start-error').show();
+                            return false;
+                        }  
+                        
 						$(this).dialog("close");
                         var experimentForm = $('#experiment-form');
                         var persistedStr = window.persistWorkflow.persistJsPlumbEntities();

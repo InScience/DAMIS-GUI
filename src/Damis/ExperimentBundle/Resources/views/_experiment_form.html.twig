@@ -18,10 +18,25 @@
 
             <div id="exec-params">
                 <p>{{'Maximum calculation time'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-max_calc_time" name="experiment-max_calc_time" type="text" value="2:00:00"></p>
-                <p>{{ 'Processor number'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-p" name="experiment-p" type="text" value="1"></p>
-                <p>{{ 'Primary memory (RAM)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-ram" name="experiment-ram" type="text" value="1000">&nbsp;MB</p>
-                <p>{{ 'Secondary memory (HDD)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-hdd" name="experiment-hdd" type="text" value="1000">&nbsp;MB</p>
+                <p id="id_experiment-max_calc_time-error" style="color:red; display:none;">
+                    {{ 'Maximum calcutation time should have format (H:m:s)'|trans({}, 'ExperimentBundle') }}
+                </p>
+                <p>{{ 'Processor number'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-p" name="experiment-p" required="required" value="1"></p>
+                <p id="id_experiment-p-error" style="color:red; display:none;">
+                    {{ 'Value should be more than 1'|trans({}, 'ExperimentBundle') }}
+                </p>
+                <p>{{ 'Primary memory (RAM)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-ram" name="experiment-ram" type="text" value="100">&nbsp;MB</p>
+                <p id="id_experiment-ram-error" style="color:red; display:none;">
+                    {{ 'Value should be more than 1'|trans({}, 'ExperimentBundle') }}
+                </p>                
+                <p>{{ 'Secondary memory (HDD)'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-hdd" name="experiment-hdd" type="text" value="10">&nbsp;MB</p>
+                <p id="id_experiment-hdd-error" style="color:red; display:none;">
+                    {{ 'Value should be more than 1'|trans({}, 'ExperimentBundle') }}
+                </p>                
                 <p>{{ 'Start experiment from'| trans({}, 'ExperimentBundle') }}:<br> <input id="id_experiment-start" name="experiment-start" type="text" value="{{ "now"|date("Y-m-d H:i") }}"></p>
+                <p id="id_experiment-start-error" style="color:red; display:none;">
+                    {{ 'Bad data format (Y-m-d H:i)'|trans({}, 'ExperimentBundle') }}
+                </p>                
                 <input id="id_experiment-workflow_state" name="experiment-workflow_state" type="hidden">
                 <input id="id_experiment-skip_validation" name="experiment-skip_validation" type="hidden">
                 <input id="id_experiment" name="experiment-id" type="hidden" value="{{ experimentId }}">

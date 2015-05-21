@@ -173,11 +173,15 @@ class ExperimentController extends Controller
         $em->persist($experiment);
         $em->flush();
 
-        if($isExecution)
-            $this->populate($experiment->getId());
         if($isValid){
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
         }
+        
+        if($isExecution) {
+            $this->populate($experiment->getId());
+            $this->get('session')->getFlashBag()->add('success', 'Experiment is started');
+        }
+
         if($isValid)
             return ['experiment' => $experiment];
         else

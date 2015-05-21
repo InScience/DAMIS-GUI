@@ -21,6 +21,7 @@ Secondary memory (HDD): Antrinė admintis (HDD)
 Start experiment from: Pradėti eksperimentą nuo
 Experiment successfully created! : Eksperimentas sėkmingai išsaugotas!
 Experiment successfully updated! : Eksperimentas sėkmingai atnaujintas!
+Experiment is started : Eksperimentas pradėtas vykdyti
 Filter data: Filtravimas
 Result type: Pasirinkit filtravimo rezultatą
 Without outliers: Be atsiskyrėlių
@@ -166,6 +167,9 @@ These items will be permanently deleted and cannot be recovered. Are you sure? :
 Cluster information : Skaičiavimo telkinio informacija
 Experiment settings : Eksperimento nustatymai
 Please enter experiment title : Prašome įvesti eksperimento pavadinimą
+Maximum calcutation time should have format (H:m:s): Laikas turi būti pateiktas formatu val:min:sec
+Value should be more than 1: Reikšmė turi būti didesnė už 1
+Bad data format (Y-m-d H:i): Blogas datos formatas (Y-m-d H:i)
 Cluster home : Klasterio svetainė
 Cluster workload : Klasterio apkrovimas
 MDS projection should be equal to 2 : MDS projekcijos skaičius turi būti lygus 2
