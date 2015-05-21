@@ -19,6 +19,9 @@ class ExperimentHistoryController extends Controller
      */
     public function indexAction()
     {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+        
         $em = $this->getDoctrine()->getManager();
         $userId = $this->get('security.context')->getToken()->getUser()->getId();
         $entities = $em->getRepository('DamisExperimentBundle:Experiment')->getUserExperiments($userId);

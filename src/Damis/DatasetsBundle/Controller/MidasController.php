@@ -98,6 +98,40 @@ echo http_build_query($post);
         }
 */        
     }
+
+    /**
+     * Action get reserch folders to extend MIDAS session
+     * 
+     */
+    public function checkSession()
+    {
+        if($this->session->has('sessionToken'))
+            $sessionToken = $this->session->get('sessionToken');
+        else {
+            // User is not from midas
+            return 0;
+        }
+        
+        $client = new Client($this->container->getParameter('midas_url'));
+        
+        // receive user_temp directory id
+        $emptyPost = array(
+            'page' => 1,
+            'pageSize' => 10,
+            'uuid' => 'research',
+            "orderBy" => "name",
+            "sortingOrder" => "asc"
+        );
+        
+        try {
+            $req = $client->post('/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
+            $response = json_decode($req->send()->getBody(true), true);
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+            $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
+                                . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
+            return 0;
+        }        
+    }
     
     /**
      * Save file to temporal user MIDAS directory
@@ -157,7 +191,8 @@ echo http_build_query($post);
             $response = json_decode($req->send()->getBody(true), true);
 
             if($response['type'] == 'error'){
-                $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle') . ': ' 
+                                                . $this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
                 return 0;
             }
 

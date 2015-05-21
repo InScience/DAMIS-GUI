@@ -31,6 +31,9 @@ class ExperimentController extends Controller
      */
     public function newAction()
     {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+                
         $clusters = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Cluster')
@@ -73,6 +76,9 @@ class ExperimentController extends Controller
      */
     public function editAction($id)
     {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+                
         $data = $this->newAction();
 
         /** @var $experiment Experiment */
@@ -98,6 +104,9 @@ class ExperimentController extends Controller
      */
     public function saveAction(Request $request)
     {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+                
         $params = $request->request->all();
         $isValid = isset($params['valid_form']);
         if($isValid)
@@ -345,6 +354,9 @@ class ExperimentController extends Controller
      */
     public function seeAction($id)
     {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+                
         $data = $this->newAction();
 
         /** @var $experiment Experiment */
