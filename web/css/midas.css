@@ -1,0 +1,45 @@
+/*
+MIDAS project style
+*/
+/* 
+    Created on : 2015-05-21, 23.03.13
+    Author     : Virginijus
+*/
+
+#toolbox-container > .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    background-color: #d3d3d3;
+}
+
+.navbar-inverse {
+    background: #4d6d8c url("https://midas.lt/resources/img/logo.png") no-repeat scroll 30px 8px;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover{
+    text-decoration: underline;
+}
+
+.navbar-collapse {
+    background: #4d6d8c url("https://midas.lt/resources/img/bg-header.png") no-repeat scroll -185px 0;
+    background-repeat: repeat-x;
+}
+
+.language_box li {
+    border: 1px solid #718aa3;
+    margin: 9px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    list-style: none
+}
+
+.language_box li a {
+    color: #fff;
+}
+

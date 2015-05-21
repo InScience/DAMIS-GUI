@@ -19,3 +19,4 @@ app/config/parameters.yml
 .idea/*
 nbproject/*
 /scripts/
+!/web/css/midas.css
