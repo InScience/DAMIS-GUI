@@ -92,6 +92,7 @@ class AlgorithmController extends Controller
                 $em->persist($entity);
                 $em->flush();
             }
+            $this->get('session')->getFlashBag()->add('success', $this->container->get('translator')->trans('Algorithm successfully uploaded! Project administrators will connect with you for next actions', array(), 'AlgorithmBundle'));
             return $this->redirect($this->generateUrl('algorithm_new'));
         }
 
