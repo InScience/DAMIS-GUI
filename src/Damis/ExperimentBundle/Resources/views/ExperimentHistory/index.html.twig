@@ -23,6 +23,12 @@
                             {{ 'Experiment status' | trans({}, 'ExperimentBundle') }}
                         </th>
                         <th>
+                            {{ 'Experiment start' | trans({}, 'ExperimentBundle') }}
+                        </th>
+                        <th>
+                            {{ 'Experiment finish' | trans({}, 'ExperimentBundle') }}
+                        </th>
+                        <th>
                             {{ 'Actions' | trans({}, 'DatasetsBundle') }}
                         </th>
                     </tr>
@@ -37,6 +43,12 @@
                             <td nowrap="nowrap">
                                 {{ entity.status.experimentstatus| capitalize | trans({}, 'ExperimentBundle')}}
                             </td>
+                            <td>
+                                {{ entity.start is empty ? "" :entity.start|date('Y-m-d H:i') }}
+                            </td>
+                            <td>
+                                {{ entity.finish is empty ? "" :entity.finish|date('Y-m-d H:i') }}
+                            </td>                            
                             <td nowrap="nowrap">
                                 <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="{{ path('edit_experiment',{'id' : entity.id}) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>

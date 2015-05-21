@@ -120,6 +120,7 @@ class ExperimentController extends Controller
 
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
+        $experiment->setFinish(null);
         $isExecution = isset($params['experiment-execute']);
 
         if($isExecution)

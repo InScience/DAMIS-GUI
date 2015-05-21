@@ -332,6 +332,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Experiment id : ' . $exCl->getId());
             $output->writeln('Set to finished, has all tasks finished.');
             $exCl->setStatus($experimentStatus);//finished
+            $exCl->setFinish(time());
         }
         $em->flush();
 
@@ -348,6 +349,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Experiment id : ' . $exCl->getId());
             $output->writeln('Set to error, has error in one of the tasks.');
             $exCl->setStatus($experimentStatus);//finished
+            $exCl->setFinish(time());
         }
         $em->flush();
 
