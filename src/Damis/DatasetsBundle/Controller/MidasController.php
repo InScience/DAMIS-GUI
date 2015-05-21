@@ -147,7 +147,7 @@ echo http_build_query($post);
         
         // File Uploading
         $post = array(
-            'name' =>  'robots.txt',
+            'name' => $fileName,
             'parentFolderId' => $tempDirId,
             'size' => filesize($filePath)
         );
