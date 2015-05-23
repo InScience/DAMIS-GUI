@@ -261,7 +261,9 @@ INSERT INTO `experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES
 	('SAVED', 1),
 	('EXECUTING', 2),
 	('FINISHED', 3),
-	('ERROR', 4);
+	('ERROR', 4),
+    ('SUSPENDED', 5),
+    ('EXAMPLE', 6);
 
 -- --------------------------------------------------------
 -- help pages
