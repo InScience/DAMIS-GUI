@@ -10,7 +10,7 @@
 
     {% block stylesheets %}
         <!-- https://jigsaw.w3.org validation -->
-        {% if app.request.getClientIp != "128.30.52.95" %}
+        {% if "W3C_CSS_Validator" not in app.request.headers.get("User-Agent") %}         
         {% if app.environment == "prod" %}
             <link href="{{ asset('/css/smoothness/jquery-ui-1.10.4.custom.min.css') }}" rel="stylesheet"/>
             <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet"/>
@@ -26,7 +26,6 @@
             <link href="{{ asset('/css/grid-style.css?v=140312') }}" rel="stylesheet" />
         {% else %}
             <link href="{{ asset('/css/styles.css?v=140305') }}" rel="stylesheet" />
-            <link href="{{ asset('/css/jquery.dataTables.css') }}" rel="stylesheet" />
             <link href="{{ asset('/css/grid-style.css?v=140312') }}" rel="stylesheet" />
         {% endif %}
         {% if design_style == "midas" %}
