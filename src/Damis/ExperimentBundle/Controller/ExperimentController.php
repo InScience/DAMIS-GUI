@@ -16,7 +16,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
@@ -229,6 +228,13 @@ class ExperimentController extends Controller
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
+    /**
+     * This action will create all experiment task id database that are required
+     * for execution.
+     * 
+     * @param integer $id Experiment id
+     * @throws type
+     */
     public function populate($id){
         $em = $this->getDoctrine()->getManager();
 
@@ -406,7 +412,7 @@ class ExperimentController extends Controller
             if($experiment){
                 $files = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getExperimentDatasets($id);
                 foreach($files as $fileId){
-                    /** @var $file \Damis\DatasetsBundle\Entity\Dataset */
+                    /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
                     $file = $em->getRepository('DamisDatasetsBundle:Dataset')
                         ->findOneBy(array('datasetId' => $fileId, 'hidden' => true));
                     if($file){
@@ -419,6 +425,122 @@ class ExperimentController extends Controller
                 $em->flush();
             }
         }
+        return $this->redirect($this->generateUrl('experiments_history'));
+    }
+
+    /**
+     * Experiment example copy to user experiments history
+     *
+     * @Route("/experiment/copy.html", name="experiment_copy")
+     * @Method({"GET"})
+     */
+    public function copyAction(Request $request)
+    {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+
+        // Session user
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
+        /* var \Symfony\Component\HttpFoundation\Request */
+        $experimentId = intval($request->get('experiment-example-id'));
+
+        /* @var $experiment Experiment */
+        if ($experimentId > 0)
+            $experiment = $this->getDoctrine()
+                ->getRepository('DamisExperimentBundle:Experiment')
+                ->findOneBy(['id' => $experimentId]);
+        else {
+            return $this->redirect($this->generateUrl('experiments_examples'));
+        }
+      
+        // If experiment id is not valid or not example
+        if (!$experiment || $experiment->getStatus()->getExperimentstatus() != 'EXAMPLE')
+            throw $this->createNotFoundException('Unable to find Experiment entity.');
+
+        /* @var $newExperiment Experiment */
+        $newExperiment = new Experiment();
+        $newExperiment->setName($experiment->getName());
+        $newExperiment->setUser($user);
+        $newExperiment->setUseCpu($experiment->getUseCpu());
+        $newExperiment->setUsePrimaryMemory($experiment->getUsePrimaryMemory());
+        $newExperiment->setUseSecMemory($experiment->getUseSecMemory());
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        // Set experiment status to SAVED
+        $newExperiment->setStatus($em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(1));
+        
+        $newExperiment->setGuiData($experiment->getGuiData());
+        
+        $em->persist($newExperiment);
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Experiment was copied', array(), 'ExperimentBundle'));
+        return $this->redirect($this->generateUrl('experiments_history'));
+    }
+
+    /**
+     * Experiment example copy to user experiments history
+     *
+     * @Route("/experiment/example_copy.html", name="experiment_example_copy")
+     * @Method({"GET"})
+     */
+    public function exampleCopyAction(Request $request)
+    {
+        // checks MIDAS session
+        $this->get("midas_service")->checkSession();
+        
+        // Session user
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
+        if (!$user->hasRole('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+        
+        /* var \Symfony\Component\HttpFoundation\Request */
+        $experimentId = intval($request->get('experiment-example-id'));
+
+        /* @var $experiment Experiment */
+        if ($experimentId > 0 )
+            $experiment = $this->getDoctrine()
+                ->getRepository('DamisExperimentBundle:Experiment')
+                ->findOneBy(['id' => $experimentId, 'user' => $user->getId()]);
+        else {
+            return $this->redirect($this->generateUrl('experiments_examples'));
+        }
+        echo $experiment->getId();
+      
+        // If experiment id is not valid or not example
+        if (!$experiment)
+            throw $this->createNotFoundException('Unable to find Experiment entity.');
+        
+        // Session user
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
+        /* @var $newExperiment Experiment */
+        $newExperiment = new Experiment();
+        $newExperiment->setName($experiment->getName());
+        $newExperiment->setUser($user);
+        $newExperiment->setUseCpu($experiment->getUseCpu());
+        $newExperiment->setUsePrimaryMemory($experiment->getUsePrimaryMemory());
+        $newExperiment->setUseSecMemory($experiment->getUseSecMemory());
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        // Set status to EXAMPLE
+        $newExperiment->setStatus($em->getRepository('DamisExperimentBundle:Experimentstatus')
+                ->findOneByExperimentstatusid(6));
+        
+        $newExperiment->setGuiData($experiment->getGuiData());
+        
+        $em->persist($newExperiment);
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Experiment was copied to experiment examples', array(), 'ExperimentBundle'));
         return $this->redirect($this->generateUrl('experiments_history'));
     }
 

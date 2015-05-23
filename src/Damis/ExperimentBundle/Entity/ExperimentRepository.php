@@ -58,12 +58,29 @@ class ExperimentRepository extends EntityRepository
         $query = $this->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.user = :user')
+            ->andWhere('e.status <> 6')
             ->setParameter('user', $user)
             ->addOrderBy('e.id', 'DESC');
 
         return $query->getQuery();
     }
 
+    /**
+     * Returns all user experiments
+     *
+     * @param int $user
+     * @return \Doctrine\ORM\Query
+     */
+    public function getExperimentsExamples()
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e')
+            ->andWhere('e.status = 6')
+            ->addOrderBy('e.id', 'DESC');
+
+        return $query->getQuery();
+    }
+    
     /**
      * Getting last experiment name
      *

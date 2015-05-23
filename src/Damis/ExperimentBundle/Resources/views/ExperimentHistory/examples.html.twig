@@ -3,34 +3,30 @@
 {% block body -%}
    {% include "BaseUserBundle::messages.html.twig" %}
    {% include "DamisExperimentBundle::messages.html.twig" %}
-
+   
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{{ path('experiments_history') }}">{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</a></li>
-        <li><a href="{{ path('experiments_examples') }}">{{ 'Examples of experiments' | trans({}, 'ExperimentBundle') }}</a></li>
+        <li><a href="{{ path('experiments_history') }}">{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</a></li>
+        <li class="active"><a href="{{ path('experiments_examples') }}">{{ 'Examples of experiments' | trans({}, 'ExperimentBundle') }}</a></li>
     </ul>
     
     <div class="row" style="margin-top: 25px;">
         <div class="col-lg-12">
             {% if entities | length > 0 %}
+                {% if app.user and is_granted("ROLE_ADMIN") %}
                 <a data-toggle="modal" data-target="#confirmDelete" id="delete-button" class="btn btn-small btn-default datasets-btn" style="margin-bottom:10px;" title="{{ 'Delete' | trans({}, 'DatasetsBundle') }}" href="#">
                     <i class=" glyphicon glyphicon-trash"></i>
                 </a>
+                {% endif %}
+                
                 <table class="table table-hover">
                     <tr class="active">
+                        {% if app.user and is_granted("ROLE_ADMIN") %}
                         <th>
                             <input id="select-all" type="checkbox">
                         </th>
+                        {% endif %}
                         <th>
                             {{ 'Title' | trans({}, 'DatasetsBundle') }}
-                        </th>
-                        <th>
-                            {{ 'Experiment status' | trans({}, 'ExperimentBundle') }}
-                        </th>
-                        <th>
-                            {{ 'Experiment start' | trans({}, 'ExperimentBundle') }}
-                        </th>
-                        <th>
-                            {{ 'Experiment finish' | trans({}, 'ExperimentBundle') }}
                         </th>
                         <th>
                             {{ 'Actions' | trans({}, 'DatasetsBundle') }}
@@ -38,35 +34,18 @@
                     </tr>
                     {% for entity in entities %}
                         <tr>
+                            {% if app.user and is_granted("ROLE_ADMIN") %}
                             <td>
                                 <input type="checkbox" name="experiment" value="{{ entity.id }}">
                             </td>
+                            {% endif %}
                             <td>
                                 {{ entity.name }}
-                            </td>
+                            </td>            
                             <td nowrap="nowrap">
-                                {{ entity.status.experimentstatus| capitalize | trans({}, 'ExperimentBundle')}}
-                            </td>
-                            <td>
-                                {{ entity.start is empty ? "" :entity.start|date('Y-m-d H:i') }}
-                            </td>
-                            <td>
-                                {{ entity.finish is empty ? "" :entity.finish|date('Y-m-d H:i') }}
-                            </td>                            
-                            <td nowrap="nowrap">
-                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Edit' | trans({}, 'DatasetsBundle') }}" href="{{ path('edit_experiment',{'id' : entity.id}) }}">
-                                    <i class="glyphicon glyphicon-pencil"></i>
+                                <a class="btn btn-small btn-default datasets-btn" title="{{ 'Add to experiment history'|trans({}, 'ExperimentBundle') }}" href="{{ path('experiment_copy',{'experiment-example-id' : entity.id}) }}">
+                                    <i class="glyphicon glyphicon-plus"></i>
                                 </a>
-                                {% if entity.status.experimentstatusid != 2 and entity.status.experimentstatusid != 1 %}
-                                    <a class="btn btn-small btn-default datasets-btn" title="{{ 'View results' | trans({}, 'ExperimentBundle') }}" href="{{ path('see_experiment', {'id' : entity.id}) }}">
-                                        <i class="glyphicon glyphicon-eye-open"></i>
-                                    </a>
-                                {% endif %}
-                                {% if app.user and is_granted("ROLE_ADMIN") %}
-                                    <a class="btn btn-small btn-default datasets-btn" title="{{ 'Copy experiment to example experimets' | trans({}, 'ExperimentBundle') }}" href="{{ path('experiment_example_copy', {'experiment-example-id' : entity.id}) }}">
-                                        <i class="glyphicon glyphicon-share"></i>
-                                    </a>
-                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
@@ -80,6 +59,7 @@
         {{ knp_pagination_render(entities) }}
     </div>
 
+    {% if app.user and is_granted("ROLE_ADMIN") %}
     <form id="experiment-delete" style="display:none;" action="{{ path('experiment_delete') }}" method="post">
         <input id="experiment-delete-list" name="experiment-delete-list" type="text" value="">
     </form>
@@ -104,10 +84,12 @@
             </div>
         </div>
     </div>
+    {% endif %}                
 
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
+    {% if app.user and is_granted("ROLE_ADMIN") %}
     <script>
         $('#select-all').click(function (event) {
 
@@ -133,4 +115,5 @@
 
         });
     </script>
+    {% endif %}    
 {% endblock %}

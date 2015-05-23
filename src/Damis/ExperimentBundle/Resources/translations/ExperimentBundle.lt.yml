@@ -152,16 +152,18 @@ Self-Organizing Map (SOM) : SOM komponentė klasterizuoja (grupuoja) duomenis pa
 SOM for Multidimensional Data Visualization : SOM-MDS komponentė įgyvendina saviorganizuojančių neuroninių tinklų ir daugiamačių skalių metodo junginį, kuris prieš duomenų dimensijos sumažinimą duomenis klasterizuoja.
 Split a file into given number of parts : Pradinės duomenų aibės skaidymas į smulkesnius poaibius. Gautuosius poaibius galima apdoroti lygiagrečiai arba nagrinėti vieną iš jų
 Splits nominal feature into several features : Kategorinį požymį išskaido į kelis požymius
-The set of statistical primitives : Apskaičiuojami duomenų failo statistiniai primityvai: min, max, vidurkis, mediana, standartinis nuokrypis
+The set of statistical primitives : "Apskaičiuojami duomenų failo statistiniai primityvai: min, max, vidurkis, mediana, standartinis nuokrypis"
 Show all component's outputs' values : "Komponentė, skirta įvykdyto eksperimento techninei informacijai peržiūrėti: skaičiavimo laikui, gautos paklaidos ir kt. Naudotojas rezultatus mato tik kai įvykdytas eksperimentas."
-Data transformation : Normavimas – tai duomenų reikšmių keitimas kitomis suvienodinant jų mastelius. Galimi du normavimo būdai: normavimas pagal vidurkį ir dispersiją, kai reikšmės pakeičiamos taip, kad kiekvieno požymio vidurkiai būtų lygūs 0, o dispersija – 1; normavimas į norimą intervalą – reikšmių intervalų keitimas, kai reikšmės pakeičiamos taip, kad kiekvieno požymio minimalios ir maksimalios reikšmės būtų intervale [a, b].
+Data transformation : "Normavimas – tai duomenų reikšmių keitimas kitomis suvienodinant jų mastelius. Galimi du normavimo būdai: normavimas pagal vidurkį ir dispersiją, kai reikšmės pakeičiamos taip, kad kiekvieno požymio vidurkiai būtų lygūs 0, o dispersija – 1; normavimas į norimą intervalą – reikšmių intervalų keitimas, kai reikšmės pakeičiamos taip, kad kiekvieno požymio minimalios ir maksimalios reikšmės būtų intervale [a, b]."
 Splitting of the attribute of category into several parts : Kategorinio atributo išskaidymas į kelis atributus
-Upload file for data analysis :  Norimo failo įkėlimas iš asmeninio kompiuterio duomenų analizei. Tinkami failo formatai: tab, txt, csv, xls, xlsx, xml, arff arba archyvas zip (archyve tik vienas failas).
+Upload file for data analysis : "Norimo failo įkėlimas iš asmeninio kompiuterio duomenų analizei. Tinkami failo formatai: tab, txt, csv, xls, xlsx, xml, arff arba archyvas zip (archyve tik vienas failas)."
 Chart : Komponentė, kurios pagalba naudotojas gali peržiūrėti rezultatų grafiką, sujungus su vykdyto algoritmo komponente ir spragtelėjus ją du kartus. Atsidariusiame grafike naudotojas gali matyti grafiką.
 Finished : Įvykdytas
 Saved : Išsaugota
 Executing : Vykdoma
 Error : Klaida
+Suspended : Atidėtas
+Example : Pavyzdys
 Fields marked with <span style='color:red;'>*</span> are mandatory : "<span style='color:red;'>*</span> Žvaigždute pažymėti laukai yra privalomi"
 Change title : Pakeisti pavadinimą
 Delete? : Ištrinti?
@@ -169,9 +171,9 @@ These items will be permanently deleted and cannot be recovered. Are you sure? :
 Cluster information : Skaičiavimo telkinio informacija
 Experiment settings : Eksperimento nustatymai
 Please enter experiment title : Prašome įvesti eksperimento pavadinimą
-Maximum calcutation time should have format (H:m:s): Laikas turi būti pateiktas formatu val:min:sec
+Maximum calcutation time should have format (H:m:s): "Laikas turi būti pateiktas formatu val:min:sec"
 Value should be more than 1: Reikšmė turi būti didesnė už 1
-Bad data format (Y-m-d H:i): Blogas datos formatas (Y-m-d H:i)
+Bad data format (Y-m-d H:i): "Blogas datos formatas (Y-m-d H:i)"
 Cluster home : Klasterio svetainė
 Cluster workload : Klasterio apkrovimas
 MDS projection should be equal to 2 : MDS projekcijos skaičius turi būti lygus 2
@@ -180,3 +182,8 @@ Transpose (rotate) data from rows to columns or vice versa : Duomenų transponav
 Value cannot be negative : Reikšmė negali būti neigiama
 This component should be connected to another component : Ši komponentė turi būti sujungta su kita komponente
 It is impossible access MIDAS. Please re-login to MIDAS : Negalima prisijungti prie MIDAS sistemos. Prašome prisijungti prie MIDAS iš naujo.
+Examples of experiments : Pavyzdiniai eksperimentai
+Add to experiment history : Pridėti prie eksperimentų istorijos. Tuomet šį eksperimentą bus galima vykdyti
+Copy experiment to example experimets : Padaryti eksperimento kopiją į pavyzdinius eksperimentus
+Experiment was copied to experiment examples : Eksperimentas nukopijuotas į pavyzdinius ekperimentus
+Experiment was copied : Eksperimentas sėkmingai nukopijuotas
