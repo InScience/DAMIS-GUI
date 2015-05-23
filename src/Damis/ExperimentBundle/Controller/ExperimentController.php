@@ -49,13 +49,14 @@ class ExperimentController extends Controller
             ->getRepository('DamisExperimentBundle:Component')
             ->findAll();
 
-        /** @var $experimentRepository \Damis\ExperimentBundle\Entity\ExperimentRepository */
+        /* @var $experimentRepository \Damis\ExperimentBundle\Entity\ExperimentRepository */
         $experimentRepository = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Experiment');
 
-        $nextName = $experimentRepository->getNextExperimentNameNumber();
-
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        $nextName = $experimentRepository->getNextExperimentNameNumber($user->getId());
 
         return [
             'clusters' => $clusters,

@@ -67,17 +67,18 @@ class ExperimentRepository extends EntityRepository
     /**
      * Getting last experiment name
      *
+     * @param int user id
      * @return string
      */
-    public function getNextExperimentNameNumber() {
+    public function getNextExperimentNameNumber($userId) {
         $em = $this->getEntityManager();
         $dql = $em->createQuery("
             SELECT SUBSTRING(tbl.name, 1, 3) as name, SUBSTRING(tbl.name FROM 4) as nr
             FROM DamisExperimentBundle:Experiment tbl
-            WHERE SUBSTRING(tbl.name, 1, 3) = 'exp'
+            WHERE SUBSTRING(tbl.name, 1, 3) = 'exp' AND tbl.user = $userId
             ORDER BY tbl.id DESC
         ")->setMaxResults(1);
-
+        
         $result = $dql->getResult();
 
         if(isset($result[0]['nr'])){
