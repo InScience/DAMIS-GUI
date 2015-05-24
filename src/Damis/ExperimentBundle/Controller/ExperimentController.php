@@ -131,6 +131,7 @@ class ExperimentController extends Controller
         $experiment->setGuiData($params['experiment-workflow_state']);
         $experiment->setFinish(null);
         $isExecution = isset($params['experiment-execute']);
+        $stopTask = $params['experiment-execute-task-box'];
 
         if($isExecution)
             $isExecution = ($params['experiment-execute'] > 0);
@@ -188,7 +189,7 @@ class ExperimentController extends Controller
         }
         
         if($isExecution) {
-            $this->populate($experiment->getId());
+            $this->populate($experiment->getId(), $stopTask);
             $this->get('session')->getFlashBag()->add('success', 'Experiment is started');
         }
 
@@ -216,7 +217,7 @@ class ExperimentController extends Controller
             throw $this->createNotFoundException('Unable to find Experiment entity.');
         }
 
-        $this->populate($id);
+        $this->populate($id, 0);
 
         $experimentStatus = $em
             ->getRepository('DamisExperimentBundle:Experimentstatus')
@@ -233,9 +234,10 @@ class ExperimentController extends Controller
      * for execution.
      * 
      * @param integer $id Experiment id
+     * @param string $stopTask Task from wih other task will be not executed
      * @throws type
      */
-    public function populate($id){
+    public function populate($id, $stopTask){
         $em = $this->getDoctrine()->getManager();
 
         /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
@@ -250,7 +252,7 @@ class ExperimentController extends Controller
         $guiDataExploded = explode('***', $experiment->getGuiData());
         $workflows = json_decode($guiDataExploded[0]);
         $workflowsConnections = json_decode($guiDataExploded[1]);
-
+      
         //remove workflotasks at first, this should remove parametervalues and parametervaluein-out too
         foreach($experiment->getWorkflowtasks() as $task){
             $em->remove($task);
@@ -268,7 +270,7 @@ class ExperimentController extends Controller
             if (!$component) {
                 continue;
             }
-
+            
             //New workflowtask
             $workflowTask = new Workflowtask();
             $workflowTask->setExperiment($experiment);
@@ -350,6 +352,29 @@ class ExperimentController extends Controller
                     $em->flush();
                 }
             }
+        }
+        
+        /// Remove not runable tasks whet stop task is isset
+        if ($stopTask) {
+            $tasksToRemove = array();
+            foreach($workflowsConnections as $conn){
+                if ($conn->sourceBoxId === $stopTask || in_array($conn->sourceBoxId, $tasksToRemove)) {
+                    $tasksToRemove[] = $conn->targetBoxId ;
+                }
+            }    
+
+            /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
+            $experiment = $em
+                ->getRepository('DamisExperimentBundle:Experiment')
+                ->findOneBy(['id' => $id]);
+            $em->refresh($experiment);
+
+            foreach($experiment->getWorkflowtasks() as $task){
+                if (in_array($task->getTaskBox(),  $tasksToRemove)) {
+                    $em->remove($task);
+                }
+            }
+            $em->flush();
         }
     }
 

@@ -59,7 +59,7 @@ class ComponentController extends Controller
 
         $options = ['choices' => [], 'class' => []];
         $datasetId = $request->get('dataset_id');
-        if($datasetId > 0) {
+        if ($datasetId > 0) {
             /* @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
             $dataset = $this->getDoctrine()
                 ->getManager()
@@ -76,7 +76,7 @@ class ComponentController extends Controller
         $form = $this->createForm(new $formType(), $options);
         $data = json_decode($request->get('data'));
         $formData = [];
-        if($request->getMethod() != 'POST' && !empty($data)) {
+        if ($request->getMethod() != 'POST' && !empty($data)) {
             $parametersIds = [];
             $values = [];
             foreach($data as $parameter) {
@@ -93,11 +93,9 @@ class ComponentController extends Controller
                 $form->get($param->getSlug())->submit($values[$param->getId()]);
                 $formData[$param->getSlug()] = $values[$param->getId()];
             }
-
-
         }
 
-        if($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') {
             $form->submit($request);
             if ($form->isValid()) {
                 $parameters = $this->getDoctrine()
@@ -133,14 +131,14 @@ class ComponentController extends Controller
 
 
         $response = $formData;
-        if($request->getMethod() != 'POST' && empty($data)) {
+        if ($request->getMethod() != 'POST' && empty($data)) {
             $parameters = $this->getDoctrine()
                 ->getManager()
                 ->getRepository('DamisExperimentBundle:Parameter')
                 ->findBy(['component' => $id]);
 
             /* @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
-            foreach($parameters as $parameter)
+            foreach ($parameters as $parameter)
                 if($parameter->getSlug() && $parameter->getConnectionType()->getId() == 3)
                     $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
 

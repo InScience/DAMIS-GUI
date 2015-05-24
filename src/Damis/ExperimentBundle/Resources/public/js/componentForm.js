@@ -64,6 +64,16 @@
                     window.componentForm.doPost($(this));
                 }
             },
+            {
+                "text": Translator.trans('Execute', {}, 'ExperimentBundle'),
+                "class": "btn btn-success",
+                "click": function(ev) {
+                    window.componentForm.doPost($(this));
+                    var experimentForm = $('#experiment-form');
+                    experimentForm.find('input[name=experiment-execute-task-box]').val(window.taskBoxes.getBoxId($(this)));
+                    window.experimentForm.executeDialog("executeTaskBox");
+                }
+            },
                 {
                     "text": Translator.trans('Cancel', {}, 'ExperimentBundle'),
 

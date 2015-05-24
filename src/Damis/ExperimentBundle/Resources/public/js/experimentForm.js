@@ -283,10 +283,16 @@
 						if (action == "execute") {
                             experimentForm.find('input[name=experiment-workflow_state]').val(persistedStr);
                             experimentForm.find('input[name=experiment-execute]').val(1);
+                            experimentForm.find('input[name=experiment-execute-task-box]').val(0);
                             window.experimentForm.submit({});
-						} else {
+						} else if (action == "executeTaskBox") {
+                            experimentForm.find('input[name=experiment-workflow_state]').val(persistedStr);
+                            experimentForm.find('input[name=experiment-execute]').val(1);
+                            window.experimentForm.submit({});
+                        } else {
                             experimentForm.find('input[name=experiment-workflow_state]').val(persistedStr);
                             experimentForm.find('input[name=experiment-execute]').val(0);
+                            experimentForm.find('input[name=experiment-execute-task-box]').val(0);
                             window.experimentForm.submit({
                                 "skipValidation": true
                             });
@@ -298,7 +304,7 @@
 					var dialog = $(this).closest(".ui-dialog");
 					dialog.find(".ui-dialog-titlebar > button").remove();
 
-					if (action == "execute") {
+					if (action == "execute" || action == "executeTaskBox") {
 						$(this).find("#exec-params").show();
 					} else {
 						$(this).find("#exec-params").hide();
