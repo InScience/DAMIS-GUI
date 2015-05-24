@@ -8,3 +8,7 @@ UPDATE `damis`.`component` SET `ComponentDescription` = 'Filter data description
 
 --  NEW experiment statuses
 INSERT INTO `damis`.`experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`) VALUES ('SUSPENDED', 5), ('EXAMPLE', 6); 
+
+-- DF component was with bad parameter. q set to r
+UPDATE `damis`.`parameter` SET `ParameterSlug` = 'r' WHERE `parameter`.`ParameterID` = 169;
+UPDATE `damis`.`parameter` SET `ParameterSlug` = 'r' WHERE `parameter`.`ParameterID` = 172; 

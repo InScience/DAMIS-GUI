@@ -13,9 +13,9 @@ class RdfType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('q', 'number', [
+            ->add('r', 'number', [
                 'required' => true,
-                'data' => 0.63,
+                'data' => '0.63',
                 'attr' => array('class' => 'form-control'),
                 'constraints' => [
                     new NotBlank(),
