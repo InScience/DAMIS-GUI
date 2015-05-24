@@ -81,7 +81,7 @@ class ExperimentController extends Controller
                 
         $data = $this->newAction();
 
-        /** @var $experiment Experiment */
+        /* @var $experiment Experiment */
         $experiment = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Experiment')
@@ -321,22 +321,22 @@ class ExperimentController extends Controller
                     //jei nustaytas sourceAnchor tipas vadinasi tai yra Y connectionas
                     //by default type = Right
                     if (isset($conn->sourceAnchor->type) and ($conn->sourceAnchor->type == "Right")) {
-                        /** @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
+                        /* @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valOut = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Y'] ]);
 
-                        /** @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
+                        /* @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valIn = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
                     } else {
-                        /** @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
+                        /* @var $valOut \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valOut = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->sourceBoxId]['out']['Yalt'] ]);
 
-                        /** @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
+                        /* @var $valIn \Damis\EntitiesBundle\Entity\Parametervalue */
                         $valIn = $em
                             ->getRepository('DamisEntitiesBundle:Parametervalue')
                             ->findOneBy(['parametervalueid' => $workflowsSaved[$conn->targetBoxId]['in'] ]);
@@ -366,7 +366,7 @@ class ExperimentController extends Controller
                 
         $data = $this->newAction();
 
-        /** @var $experiment Experiment */
+        /* @var $experiment Experiment */
         $experiment = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Experiment')
@@ -374,9 +374,9 @@ class ExperimentController extends Controller
 
         $tasksBoxsWithErrors = [];
         $executedTasksBoxs = [];
-        /** @var $task Workflowtask */
+        /* @var $task Workflowtask */
         foreach($experiment->getWorkflowtasks() as $task) {
-            /** @var $value \Damis\EntitiesBundle\Entity\Parametervalue */
+            /* @var $value \Damis\EntitiesBundle\Entity\Parametervalue */
             foreach($task->getParameterValues() as $value)
                 if($value->getParameter()->getConnectionType()->getId() == 2)
                     $data['datasets'][$task->getTaskBox()][] = $value->getParametervalue();

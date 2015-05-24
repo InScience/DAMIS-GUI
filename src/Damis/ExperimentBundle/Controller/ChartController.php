@@ -93,7 +93,7 @@ class ChartController extends Controller
             }
         } else {
             $params = $request->query->all();
-            /** @var $dataset Dataset */
+            /* @var $dataset Dataset */
             $dataset = $this->getDoctrine()
                 ->getRepository('DamisDatasetsBundle:Dataset')
                 ->findOneByDatasetId($params['dataset_url']);

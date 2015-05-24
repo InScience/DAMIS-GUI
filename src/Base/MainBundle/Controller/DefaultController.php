@@ -57,7 +57,7 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
         $em = $this->getDoctrine()->getManager();
-        /** @var User $user */
+        /* @var User $user */
         $user = $em->getRepository('BaseUserBundle:User')->findOneBy(array('userId' => $userId));
 
         $isUserNew = false;

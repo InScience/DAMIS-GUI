@@ -51,7 +51,7 @@ class ComponentController extends Controller
      */
     public function componentFormAction(Request $request, $id)
     {
-        /** @var $component Component */
+        /* @var $component Component */
         $component = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Component')
@@ -60,7 +60,7 @@ class ComponentController extends Controller
         $options = ['choices' => [], 'class' => []];
         $datasetId = $request->get('dataset_id');
         if($datasetId > 0) {
-            /** @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
+            /* @var $dataset \Damis\DatasetsBundle\Entity\Dataset */
             $dataset = $this->getDoctrine()
                 ->getManager()
                 ->getRepository('DamisDatasetsBundle:Dataset')
@@ -84,11 +84,11 @@ class ComponentController extends Controller
                 $values[$parameter->id] = $parameter->value;
             }
 
-            /** @var $helper ExperimentHelper */
+            /* @var $helper ExperimentHelper */
             $helper = $this->get('experiment');
             $parameters = $helper->getParameters($parametersIds);
 
-            /** @var $param Parameter */
+            /* @var $param Parameter */
             foreach($parameters as $param) {
                 $form->get($param->getSlug())->submit($values[$param->getId()]);
                 $formData[$param->getSlug()] = $values[$param->getId()];
@@ -110,7 +110,7 @@ class ComponentController extends Controller
 
                 $formParam = strtolower($component->getFormType()) . '_type';
 
-                /** @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
+                /* @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
                 foreach($parameters as $parameter)
                     if($parameter->getConnectionType()->getId() == 3)
                         if(isset($requestParams[$formParam][$parameter->getSlug()]))
@@ -139,7 +139,7 @@ class ComponentController extends Controller
                 ->getRepository('DamisExperimentBundle:Parameter')
                 ->findBy(['component' => $id]);
 
-            /** @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
+            /* @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
             foreach($parameters as $parameter)
                 if($parameter->getSlug() && $parameter->getConnectionType()->getId() == 3)
                     $response[$parameter->getId()] = $form->get($parameter->getSlug())->getData();
@@ -526,7 +526,7 @@ class ComponentController extends Controller
                 if($request->get('dst') == 'user-computer')
                     return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
                 else if ($request->get('dst') == 'midas') {
-                    /** @var $response2 Response */
+                    /* @var $response2 Response */
                     $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo'. ucfirst($request->get('format')), array(
                         'id'  => $id,
                     ));
@@ -642,7 +642,7 @@ class ComponentController extends Controller
         $entity = null;
         $message = '';
         $runtime = '';
-        /** @var Dataset $entity */
+        /* @var Dataset $entity */
         if($id == 'undefined')
             $id = null;
         else
@@ -652,7 +652,7 @@ class ComponentController extends Controller
             if($request->get('dst') == 'user-computer')
                 return $this->redirect($this->generateUrl('convert_' . $request->get('format'), array('id' => $id)));
             else if ($request->get('dst') == 'midas') {
-                /** @var Response $response2 */
+                /* @var Response $response2 */
                 $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo'. ucfirst($request->get('format')), array(
                     'id'  => $id,
                     'midas' => 1
