@@ -24,6 +24,7 @@ class ExperimentRepository extends EntityRepository
             ->leftJoin('e.workflowtasks', 'w', 'with', 'w.experiment = e and (w.workflowtaskisrunning = 0 or w.workflowtaskisrunning = 1 or w.workflowtaskisrunning = 3)')
             ->andWhere('e.status = 2')
             ->andWhere('w.workflowtaskid is null')
+            ->andWhere('e.start > CURRENT_TIMESTAMP()')
             ->setMaxResults($limit);
 
         return $query->getQuery()->getResult();
