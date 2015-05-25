@@ -207,7 +207,15 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $temp_file_y = $temp_folder . '/' . basename($result['Y']);
                 $err_y = false;
                 try {
-                    file_put_contents($temp_file_y, file_get_contents($result['Y']));
+                    // Do not validate the server sertificate
+                    $arrContextOptions=array(
+						"ssl"=>array(
+							"verify_peer"=>false,
+							"verify_peer_name"=>false,
+						),
+					);
+                    //file_put_contents($temp_file_y, file_get_contents($result['Y']));
+                    file_put_contents($temp_file_y, file_get_contents($result['Y'], false, stream_context_create($arrContextOptions)));
                 } catch (Exception $e) {
                     $err_y = true;
                 }
@@ -217,7 +225,15 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 if (isset($result['Yalt'])){
                     $temp_file_yalt = $temp_folder . '/' . basename($result['Yalt']);
                     try {
-                        file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                        // Do not validate the server sertificate
+                        $arrContextOptions=array(
+                            "ssl"=>array(
+                                "verify_peer"=>false,
+                                "verify_peer_name"=>false,
+                            ),
+                        );                        
+                        //file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                        file_put_contents($temp_file_y, file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptions)));
                     } catch (Exception $e) {
                         $err_yalt = true;
                     }
