@@ -131,7 +131,7 @@ class ExperimentController extends Controller
         $experiment->setGuiData($params['experiment-workflow_state']);
         $experiment->setFinish(null);
         $isExecution = isset($params['experiment-execute']);
-        $stopTask = $params['experiment-execute-task-box'];
+        $stopTask = isset($params['experiment-execute-task-box']) ? $params['experiment-execute-task-box'] : 0;
 
         if($isExecution)
             $isExecution = ($params['experiment-execute'] > 0);
