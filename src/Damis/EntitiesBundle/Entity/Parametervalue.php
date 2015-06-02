@@ -31,7 +31,7 @@ class Parametervalue
     /**
      * @var \Damis\EntitiesBundle\Entity\Workflowtask
      *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask")
+     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask", inversedBy="parameterValues")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="WorkflowTaskID", referencedColumnName="WorkflowTaskID", onDelete="CASCADE")
      * })

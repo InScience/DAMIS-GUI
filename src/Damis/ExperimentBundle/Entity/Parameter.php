@@ -86,7 +86,7 @@ class Parameter
     /**
      * @var Component
      *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Component")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Component", inversedBy="parameters")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ComponentID", referencedColumnName="ComponentID")
      * })

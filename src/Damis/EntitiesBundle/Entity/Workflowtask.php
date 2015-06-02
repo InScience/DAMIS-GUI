@@ -31,7 +31,7 @@ class Workflowtask
     /**
      * @var \Damis\ExperimentBundle\Entity\Experiment
      *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experiment")
+     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experiment", inversedBy="workflowtasks" )
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ExperimentID", referencedColumnName="ExperimentID", onDelete="CASCADE")
      * })
