@@ -20,5 +20,6 @@ parameters:
     service_provider_code: damis
     first_time_page: vartotojo-instrukcija
     design_style: original
+    use_ssl_connections: false
 base_user:
     midas_url: 'https://www.midas.lt'
