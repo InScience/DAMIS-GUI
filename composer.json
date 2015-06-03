@@ -26,15 +26,15 @@
         "jms/serializer-bundle": "dev-master",
         "friendsofsymfony/user-bundle": "@stable",
         "leafo/lessphp": "dev-master",
-        "bcc/cron-manager-bundle": "v2.6",
+        "bcc/cron-manager-bundle": "2.6.*",
         "knplabs/knp-menu-bundle": "dev-master",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "pagerfanta/pagerfanta": "dev-master",
         "apy/datagrid-bundle": "dev-master",
-        "liuggio/excelbundle": ">=1.0.4",
         "iphp/filestore-bundle": "dev-master",
         "willdurand/js-translation-bundle": "@stable",
-        "guzzle/guzzle": "~3.9"
+        "guzzle/guzzle": "~3.9",
+        "phpoffice/phpexcel": "~1.8"
     },
     "scripts": {
         "post-install-cmd": [

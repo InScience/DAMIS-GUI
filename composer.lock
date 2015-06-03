@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "324cc4bd1414838d276287537360caed",
+    "hash": "70a689c15c1ce6aba89410eef0eac82e",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -69,17 +69,17 @@
         },
         {
             "name": "bcc/cron-manager-bundle",
-            "version": "v2.6",
+            "version": "v2.6.1",
             "target-dir": "BCC/CronManagerBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michelsalib/BCCCronManagerBundle.git",
-                "reference": "f5a991af566fc027e56d9d81824a5fdc1cf30ce6"
+                "reference": "803d5ba3d7a18d512df26d652e9cec84a7a3f0f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michelsalib/BCCCronManagerBundle/zipball/f5a991af566fc027e56d9d81824a5fdc1cf30ce6",
-                "reference": "f5a991af566fc027e56d9d81824a5fdc1cf30ce6",
+                "url": "https://api.github.com/repos/michelsalib/BCCCronManagerBundle/zipball/803d5ba3d7a18d512df26d652e9cec84a7a3f0f1",
+                "reference": "803d5ba3d7a18d512df26d652e9cec84a7a3f0f1",
                 "shasum": ""
             },
             "require": {
@@ -108,7 +108,7 @@
             "keywords": [
                 "cron management"
             ],
-            "time": "2014-12-01 11:58:12"
+            "time": "2015-03-19 10:28:58"
         },
         {
             "name": "behat/transliterator",
@@ -1327,17 +1327,16 @@
         },
         {
             "name": "incenteev/composer-parameter-handler",
-            "version": "v2.1.0",
-            "target-dir": "Incenteev/ParameterHandler",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Incenteev/ParameterHandler.git",
-                "reference": "143272a0a09c62616a3c8011fc165a10c6b35241"
+                "reference": "84a205fe80a46101607bafbc423019527893ddd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Incenteev/ParameterHandler/zipball/143272a0a09c62616a3c8011fc165a10c6b35241",
-                "reference": "143272a0a09c62616a3c8011fc165a10c6b35241",
+                "url": "https://api.github.com/repos/Incenteev/ParameterHandler/zipball/84a205fe80a46101607bafbc423019527893ddd0",
+                "reference": "84a205fe80a46101607bafbc423019527893ddd0",
                 "shasum": ""
             },
             "require": {
@@ -1356,8 +1355,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Incenteev\\ParameterHandler": ""
+                "psr-4": {
+                    "Incenteev\\ParameterHandler\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1375,7 +1374,7 @@
             "keywords": [
                 "parameters management"
             ],
-            "time": "2013-12-07 10:10:39"
+            "time": "2015-06-03 08:27:03"
         },
         {
             "name": "iphp/filestore-bundle",
@@ -2081,70 +2080,6 @@
             "description": "lessphp is a compiler for LESS written in PHP.",
             "homepage": "http://leafo.net/lessphp/",
             "time": "2014-12-29 20:45:53"
-        },
-        {
-            "name": "liuggio/ExcelBundle",
-            "version": "v2.0.2",
-            "target-dir": "Liuggio/ExcelBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liuggio/ExcelBundle.git",
-                "reference": "33ce101e5fb76786ea05da350ab394b596d7ee52"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liuggio/ExcelBundle/zipball/33ce101e5fb76786ea05da350ab394b596d7ee52",
-                "reference": "33ce101e5fb76786ea05da350ab394b596d7ee52",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2",
-                "phpoffice/phpexcel": "~1.8.0",
-                "symfony/framework-bundle": "~2.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.6",
-                "sensio/framework-extra-bundle": "~2.3",
-                "symfony/browser-kit": "~2.6",
-                "symfony/class-loader": "~2.6",
-                "symfony/finder": "~2.6",
-                "symfony/form": "~2.6",
-                "symfony/validator": "~2.6"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Liuggio\\ExcelBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ExcelBundle Contributors",
-                    "homepage": "https://github.com/liuggio/ExcelBundle#contributors"
-                },
-                {
-                    "name": "Giulio De Donato",
-                    "email": "liuggio@gmail.com"
-                }
-            ],
-            "description": "This is a Symfony2 Bundle helps you to read and write Excel files (including pdf, xlsx, odt), thanks to the PHPExcel library",
-            "homepage": "http://www.welcometothebundle.com",
-            "keywords": [
-                "Symfony2",
-                "bundle",
-                "excel",
-                "xls"
-            ],
-            "time": "2015-05-15 09:50:11"
         },
         {
             "name": "monolog/monolog",
