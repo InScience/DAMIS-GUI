@@ -3,7 +3,7 @@ Number of iteration must be in interval [1; 1000]: Maksimalus iteracijų skaiči
 Number of hidden neurons at level 1 must be greater than 1: Neuronų skaičius pirmame sluoksnyje turi būti didesnis už 1
 Number of hidden neurons at level 2 cannot be negative: Neuronų skaičius 2-ame sluoksnyje negali būti neigiamas
 Training data size k must be in interval [1; 100] % : Mokymo aibės dydis k turi būti intervale [1; 100] %
-Cross validation fold number k must be in interval [2; 100] : Kryžminio validavimo parametras k turi būti intervale [2, 100]
+Cross validation fold number k must be in interval [2; 150] : Kryžminio validavimo parametras k turi būti intervale [2, 150]
 Sum of training and testing data fields should be 100%: Mokymo ir testavimo laukų reikšmių suma turi būti 100%
 This value type should be integer: Šios reikšmės tipas turi būti sveikas skaičius
 SOM rows and columns quantity must be in interval [3; 100] : SOM eilučių ir stulpelių reikšmė yra sveikas skaičius intervale [3; 100]

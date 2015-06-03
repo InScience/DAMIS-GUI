@@ -23,8 +23,9 @@ class MlpType extends AbstractType {
                 }
             // K fold training
             } else if ($mlp['kFoldValidation'] == '1') {
-                if($mlp['qty'] < 2 || $mlp['qty'] > 100) {
-                    $context->addViolation('Cross validation fold number k must be in interval [2; 100]', [], null);
+                //@TODO This parameter should be bounded by data elements number
+                if($mlp['qty'] < 2 || $mlp['qty'] > 150) {
+                    $context->addViolation('Cross validation fold number k must be in interval [2; 150]', [], null);
                 }
             }
         };

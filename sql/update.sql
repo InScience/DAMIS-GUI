@@ -12,3 +12,11 @@ INSERT INTO `damis`.`experimentstatus` (`ExperimentStatus`, `ExperimentStatusID`
 -- DF component was with bad parameter. q set to r
 UPDATE `damis`.`parameter` SET `ParameterSlug` = 'r' WHERE `parameter`.`ParameterID` = 169;
 UPDATE `damis`.`parameter` SET `ParameterSlug` = 'r' WHERE `parameter`.`ParameterID` = 172; 
+
+-- Updates after 2014-04-14  Version 0.2.0
+-- MLP parameters order bug fix 
+UPDATE `damis`.`parameter` SET `ParameterName` = 'Training type selection parameter', `ParameterSlug` = 'kFoldValidation', `ParameterPosition` = '4' WHERE `parameter`.`ParameterID` = 18; 
+UPDATE `damis`.`parameter` SET `ParameterName` = 'Training type selection parameter', `ParameterSlug` = 'kFoldValidation', `ParameterPosition` = '4' WHERE `parameter`.`ParameterID` = 27;
+
+UPDATE `damis`.`parameter` SET `ParameterName` = 'Size of training data/Cross validation k', `ParameterSlug` = 'qty', `ParameterPosition` = '3' WHERE `parameter`.`ParameterID` = 19; 
+UPDATE `damis`.`parameter` SET `ParameterName` = 'Size of training data/Cross validation k', `ParameterSlug` = 'qty', `ParameterPosition` = '3' WHERE `parameter`.`ParameterID` = 28;
