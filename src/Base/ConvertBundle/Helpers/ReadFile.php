@@ -188,7 +188,7 @@ class ReadFile {
         $file = new File($temp_file);
         $user = $em->getRepository('BaseUserBundle:User')->findOneById($userId);
         $file_entity = new Dataset();
-        $file_entity->setUserId($user);
+        $file_entity->setUser($user);
         $file_entity->setDatasetTitle('experiment result');
         $file_entity->setDatasetCreated(time());
         $file_entity->setDatasetIsMidas(false);

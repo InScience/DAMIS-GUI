@@ -35,7 +35,7 @@ class File
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
-    private $userId;
+    private $user;
 
     /**
      * @var string
@@ -209,26 +209,26 @@ class File
     }
 
     /**
-     * Set userId
+     * Set user
      *
-     * @param \Base\UserBundle\Entity\User $userId
+     * @param \Base\UserBundle\Entity\User $user
      * @return File
      */
-    public function setUserId(\Base\UserBundle\Entity\User $userId = null)
+    public function setUser(\Base\UserBundle\Entity\User $user = null)
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userId
+     * Get user
      *
      * @return \Base\UserBundle\Entity\User
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
@@ -237,7 +237,7 @@ class File
      * @return string
      */
     public function getUserIdMd5(){
-        return md5($this->seed . $this->userId);
+        return md5($this->seed . $this->user);
     }
 
     /**

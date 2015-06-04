@@ -83,7 +83,7 @@ class AlgorithmController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $entity->setFileCreated(time());
-            $entity->setUserId($user);
+            $entity->setUser($user);
             $em->persist($entity);
             $em->flush();
             // Update file path parameter

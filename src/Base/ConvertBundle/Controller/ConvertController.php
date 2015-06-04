@@ -29,7 +29,7 @@ class ConvertController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
@@ -149,7 +149,7 @@ class ConvertController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
@@ -218,7 +218,7 @@ class ConvertController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
@@ -287,7 +287,7 @@ class ConvertController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];
@@ -356,7 +356,7 @@ class ConvertController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity && $entity->getFilePath()){
             $format = explode('.', $entity->getFilePath());
             $format = $format[count($format)-1];

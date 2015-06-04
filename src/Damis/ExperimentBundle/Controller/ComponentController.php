@@ -235,7 +235,7 @@ class ComponentController extends Controller
                 $file->setDatasetTitle(basename($data['name']));
                 $file->setDatasetCreated(time());
                 $user = $this->get('security.context')->getToken()->getUser();
-                $file->setUserId($user);
+                $file->setUser($user);
                 $file->setDatasetIsMidas(true);
                 $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $data['name'];
                 $em->persist($file);
@@ -755,7 +755,7 @@ class ComponentController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity){
             $format = explode('.', $entity->getFile()['fileName']);
             $format = $format[count($format)-1];

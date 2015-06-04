@@ -600,7 +600,7 @@ class ExperimentController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity){
             $format = explode('.', $entity->getFile()['fileName']);
             $format = $format[count($format)-1];

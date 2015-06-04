@@ -17,7 +17,7 @@ class DatasetRepository extends EntityRepository
     public function getUserDatasets($user, $orderBy = array('created' => 'DESC')){
 
         $query = $this->createQueryBuilder('d')
-            ->andWhere('d.userId = :user')
+            ->andWhere('d.user = :user')
             ->andWhere('d.hidden != true')
             ->andWhere('d.hidden is null or d.hidden = false')
             ->setParameter('user', $user);

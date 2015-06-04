@@ -84,7 +84,7 @@ class Dataset
      *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
      * })
      */
-    private $userId;
+    private $user;
 
     /**
      * @var integer
@@ -235,26 +235,26 @@ class Dataset
     }
 
     /**
-     * Set userId
+     * Set user
      *
-     * @param \Base\UserBundle\Entity\User $userId
+     * @param \Base\UserBundle\Entity\User $user
      * @return Dataset
      */
-    public function setUserId(\Base\UserBundle\Entity\User $userId = null)
+    public function setUser(\Base\UserBundle\Entity\User $user = null)
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userId
+     * Get user
      *
      * @return \Base\UserBundle\Entity\User
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
@@ -263,7 +263,7 @@ class Dataset
      * @return string
      */
     public function getUserIdMd5(){
-        return md5($this->seed . $this->userId);
+        return md5($this->seed . $this->user);
     }
 
     /**

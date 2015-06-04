@@ -77,7 +77,7 @@ class DatasetsController extends Controller
         foreach($files as $id){
             /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
             $file = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
-            if ($file && ($file->getUserId() == $user)) {
+            if ($file && ($file->getUser() == $user)) {
                 $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
                 if (!$inUse) {
                     if(file_exists('.' . $file->getFilePath()))
@@ -263,7 +263,7 @@ class DatasetsController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $entity->setDatasetCreated(time());
-            $entity->setUserId($user);
+            $entity->setUser($user);
             $entity->setDatasetIsMidas(false);
             $em->persist($entity);
             $em->flush();
@@ -307,7 +307,7 @@ class DatasetsController extends Controller
             $file->setDatasetTitle(basename($data['name']));
             $file->setDatasetCreated(time());
             $user = $this->get('security.context')->getToken()->getUser();
-            $file->setUserId($user);
+            $file->setUser($user);
             $file->setDatasetIsMidas(true);
             $temp_file = $this->container->getParameter("kernel.cache_dir") . '/../'. time() . $data['name'];
             $em->persist($file);
@@ -373,7 +373,7 @@ class DatasetsController extends Controller
         /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
         // Validation of user access to current experiment
-        if (!$entity || ($entity->getUserId() != $user) ) { 
+        if (!$entity || ($entity->getUser() != $user) ) { 
             $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
             return $this->redirectToRoute('datasets_list');
         }
@@ -417,7 +417,7 @@ class DatasetsController extends Controller
             $datasetId = $data[0]->value;
             $em = $this->getDoctrine()->getManager();
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')
-                        ->findOneBy(['datasetId' => $datasetId, 'userId' => $user->getId()]);
+                        ->findOneBy(['datasetId' => $datasetId, 'user' => $user]);
             return [
                 'form' => $form->createView(),
                 'file' => $dataset
@@ -450,7 +450,7 @@ class DatasetsController extends Controller
             } else{
                 $em = $this->getDoctrine()->getManager();
                 $entity->setDatasetCreated(time());
-                $entity->setUserId($user);
+                $entity->setUser($user);
                 $entity->setDatasetIsMidas(false);
                 $em->persist($entity);
                 $em->flush();
@@ -532,7 +532,7 @@ class DatasetsController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('userId' => $user, 'datasetId' => $id));
+            ->findOneBy(array('user' => $user, 'datasetId' => $id));
         if($entity){
             $format = explode('.', $entity->getFile()['fileName']);
             $format = $format[count($format)-1];
