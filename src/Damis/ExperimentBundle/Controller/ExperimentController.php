@@ -78,15 +78,24 @@ class ExperimentController extends Controller
     {
         // checks MIDAS session
         $this->get("midas_service")->checkSession();
-                
-        $data = $this->newAction();
+
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
 
         /* @var $experiment Experiment */
         $experiment = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Experiment')
             ->findOneById($id);
-
+        
+        // Validation of user access to current experiment
+        if (!$experiment || $experiment->getUser() != $user ) {
+            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+            return $this->redirectToRoute('experiments_history');
+        }
+        
+        $data = $this->newAction();
+        
         $data['workFlowState'] = $experiment->getGuiData();
         $data['taskBoxesCount'] = @explode('***', $data['workFlowState'])[2];
         $data['experimentId'] = $id;
@@ -106,20 +115,23 @@ class ExperimentController extends Controller
     {
         // checks MIDAS session
         $this->get("midas_service")->checkSession();
-                
+
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $params = $request->request->all();
         $isValid = isset($params['valid_form']);
-        if($isValid)
+        if ($isValid)
             $isValid = $params['valid_form'] == 1 ? true : false;
         $isChanged = isset($params['workflow_changed']);
-        if($isChanged)
+        if ($isChanged)
             $isChanged = $params['workflow_changed'] == 1 ? true : false;
 
         /* @var $experiment Experiment */
         if($params['experiment-id'])
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
-                ->findOneBy(['id' => $params['experiment-id']]);
+                ->findOneBy(['id' => $params['experiment-id'], 'user' => $user]);
         else
             $experiment = false;
 
@@ -133,10 +145,10 @@ class ExperimentController extends Controller
         $isExecution = isset($params['experiment-execute']);
         $stopTask = isset($params['experiment-execute-task-box']) ? $params['experiment-execute-task-box'] : 0;
 
-        if($isExecution)
+        if ($isExecution)
             $isExecution = ($params['experiment-execute'] > 0);
 
-        if($isExecution) {
+        if ($isExecution) {
             $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
             $experiment->setUseCpu($params['experiment-p']);
             $experiment->setUsePrimaryMemory($params['experiment-ram']);
@@ -147,53 +159,31 @@ class ExperimentController extends Controller
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
-        $oldStatus = false;
-        if(!$isNew)
-            $oldStatus = $experiment->getStatus();
-
-        if($isExecution && $isChanged && $isValid && !$isNew)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(2);
-        elseif(!$isExecution && $isChanged && $isValid && $isNew)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(1);
-        elseif($isExecution && $isChanged && $isValid && $isNew)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(2);
-        elseif(!$isExecution && $isChanged && $isValid && !$isNew)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(1);
-        elseif($isExecution && !$isChanged && $isValid)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(2);
-        elseif(!$isExecution && !$isChanged && $isValid && !$isNew)
-            $experimentStatus = $oldStatus;
-        elseif($isChanged && !$isValid)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(1);
-        elseif(!$isChanged && !$isValid)
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(1);
-        else
-            $experimentStatus = $em->getRepository('DamisExperimentBundle:Experimentstatus')
-                ->findOneByExperimentstatusid(2);
-
-
-        if($experimentStatus)
-            $experiment->setStatus($experimentStatus);
-        $em->persist($experiment);
-        $em->flush();
-
-        if($isValid){
+        
+        $experimentStatusSaved = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'SAVED']);
+               
+        if ($isValid) {
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
+            // If if something is changed we change status
+            if ($isExecution || $isChanged || $isNew) {
+                $experiment->setStatus($experimentStatusSaved);
+            } else {
+                if (!$isExecution)
+                    $this->get('session')->getFlashBag()->add('success', 'Experiment status is not changed!');
+            }
         }
         
-        if($isExecution) {
+        $em->persist($experiment);
+        $em->flush();
+        
+        if ($isExecution && $isValid) {
             $this->populate($experiment->getId(), $stopTask);
             $this->get('session')->getFlashBag()->add('success', 'Experiment is started');
         }
 
-        if($isValid)
+        if ($isValid)
             return ['experiment' => $experiment];
         else
             return new Response($experiment->getId());
@@ -205,7 +195,11 @@ class ExperimentController extends Controller
      * @Route("/experiment/{id}/execute.html", name="execute_experiment")
      * @Template()
      */
-    public function executeAction($id){
+    public function executeAction($id)
+    {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $em = $this->getDoctrine()->getManager();
 
         /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
@@ -219,13 +213,6 @@ class ExperimentController extends Controller
 
         $this->populate($id, 0);
 
-        $experimentStatus = $em
-            ->getRepository('DamisExperimentBundle:Experimentstatus')
-            ->findOneBy(['experimentstatus' => 'EXECUTING']);
-
-        $experiment->setStatus($experimentStatus);
-        $em->flush();
-
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
@@ -237,7 +224,8 @@ class ExperimentController extends Controller
      * @param string $stopTask Task from wih other task will be not executed
      * @throws type
      */
-    public function populate($id, $stopTask){
+    public function populate($id, $stopTask)
+    {
         $em = $this->getDoctrine()->getManager();
 
         /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
@@ -249,6 +237,12 @@ class ExperimentController extends Controller
             throw $this->createNotFoundException('Unable to find Experiment entity.');
         }
 
+        // Seting experiment status to Executing
+        $experimentStatusExecuting = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'EXECUTING']);
+        $experiment->setStatus($experimentStatusExecuting);
+                
         $guiDataExploded = explode('***', $experiment->getGuiData());
         $workflows = json_decode($guiDataExploded[0]);
         $workflowsConnections = json_decode($guiDataExploded[1]);
@@ -316,7 +310,7 @@ class ExperimentController extends Controller
             $workflowsSaved[$workflow->boxId] = $wf;
         }
 
-        foreach($workflowsConnections as $conn){
+        foreach ($workflowsConnections as $conn) {
             if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])){
                 if ( (isset($workflowsSaved[$conn->sourceBoxId]['out']['Y']) or isset($workflowsSaved[$conn->sourceBoxId]['out']['Yalt'])) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
                     //sugalvojom tokia logika:
@@ -388,14 +382,23 @@ class ExperimentController extends Controller
     {
         // checks MIDAS session
         $this->get("midas_service")->checkSession();
-                
-        $data = $this->newAction();
+
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
 
         /* @var $experiment Experiment */
         $experiment = $this->getDoctrine()
             ->getManager()
             ->getRepository('DamisExperimentBundle:Experiment')
             ->findOneById($id);
+
+        // Validation of user access to current experiment
+        if (!$experiment || $experiment->getUser() != $user ) {
+            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+            return $this->redirectToRoute('experiments_history');
+        }
+        
+        $data = $this->newAction();
 
         $tasksBoxsWithErrors = [];
         $executedTasksBoxs = [];
@@ -430,18 +433,22 @@ class ExperimentController extends Controller
      */
     public function deleteAction(Request $request)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $experiments = json_decode($request->request->get('experiment-delete-list'));
         $em = $this->getDoctrine()->getManager();
-        foreach($experiments as $id){
+        foreach ($experiments as $id){
+            /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
             $experiment = $em->getRepository('DamisExperimentBundle:Experiment')->findOneById($id);
-            if($experiment){
+            if ($experiment && ($user == $experiment->getUser())){
                 $files = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getExperimentDatasets($id);
-                foreach($files as $fileId){
+                foreach ($files as $fileId){
                     /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
                     $file = $em->getRepository('DamisDatasetsBundle:Dataset')
                         ->findOneBy(array('datasetId' => $fileId, 'hidden' => true));
-                    if($file){
-                        if(file_exists('.' . $file->getFilePath()))
+                    if ($file){
+                        if (file_exists('.' . $file->getFilePath()))
                             unlink('.' . $file->getFilePath());
                         $em->remove($file);
                     }
@@ -478,6 +485,12 @@ class ExperimentController extends Controller
                 ->findOneBy(['id' => $experimentId]);
         else {
             return $this->redirect($this->generateUrl('experiments_examples'));
+        }
+        
+        // Validation of user access to current experiment
+        if (!$experiment || $experiment->getUser() != $user ) {
+            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+            return $this->redirectToRoute('experiments_history');
         }
       
         // If experiment id is not valid or not example
@@ -533,11 +546,10 @@ class ExperimentController extends Controller
         if ($experimentId > 0 )
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
-                ->findOneBy(['id' => $experimentId, 'user' => $user->getId()]);
+                ->findOneBy(['id' => $experimentId, 'user' => $user]);
         else {
             return $this->redirect($this->generateUrl('experiments_examples'));
         }
-        echo $experiment->getId();
       
         // If experiment id is not valid or not example
         if (!$experiment)
