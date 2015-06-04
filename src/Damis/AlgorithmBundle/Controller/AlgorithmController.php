@@ -75,7 +75,6 @@ class AlgorithmController extends Controller
      */
     public function createAction(Request $request)
     {
-        
         $entity = new File();
         $form = $this->createForm(new FileType(), $entity);
         $form->submit($request);
@@ -111,7 +110,13 @@ class AlgorithmController extends Controller
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
+        /* @var $entity \Damis\AlgorithmBundle\Entity\File */
         $entity = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
+        // Validation of user access to current experiment
+        if (!$entity || ($entity->getUser() != $user) ) { 
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+            return $this->redirectToRoute('algorithm_list');
+        }        
         $form = $this->createForm(new FileType(), null);
         $form->get('fileTitle')->setData($entity->getFileTitle());
         $form->get('fileDescription')->setData($entity->getFileDescription());
@@ -130,8 +135,17 @@ class AlgorithmController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $em = $this->getDoctrine()->getManager();
+        /* @var $entity \Damis\AlgorithmBundle\Entity\File */
         $entity = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
+        // Validation of user access to current experiment
+        if (!$entity || ($entity->getUser() != $user) ) { 
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+            return $this->redirectToRoute('algorithm_list');
+        }
         $form = $this->createForm(new FileType(), null);
         $form->offsetUnset('file');
         $form->get('fileTitle')->setData($entity->getFileTitle());
@@ -162,13 +176,17 @@ class AlgorithmController extends Controller
      */
     public function deleteAction(Request $request)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $files = json_decode($request->request->get('file-delete-list'));
         $em = $this->getDoctrine()->getManager();
-        foreach($files as $id){
+        foreach ($files as $id){
+            /* @var $file \Damis\AlgorithmBundle\Entity\File */
             $file = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
-            if($file){
-                if(file_exists('.' . $file->getFilePath()))
-                    if($file->getFilePath())
+            if ($file && ($file->getUser() == $user)){
+                if (file_exists('.' . $file->getFilePath()))
+                    if ($file->getFilePath())
                         unlink('.' . $file->getFilePath());
                 $em->remove($file);
                 $em->flush();

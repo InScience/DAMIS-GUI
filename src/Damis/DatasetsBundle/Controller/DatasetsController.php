@@ -346,8 +346,17 @@ class DatasetsController extends Controller
      */
     public function editAction($id)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $em = $this->getDoctrine()->getManager();
+        /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        // Validation of user access to current experiment
+        if (!$entity || ($entity->getUser() != $user) ) { 
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+            return $this->redirectToRoute('datasets_list');
+        }
         $form = $this->createForm(new DatasetType(), null);
         $form->get('datasetTitle')->setData($entity->getDatasetTitle());
         $form->get('datasetDescription')->setData($entity->getDatasetDescription());
