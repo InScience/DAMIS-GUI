@@ -69,13 +69,17 @@ class DatasetsController extends Controller
      */
     public function deleteAction(Request $request)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $files = json_decode($request->request->get('file-delete-list'));
         $em = $this->getDoctrine()->getManager();
         foreach($files as $id){
+            /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
             $file = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
-            if($file){
+            if ($file && ($file->getUserId() == $user)) {
                 $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
-                if(!$inUse){
+                if (!$inUse) {
                     if(file_exists('.' . $file->getFilePath()))
                         if($file->getFilePath())
                             unlink('.' . $file->getFilePath());
@@ -362,8 +366,17 @@ class DatasetsController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $em = $this->getDoctrine()->getManager();
+        /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+        // Validation of user access to current experiment
+        if (!$entity || ($entity->getUserId() != $user) ) { 
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+            return $this->redirectToRoute('datasets_list');
+        }
         $form = $this->createForm(new DatasetType(), null);
         $form->get('datasetTitle')->setData($entity->getDatasetTitle());
         $form->get('datasetDescription')->setData($entity->getDatasetDescription());
@@ -377,7 +390,7 @@ class DatasetsController extends Controller
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Dataset successfully updated!');
-            return $this->redirect($this->generateUrl('datasets_list'));
+            return $this->redirectToRoute('datasets_list');
         }
         return array(
             'form' => $form->createView(),
@@ -394,13 +407,17 @@ class DatasetsController extends Controller
      */
     public function uploadAction(Request $request)
     {
+        /* @var $user \Base\UserBundle\Entity\User */
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
         $data = json_decode($request->query->all()['dataset_url']);
-        if($request->query->all() && !empty($data)) {
+        if ($request->query->all() && !empty($data)) {
             $datasetId = $data[0]->value;
             $em = $this->getDoctrine()->getManager();
-            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
+            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')
+                        ->findOneBy(['datasetId' => $datasetId, 'userId' => $user->getId()]);
             return [
                 'form' => $form->createView(),
                 'file' => $dataset
