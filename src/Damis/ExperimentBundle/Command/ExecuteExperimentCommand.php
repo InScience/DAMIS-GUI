@@ -153,11 +153,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 )
             );
             if (!$params['maxCalcTime']) $params['maxCalcTime'] = 1;
-
+            
             //----------------------------------------------------------------------------------------------------//
 
             $output->writeln('Wsdl function parameters: ' . print_r($params, true));
-
+                
             //FOR TESTING PURPOSES ONLY
             //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
 
@@ -177,10 +177,13 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $result = false;
             $error = false;
             try {
+                //@TODO SSL implementation
+                $output->writeln('Starting call to wsdl fucntion');
                 $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
+                $output->writeln('End of call to wsdl fucntion');
             } catch (\SoapFault $e) {
                 $error['message'] = $e->getMessage();
-                $error['detail'] = @$e->detail;
+                $error['detail'] = @$e->detail;   
             }
 
             //----------------------------------------------------------------------------------------------------//
@@ -250,7 +253,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     $file_y = new File($temp_file_y);
 
                     $file_entity_y = new Dataset();
-                    $file_entity_y->setUserId($task->getExperiment()->getUser());
+                    $file_entity_y->setUser($task->getExperiment()->getUser());
                     $file_entity_y->setDatasetTitle('experiment result');
                     $file_entity_y->setDatasetCreated(time());
                     $file_entity_y->setDatasetIsMidas(false);
@@ -272,7 +275,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                         $file_alt = new File($temp_file_yalt);
 
                         $file_entity_alt = new Dataset();
-                        $file_entity_alt->setUserId($task->getExperiment()->getUser());
+                        $file_entity_alt->setUser($task->getExperiment()->getUser());
                         $file_entity_alt->setDatasetTitle('experiment result');
                         $file_entity_alt->setDatasetCreated(time());
                         $file_entity_alt->setDatasetIsMidas(false);
