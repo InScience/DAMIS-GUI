@@ -478,18 +478,24 @@ class ExperimentController extends Controller
         /* var \Symfony\Component\HttpFoundation\Request */
         $experimentId = intval($request->get('experiment-example-id'));
 
+        $em = $this->getDoctrine()->getManager();
+        
+        $experimentStatusExample = $em
+            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->findOneBy(['experimentstatus' => 'EXAMPLE']);
+                
         /* @var $experiment Experiment */
         if ($experimentId > 0)
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
-                ->findOneBy(['id' => $experimentId]);
+                ->findOneBy(['id' => $experimentId, 'status' => $experimentStatusExample]);
         else {
-            return $this->redirect($this->generateUrl('experiments_examples'));
+            return $this->redirectToRoute('experiments_examples');
         }
         
-        // Validation of user access to current experiment
-        if (!$experiment || $experiment->getUser() != $user ) {
-            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+        // Validation
+        if (!$experiment) {
+            $this->container->get('logger')->addError('Unvalid try to copy experiment by user id: ' . $user->getId());
             return $this->redirectToRoute('experiments_history');
         }
       
@@ -504,9 +510,7 @@ class ExperimentController extends Controller
         $newExperiment->setUseCpu($experiment->getUseCpu());
         $newExperiment->setUsePrimaryMemory($experiment->getUsePrimaryMemory());
         $newExperiment->setUseSecMemory($experiment->getUseSecMemory());
-        
-        $em = $this->getDoctrine()->getManager();
-        
+             
         // Set experiment status to SAVED
         $newExperiment->setStatus($em->getRepository('DamisExperimentBundle:Experimentstatus')
                 ->findOneByExperimentstatusid(1));

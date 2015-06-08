@@ -60,7 +60,8 @@ php_value date.timezone "Europe/Vilnius"
 php_value max_execution_time 120
 php_value post_max_size 110M
 php_value upload_max_filesize 100M
-php_value memory_limit 256M
+# memory limit should be at least upload_max_filesize x6
+php_value memory_limit 768M
 php_value default_socket_timeout 6000
 php_flag log_errors on
 php_flag display_errors off
