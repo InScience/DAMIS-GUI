@@ -127,7 +127,28 @@ class ReadFile {
     }
 
     /**
-     * Select dataset features
+     * Function will calculate a posible range for rows file
+     * @param type $rows
+     * @param type $classNr
+     * @return array
+     */
+    public function getClassRange ($rows, $classNr) {
+        $range = [];
+        foreach($rows as $row){
+           if (strpos(strtolower($row[0]), '@attribute') === 0 || 
+                strpos(strtolower($row[0]), '@data') === 0 ||
+                strpos(strtolower($row[0]), '@relation') === 0 ||
+                $row[0] == '%') {
+                continue;
+            } else {
+                 $range[] = $row[$classNr];
+            }
+        }
+        return array_unique($range, SORT_REGULAR); 
+    }
+
+    /**
+     * Select dataset features. Used in select features component
      *
      * @param $datasetId
      * @param $attr
@@ -153,14 +174,14 @@ class ReadFile {
         foreach ($rows as $row) {
            if (strpos(strtolower($row[0]), '@attribute') === 0){
                 if ($nr == $class && $class != "") {                 
-                    $header = explode(' ', $row[0]);
                     if (strpos(strtolower($row[0]), '@attribute class') === 0) {
                         // Set class atributes
                         $classAttributes = preg_replace ('/.*\{(.*)\}.*/i', "{\\1}" , implode (', ', $row));
-                        //$file .= '@attribute class ' . $header[2];
-                        echo $file .= '@attribute class ' . $classAttributes;
-                    } else
-                        $file .= '@attribute class ' . $header[1];
+                        $file .= '@attribute class ' . $classAttributes;
+                    } else {
+                        // We get all posible values of attribute
+                        $file .= '@attribute class {' . implode(',', $this->getClassRange(@$rows, $class)) . '}';
+                    }
                     $file .= PHP_EOL;
                 }
                 elseif(in_array($nr, $attr)){
