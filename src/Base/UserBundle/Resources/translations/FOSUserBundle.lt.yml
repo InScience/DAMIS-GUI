@@ -101,7 +101,7 @@ form:
     password: "Slaptažodis"
     password_confirmation: "Patvirtinti"
     new_password: "Naujas slaptažodis"
-    new_password_confirmation: "Patvirtinti"
+    new_password_confirmation: "Pakartoti slaptažodį"
     locked: "Išjungtas"
     organisation: "Organizacija"
 

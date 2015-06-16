@@ -65,5 +65,5 @@ php_value memory_limit 768M
 php_value default_socket_timeout 6000
 php_flag log_errors on
 php_flag display_errors off
-php_value session.cookie_lifetime 120
-php_value session.gc_maxlifetime 120;
+php_value session.cookie_lifetime 3600
+php_value session.gc_maxlifetime 3600
