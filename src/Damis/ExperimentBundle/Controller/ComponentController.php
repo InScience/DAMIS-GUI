@@ -598,11 +598,13 @@ class ComponentController extends Controller
                 foreach($rows as $key => $row){
                     if(mb_strtolower($row[0]) != '@data'){
                         if(strpos(mb_strtolower($row[key($row)]), '@attribute') === 0 ){
-                            $attr = explode(' ', $row[key($row)]);
-                            if(trim(strtoupper($attr[1])) != 'CLASS')
+                            // Replace tab in attribute line with spaces
+                            $str = preg_replace('/\s+/i', " ", $row[key($row)]);
+                            $attr = explode(' ', $str);
+                            if (trim(strtoupper($attr[1])) != 'CLASS') {
                                 $attributes[] =  array('type' => $attr[2], 'name' => $attr[1]);
-                            else {
-                                if($attr[2] == 'string')
+                            } else {
+                                if ($attr[2] == 'string')
                                     $attributes[] =  array('type' => $attr[2], 'name' => $attr[1]);
                                 else {
                                     $_row = implode(', ', $row);

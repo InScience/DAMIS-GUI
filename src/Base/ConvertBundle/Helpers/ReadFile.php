@@ -69,7 +69,7 @@ class ReadFile {
                 $num = count($data);
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
-                    // String should be not empty. If string is '0', empty funktion return true
+                    // String should be not empty. If string is '0', empty function return true
                     if (!empty($data[$c]) || $data[$c] == '0')
                         $rows[$row][] = trim($data[$c]);
                 }
@@ -91,7 +91,8 @@ class ReadFile {
         $attributes = array();
         foreach($rows as $row){
             if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
-                $attr = explode(' ', $row[key($row)]);
+                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
+                $attr = explode(' ', $str);
                 if(!$withType)
                     $attributes[] = $attr[1];
                 else
@@ -113,11 +114,13 @@ class ReadFile {
         $attributes = [];
         foreach($rows as $row){
             if(strpos(strtolower($row[key($row)]), '@attribute class') === 0){
-                $attr = explode(' ', $row[key($row)]);
+                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
+                $attr = explode(' ', $str);
                 $attributes[] = $attr[1]. '_attr';
             } else if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
-                $attr = explode(' ', $row[key($row)]);
-                    $attributes[] = $attr[1];
+                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
+                $attr = explode(' ', $str);
+                $attributes[] = $attr[1];
             }
         }
         return $attributes;
@@ -147,13 +150,16 @@ class ReadFile {
         } else
             $attrs = $attr;
 
-        foreach($rows as $row){
-           if(strpos(strtolower($row[0]), '@attribute') === 0){
-                if($nr == $class && $class != ""){
+        foreach ($rows as $row) {
+           if (strpos(strtolower($row[0]), '@attribute') === 0){
+                if ($nr == $class && $class != "") {                 
                     $header = explode(' ', $row[0]);
-                    if(strpos(strtolower($row[0]), '@attribute class') === 0)
-                        $file .= '@attribute class ' . $header[2];
-                    else
+                    if (strpos(strtolower($row[0]), '@attribute class') === 0) {
+                        // Set class atributes
+                        $classAttributes = preg_replace ('/.*\{(.*)\}.*/i', "{\\1}" , implode (', ', $row));
+                        //$file .= '@attribute class ' . $header[2];
+                        echo $file .= '@attribute class ' . $classAttributes;
+                    } else
                         $file .= '@attribute class ' . $header[1];
                     $file .= PHP_EOL;
                 }
@@ -163,14 +169,17 @@ class ReadFile {
                     $file .= PHP_EOL;
                 }
                 $nr++;
-            } elseif(strpos(strtolower($row[0]), '@data') === 0 ||
-                strpos(strtolower($row[0]), '@relation') === 0) {
+            } elseif (strpos(strtolower($row[0]), '@data') === 0 ||
+                        strpos(strtolower($row[0]), '@relation') === 0) {
                 foreach($row as $value)
                     $file .= $value;
                 $file .= PHP_EOL;
+            // Ignore comments
+            } elseif ($row[0] == '%') {
+                continue;
             } else {
-                foreach($attrs as $key => $at){
-                    if($key > 0)
+                foreach ($attrs as $key => $at) {
+                    if ($key > 0)
                         $file .= ',' . $row[$at];
                     else
                         $file .= $row[$at];
