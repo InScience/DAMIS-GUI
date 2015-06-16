@@ -4,7 +4,7 @@
             {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <b><a target="_blank" class="fileView" href="{{ file.filePath }}">{{ file.datasetTitle }}</a></b>
         </div>
         <input type="hidden" name="dataset_url" value="{{ file.datasetId }}" />
-        <button type="button" class="toggle-btn btn">{{'Change file' | trans({}, 'DatasetsBundle') }}</button>
+        <button type="button" class="toggle-btn-midas btn">{{'Change file' | trans({}, 'DatasetsBundle') }}</button>
     {% else %}
     <div class="row">
         <div class="col-lg-12">

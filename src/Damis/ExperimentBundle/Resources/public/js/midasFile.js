@@ -101,7 +101,7 @@
                             window.datasets[window.taskBoxes.getBoxId($(this).parent())] = currDatasetInput;
                         });
 					}
-                    if($('.toggle-btn').is(':visible'))
+                    if($('.toggle-btn-midas').is(':visible'))
                         $(this).dialog("close");
 				}
 			},
@@ -116,7 +116,7 @@
 			return buttons;
 		}
 	}
-    $(document).on('click', ".toggle-btn", function(e){
+    $(document).on('click', ".toggle-btn-midas", function(e){
         window.midasFile.update($(this).parent().parent().parent().find('.task-window'), Routing.generate('existing_midas_file', {'id' : 'undefined', 'path' : '', 'edit' : 1}));
     });
 })();
