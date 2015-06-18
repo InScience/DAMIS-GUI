@@ -67,11 +67,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             // filter out un callable functions
             if (!$component->getWsdlRunHost()) {//locally executable actions
                 if ($component->getWsdlCallFunction() == 'SELECT'){
-                    $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
-                    $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
-                    $inAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueByType($task, 1)['parametervalue'];
-                    $outAttrEntity = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getParameterByType($task, 2);
-
+                   $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
+                   $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
+                   $inAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueByType($task, 1)['parametervalue'];
+                   $outAttrEntity = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getParameterByType($task, 2);
+                   
                     if ($inAttr === NULL or $selAttr === NULL or $classAttr === NULL or $outAttrEntity == NULL){
                         $output->writeln('Missing task parameters, closing.');
                         $task->setWorkflowtaskisrunning(3);//error
@@ -180,10 +180,15 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 //@TODO SSL implementation
                 $output->writeln('Starting call to wsdl fucntion');
                 $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
-                $output->writeln('End of call to wsdl fucntion');
+                $output->writeln('End of call to wsdl fucntion');  
             } catch (\SoapFault $e) {
                 $error['message'] = $e->getMessage();
-                $error['detail'] = @$e->detail;   
+                $error['detail'] = @$e->detail;
+                
+                // @TODO implement loging
+                /* @var $logger \Monolog\Logger */
+                //$logger = $this->getApplication()->get('logger');
+                //$logger->addError($content); 
             }
 
             //----------------------------------------------------------------------------------------------------//
@@ -341,6 +346,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Task id : ' . $taskUn->getWorkflowtaskid());
             $output->writeln('Un runable task, set to finish.');
             $taskUn->setWorkflowtaskisrunning(2);//finished
+            $em->persist($taskUn);
         }
         $em->flush();
 
@@ -358,6 +364,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Set to finished, has all tasks finished.');
             $exCl->setStatus($experimentStatus);//finished
             $exCl->setFinish(time());
+            $em->persist($exCl);
         }
         $em->flush();
 
@@ -375,6 +382,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $output->writeln('Set to error, has error in one of the tasks.');
             $exCl->setStatus($experimentStatus);//finished
             $exCl->setFinish(time());
+            $em->persist($exCl);
         }
         $em->flush();
 
