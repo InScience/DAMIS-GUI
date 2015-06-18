@@ -10,7 +10,8 @@ namespace Damis\ExperimentBundle\Helpers;
 
 use Doctrine\ORM\EntityManager;
 
-class Experiment {
+class Experiment
+{
 
     protected $em;
 
@@ -30,16 +31,18 @@ class Experiment {
      * @param array $parameterIds
      * @return array|null|object
      */
-    public function getParameters(array $parameterIds) {
+    public function getParameters(array $parameterIds)
+    {
         $repository = $this->em->getRepository('DamisExperimentBundle:Parameter');
 
-        if(count($parameterIds) == 0)
+        if (count($parameterIds) == 0) {
             return [];
-        if(count($parameterIds) == 1)
+        }
+        if (count($parameterIds) == 1) {
             return $repository->findOneBy(['id' => $parameterIds]);
-        if(count($parameterIds) > 1)
+        }
+        if (count($parameterIds) > 1) {
             return $repository->findBy(['id' => $parameterIds]);
+        }
     }
-
-
 }

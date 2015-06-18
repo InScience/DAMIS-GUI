@@ -10,18 +10,20 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class PcaType extends AbstractType {
+class PcaType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
             $pca = $_POST['pca_type'];
-            if($pca['projType'] == 1 && ($object <= 0 || $object > 100)) {
+            if ($pca['projType'] == 1 && ($object <= 0 || $object > 100)) {
                 $context->addViolation('Relative cumulative variance must be in interval (0; 100]', [], null);
             }
         };
-        $dataValidator2 = function($object, ExecutionContextInterface $context) use ($builder) {
+        $dataValidator2 = function ($object, ExecutionContextInterface $context) use ($builder) {
             $pca = $_POST['pca_type'];
-            if($pca['projType'] == 0 && ($object <= 0)) {
+            if ($pca['projType'] == 0 && ($object <= 0)) {
                 $context->addViolation('This value type should be integer', [], null);
             }
         };
@@ -60,14 +62,15 @@ class PcaType extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'pca_type';
     }
-
 }

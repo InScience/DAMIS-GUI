@@ -12,9 +12,11 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 /**
  * This class is currently unused
  */
-class C45Type extends AbstractType {
+class C45Type extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
             ->add('q', 'number', [
                 'required' => true,
@@ -71,14 +73,15 @@ class C45Type extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'c45_type';
     }
-
 }

@@ -28,7 +28,10 @@ class ExperimentHistoryController extends Controller
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $entities, $this->get('request')->query->get('page', 1), 15);
+            $entities,
+            $this->get('request')->query->get('page', 1),
+            15
+        );
 
         return array(
             'entities' => $pagination
@@ -53,10 +56,13 @@ class ExperimentHistoryController extends Controller
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $entities, $this->get('request')->query->get('page', 1), 15);
+            $entities,
+            $this->get('request')->query->get('page', 1),
+            15
+        );
 
         return array(
             'entities' => $pagination
         );
-    }    
+    }
 }

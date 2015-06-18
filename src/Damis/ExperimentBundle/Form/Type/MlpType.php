@@ -10,21 +10,23 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class MlpType extends AbstractType {
+class MlpType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         // Validate parameter of qty
-        $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
+        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
             $mlp = $_POST['mlp_type'];
             // Training and testing sets
             if ($mlp['kFoldValidation'] == '0') {
-                if($mlp['qty'] < 1 || $mlp['qty'] > 100) {
+                if ($mlp['qty'] < 1 || $mlp['qty'] > 100) {
                     $context->addViolation('Training data size k must be in interval [1; 100] %', [], null);
                 }
             // K fold training
-            } else if ($mlp['kFoldValidation'] == '1') {
+            } elseif ($mlp['kFoldValidation'] == '1') {
                 //@TODO This parameter should be bounded by data elements number
-                if($mlp['qty'] < 2 || $mlp['qty'] > 150) {
+                if ($mlp['qty'] < 2 || $mlp['qty'] > 150) {
                     $context->addViolation('Cross validation fold number k must be in interval [2; 150]', [], null);
                 }
             }
@@ -114,14 +116,15 @@ class MlpType extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'mlp_type';
     }
-
 }

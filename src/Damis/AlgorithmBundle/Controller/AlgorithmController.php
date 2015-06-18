@@ -19,7 +19,7 @@ class AlgorithmController extends Controller
 {
     /**
      * User algorithms list window
-     * 
+     *
      * @Route("/list.html", name="algorithm_list")
      * @Template()
      */
@@ -28,23 +28,27 @@ class AlgorithmController extends Controller
         $sort = $request->get('order_by');
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
-        if($sort == 'titleASC')
+        if ($sort == 'titleASC') {
             $entities = $em->getRepository('DamisAlgorithmBundle:File')
                 ->getUserAlgorithms($user, array('title' => 'ASC'));
-        elseif($sort == 'titleDESC')
+        } elseif ($sort == 'titleDESC')
             $entities = $em->getRepository('DamisAlgorithmBundle:File')
                 ->getUserAlgorithms($user, array('title' => 'DESC'));
-        elseif($sort == 'createdASC')
+        elseif ($sort == 'createdASC')
             $entities = $em->getRepository('DamisAlgorithmBundle:File')
                 ->getUserAlgorithms($user, array('created' => 'ASC'));
-        elseif($sort == 'createdDESC')
+        elseif ($sort == 'createdDESC')
             $entities = $em->getRepository('DamisAlgorithmBundle:File')
                 ->getUserAlgorithms($user, array('created' => 'DESC'));
-        else
+        else {
             $entities = $em->getRepository('DamisAlgorithmBundle:File')->getUserAlgorithms($user);
+        }
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $entities, $this->get('request')->query->get('page', 1), 15);
+            $entities,
+            $this->get('request')->query->get('page', 1),
+            15
+        );
         return array(
             'entities' => $pagination
         );
@@ -113,10 +117,10 @@ class AlgorithmController extends Controller
         /* @var $entity \Damis\AlgorithmBundle\Entity\File */
         $entity = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
         // Validation of user access to current experiment
-        if (!$entity || ($entity->getUser() != $user) ) { 
-            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+        if (!$entity || ($entity->getUser() != $user)) {
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
             return $this->redirectToRoute('algorithm_list');
-        }        
+        }
         $form = $this->createForm(new FileType(), null);
         $form->get('fileTitle')->setData($entity->getFileTitle());
         $form->get('fileDescription')->setData($entity->getFileDescription());
@@ -142,8 +146,8 @@ class AlgorithmController extends Controller
         /* @var $entity \Damis\AlgorithmBundle\Entity\File */
         $entity = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
         // Validation of user access to current experiment
-        if (!$entity || ($entity->getUser() != $user) ) { 
-            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: ' . $user->getId());
+        if (!$entity || ($entity->getUser() != $user)) {
+            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
             return $this->redirectToRoute('algorithm_list');
         }
         $form = $this->createForm(new FileType(), null);
@@ -181,13 +185,15 @@ class AlgorithmController extends Controller
         
         $files = json_decode($request->request->get('file-delete-list'));
         $em = $this->getDoctrine()->getManager();
-        foreach ($files as $id){
+        foreach ($files as $id) {
             /* @var $file \Damis\AlgorithmBundle\Entity\File */
             $file = $em->getRepository('DamisAlgorithmBundle:File')->findOneByFileId($id);
-            if ($file && ($file->getUser() == $user)){
-                if (file_exists('.' . $file->getFilePath()))
-                    if ($file->getFilePath())
-                        unlink('.' . $file->getFilePath());
+            if ($file && ($file->getUser() == $user)) {
+                if (file_exists('.'.$file->getFilePath())) {
+                    if ($file->getFilePath()) {
+                        unlink('.'.$file->getFilePath());
+                    }
+                }
                 $em->remove($file);
                 $em->flush();
             }

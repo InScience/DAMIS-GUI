@@ -31,27 +31,27 @@ class DefaultController extends Controller
     public function loginAction(Request $request)
     {
         $sessionToken = $request->get('sessionToken', null);
-		$sessionFinishDate = $request->get('sessionFinishDate', null);
-		$name = $request->get('name', null);
-		$surname = $request->get('surName', null);
-		$userEmail = $request->get('email', null);
-		$userId = $request->get('userId', null);
-		$timeStamp = $request->get('timeStamp', null);
-		$signature = $request->get('signature', null);
+        $sessionFinishDate = $request->get('sessionFinishDate', null);
+        $name = $request->get('name', null);
+        $surname = $request->get('surName', null);
+        $userEmail = $request->get('email', null);
+        $userId = $request->get('userId', null);
+        $timeStamp = $request->get('timeStamp', null);
+        $signature = $request->get('signature', null);
 
-        $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer","r");
-        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/public.key.cer"));
+        $fp = fopen($this->get('kernel')->getRootDir().'/../'."/src/Base/MainBundle/Resources/config/public.key.cer", "r");
+        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir().'/../'."/src/Base/MainBundle/Resources/config/public.key.cer"));
         fclose($fp);
         $signatureAlg = 'SHA256';  // also posible sha256WithRSAEncryption, SHA256, RSA-SHA256
         // What is signed
-        $tmpSignature = $timeStamp . $name . $surname . $sessionFinishDate . $userEmail . $sessionToken . $userId;
+        $tmpSignature = $timeStamp.$name.$surname.$sessionFinishDate.$userEmail.$sessionToken.$userId;
         
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
         //openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
-		
-        if(!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode($signature, true), $pubKey, $signatureAlg)){
-            // Unset older session data 
+        
+        if (!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode($signature, true), $pubKey, $signatureAlg)) {
+            // Unset older session data
             $this->get("security.context")->setToken(null);
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS user login request parameters are wrong!', array(), 'general'));
             return $this->redirect($this->generateUrl('fos_user_security_login'));
@@ -61,32 +61,34 @@ class DefaultController extends Controller
         $user = $em->getRepository('BaseUserBundle:User')->findOneBy(array('userId' => $userId));
 
         $isUserNew = false;
-        if(!$user){
-            if($userEmail){
+        if (!$user) {
+            if ($userEmail) {
                 /* @var $emailExist \Base\UserBundle\Entity\User */;
                 $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
-                if($emailExist){
+                if ($emailExist) {
                     // Remove older user with same email if this user was form MIDAS
                     if ($emailExist->getUserId() > 0) {
                         // Remove user datasets
                         $files = $em->getRepository('DamisDatasetsBundle:Dataset')->findByUserId($emailExist->getId());
-                        foreach($files as $file){
-                            if($file){
-                                if(file_exists('.' . $file->getFilePath()))
-                                    if($file->getFilePath())
-                                        unlink('.' . $file->getFilePath());
+                        foreach ($files as $file) {
+                            if ($file) {
+                                if (file_exists('.'.$file->getFilePath())) {
+                                    if ($file->getFilePath()) {
+                                        unlink('.'.$file->getFilePath());
+                                    }
+                                }
                                 $em->remove($file);
                                 $em->flush();
                             }
                         }
                         // Remove Eksperiments
                         $experiments = $em->getRepository('DamisExperimentBundle:Experiment')->findByUser($emailExist->getId());
-                        foreach($experiments as $experiment){
-                            if($experiment){
+                        foreach ($experiments as $experiment) {
+                            if ($experiment) {
                                 $em->remove($experiment);
                                 $em->flush();
                             }
-                        }                        
+                        }
                         $em->remove($emailExist);
                         $em->flush();
                     } else {
@@ -101,16 +103,18 @@ class DefaultController extends Controller
         }
         $user->setName($name);
         $user->setSurname($surname);
-        if(!$userEmail)
-            $userEmail = $userId . 'user@midas.lt';
+        if (!$userEmail) {
+            $userEmail = $userId.'user@midas.lt';
+        }
          /* @var $emailExist \Base\UserBundle\Entity\User */;
         $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
-        if(!$emailExist){
+        if (!$emailExist) {
             $user->setEmail($userEmail);
-        }        
+        }
         $user->setUserId($userId);
-        if(!$user->hasRole('ROLE_CONFIRMED'))
+        if (!$user->hasRole('ROLE_CONFIRMED')) {
             $user->addRole('ROLE_CONFIRMED');
+        }
         $user->setUsername($userEmail);
         $em->persist($user);
         $em->flush();
@@ -139,16 +143,16 @@ class DefaultController extends Controller
     public function logoutAction(Request $request)
     {
         $session = $request->getSession();
-        if($session->has('sessionToken'))
+        if ($session->has('sessionToken')) {
             $sessionToken = $session->get('sessionToken');
-        else {
+        } else {
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
         $client = new Client($this->container->getParameter('midas_url'));
-        $req = $client->delete('/action/authentication/session/' . $sessionToken , array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
+        $req = $client->delete('/action/authentication/session/'.$sessionToken, array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
         try {
             $data = json_decode($req->send()->getBody(true), true);
-            if($data['type'] == 'success'){
+            if ($data['type'] == 'success') {
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Logged out successfully', array(), 'general'));
                 $session->remove('sessionToken');
             } else {
@@ -157,7 +161,7 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error when logging out', array(), 'general'));
-			// Logout anyway
+            // Logout anyway
             return $this->redirect($this->generateUrl('fos_user_security_logout'));
         }
 
@@ -181,7 +185,8 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function localeEnAction(Request $request){
+    public function localeEnAction(Request $request)
+    {
         $request->getSession()->set('_locale', 'en');
         $locale = $request->getLocale();
         $request->setLocale('en');

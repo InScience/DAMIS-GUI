@@ -8,13 +8,13 @@
 
 namespace Base\ConvertBundle\Helpers;
 
-
 use Damis\DatasetsBundle\Entity\Dataset;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 
-class ReadFile {
+class ReadFile
+{
 
     /**
      * Reads file and returns rows
@@ -23,23 +23,24 @@ class ReadFile {
      * @param String $format
      * @return array
      */
-    function getRows($path, $format) {
+    function getRows($path, $format)
+    {
         $row = 0;
         $rows = array();
         $memoryLimit = ini_get('memory_limit');
         $suffix = '';
-        sscanf ($memoryLimit, '%u%c', $number, $suffix);
-        if (isset ($suffix))
-        {
-            $number = $number * pow (1024, strpos (' KMG', $suffix));
+        sscanf($memoryLimit, '%u%c', $number, $suffix);
+        if (isset($suffix)) {
+            $number = $number * pow(1024, strpos(' KMG', $suffix));
         }
-        if(memory_get_usage(true) + filesize($path) * 5.8 > $number)
+        if (memory_get_usage(true) + filesize($path) * 5.8 > $number) {
             return false;
-        if($format == 'tab')
+        }
+        if ($format == 'tab') {
             $delimiter = "\t";
-        elseif ($format == 'arff') 
+        } elseif ($format == 'arff')
             $delimiter = ",";
-        else{
+        else {
             $delimiters = array(
                 'comma'     => ",",
                 'semicolon' => ";",
@@ -50,7 +51,7 @@ class ReadFile {
             $content = explode("\n", $content);
             // Find most often delimeter
             foreach ($delimiters as $key => $delim) {
-                $res[$key] = substr_count(trim($content[(int)floor(count($content)/ 2)]), $delim);
+                $res[$key] = substr_count(trim($content[(int) floor(count($content)/ 2)]), $delim);
             }
             arsort($res);
 
@@ -60,9 +61,9 @@ class ReadFile {
             $delimiter = $delimiters[$first_key];
         }
 
-        if (($handle = fopen($path, "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, null, $delimiter)) !== FALSE) {
-                if(memory_get_usage(true) > $number - 1000000){
+        if (($handle = fopen($path, "r")) !== false) {
+            while (($data = fgetcsv($handle, null, $delimiter)) !== false) {
+                if (memory_get_usage(true) > $number - 1000000) {
                     return false;
                 }
 
@@ -70,8 +71,9 @@ class ReadFile {
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
                     // String should be not empty. If string is '0', empty function return true
-                    if (!empty($data[$c]) || $data[$c] == '0')
+                    if (!empty($data[$c]) || $data[$c] == '0') {
                         $rows[$row][] = trim($data[$c]);
+                    }
                 }
             }
             fclose($handle);
@@ -82,21 +84,23 @@ class ReadFile {
     /**
      * Returns files attributes
      *
-     * @param String $path
+     * @param String  $path
      * @param boolean $withType True - returning associative array with type and attribute name
      * @return array
      */
-    function getAttributes($path, $withType = false) {
+    function getAttributes($path, $withType = false)
+    {
         $rows = $this->getRows($path, 'arff');
         $attributes = array();
-        foreach($rows as $row){
-            if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
+        foreach ($rows as $row) {
+            if (strpos(strtolower($row[key($row)]), '@attribute') === 0) {
                 $str = preg_replace('/\s+/i', " ", $row[key($row)]);
                 $attr = explode(' ', $str);
-                if(!$withType)
+                if (!$withType) {
                     $attributes[] = $attr[1];
-                else
+                } else {
                     $attributes[] = array('type' => strtolower($attr[2]), 'name' => $attr[1]);
+                }
             }
         }
 
@@ -109,15 +113,16 @@ class ReadFile {
      * @param String $path
       * @return array
      */
-    function getClassAttr($path) {
+    function getClassAttr($path)
+    {
         $rows = $this->getRows($path, 'arff');
         $attributes = [];
-        foreach($rows as $row){
-            if(strpos(strtolower($row[key($row)]), '@attribute class') === 0){
+        foreach ($rows as $row) {
+            if (strpos(strtolower($row[key($row)]), '@attribute class') === 0) {
                 $str = preg_replace('/\s+/i', " ", $row[key($row)]);
                 $attr = explode(' ', $str);
-                $attributes[] = $attr[1]. '_attr';
-            } else if(strpos(strtolower($row[key($row)]), '@attribute') === 0){
+                $attributes[] = $attr[1].'_attr';
+            } elseif (strpos(strtolower($row[key($row)]), '@attribute') === 0) {
                 $str = preg_replace('/\s+/i', " ", $row[key($row)]);
                 $attr = explode(' ', $str);
                 $attributes[] = $attr[1];
@@ -132,19 +137,20 @@ class ReadFile {
      * @param type $classNr
      * @return array
      */
-    public function getClassRange ($rows, $classNr) {
+    public function getClassRange($rows, $classNr)
+    {
         $range = [];
-        foreach($rows as $row){
-           if (strpos(strtolower($row[0]), '@attribute') === 0 || 
+        foreach ($rows as $row) {
+            if (strpos(strtolower($row[0]), '@attribute') === 0 ||
                 strpos(strtolower($row[0]), '@data') === 0 ||
                 strpos(strtolower($row[0]), '@relation') === 0 ||
                 $row[0] == '%') {
                 continue;
             } else {
-                 $range[] = $row[$classNr];
+                $range[] = $row[$classNr];
             }
         }
-        return array_unique($range, SORT_REGULAR); 
+        return array_unique($range, SORT_REGULAR);
     }
 
     /**
@@ -161,57 +167,60 @@ class ReadFile {
     {
         $em = $container->get('doctrine')->getManager();
         $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
-        $rows = @$this->getRows($container->get('kernel')->getRootDir() . '/../web' . $dataset->getFilePath(), 'arff');
+        $rows = @$this->getRows($container->get('kernel')->getRootDir().'/../web'.$dataset->getFilePath(), 'arff');
         $nr = 0;
         $file = '';
 
-        if(!in_array($class, $attr) && $class != ""){
+        if (!in_array($class, $attr) && $class != "") {
             $attrs = $attr;
             $attrs[] = $class;
-        } else
+        } else {
             $attrs = $attr;
+        }
 
         foreach ($rows as $row) {
-           if (strpos(strtolower($row[0]), '@attribute') === 0){
-                if ($nr == $class && $class != "") {                 
+            if (strpos(strtolower($row[0]), '@attribute') === 0) {
+                if ($nr == $class && $class != "") {
                     if (strpos(strtolower($row[0]), '@attribute class') === 0) {
                         // Set class atributes
-                        $classAttributes = preg_replace ('/.*\{(.*)\}.*/i', "{\\1}" , implode (', ', $row));
-                        $file .= '@attribute class ' . $classAttributes;
+                        $classAttributes = preg_replace('/.*\{(.*)\}.*/i', "{\\1}", implode(', ', $row));
+                        $file .= '@attribute class '.$classAttributes;
                     } else {
                         // We get all posible values of attribute
-                        $file .= '@attribute class {' . implode(',', $this->getClassRange(@$rows, $class)) . '}';
+                        $file .= '@attribute class {'.implode(',', $this->getClassRange(@$rows, $class)).'}';
                     }
                     $file .= PHP_EOL;
-                }
-                elseif(in_array($nr, $attr)){
-                    foreach($row as $value)
+                } elseif (in_array($nr, $attr)) {
+                    foreach ($row as $value) {
                         $file .= $value;
+                    }
                     $file .= PHP_EOL;
                 }
                 $nr++;
             } elseif (strpos(strtolower($row[0]), '@data') === 0 ||
                         strpos(strtolower($row[0]), '@relation') === 0) {
-                foreach($row as $value)
+                foreach ($row as $value) {
                     $file .= $value;
+                }
                 $file .= PHP_EOL;
-            // Ignore comments
+             // Ignore comments
             } elseif ($row[0] == '%') {
                 continue;
             } else {
                 foreach ($attrs as $key => $at) {
-                    if ($key > 0)
-                        $file .= ',' . $row[$at];
-                    else
+                    if ($key > 0) {
+                        $file .= ','.$row[$at];
+                    } else {
                         $file .= $row[$at];
+                    }
                 }
                 $file .= PHP_EOL;
             }
         }
         $temp_folder = $container->getParameter("kernel.cache_dir");
-        $temp_file = $temp_folder . '/' . basename($dataset->getDatasetTitle() . time() . '.arff');
+        $temp_file = $temp_folder.'/'.basename($dataset->getDatasetTitle().time().'.arff');
 
-        $filew = fopen($temp_file,"w");
+        $filew = fopen($temp_file, "w");
         fwrite($filew, $file);
         fclose($filew);
 

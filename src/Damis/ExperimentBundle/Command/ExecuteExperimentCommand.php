@@ -20,7 +20,8 @@ use Base\ConvertBundle\Helpers\ReadFile;
 
 class ExecuteExperimentCommand extends ContainerAwareCommand
 {
-    protected function configure() {
+    protected function configure()
+    {
         $this
             ->setName('experiment:execute')
             ->setDescription('Execute experiment workflow tasks')
@@ -34,7 +35,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $output->writeln('Executing workflow task');
 
         /* @var $em EntityManager */
@@ -45,7 +47,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
         //for all found workflow tasks
         /* @var $task \Damis\EntitiesBundle\Entity\Workflowtask */
-        foreach($workflowTasks as $task){
+        foreach ($workflowTasks as $task) {
             //set to in progress
             $task->setWorkflowtaskisrunning(1);//running
             $em->flush();
@@ -57,22 +59,24 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             //find damned component
             /* @var $component \Damis\ExperimentBundle\Entity\Component */
             $component = $em->getRepository('DamisExperimentBundle:Component')->getTasksComponent($task);
-            if (!$component) continue;
+            if (!$component) {
+                continue;
+            }
 
             $output->writeln('==============================');
-            $output->writeln('Task id : ' . $task->getWorkflowtaskid());
-            $output->writeln('Wsdl host : ' . $component->getWsdlRunHost());
-            $output->writeln('Wsdl function : ' . $component->getWsdlCallFunction());
+            $output->writeln('Task id : '.$task->getWorkflowtaskid());
+            $output->writeln('Wsdl host : '.$component->getWsdlRunHost());
+            $output->writeln('Wsdl function : '.$component->getWsdlCallFunction());
 
             // filter out un callable functions
             if (!$component->getWsdlRunHost()) {//locally executable actions
-                if ($component->getWsdlCallFunction() == 'SELECT'){
-                   $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
-                   $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
-                   $inAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueByType($task, 1)['parametervalue'];
-                   $outAttrEntity = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getParameterByType($task, 2);
+                if ($component->getWsdlCallFunction() == 'SELECT') {
+                    $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
+                    $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
+                    $inAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueByType($task, 1)['parametervalue'];
+                    $outAttrEntity = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getParameterByType($task, 2);
                    
-                    if ($inAttr === NULL or $selAttr === NULL or $classAttr === NULL or $outAttrEntity == NULL){
+                    if ($inAttr === null or $selAttr === null or $classAttr === null or $outAttrEntity == null) {
                         $output->writeln('Missing task parameters, closing.');
                         $task->setWorkflowtaskisrunning(3);//error
                         $task->setMessage('Missing task parameters');
@@ -92,7 +96,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                         // set proper out and in if available and successfull
                         $outAttrEntity->setParametervalue($processedFileId);
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outAttrEntity->getParametervalueid()));
-                        foreach($inNexts as $inNext) {
+                        foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($processedFileId);
                         }
 
@@ -113,38 +117,47 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
             $inDatasetEntity = null;
             $outDatasetEntities = null;
-            foreach($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value){
-                if ($value->getParameter()->getConnectionType()->getId() == 1)
+            foreach ($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value) {
+                if ($value->getParameter()->getConnectionType()->getId() == 1) {
                     $inDatasetEntity = $value;
-                if ($value->getParameter()->getConnectionType()->getId() == 2)
+                }
+                if ($value->getParameter()->getConnectionType()->getId() == 2) {
                     $outDatasetEntities[$value->getParameter()->getSlug()] = $value;
-                if ($value->getParameter()->getConnectionType()->getId() == 3)
+                }
+                if ($value->getParameter()->getConnectionType()->getId() == 3) {
                     $params[$value->getParameter()->getSlug()] = $value->getParametervalue();
+                }
             }
 
-            if (!$inDatasetEntity) continue;
+            if (!$inDatasetEntity) {
+                continue;
+            }
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDatasetEntity->getParametervalue()]);
-            if (!$dataset) continue;
+            if (!$dataset) {
+                continue;
+            }
 
             $calcTime = 0;
-            if ($task->getExperiment()->getMaxDuration() and $task->getExperiment()->getMaxDuration() instanceof DateTime)
+            if ($task->getExperiment()->getMaxDuration() and $task->getExperiment()->getMaxDuration() instanceof DateTime) {
                 $calcTime = $this->hoursToSecods($task->getExperiment()->getMaxDuration()->format('H:i:s'));
+            }
 
             $proc = array();
-            if ($component->getWsdlCallFunction() == 'MLP' OR
-                $component->getWsdlCallFunction() == 'SMACOFMDS' OR
-                $component->getWsdlCallFunction() == 'SAMANN' OR
+            if ($component->getWsdlCallFunction() == 'MLP' or
+                $component->getWsdlCallFunction() == 'SMACOFMDS' or
+                $component->getWsdlCallFunction() == 'SAMANN' or
                 $component->getWsdlCallFunction() == 'SOM'
-            ){
-                if ($task->getExperiment()->getUseCpu())
+            ) {
+                if ($task->getExperiment()->getUseCpu()) {
                     $proc['P'] = $task->getExperiment()->getUseCpu();
-                else
+                } else {
                     $proc['P'] = 1;
+                }
             }
 
             $params = array_merge(
                 array(
-                    'X' => $this->getContainer()->getParameter('project_full_host') . $dataset->getFilePath(),
+                    'X' => $this->getContainer()->getParameter('project_full_host').$dataset->getFilePath(),
                 ),
                 $params,
                 $proc,
@@ -152,11 +165,13 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     'maxCalcTime' => $calcTime,
                 )
             );
-            if (!$params['maxCalcTime']) $params['maxCalcTime'] = 1;
+            if (!$params['maxCalcTime']) {
+                $params['maxCalcTime'] = 1;
+            }
             
             //----------------------------------------------------------------------------------------------------//
 
-            $output->writeln('Wsdl function parameters: ' . print_r($params, true));
+            $output->writeln('Wsdl function parameters: '.print_r($params, true));
                 
             //FOR TESTING PURPOSES ONLY
             //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
@@ -166,7 +181,8 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             //----------------------------------------------------------------------------------------------------//
 
             /* @var $client \SoapClient */
-            $client = new \SoapClient($component->getWsdlRunHost(),
+            $client = new \SoapClient(
+                $component->getWsdlRunHost(),
                 array(
                     'trace' => 1,
                     'exception' => 0,
@@ -180,7 +196,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 //@TODO SSL implementation
                 $output->writeln('Starting call to wsdl fucntion');
                 $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
-                $output->writeln('End of call to wsdl fucntion');  
+                $output->writeln('End of call to wsdl fucntion');
             } catch (\SoapFault $e) {
                 $error['message'] = $e->getMessage();
                 $error['detail'] = @$e->detail;
@@ -188,7 +204,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 // @TODO implement loging
                 /* @var $logger \Monolog\Logger */
                 //$logger = $this->getApplication()->get('logger');
-                //$logger->addError($content); 
+                //$logger->addError($content);
             }
 
             //----------------------------------------------------------------------------------------------------//
@@ -198,43 +214,44 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             if ($error) {
                 //save error message
                 $task->setWorkflowtaskisrunning(3);//error!
-                $task->setMessage($error['message'] . ':' . $error['detail']);
-                $output->writeln('Wsdl result error: ' . print_r($error, true));
+                $task->setMessage($error['message'].':'.$error['detail']);
+                $output->writeln('Wsdl result error: '.print_r($error, true));
                 $em->flush();
                 continue;
             } else {
                 // set proper execution time
                 $task->setExecutionTime($result['calcTime']);
-                if (isset($result['algorithmError']))
+                if (isset($result['algorithmError'])) {
                     $task->setMessage($result['algorithmError']);
+                }
 
                 // saing received files
                 $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
 
                 //Y
-                $temp_file_y = $temp_folder . '/' . basename($result['Y']);
+                $temp_file_y = $temp_folder.'/'.basename($result['Y']);
                 $err_y = false;
                 try {
-                     if ($this->getContainer()->getParameter('use_ssl_connections') == true) {
+                    if ($this->getContainer()->getParameter('use_ssl_connections') == true) {
                         // Do not validate the server sertificate
                         $arrContextOptions=array(
-                            "ssl"=>array(
-                                "verify_peer"=>false,
-                                "verify_peer_name"=>false,
-                            ),
+                           "ssl"=>array(
+                               "verify_peer"=>false,
+                               "verify_peer_name"=>false,
+                           ),
                         );
                         file_put_contents($temp_file_y, file_get_contents($result['Y'], false, stream_context_create($arrContextOptions)));
-                     } else {
-                         file_put_contents($temp_file_y, file_get_contents($result['Y']));
-                     }
+                    } else {
+                        file_put_contents($temp_file_y, file_get_contents($result['Y']));
+                    }
                 } catch (Exception $e) {
                     $err_y = true;
                 }
 
                 //Yalt
                 $err_yalt = false;
-                if (isset($result['Yalt'])){
-                    $temp_file_yalt = $temp_folder . '/' . basename($result['Yalt']);
+                if (isset($result['Yalt'])) {
+                    $temp_file_yalt = $temp_folder.'/'.basename($result['Yalt']);
                     try {
                         if ($this->getContainer()->getParameter('use_ssl_connections') == true) {
                             // Do not validate the server sertificate
@@ -243,7 +260,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                                     "verify_peer"=>false,
                                     "verify_peer_name"=>false,
                                 ),
-                            );                        
+                            );
                             file_put_contents($temp_file_y, file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptions)));
                         } else {
                             file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
@@ -275,7 +292,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
 
                     @unlink($temp_file_y);
 
-                    if (isset($result['Yalt'])){
+                    if (isset($result['Yalt'])) {
                         //create dataset Yalt
                         $file_alt = new File($temp_file_yalt);
 
@@ -299,20 +316,20 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     }
 
                     // set proper out and in if available and successfull
-                    if (isset($outDatasetEntities['Y'])){
+                    if (isset($outDatasetEntities['Y'])) {
                         $outDatasetEntities['Y']->setParametervalue($file_entity_y->getDatasetId());
 
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Y']->getParametervalueid()));
-                        foreach($inNexts as $inNext) {
+                        foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($file_entity_y->getDatasetId());
                         }
                     }
 
-                    if (isset($outDatasetEntities['Yalt'])){
+                    if (isset($outDatasetEntities['Yalt'])) {
                         $outDatasetEntities['Yalt']->setParametervalue($file_entity_alt->getDatasetId());
 
                         $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()));
-                        foreach($inNexts as $inNext) {
+                        foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($file_entity_alt->getDatasetId());
                         }
                     }
@@ -325,7 +342,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     continue;
                 }
 
-                $output->writeln('Wsdl result got: ' . print_r($result, true));
+                $output->writeln('Wsdl result got: '.print_r($result, true));
             }
 
             //----------------------------------------------------------------------------------------------------//
@@ -341,9 +358,9 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         //----------------------------------------------------------------------------------------------------//
 
         $workflowTasksUn = $em->getRepository('DamisEntitiesBundle:Workflowtask')->getUnrunableTasks(100);
-        foreach($workflowTasksUn as $taskUn){
+        foreach ($workflowTasksUn as $taskUn) {
             $output->writeln('==============================');
-            $output->writeln('Task id : ' . $taskUn->getWorkflowtaskid());
+            $output->writeln('Task id : '.$taskUn->getWorkflowtaskid());
             $output->writeln('Un runable task, set to finish.');
             $taskUn->setWorkflowtaskisrunning(2);//finished
             $em->persist($taskUn);
@@ -358,9 +375,9 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         $experimentStatus = $em
             ->getRepository('DamisExperimentBundle:Experimentstatus')
             ->findOneBy(['experimentstatus' => 'FINISHED']);
-        foreach($experimentsToCloe as $exCl){
+        foreach ($experimentsToCloe as $exCl) {
             $output->writeln('==============================');
-            $output->writeln('Experiment id : ' . $exCl->getId());
+            $output->writeln('Experiment id : '.$exCl->getId());
             $output->writeln('Set to finished, has all tasks finished.');
             $exCl->setStatus($experimentStatus);//finished
             $exCl->setFinish(time());
@@ -376,9 +393,9 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         $experimentStatus = $em
             ->getRepository('DamisExperimentBundle:Experimentstatus')
             ->findOneBy(['experimentstatus' => 'ERROR']);
-        foreach($experimentsToCloe as $exCl){
+        foreach ($experimentsToCloe as $exCl) {
             $output->writeln('==============================');
-            $output->writeln('Experiment id : ' . $exCl->getId());
+            $output->writeln('Experiment id : '.$exCl->getId());
             $output->writeln('Set to error, has error in one of the tasks.');
             $exCl->setStatus($experimentStatus);//finished
             $exCl->setFinish(time());
@@ -392,13 +409,14 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         $output->writeln('Executing finished');
     }
 
-    function hoursToSecods ($hour) { // $hour must be a string type: "HH:mm:ss"
+    function hoursToSecods($hour)
+    {
+ // $hour must be a string type: "HH:mm:ss"
         $parse = array();
-        if (!preg_match ('#^(?<hours>[\d]{2}):(?<mins>[\d]{2}):(?<secs>[\d]{2})$#',$hour,$parse)) {
+        if (!preg_match('#^(?<hours>[\d]{2}):(?<mins>[\d]{2}):(?<secs>[\d]{2})$#', $hour, $parse)) {
             return 0;
         }
 
         return (int) $parse['hours'] * 3600 + (int) $parse['mins'] * 60 + (int) $parse['secs'];
     }
-
 }

@@ -8,9 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class SomType extends AbstractType {
+class SomType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
         ->add('rows', 'integer', [
                 'required' => true,
@@ -74,14 +76,15 @@ class SomType extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'som_type';
     }
-
 }

@@ -355,5 +355,4 @@ class Parameter
     {
         return $this->position;
     }
-
 }

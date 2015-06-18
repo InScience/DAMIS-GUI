@@ -136,11 +136,13 @@ class User extends BaseUser
         $this->registeredAt = new \DateTime("now");
     }
 
-    public function setEmail($email){
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
 
-    public function setUsername($name){
+    public function setUsername($name)
+    {
         $this->username = $name;
     }
 
@@ -151,7 +153,8 @@ class User extends BaseUser
      */
     public function getNameSurname()
     {
-        return trim($this->getName() . ' ' . $this->getSurname());;
+        return trim($this->getName().' '.$this->getSurname());
+        ;
     }
 
     /**
@@ -161,7 +164,8 @@ class User extends BaseUser
      */
     public function getSurnameName()
     {
-        return trim($this->getSurname() . ' ' . $this->getName());;
+        return trim($this->getSurname().' '.$this->getName());
+        ;
     }
 
 
@@ -179,8 +183,7 @@ class User extends BaseUser
         if ($pos !== false) {
             $this->setName(mb_substr($nameSurname, 0, $pos));
             $this->setSurname(mb_substr($nameSurname, $pos+1));
-        }
-        else {
+        } else {
             $this->setName($nameSurname);
             $this->setSurname('');
         }
@@ -188,22 +191,28 @@ class User extends BaseUser
         return $this;
     }
 
-    public function getPublicName(){
-        if ($this->getNameSurname()) return $this->getNameSurname();
-            else return $this->getUsername();
+    public function getPublicName()
+    {
+        if ($this->getNameSurname()) {
+            return $this->getNameSurname();
+        } else {
+            return $this->getUsername();
+        }
     }
 
     /**
      * @param string $organisation
      */
-    public function setOrganisation($organisation) {
+    public function setOrganisation($organisation)
+    {
         $this->organisation = $organisation;
     }
 
     /**
      * @return string
      */
-    public function getOrganisation() {
+    public function getOrganisation()
+    {
         return $this->organisation;
     }
 
@@ -222,5 +231,4 @@ class User extends BaseUser
     {
         $this->userId = $userId;
     }
-
 }

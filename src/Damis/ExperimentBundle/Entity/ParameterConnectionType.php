@@ -46,7 +46,7 @@ class ParameterConnectionType
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -56,7 +56,7 @@ class ParameterConnectionType
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {

@@ -12,14 +12,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class SelectType extends AbstractType {
+class SelectType extends AbstractType
+{
 
     protected $options = [];
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
             $data = $_POST['select_type'];
-            if(!isset($data['selAttr'])) {
+            if (!isset($data['selAttr'])) {
                 $context->addViolation('Please select attributes', [], null);
             }
         };
@@ -56,9 +58,10 @@ class SelectType extends AbstractType {
             $data = $e->getData();
             $form = $e->getForm();
             $choices_selAttr = [];
-            if(isset($data['selAttr'])){
-                foreach($data['selAttr'] as $val)
+            if (isset($data['selAttr'])) {
+                foreach ($data['selAttr'] as $val) {
                     $choices_selAttr[$val] = $this->options['data']['class'][$val];
+                }
                 $form->remove('selAttr');
                 ksort($choices_selAttr);
                 $form->add('selAttr', 'choice', [
@@ -82,14 +85,15 @@ class SelectType extends AbstractType {
         $builder->addEventListener(FormEvents::PRE_SUBMIT, $closure);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'select_type';
     }
-
 }

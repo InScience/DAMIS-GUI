@@ -67,21 +67,24 @@ class Workflowtask
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->parameterValues = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * @param mixed $parameterValues
      */
-    public function setParameterValues($parameterValues) {
+    public function setParameterValues($parameterValues)
+    {
         $this->parameterValues = $parameterValues;
     }
 
     /**
      * @return mixed
      */
-    public function getParameterValues() {
+    public function getParameterValues()
+    {
         return $this->parameterValues;
     }
 
@@ -145,43 +148,48 @@ class Workflowtask
     /**
      * @param int $executionTime
      */
-    public function setExecutionTime($executionTime) {
+    public function setExecutionTime($executionTime)
+    {
         $this->executionTime = $executionTime;
     }
 
     /**
      * @return int
      */
-    public function getExecutionTime() {
+    public function getExecutionTime()
+    {
         return $this->executionTime;
     }
 
     /**
      * @param string $message
      */
-    public function setMessage($message) {
+    public function setMessage($message)
+    {
         $this->message = $message;
     }
 
     /**
      * @return string
      */
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->message;
     }
 
     /**
      * @param string $taskBox
      */
-    public function setTaskBox($taskBox) {
+    public function setTaskBox($taskBox)
+    {
         $this->taskBox = $taskBox;
     }
 
     /**
      * @return string
      */
-    public function getTaskBox() {
+    public function getTaskBox()
+    {
         return $this->taskBox;
     }
-
 }

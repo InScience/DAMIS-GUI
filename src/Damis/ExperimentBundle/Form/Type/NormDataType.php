@@ -10,12 +10,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class NormDataType extends AbstractType {
+class NormDataType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $dataValidator = function($object, ExecutionContextInterface $context) use ($builder) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
             $data = $_POST['normdata_type'];
-            if($object >= $data['b'] && $data['normMeanStd'] == 1) {
+            if ($object >= $data['b'] && $data['normMeanStd'] == 1) {
                 $context->addViolation('Interval upper bound must be greater than lower', [], null);
             }
         };
@@ -62,14 +64,15 @@ class NormDataType extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'normdata_type';
     }
-
 }

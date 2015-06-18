@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\UserBundle\Model\UserInterface;
 
-class ChangePasswordController extends BaseController {
+class ChangePasswordController extends BaseController
+{
 
     /**
      * {@inheritDoc}
@@ -40,8 +41,8 @@ class ChangePasswordController extends BaseController {
     /**
      * {@inheritDoc}
      */
-    protected function getRedirectionUrl(UserInterface $user) {
+    protected function getRedirectionUrl(UserInterface $user)
+    {
         return $this->container->get('router')->generate('fos_user_profile_edit');
     }
-
 }

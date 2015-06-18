@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 use FOS\UserBundle\Model\UserInterface;
 
-
 class ResettingController extends BaseController
 {
     /**
@@ -20,5 +19,4 @@ class ResettingController extends BaseController
     {
         return $this->container->get('router')->generate('fos_user_profile_edit');
     }
-
 }

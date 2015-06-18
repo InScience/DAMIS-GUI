@@ -25,7 +25,8 @@ class PageController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));;
+        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));
+        ;
 
         return $this->container->get('templating')->renderResponse("BaseStaticBundle::staticMenu.html.twig", array(
             'pages' => $entities,
@@ -39,7 +40,8 @@ class PageController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));;
+        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));
+        ;
 
         return $this->container->get('templating')->renderResponse("BaseStaticBundle::staticInfo.html.twig", array(
             'pages' => $entities,
@@ -61,11 +63,11 @@ class PageController extends Controller
 
         $tableAlias = $source->getTableAlias();
         $source->manipulateQuery(
-            function ($query) use ($tableAlias)
-            {
+            function ($query) use ($tableAlias) {
+            
                 $query->resetDQLPart('orderBy');
-                $query->addOrderBy($tableAlias . '.groupName', 'ASC');
-                $query->addOrderBy($tableAlias . '.position', 'ASC');
+                $query->addOrderBy($tableAlias.'.groupName', 'ASC');
+                $query->addOrderBy($tableAlias.'.position', 'ASC');
             }
         );
 
@@ -116,7 +118,9 @@ class PageController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $position = $em->getRepository('BaseStaticBundle:Page')->getMaxTextPosition($entity->getGroupName())['max_position']+1;
-            if (empty($position)) $position = 1;
+            if (empty($position)) {
+                $position = 1;
+            }
 
             $entity->setPosition($position);
 
@@ -187,7 +191,7 @@ class PageController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Page entity.');
         }
-        $entity->setText(str_replace('<table','<table class="list"', $entity->getText()));
+        $entity->setText(str_replace('<table', '<table class="list"', $entity->getText()));
         return array(
             'entity'      => $entity,
         );
@@ -382,5 +386,4 @@ class PageController extends Controller
 
         return $this->redirect($this->generateUrl('page'));
     }
-
 }

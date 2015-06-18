@@ -17,11 +17,12 @@ class EntityLogRepository extends EntityRepository
      * Gets log entries for specific entity
      *
      * @param $entity
-     * @param null $action
-     * @param int $limit
+     * @param null   $action
+     * @param int    $limit
      * @return array
      */
-    public function getLogEntriesLimit($entity, $action = null, $limit = 10) {
+    public function getLogEntriesLimit($entity, $action = null, $limit = 10)
+    {
 
         $wrapped = new EntityWrapper($entity, $this->_em);
         $objectClass = $wrapped->getMetadata()->name;
@@ -36,7 +37,9 @@ class EntityLogRepository extends EntityRepository
             ->setMaxResults($limit);
 
         if ($action !== null) {
-            if (!is_array($action)) $action = array($action);
+            if (!is_array($action)) {
+                $action = array($action);
+            }
             $query->andWhere('b.action in (:act)')
                 ->setParameter('act', $action);
         }

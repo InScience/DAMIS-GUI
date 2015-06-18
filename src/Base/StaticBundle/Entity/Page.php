@@ -186,14 +186,16 @@ class Page
     /**
      * @param string $groupName
      */
-    public function setGroupName($groupName) {
+    public function setGroupName($groupName)
+    {
         $this->groupName = $groupName;
     }
 
     /**
      * @return string
      */
-    public function getGroupName() {
+    public function getGroupName()
+    {
         return $this->groupName;
     }
 
@@ -246,15 +248,16 @@ class Page
     /**
      * @param mixed $language
      */
-    public function setLanguage($language) {
+    public function setLanguage($language)
+    {
         $this->language = $language;
     }
 
     /**
      * @return mixed
      */
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->language;
     }
-
 }

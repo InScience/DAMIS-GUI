@@ -36,7 +36,8 @@ class ParametervalueRepository extends EntityRepository
      * @param $slug
      * @return mixed
      */
-    public function getValueBySlug($task, $slug){
+    public function getValueBySlug($task, $slug)
+    {
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')
             ->leftJoin('pv.parameter', 'p')
@@ -56,7 +57,8 @@ class ParametervalueRepository extends EntityRepository
      * @param $type
      * @return mixed
      */
-    public function getParameterByType($task, $type){
+    public function getParameterByType($task, $type)
+    {
         $query = $this->createQueryBuilder('pv')
             ->select('pv')
             ->leftJoin('pv.parameter', 'p')
@@ -76,7 +78,8 @@ class ParametervalueRepository extends EntityRepository
      * @param $type
      * @return mixed
      */
-    public function getValueByType($task, $type){
+    public function getValueByType($task, $type)
+    {
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')
             ->leftJoin('pv.parameter', 'p')
@@ -95,7 +98,8 @@ class ParametervalueRepository extends EntityRepository
      * @param int $id
      * @return mixed
      */
-    public function checkDatasets($id){
+    public function checkDatasets($id)
+    {
         $query = $this->createQueryBuilder('pv')
             ->select('pv')
             ->leftJoin('pv.parameter', 'p')
@@ -113,7 +117,8 @@ class ParametervalueRepository extends EntityRepository
      * @param int $id
      * @return array
      */
-    public function getExperimentDatasets($id){
+    public function getExperimentDatasets($id)
+    {
         $query = $this->createQueryBuilder('pv')
             ->select('pv.parametervalue')
             ->leftJoin('pv.parameter', 'p')

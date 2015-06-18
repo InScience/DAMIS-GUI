@@ -5,13 +5,16 @@ namespace Damis\AlgorithmBundle\Form\Validators;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class FileExtensionValidator extends ConstraintValidator {
+class FileExtensionValidator extends ConstraintValidator
+{
 
-    public function validate($value, Constraint $constraint) {
+    public function validate($value, Constraint $constraint)
+    {
 
         if ($value !== null) {
-            if (!$this->endsWith($value->getClientOriginalName(), '.zip'))
+            if (!$this->endsWith($value->getClientOriginalName(), '.zip')) {
                 $this->context->addViolation($constraint->invalid_type);
+            }
         }
 
     }
@@ -26,5 +29,3 @@ class FileExtensionValidator extends ConstraintValidator {
         return (substr($haystack, -$length) === $needle);
     }
 }
-
-

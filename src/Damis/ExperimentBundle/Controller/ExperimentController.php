@@ -64,7 +64,7 @@ class ExperimentController extends Controller
             'workFlowState' => null,
             'taskBoxesCount' => 0,
             'experimentId' => null,
-            'experimentTitle' => 'exp' . $nextName
+            'experimentTitle' => 'exp'.$nextName
         ];
     }
 
@@ -89,8 +89,8 @@ class ExperimentController extends Controller
             ->findOneById($id);
         
         // Validation of user access to current experiment
-        if (!$experiment || $experiment->getUser() != $user ) {
-            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+        if (!$experiment || $experiment->getUser() != $user) {
+            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: '.$user->getId());
             return $this->redirectToRoute('experiments_history');
         }
         
@@ -121,23 +121,27 @@ class ExperimentController extends Controller
         
         $params = $request->request->all();
         $isValid = isset($params['valid_form']);
-        if ($isValid)
+        if ($isValid) {
             $isValid = $params['valid_form'] == 1 ? true : false;
+        }
         $isChanged = isset($params['workflow_changed']);
-        if ($isChanged)
+        if ($isChanged) {
             $isChanged = $params['workflow_changed'] == 1 ? true : false;
+        }
 
         /* @var $experiment Experiment */
-        if($params['experiment-id'])
+        if ($params['experiment-id']) {
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
                 ->findOneBy(['id' => $params['experiment-id'], 'user' => $user]);
-        else
+        } else {
             $experiment = false;
+        }
 
-        $isNew = !(boolean)$experiment;
-        if ($isNew)
+        $isNew = !(boolean) $experiment;
+        if ($isNew) {
             $experiment = new Experiment();
+        }
 
         $experiment->setName($params['experiment-title']);
         $experiment->setGuiData($params['experiment-workflow_state']);
@@ -145,8 +149,9 @@ class ExperimentController extends Controller
         $isExecution = isset($params['experiment-execute']);
         $stopTask = isset($params['experiment-execute-task-box']) ? $params['experiment-execute-task-box'] : 0;
 
-        if ($isExecution)
+        if ($isExecution) {
             $isExecution = ($params['experiment-execute'] > 0);
+        }
 
         if ($isExecution) {
             $experiment->setMaxDuration(new \DateTime($params['experiment-max_calc_time']));
@@ -170,8 +175,9 @@ class ExperimentController extends Controller
             if ($isExecution || $isChanged || $isNew) {
                 $experiment->setStatus($experimentStatusSaved);
             } else {
-                if (!$isExecution)
+                if (!$isExecution) {
                     $this->get('session')->getFlashBag()->add('success', 'Experiment status is not changed!');
+                }
             }
         }
         
@@ -183,10 +189,11 @@ class ExperimentController extends Controller
             $this->get('session')->getFlashBag()->add('success', 'Experiment is started');
         }
 
-        if ($isValid)
+        if ($isValid) {
             return ['experiment' => $experiment];
-        else
+        } else {
             return new Response($experiment->getId());
+        }
     }
 
     /**
@@ -219,9 +226,9 @@ class ExperimentController extends Controller
     /**
      * This action will create all experiment task id database that are required
      * for execution.
-     * 
-     * @param integer $id Experiment id
-     * @param string $stopTask Task from wih other task will be not executed
+     *
+     * @param integer $id       Experiment id
+     * @param string  $stopTask Task from wih other task will be not executed
      * @throws type
      */
     public function populate($id, $stopTask)
@@ -248,14 +255,14 @@ class ExperimentController extends Controller
         $workflowsConnections = json_decode($guiDataExploded[1]);
       
         //remove workflotasks at first, this should remove parametervalues and parametervaluein-out too
-        foreach($experiment->getWorkflowtasks() as $task){
+        foreach ($experiment->getWorkflowtasks() as $task) {
             $em->remove($task);
         }
         $em->flush();
 
         $workflowsSaved = array();
 
-        foreach($workflows as $workflow){
+        foreach ($workflows as $workflow) {
             /* @var $component \Damis\ExperimentBundle\Entity\Component */
             $component = $em
                 ->getRepository('DamisExperimentBundle:Component')
@@ -276,31 +283,33 @@ class ExperimentController extends Controller
             $wf = array();
 
             /* @var $parameter \Damis\ExperimentBundle\Entity\Parameter */
-            foreach($component->getParameters() as $parameter){
+            foreach ($component->getParameters() as $parameter) {
                 $value = new Parametervalue();
                 $value->setWorkflowtask($workflowTask);
                 $value->setParameter($parameter);
                 $value->setParametervalue(null);
 
-                foreach($workflow->form_parameters as $form){
-                    if ($form){
-                        if (!isset($form->id) or !isset($form->value)){
+                foreach ($workflow->form_parameters as $form) {
+                    if ($form) {
+                        if (!isset($form->id) or !isset($form->value)) {
                             continue;
                         }
-                        if ($form->id == $parameter->getId())
-                            if(is_array($form->value))
+                        if ($form->id == $parameter->getId()) {
+                            if (is_array($form->value)) {
                                 $value->setParametervalue(json_encode($form->value));
-                            else
-                                $value->setParametervalue($form->value);
+                            }
+                        } else {
+                            $value->setParametervalue($form->value);
+                        }
                     }
                 }
                 $em->persist($value);
                 $em->flush();
 
-                if ($parameter->getConnectionType()->getId() == '1'){
+                if ($parameter->getConnectionType()->getId() == '1') {
                     $wf['in'] = $value->getParametervalueid();
                 }
-                if ($parameter->getConnectionType()->getId() == '2'){
+                if ($parameter->getConnectionType()->getId() == '2') {
                     $wf['out'][$parameter->getSlug()] = $value->getParametervalueid();
                 }
 
@@ -311,8 +320,8 @@ class ExperimentController extends Controller
         }
 
         foreach ($workflowsConnections as $conn) {
-            if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])){
-                if ( (isset($workflowsSaved[$conn->sourceBoxId]['out']['Y']) or isset($workflowsSaved[$conn->sourceBoxId]['out']['Yalt'])) and isset($workflowsSaved[$conn->targetBoxId]['in']) ) {
+            if (isset($workflowsSaved[$conn->sourceBoxId]) and isset($workflowsSaved[$conn->targetBoxId])) {
+                if ((isset($workflowsSaved[$conn->sourceBoxId]['out']['Y']) or isset($workflowsSaved[$conn->sourceBoxId]['out']['Yalt'])) and isset($workflowsSaved[$conn->targetBoxId]['in'])) {
                     //sugalvojom tokia logika:
                     //jei nustaytas sourceAnchor tipas vadinasi tai yra Y connectionas
                     //by default type = Right
@@ -351,11 +360,11 @@ class ExperimentController extends Controller
         /// Remove not runable tasks whet stop task is isset
         if ($stopTask) {
             $tasksToRemove = array();
-            foreach($workflowsConnections as $conn){
+            foreach ($workflowsConnections as $conn) {
                 if ($conn->sourceBoxId === $stopTask || in_array($conn->sourceBoxId, $tasksToRemove)) {
                     $tasksToRemove[] = $conn->targetBoxId ;
                 }
-            }    
+            }
 
             /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
             $experiment = $em
@@ -363,8 +372,8 @@ class ExperimentController extends Controller
                 ->findOneBy(['id' => $id]);
             $em->refresh($experiment);
 
-            foreach($experiment->getWorkflowtasks() as $task){
-                if (in_array($task->getTaskBox(),  $tasksToRemove)) {
+            foreach ($experiment->getWorkflowtasks() as $task) {
+                if (in_array($task->getTaskBox(), $tasksToRemove)) {
                     $em->remove($task);
                 }
             }
@@ -393,8 +402,8 @@ class ExperimentController extends Controller
             ->findOneById($id);
 
         // Validation of user access to current experiment
-        if (!$experiment || $experiment->getUser() != $user ) {
-            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: ' . $user->getId());
+        if (!$experiment || $experiment->getUser() != $user) {
+            $this->container->get('logger')->addError('Unvalid try to access experiment by user id: '.$user->getId());
             return $this->redirectToRoute('experiments_history');
         }
         
@@ -403,15 +412,17 @@ class ExperimentController extends Controller
         $tasksBoxsWithErrors = [];
         $executedTasksBoxs = [];
         /* @var $task Workflowtask */
-        foreach($experiment->getWorkflowtasks() as $task) {
+        foreach ($experiment->getWorkflowtasks() as $task) {
             /* @var $value \Damis\EntitiesBundle\Entity\Parametervalue */
-            foreach($task->getParameterValues() as $value)
-                if($value->getParameter()->getConnectionType()->getId() == 2)
+            foreach ($task->getParameterValues() as $value) {
+                if ($value->getParameter()->getConnectionType()->getId() == 2) {
                     $data['datasets'][$task->getTaskBox()][] = $value->getParametervalue();
+                }
+            }
 
-            if(in_array($task->getWorkflowtaskisrunning(), [1, 3]))
+            if (in_array($task->getWorkflowtaskisrunning(), [1, 3])) {
                 $tasksBoxsWithErrors[] = $task->getTaskBox();
-            elseif($task->getWorkflowtaskisrunning() == 2)
+            } elseif ($task->getWorkflowtaskisrunning() == 2)
                 $executedTasksBoxs[] = $task->getTaskBox();
         }
 
@@ -438,18 +449,19 @@ class ExperimentController extends Controller
         
         $experiments = json_decode($request->request->get('experiment-delete-list'));
         $em = $this->getDoctrine()->getManager();
-        foreach ($experiments as $id){
+        foreach ($experiments as $id) {
             /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
             $experiment = $em->getRepository('DamisExperimentBundle:Experiment')->findOneById($id);
-            if ($experiment && ($user == $experiment->getUser())){
+            if ($experiment && ($user == $experiment->getUser())) {
                 $files = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getExperimentDatasets($id);
-                foreach ($files as $fileId){
+                foreach ($files as $fileId) {
                     /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
                     $file = $em->getRepository('DamisDatasetsBundle:Dataset')
                         ->findOneBy(array('datasetId' => $fileId, 'hidden' => true));
-                    if ($file){
-                        if (file_exists('.' . $file->getFilePath()))
-                            unlink('.' . $file->getFilePath());
+                    if ($file) {
+                        if (file_exists('.'.$file->getFilePath())) {
+                            unlink('.'.$file->getFilePath());
+                        }
                         $em->remove($file);
                     }
                 }
@@ -485,23 +497,24 @@ class ExperimentController extends Controller
             ->findOneBy(['experimentstatus' => 'EXAMPLE']);
                 
         /* @var $experiment Experiment */
-        if ($experimentId > 0)
+        if ($experimentId > 0) {
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
                 ->findOneBy(['id' => $experimentId, 'status' => $experimentStatusExample]);
-        else {
+        } else {
             return $this->redirectToRoute('experiments_examples');
         }
         
         // Validation
         if (!$experiment) {
-            $this->container->get('logger')->addError('Unvalid try to copy experiment by user id: ' . $user->getId());
+            $this->container->get('logger')->addError('Unvalid try to copy experiment by user id: '.$user->getId());
             return $this->redirectToRoute('experiments_history');
         }
       
         // If experiment id is not valid or not example
-        if (!$experiment || $experiment->getStatus()->getExperimentstatus() != 'EXAMPLE')
+        if (!$experiment || $experiment->getStatus()->getExperimentstatus() != 'EXAMPLE') {
             throw $this->createNotFoundException('Unable to find Experiment entity.');
+        }
 
         /* @var $newExperiment Experiment */
         $newExperiment = new Experiment();
@@ -547,17 +560,18 @@ class ExperimentController extends Controller
         $experimentId = intval($request->get('experiment-example-id'));
 
         /* @var $experiment Experiment */
-        if ($experimentId > 0 )
+        if ($experimentId > 0) {
             $experiment = $this->getDoctrine()
                 ->getRepository('DamisExperimentBundle:Experiment')
                 ->findOneBy(['id' => $experimentId, 'user' => $user]);
-        else {
+        } else {
             return $this->redirect($this->generateUrl('experiments_examples'));
         }
       
         // If experiment id is not valid or not example
-        if (!$experiment)
+        if (!$experiment) {
             throw $this->createNotFoundException('Unable to find Experiment entity.');
+        }
         
         // Session user
         /* @var $user \Base\UserBundle\Entity\User */
@@ -596,83 +610,80 @@ class ExperimentController extends Controller
     {
         $memoryLimit = ini_get('memory_limit');
         $suffix = '';
-        sscanf ($memoryLimit, '%u%c', $number, $suffix);
-        if (isset ($suffix))
-        {
-            $number = $number * pow (1024, strpos (' KMG', $suffix));
+        sscanf($memoryLimit, '%u%c', $number, $suffix);
+        if (isset($suffix)) {
+            $number = $number * pow(1024, strpos(' KMG', $suffix));
         }
         $user = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
             ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if($entity){
+        if ($entity) {
             $format = explode('.', $entity->getFile()['fileName']);
             $format = $format[count($format)-1];
             $filename = $entity->getDatasetTitle();
-            if ($format == 'zip'){
+            if ($format == 'zip') {
                 $zip = new ZipArchive();
-                $res = $zip->open('./assets' . $entity->getFile()['fileName']);
+                $res = $zip->open('./assets'.$entity->getFile()['fileName']);
                 $name = $zip->getNameIndex(0);
-                if($zip->numFiles > 1){
+                if ($zip->numFiles > 1) {
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
                     return false;
                 }
 
-                if($res === true){
+                if ($res === true) {
                     $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
-                    $zip->extractTo('.' . $path, $name);
+                    $zip->extractTo('.'.$path, $name);
                     $zip->close();
                     $format = explode('.', $name);
                     $format = $format[count($format)-1];
                     $fileReader = new ReadFile();
-                    if ($format == 'arff'){
+                    if ($format == 'arff') {
                         $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
-                        $entity->setFilePath($dir . '.arff');
-                        $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
-                        if($rows === false){
+                        $entity->setFilePath($dir.'.arff');
+                        $rows = $fileReader->getRows('.'.$entity->getFilePath(), $format);
+                        if ($rows === false) {
                             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                             $em->remove($entity);
                             $em->flush();
-                            unlink('.' . $path . '/' . $name);
+                            unlink('.'.$path.'/'.$name);
                             return false;
                         }
                         unset($rows);
                         $em->persist($entity);
                         $em->flush();
-                        rename ( '.' . $path . '/' . $name , '.' . $dir . '.arff');
+                        rename('.'.$path.'/'.$name, '.'.$dir.'.arff');
                         $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
                         return true;
-                    }
-                    elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
-                        $rows = $fileReader->getRows('.' . $path . '/' . $name , $format);
-                        if($rows === false){
+                    } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
+                        $rows = $fileReader->getRows('.'.$path.'/'.$name, $format);
+                        if ($rows === false) {
                             $em->remove($entity);
                             $em->flush();
-                            unlink('.' . $path . '/' . $name);
+                            unlink('.'.$path.'/'.$name);
                             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
                             return false;
                         }
-                        unlink('.' . $path . '/' . $name);
-                    } elseif($format == 'xls' || $format == 'xlsx'){
-                        $objPHPExcel = PHPExcel_IOFactory::load('.' . $path . '/' . $name);
+                        unlink('.'.$path.'/'.$name);
+                    } elseif ($format == 'xls' || $format == 'xlsx') {
+                        $objPHPExcel = PHPExcel_IOFactory::load('.'.$path.'/'.$name);
                         $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                         array_unshift($rows, null);
-                        unlink('.' . $path . '/' . $name);
+                        unlink('.'.$path.'/'.$name);
                         unset($rows[0]);
-                    } else{
+                    } else {
                         $em->remove($entity);
                         $em->flush();
-                        unlink('.' . $path . '/' . $name);
+                        unlink('.'.$path.'/'.$name);
                         $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
                         return false;
                     }
                 }
-            }
-            elseif ($format == 'arff'){
+            } elseif ($format == 'arff') {
                 $entity->setFilePath($entity->getFile()['path']);
-                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
+                if (memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number) {
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     $em->remove($entity);
                     $em->flush();
@@ -680,12 +691,12 @@ class ExperimentController extends Controller
                 }
                 unset($rows);
                 $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.' . $entity->getFilePath() , $format);
-                if($rows === false){
+                $rows = $fileReader->getRows('.'.$entity->getFilePath(), $format);
+                if ($rows === false) {
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     $em->remove($entity);
                     $em->flush();
-                    unlink('.' . $entity->getFile()['fileName']);
+                    unlink('.'.$entity->getFile()['fileName']);
                     return false;
                 }
                 unset($rows);
@@ -693,78 +704,82 @@ class ExperimentController extends Controller
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
                 return true;
-            }
-            elseif($format == 'txt' || $format == 'tab' || $format == 'csv'){
+            } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
                 $fileReader = new ReadFile();
-                if(memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number){
+                if (memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number) {
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
                     return false;
                 }
-                $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'] , $format);
-            } elseif($format == 'xls' || $format == 'xlsx'){
-                $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
+                $rows = $fileReader->getRows('./assets'.$entity->getFile()['fileName'], $format);
+            } elseif ($format == 'xls' || $format == 'xlsx') {
+                $objPHPExcel = PHPExcel_IOFactory::load('./assets'.$entity->getFile()['fileName']);
                 $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);
-            } else{
+            } else {
                 $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
                 return false;
             }
             $hasHeaders = false;
-            if(!empty($rows)){
-                foreach($rows[1] as $header){
-                    if(!(is_numeric($header))){
+            if (!empty($rows)) {
+                foreach ($rows[1] as $header) {
+                    if (!(is_numeric($header))) {
                         $hasHeaders = true;
                     }
                 }
             }
             $arff = '';
-            $arff .= '@relation ' . $filename . PHP_EOL;
-            if($hasHeaders){
-                foreach($rows[1] as $key => $header){
+            $arff .= '@relation '.$filename.PHP_EOL;
+            if ($hasHeaders) {
+                foreach ($rows[1] as $key => $header) {
                     // Remove spaces in header, to fit arff format
                     $header = preg_replace('/\s+/', '_', $header);
 
                     // Check string is numeric or normal string
                     if (is_numeric($rows[2][$key])) {
-                        if(is_int($rows[2][$key] + 0))
-                            $arff .= '@attribute ' . $header . ' ' . 'integer' . PHP_EOL;
-                        else if(is_float($rows[2][$key] + 0))
-                            $arff .= '@attribute ' . $header . ' ' . 'real' . PHP_EOL;
+                        if (is_int($rows[2][$key] + 0)) {
+                            $arff .= '@attribute '.$header.' '.'integer'.PHP_EOL;
+                        } elseif (is_float($rows[2][$key] + 0)) {
+                            $arff .= '@attribute '.$header.' '.'real'.PHP_EOL;
+                        }
                     } else {
-                        $arff .= '@attribute ' . $header . ' ' . 'string' . PHP_EOL;
+                        $arff .= '@attribute '.$header.' '.'string'.PHP_EOL;
                     }
                 }
             } else {
-                foreach($rows[1] as $key => $header){
+                foreach ($rows[1] as $key => $header) {
                     if (is_numeric($rows[2][$key])) {
-                        if(is_int($rows[2][$key] + 0))
-                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'integer' . PHP_EOL;
-                        else if(is_float($rows[2][$key] + 0))
-                            $arff .= '@attribute ' . 'attr' . $key . ' ' . 'real' . PHP_EOL;
+                        if (is_int($rows[2][$key] + 0)) {
+                            $arff .= '@attribute '.'attr'.$key.' '.'integer'.PHP_EOL;
+                        } elseif (is_float($rows[2][$key] + 0)) {
+                            $arff .= '@attribute '.'attr'.$key.' '.'real'.PHP_EOL;
+                        }
                     } else {
-                        $arff .= '@attribute ' . 'attr' . $key . ' ' . 'string' . PHP_EOL;
+                        $arff .= '@attribute '.'attr'.$key.' '.'string'.PHP_EOL;
                     }
                 }
             }
-            $arff .= '@data' . PHP_EOL;
-            if($hasHeaders)
+            $arff .= '@data'.PHP_EOL;
+            if ($hasHeaders) {
                 unset($rows[1]);
-            foreach($rows as $row){
-                foreach($row as $key => $value)
-                    if($key > 0)
-                        $arff .= ',' . $value;
-                    else
+            }
+            foreach ($rows as $row) {
+                foreach ($row as $key => $value) {
+                    if ($key > 0) {
+                        $arff .= ','.$value;
+                    } else {
                         $arff .= $value;
+                    }
+                } 
                 $arff .= PHP_EOL;
             }
             $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
-            $fp = fopen($_SERVER['DOCUMENT_ROOT'] . $dir . ".arff","w+");
+            $fp = fopen($_SERVER['DOCUMENT_ROOT'].$dir.".arff", "w+");
             fwrite($fp, $arff);
             fclose($fp);
-            $entity->setFilePath($dir . ".arff");
+            $entity->setFilePath($dir.".arff");
             $em->persist($entity);
             $em->flush();
 

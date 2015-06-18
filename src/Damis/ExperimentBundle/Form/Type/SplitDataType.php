@@ -10,9 +10,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-class SplitDataType extends AbstractType {
+class SplitDataType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
         ->add('reshufleObjects', 'choice', [
                 'required' => false,
@@ -32,7 +34,7 @@ class SplitDataType extends AbstractType {
         ->add('firstSubsetPerc', 'integer', [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),  
+                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
@@ -66,14 +68,15 @@ class SplitDataType extends AbstractType {
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'translation_domain' => 'ExperimentBundle'
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'splitdata_type';
     }
-
 }

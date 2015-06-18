@@ -9,15 +9,18 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword as OldUse
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use FOS\UserBundle\Form\Type\ChangePasswordFormType as BaseType;
 
-class ChangePasswordFormType extends BaseType {
+class ChangePasswordFormType extends BaseType
+{
 
     protected $container = null;
 
-    public function __construct($modelUserClass = null, $container) {
+    public function __construct($modelUserClass = null, $container)
+    {
         $this->container = $container;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         if (class_exists('Symfony\Component\Security\Core\Validator\Constraints\UserPassword')) {
             $constraint = new UserPassword();
         } else {
@@ -41,8 +44,8 @@ class ChangePasswordFormType extends BaseType {
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'base_user_change_password';
     }
-
 }

@@ -112,7 +112,8 @@ class Component
     /**
      * @return mixed
      */
-    public function getParameters() {
+    public function getParameters()
+    {
         return $this->parameters;
     }
 
@@ -375,8 +376,8 @@ class Component
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->parameters = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 }

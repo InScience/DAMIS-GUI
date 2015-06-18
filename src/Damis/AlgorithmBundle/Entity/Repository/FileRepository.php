@@ -4,17 +4,17 @@ namespace Damis\AlgorithmBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-
 class FileRepository extends EntityRepository
 {
     /**
      * Finds current user uploaded algorithm files
      *
      * @param \Base\UserBundle\Entity\User $user
-     * @param array $orderBy
+     * @param array                        $orderBy
      * @return \Doctrine\ORM\Query
      */
-    public function getUserAlgorithms($user, $orderBy = array('created' => 'DESC')){
+    public function getUserAlgorithms($user, $orderBy = array('created' => 'DESC'))
+    {
 
         $query = $this->createQueryBuilder('d')
             ->andWhere('d.user = :user')
@@ -23,12 +23,13 @@ class FileRepository extends EntityRepository
             ->setParameter('user', $user);
         $sortBy = key($orderBy);
         $order = $orderBy[$sortBy];
-        if($sortBy == 'title')
+        if ($sortBy == 'title') {
             $query
                 ->addOrderBy('d.fileTitle', $order);
-        else
+        } else {
             $query
                 ->addOrderBy('d.fileCreated', $order);
+        }
 
         return $query->getQuery();
     }

@@ -7,9 +7,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class FileType extends AbstractType {
+class FileType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
                 ->add('fileTitle', 'text', array(
                     'label' => 'Title',
@@ -33,7 +35,8 @@ class FileType extends AbstractType {
                         ));
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'data_class' => 'Damis\AlgorithmBundle\Entity\File',
             'csrf_protection' => false,
@@ -41,8 +44,8 @@ class FileType extends AbstractType {
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'file_newtype';
     }
-
 }

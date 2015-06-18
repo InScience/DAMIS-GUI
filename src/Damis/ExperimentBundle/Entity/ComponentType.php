@@ -45,7 +45,7 @@ class ComponentType
     /**
      * Get component type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -55,7 +55,7 @@ class ComponentType
     /**
      * Get component type id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {

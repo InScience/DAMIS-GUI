@@ -88,7 +88,8 @@ class ExperimentRepository extends EntityRepository
      * @param int user id
      * @return string
      */
-    public function getNextExperimentNameNumber($userId) {
+    public function getNextExperimentNameNumber($userId)
+    {
         $em = $this->getEntityManager();
         $dql = $em->createQuery("
             SELECT SUBSTRING(tbl.name, 1, 3) as name, SUBSTRING(tbl.name FROM 4) as nr
@@ -99,14 +100,15 @@ class ExperimentRepository extends EntityRepository
         
         $result = $dql->getResult();
 
-        if(isset($result[0]['nr'])){
+        if (isset($result[0]['nr'])) {
             $nr = $result[0]['nr'] + 1;
-            if($nr < 10)
-                return '00' . $nr;
-            elseif($nr < 100)
-                return '0' . $nr;
-            else
+            if ($nr < 10) {
+                return '00'.$nr;
+            } elseif ($nr < 100)
+                return '0'.$nr;
+            else {
                 return $nr;
+            }
         }
 
         return '000';

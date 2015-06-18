@@ -96,14 +96,16 @@ class Dataset
     /**
      * @param int $hidden
      */
-    public function setHidden($hidden) {
+    public function setHidden($hidden)
+    {
         $this->hidden = $hidden;
     }
 
     /**
      * @return int
      */
-    public function getHidden() {
+    public function getHidden()
+    {
         return $this->hidden;
     }
 
@@ -262,8 +264,9 @@ class Dataset
      *
      * @return string
      */
-    public function getUserIdMd5(){
-        return md5($this->seed . $this->user);
+    public function getUserIdMd5()
+    {
+        return md5($this->seed.$this->user);
     }
 
     /**
@@ -271,8 +274,11 @@ class Dataset
      *
      * @return string
      */
-    public function getUserIdMd5Dataset(){
-        if ($this->hidden) return $this->getUserIdMd5()."/experiment";
+    public function getUserIdMd5Dataset()
+    {
+        if ($this->hidden) {
+            return $this->getUserIdMd5()."/experiment";
+        }
         return $this->getUserIdMd5()."/dataset";
     }
 
@@ -281,8 +287,9 @@ class Dataset
      *
      * @return string
      */
-    public function getDatasetIdMd5(){
-        return md5($this->datasetId . $this->seed);
+    public function getDatasetIdMd5()
+    {
+        return md5($this->datasetId.$this->seed);
     }
 
     /**
@@ -324,5 +331,4 @@ class Dataset
     {
         return $this->filePath;
     }
-
 }

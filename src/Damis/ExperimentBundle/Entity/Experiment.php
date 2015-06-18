@@ -349,14 +349,16 @@ class Experiment
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->workflowtasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * @return mixed
      */
-    public function getWorkflowtasks() {
+    public function getWorkflowtasks()
+    {
         return $this->workflowtasks;
     }
 }

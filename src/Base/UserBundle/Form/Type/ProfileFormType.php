@@ -9,12 +9,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword as OldUserPassword;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
-class ProfileFormType extends BaseType {
+class ProfileFormType extends BaseType
+{
 
     /**
      * {@inheritDoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         if (class_exists('Symfony\Component\Security\Core\Validator\Constraints\UserPassword')) {
             $constraint = new UserPassword();
         } else {
@@ -33,7 +35,8 @@ class ProfileFormType extends BaseType {
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'base_user_profile';
     }
 
@@ -46,7 +49,8 @@ class ProfileFormType extends BaseType {
     /**
      * {@inheritDoc}
      */
-    protected function buildUserForm(FormBuilderInterface $builder, array $options) {
+    protected function buildUserForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
             ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.username'),))
             ->add('name', null, array('label' => 'form.name', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.name'),))
@@ -55,5 +59,4 @@ class ProfileFormType extends BaseType {
             ->add('organisation', null, array('label' => 'form.organisation', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.organisation'),))
         ;
     }
-
 }

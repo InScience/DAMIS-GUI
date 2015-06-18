@@ -74,7 +74,7 @@ class Cluster
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getname()
     {
@@ -97,7 +97,7 @@ class Cluster
     /**
      * Get workloadhost
      *
-     * @return string 
+     * @return string
      */
     public function getWorkloadHost()
     {
@@ -120,7 +120,7 @@ class Cluster
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -130,7 +130,7 @@ class Cluster
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -168,5 +168,4 @@ class Cluster
     {
         return $this->workloadUrl;
     }
-
 }

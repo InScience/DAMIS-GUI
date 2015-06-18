@@ -93,14 +93,16 @@ class File
     /**
      * @param int $hidden
      */
-    public function setHidden($hidden) {
+    public function setHidden($hidden)
+    {
         $this->hidden = $hidden;
     }
 
     /**
      * @return int
      */
-    public function getHidden() {
+    public function getHidden()
+    {
         return $this->hidden;
     }
 
@@ -236,19 +238,23 @@ class File
      *
      * @return string
      */
-    public function getUserIdMd5(){
-        return md5($this->seed . $this->user);
+    public function getUserIdMd5()
+    {
+        return md5($this->seed.$this->user);
     }
 
     /**
      * Create md5 secured with seed and user id string + files subatalog
      * This parametris is mentioned in application config.yml file
      * to iPhp mipper
-     * 
+     *
      * @return string
      */
-    public function getUserIdMd5File(){
-        if ($this->hidden) return $this->getUserIdMd5()."/hidden";
+    public function getUserIdMd5File()
+    {
+        if ($this->hidden) {
+            return $this->getUserIdMd5()."/hidden";
+        }
         return $this->getUserIdMd5()."/algorithms";
     }
 
@@ -259,8 +265,9 @@ class File
      *
      * @return string
      */
-    public function getFileIdMd5(){
-        return md5($this->fileId . $this->seed);
+    public function getFileIdMd5()
+    {
+        return md5($this->fileId.$this->seed);
     }
 
     /**
@@ -301,5 +308,5 @@ class File
     public function getFilePath()
     {
         return $this->filePath;
-    }    
+    }
 }

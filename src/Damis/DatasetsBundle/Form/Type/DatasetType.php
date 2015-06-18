@@ -7,9 +7,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class DatasetType extends AbstractType {
+class DatasetType extends AbstractType
+{
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
                 ->add('datasetTitle', 'text', array(
                     'label' => 'Title',
@@ -33,7 +35,8 @@ class DatasetType extends AbstractType {
                         ));
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
             'data_class' => 'Damis\DatasetsBundle\Entity\Dataset',
             'csrf_protection' => false,
@@ -41,8 +44,8 @@ class DatasetType extends AbstractType {
         ));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'datasets_newtype';
     }
-
 }

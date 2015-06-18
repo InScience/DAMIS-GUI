@@ -25,24 +25,25 @@ class ChartController extends Controller
      * @Route("/experiment/chart/dataset.html", name="dataset_chart", options={"expose" = true})
      * @Method({"GET", "POST"})
      */
-    function getAction(Request $request) {
-        if($request->isMethod('POST')) {
-            if($request->get('dst') == 'user-computer')
+    function getAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            if ($request->get('dst') == 'user-computer') {
                 return $this->_downloadImage($request->get('image'), $request->get('format'));
-            // Midas
-            else if ($request->get('dst') == 'midas') {
-                if($request->get('format') == 'jpeg' || $request->get('format') == 'png') {
+            } // Midas
+            elseif ($request->get('dst') == 'midas') {
+                if ($request->get('format') == 'jpeg' || $request->get('format') == 'png') {
                     $temp_file = $this->_getImageFilePath($request->get('image'), $request->get('format'));
                 } else {
-                    // Error 
-                   return 0;
+                    // Error
+                    return 0;
                 }
                 
                 $client = new Client($this->container->getParameter('midas_url'));
                 $session = $this->get('request')->getSession();
-                if($session->has('sessionToken'))
+                if ($session->has('sessionToken')) {
                     $sessionToken = $session->get('sessionToken');
-                else {
+                } else {
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
                     return $this->redirect($request->headers->get('referer'));
                 }
@@ -51,7 +52,7 @@ class ChartController extends Controller
                 $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileinfo['basename']);
                         
                 $post = array(
-                    'name' => $name . '.' . $request->get('format'),
+                    'name' => $name.'.'.$request->get('format'),
                     //'path' => json_decode($request->get('path'), true)['path'],
                     //'repositoryType' => 'research',
                     'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
@@ -61,20 +62,20 @@ class ChartController extends Controller
 
                 try {
                     $response = json_decode($req->send()->getBody(true), true);
-                    if($response['type'] == 'error'){
+                    if ($response['type'] == 'error') {
                         $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
                         return $this->redirect($request->headers->get('referer'));
                     }
 
                     $fileId = $response['file']['id'];
-                    $header = array('Content-Type: multipart/form-data', 'Authorization:' . $sessionToken);
+                    $header = array('Content-Type: multipart/form-data', 'Authorization:'.$sessionToken);
 
-                    $file = new CURLFile($temp_file, 'image/'. $request->get('format'), $name);
+                    $file = new CURLFile($temp_file, 'image/'.$request->get('format'), $name);
 
                     $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url') . '/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url').'/action/file-explorer/file/slice');
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);
@@ -102,7 +103,7 @@ class ChartController extends Controller
             $x = isset($params['x']) ? $params['x'] : null;
             $y = isset($params['y']) ? $params['y'] : null;
             $clsCol = isset($params['cls']) ? $params['cls'] : null;
-            $chart = $helper->classifieData('.' . $dataset->getFilePath(), $x, $y, $clsCol);
+            $chart = $helper->classifieData('.'.$dataset->getFilePath(), $x, $y, $clsCol);
 
             $context = [
                 "attrs" => $chart['attributes'],
@@ -137,21 +138,19 @@ class ChartController extends Controller
 
         $imageInfo = $image; // Your method to get the data
         $image = fopen($imageInfo, 'wb');
-        file_put_contents(realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart.' . $format, $image);
+        file_put_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart.'.$format, $image);
         fclose($image);
         $response = new Response();
         $response->headers->set('Content-Type', $format);
-        $response->headers->set('Content-Disposition', 'attachment; filename="chart.' . $format . '"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="chart.'.$format.'"');
 
-        $response->setContent(file_get_contents(realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart.' . $format));
+        $response->setContent(file_get_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart.'.$format));
         return $response;
     }
     
     /**
      * Create temp image file file
-     * 
+     *
      * @param type $image
      * @param type $format
      * @return type
@@ -166,11 +165,9 @@ class ChartController extends Controller
 
         $imageInfo = $image; // Your method to get the data
         $image = fopen($imageInfo, 'wb');
-        file_put_contents(realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart' . $id . '.' . $format, $image);
+        file_put_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart'.$id.'.'.$format, $image);
         fclose($image);
 
-        return realpath($this->get('kernel')->getRootDir())
-                . '/cache/chart' . $id . '.' . $format;
+        return realpath($this->get('kernel')->getRootDir()).'/cache/chart'.$id.'.'.$format;
     }
 }
