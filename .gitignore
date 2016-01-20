@@ -20,3 +20,4 @@ app/config/parameters.yml
 nbproject/*
 /scripts/
 !/web/css/midas.css
+/run.cmd
