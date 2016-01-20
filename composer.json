@@ -27,7 +27,7 @@
         "friendsofsymfony/user-bundle": "@stable",
         "leafo/lessphp": "dev-master",
         "bcc/cron-manager-bundle": "2.6.*",
-        "knplabs/knp-menu-bundle": "dev-master",
+        "knplabs/knp-menu-bundle": "~2.0",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "pagerfanta/pagerfanta": "dev-master",
         "apy/datagrid-bundle": "dev-master",
