@@ -229,9 +229,9 @@
                                 ctx.strokeStyle = options.grid.borderColor; // || axis.options.tickColor || $.color.parse(axis.options.color).scale("a", 0.22).toString();
                                 ctx.beginPath();
                                 if(axis.direction == "x")
-                                    y = 279;
+                                    y = 579;
                                 if(axis.direction == "y")
-                                    x = -2;
+                                    x = -2;								
                                 ctx.fillText(tick.label, x, y);
                                 //ctx.fillRect(x, y, -10, -10);
                                 ctx.stroke();

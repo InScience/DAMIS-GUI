@@ -73,7 +73,17 @@
                 tickSizeX = Math.floor((dataContent['maxX'] - dataContent['minX']) / 20);
             if(dataContent['maxY'] - dataContent['minY'] > 50)
                 tickSizeY = Math.floor((dataContent['maxY'] - dataContent['minY']) / 10);
-
+            
+            // Scale fix
+            var centerX = (dataContent['maxX'] + dataContent['minX']) / 2;
+            var centerY = (dataContent['maxY'] + dataContent['minY']) / 2;
+            var sizeX = dataContent['maxX'] - dataContent['minX'];
+            var sizeY = dataContent['maxY'] - dataContent['minY'];
+            var size = sizeX;
+            if (sizeX < sizeY) {
+                size = sizeY
+            }
+            
 			$.each(dataContent.data, function(idx, rec) {
 				data.push({
 					label: rec['group'],
@@ -99,18 +109,21 @@
 					show: false
 				},
 				grid: {
-
 					clickable: true,
 					hoverable: true
 				},
 				xaxis: {
-					min: dataContent["minX"],
-					max: dataContent["maxX"],
-					tickSize: tickSizeX
+					//min: dataContent["minX"],
+					//max: dataContent["maxX"],                   
+					min: centerX - size/2,
+					max: centerX + size/2,
+                    tickSize: tickSizeX
 				},
 				yaxis: {
-					min: dataContent["minY"],
-					max: dataContent["maxY"],
+					//min: dataContent["minY"],
+					//max: dataContent["maxY"],
+					min: centerY - size/2,
+					max: centerY + size/2,
 					tickSize: tickSizeY
 				}
 			};
