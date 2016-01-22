@@ -115,7 +115,7 @@ class ExperimentController extends Controller
     {
         // checks MIDAS session
         $this->get("midas_service")->checkSession();
-
+                
         /* @var $user \Base\UserBundle\Entity\User */
         $user = $this->get('security.context')->getToken()->getUser();
         
@@ -164,11 +164,11 @@ class ExperimentController extends Controller
         $experiment->setUser($this->get('security.context')->getToken()->getUser());
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $experimentStatusSaved = $em
             ->getRepository('DamisExperimentBundle:Experimentstatus')
             ->findOneBy(['experimentstatus' => 'SAVED']);
-               
+
         if ($isValid) {
             $this->get('session')->getFlashBag()->add('success', 'Experiment successfully created!');
             // If if something is changed we change status
@@ -180,10 +180,10 @@ class ExperimentController extends Controller
                 }
             }
         }
-        
+
         $em->persist($experiment);
         $em->flush();
-        
+
         if ($isExecution && $isValid) {
             $this->populate($experiment->getId(), $stopTask);
             $this->get('session')->getFlashBag()->add('success', 'Experiment is started');
@@ -226,7 +226,7 @@ class ExperimentController extends Controller
     /**
      * This action will create all experiment task id database that are required
      * for execution.
-     *
+     * 
      * @param integer $id       Experiment id
      * @param string  $stopTask Task from wih other task will be not executed
      * @throws type
@@ -297,9 +297,9 @@ class ExperimentController extends Controller
                         if ($form->id == $parameter->getId()) {
                             if (is_array($form->value)) {
                                 $value->setParametervalue(json_encode($form->value));
+                            } else {
+                                $value->setParametervalue($form->value);
                             }
-                        } else {
-                            $value->setParametervalue($form->value);
                         }
                     }
                 }
@@ -364,7 +364,7 @@ class ExperimentController extends Controller
                 if ($conn->sourceBoxId === $stopTask || in_array($conn->sourceBoxId, $tasksToRemove)) {
                     $tasksToRemove[] = $conn->targetBoxId ;
                 }
-            }
+            }    
 
             /* @var $experiment \Damis\ExperimentBundle\Entity\Experiment */
             $experiment = $em
