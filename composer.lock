@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "355e5b181949c8b983869ec8623ea0ce",
-    "content-hash": "14dc75043d93768e786bb148a358a183",
+    "hash": "a07d9ff6d29e2763ba5434616995b5de",
+    "content-hash": "328936fe2f8dc419d4383d8dbcc534e5",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -1384,7 +1384,7 @@
         },
         {
             "name": "iphp/filestore-bundle",
-            "version": "dev-master",
+            "version": "v0.2.5.1",
             "target-dir": "Iphp/FileStoreBundle",
             "source": {
                 "type": "git",
@@ -3274,7 +3274,7 @@
         "doctrine/doctrine-fixtures-bundle": 20,
         "pagerfanta/pagerfanta": 20,
         "apy/datagrid-bundle": 20,
-        "iphp/filestore-bundle": 20,
+        "iphp/filestore-bundle": 0,
         "willdurand/js-translation-bundle": 0
     },
     "prefer-stable": false,

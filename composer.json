@@ -31,7 +31,7 @@
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "pagerfanta/pagerfanta": "dev-master",
         "apy/datagrid-bundle": "dev-master",
-        "iphp/filestore-bundle": "dev-master",
+        "iphp/filestore-bundle": "@stable",
         "willdurand/js-translation-bundle": "@stable",
         "guzzle/guzzle": "~3.9",
         "phpoffice/phpexcel": "~1.8"
