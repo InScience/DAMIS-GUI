@@ -6,8 +6,6 @@ use Base\ConvertBundle\Helpers\ReadFile;
 use Damis\DatasetsBundle\Form\Type\DatasetType;
 use Damis\DatasetsBundle\Entity\Dataset;
 use Guzzle\Http\Client;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use PHPExcel_IOFactory;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,6 +26,10 @@ class DatasetsController extends Controller
 {
     /**
      * User datasets list window
+     *
+     * @param Request $request
+     *
+     * @return array
      *
      * @Route("/list.html", name="datasets_list")
      * @Method({"GET","POST"})
@@ -59,13 +61,18 @@ class DatasetsController extends Controller
             $this->get('request')->query->get('page', 1),
             15
         );
+
         return array(
-            'entities' => $pagination
+            'entities' => $pagination,
         );
     }
 
     /**
      * Delete datasets
+     *
+     * @param Request $request
+     *
+     * @return void Redirect to list.html
      *
      * @Route("/delete.html", name="datasets_delete")
      * @Method("POST")
@@ -75,7 +82,7 @@ class DatasetsController extends Controller
     {
         /* @var $user \Base\UserBundle\Entity\User */
         $user = $this->get('security.context')->getToken()->getUser();
-        
+
         $files = json_decode($request->request->get('file-delete-list'));
         $em = $this->getDoctrine()->getManager();
         foreach ($files as $id) {
@@ -97,11 +104,14 @@ class DatasetsController extends Controller
                 $em->flush();
             }
         }
+
         return $this->redirect($this->generateUrl('datasets_list'));
     }
 
     /**
      * Upload new dataset
+     *
+     * @return array
      *
      * @Route("/new.html", name="datasets_new")
      * @Method("GET")
@@ -111,13 +121,18 @@ class DatasetsController extends Controller
     {
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
+
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
     }
 
     /**
      * Upload new dataset from MIDAS
+     *
+     * @param Request $request
+     *
+     * @return array
      *
      * @Route("/midasnew.html", name="datasets_midas_new")
      * @Method("GET")
@@ -159,29 +174,29 @@ class DatasetsController extends Controller
             $files = array('details' =>
                 array('folderDetailsList' =>
                     array(
-                        0 =>
-                            array (
-                                 'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
-                                 'path' => 'publishedResearch',
-                                 'type' => 'RESEARCH',
-                                 'modifyDate' => time() * 1000,
-                                 'page' => 0,
-                                 'uuid' => 'publishedResearch',
-                                 'resourceId'   => ''
-                            ),
-                            1 =>
-                            array (
-                                 'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
-                                 'path' => 'research',
-                                 'type' => 'RESEARCH',
-                                 'modifyDate' => time() * 1000,
-                                 'page' => 0,
-                                 'uuid' => 'research',
-                                 'resourceId'   => ''
-                            )
-                    )
-                ));
-                return array(
+                        0 => array (
+                            'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
+                            'path' => 'publishedResearch',
+                            'type' => 'RESEARCH',
+                            'modifyDate' => time() * 1000,
+                            'page' => 0,
+                            'uuid' => 'publishedResearch',
+                            'resourceId'   => '',
+                        ),
+                        1 => array (
+                            'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
+                            'path' => 'research',
+                            'type' => 'RESEARCH',
+                            'modifyDate' => time() * 1000,
+                            'page' => 0,
+                            'uuid' => 'research',
+                            'resourceId'   => '',
+                        ),
+                    ),
+                ),
+            );
+
+            return array(
                 'notLogged' => $notLogged,
                 'files' => $files,
                 'page' => 0,
@@ -191,21 +206,21 @@ class DatasetsController extends Controller
                 'next' => 0,
                 'path' => $path,
                 'uuid' => '',
-                'selected' => 0
-                );
+                'selected' => 0,
+            );
         } else {
+            // Else if $path is selected
+            $post = array(
+                //'path' => $path,
+                'page' => $page,
+                'pageSize' => 10,
+                //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'), // Folders are excluded if we use this parameter
+                //'repositoryType' => 'research'
+                'uuid' => $uuid,
+            );
         }
-        /// Else if $path is selected
-        $post = array(
-            //'path' => $path,
-            'page' => $page,
-            'pageSize' => 10,
-            //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'), // Folders are excluded if we use this parameter
-            //'repositoryType' => 'research'
-            'uuid' => $uuid
-        );
         $files = [];
-        
+
         $req = $client->post(
             '/action/research/folders',
             array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken),
@@ -243,6 +258,7 @@ class DatasetsController extends Controller
             $pageCount = 0;
             $totalFiles = 0;
         }
+
         return array(
             'notLogged' => $notLogged,
             'files' => $files,
@@ -253,11 +269,15 @@ class DatasetsController extends Controller
             'next' => $page + 1,
             'path' => $path,
             'uuid' => $uuid,
-            'selected' => $id
+            'selected' => $id,
         );
     }
     /**
      * Create new dataset
+     *
+     * @param Request $request
+     *
+     * @return array
      *
      * @Route("/create.html", name="datasets_create")
      * @Method("POST")
@@ -276,16 +296,21 @@ class DatasetsController extends Controller
             $entity->setDatasetIsMidas(false);
             $em->persist($entity);
             $em->flush();
+
             return $this->uploadArff($entity->getDatasetId());
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
     }
 
     /**
      * Create new midas dataset
+     *
+     * @param Request $request
+     *
+     * @return mixed
      *
      * @Route("/createmidas.html", name="datasets_create_midas")
      * @Method("POST")
@@ -298,13 +323,15 @@ class DatasetsController extends Controller
         $data = json_decode($request->request->get('dataset_pk'), true);
         if (!$data) {
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('File is not selected', array(), 'DatasetsBundle'));
-               return $this->redirect($this->generateUrl('datasets_midas_new'));
+
+            return $this->redirect($this->generateUrl('datasets_midas_new'));
         }
         $session = $request->getSession();
         if ($session->has('sessionToken')) {
             $sessionToken = $session->get('sessionToken');
         } else {
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+
             return $this->redirect($this->generateUrl('datasets_midas_new'));
         }
         //$req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
@@ -318,36 +345,42 @@ class DatasetsController extends Controller
             $user = $this->get('security.context')->getToken()->getUser();
             $file->setUser($user);
             $file->setDatasetIsMidas(true);
-            $temp_file = $this->container->getParameter("kernel.cache_dir").'/../'.time().$data['name'];
+            $tempFile = $this->container->getParameter("kernel.cache_dir").'/../'.time().$data['name'];
             $em->persist($file);
             $em->flush();
-            $fp = fopen($temp_file, "w");
+            $fp = fopen($tempFile, "w");
             fwrite($fp, $body);
             fclose($fp);
 
-            $file2 = new File($temp_file);
+            $file2 = new File($tempFile);
 
-            $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-            $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $ref_class, 'file');
-            $file_data = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
+            $refClass = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
+            $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $refClass, 'file');
+            $fileData = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
 
-            $org_file_name = basename($data['name']);
-            $file_data['originalName'] = $org_file_name;
+            $orgFilename = basename($data['name']);
+            $fileData['originalName'] = $orgFilename;
 
-            $file->setFile($file_data);
+            $file->setFile($fileData);
             $em->persist($file);
             $em->flush();
-            unlink($temp_file);
+            unlink($tempFile);
+
             return $this->uploadArff($file->getDatasetId());
 
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
+
             return $this->redirect($this->generateUrl('datasets_midas_new'));
         }
     }
 
     /**
      * Edit dataset
+     *
+     * @param int $id Dataset id
+     *
+     * @return array
      *
      * @Route("/{id}/edit.html", name="datasets_edit")
      * @Method("GET")
@@ -357,26 +390,33 @@ class DatasetsController extends Controller
     {
         /* @var $user \Base\UserBundle\Entity\User */
         $user = $this->get('security.context')->getToken()->getUser();
-        
+
         $em = $this->getDoctrine()->getManager();
         /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
         // Validation of user access to current experiment
         if (!$entity || ($entity->getUser() != $user)) {
             $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
+
             return $this->redirectToRoute('datasets_list');
         }
         $form = $this->createForm(new DatasetType(), null);
         $form->get('datasetTitle')->setData($entity->getDatasetTitle());
         $form->get('datasetDescription')->setData($entity->getDatasetDescription());
+
         return array(
             'form' => $form->createView(),
-            'id' => $entity->getDatasetId()
+            'id' => $entity->getDatasetId(),
         );
     }
 
     /**
      * Update dataset
+     *
+     * @param Request $request
+     * @param int     $id      Dataset id
+     *
+     * @return array
      *
      * @Route("/{id}/update.html", name="datasets_update")
      * @Method("POST")
@@ -386,13 +426,14 @@ class DatasetsController extends Controller
     {
         /* @var $user \Base\UserBundle\Entity\User */
         $user = $this->get('security.context')->getToken()->getUser();
-        
+
         $em = $this->getDoctrine()->getManager();
         /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
         $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
         // Validation of user access to current experiment
         if (!$entity || ($entity->getUser() != $user)) {
             $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
+
             return $this->redirectToRoute('datasets_list');
         }
         $form = $this->createForm(new DatasetType(), null);
@@ -408,17 +449,22 @@ class DatasetsController extends Controller
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Dataset successfully updated!');
+
             return $this->redirectToRoute('datasets_list');
         }
+
         return array(
             'form' => $form->createView(),
-            'id' => $id
+            'id' => $id,
         );
     }
 
-
     /**
      * Dataset upload component form
+     *
+     * @param Request $request
+     *
+     * @return array
      *
      * @Route("/upload.html", name="dataset_upload")
      * @Template()
@@ -427,7 +473,7 @@ class DatasetsController extends Controller
     {
         /* @var $user \Base\UserBundle\Entity\User */
         $user = $this->get('security.context')->getToken()->getUser();
-        
+
         $entity = new Dataset();
         $form = $this->createForm(new DatasetType(), $entity);
         $data = json_decode($request->query->all()['dataset_url']);
@@ -436,19 +482,25 @@ class DatasetsController extends Controller
             $em = $this->getDoctrine()->getManager();
             $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')
                         ->findOneBy(['datasetId' => $datasetId, 'user' => $user]);
+
             return [
                 'form' => $form->createView(),
-                'file' => $dataset
+                'file' => $dataset,
             ];
         }
+
         return array(
             'form' => $form->createView(),
-            'file' => null
+            'file' => null,
         );
     }
 
     /**
      * Dataset upload handler for component form
+     *
+     * @param Request $request
+     *
+     * @return array
      *
      * @Route("/upload_handler.html", name="dataset_upload_handler")
      * @Method("POST")
@@ -483,9 +535,10 @@ class DatasetsController extends Controller
                         $em->flush();
                         $form->get('file')
                             ->addError(new FormError($this->get('translator')->trans('Too many files in zip!', array(), 'DatasetsBundle')));
+
                         return [
                             'form' => $form->createView(),
-                            'file' => null
+                            'file' => null,
                         ];
                     }
                     if ($res === true) {
@@ -499,9 +552,10 @@ class DatasetsController extends Controller
                                 ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
                             $em->remove($entity);
                             $em->flush();
+
                             return [
                                 'form' => $form->createView(),
-                                'file' => nul
+                                'file' => nul,
                             ];
                         }
                     } else {
@@ -509,16 +563,18 @@ class DatasetsController extends Controller
                             ->addError(new FormError($this->get('translator')->trans('Error!', array(), 'DatasetsBundle')));
                         $em->remove($entity);
                         $em->flush();
+
                         return [
                             'form' => $form->createView(),
-                            'file' => null
+                            'file' => null,
                         ];
                     }
                 }
                 $this->uploadArff($entity->getDatasetId());
+
                 return [
                     'form' => $form->createView(),
-                    'file' => $entity
+                    'file' => $entity,
                 ];
             }
         } else {
@@ -526,9 +582,10 @@ class DatasetsController extends Controller
                 $form->get('file')->addError(new FormError($this->get('translator')->trans('This value should not be blank.', array(), 'validators')));
             }
         }
+
         return [
             'form' => $form->createView(),
-            'file' => null
+            'file' => null,
         ];
     }
 
@@ -563,6 +620,7 @@ class DatasetsController extends Controller
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+
                     return $this->redirect($this->generateUrl('datasets_new'));
                 }
 
@@ -582,6 +640,7 @@ class DatasetsController extends Controller
                             $em->remove($entity);
                             $em->flush();
                             unlink('.'.$path.'/'.$name);
+
                             return $this->redirect($this->generateUrl('datasets_list'));
                         }
                         unset($rows);
@@ -589,6 +648,7 @@ class DatasetsController extends Controller
                         $em->flush();
                         rename('.'.$path.'/'.$name, '.'.$dir.'.arff');
                         $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+
                         return $this->redirect($this->generateUrl('datasets_list'));
                     } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
                         $rows = $fileReader->getRows('.'.$path.'/'.$name, $format);
@@ -597,6 +657,7 @@ class DatasetsController extends Controller
                             $em->flush();
                             unlink('.'.$path.'/'.$name);
                             $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+
                             return $this->redirect($this->generateUrl('datasets_list'));
                         }
                         unlink('.'.$path.'/'.$name);
@@ -611,6 +672,7 @@ class DatasetsController extends Controller
                         $em->flush();
                         unlink('.'.$path.'/'.$name);
                         $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+
                         return $this->redirect($this->generateUrl('datasets_new'));
                     }
                 }
@@ -620,6 +682,7 @@ class DatasetsController extends Controller
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
                     $em->remove($entity);
                     $em->flush();
+
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
                 unset($rows);
@@ -630,12 +693,14 @@ class DatasetsController extends Controller
                     $em->remove($entity);
                     $em->flush();
                     unlink('.'.$entity->getFile()['fileName']);
+
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
                 unset($rows);
                 $em->persist($entity);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+
                 return $this->redirect($this->generateUrl('datasets_list'));
             } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
                 $fileReader = new ReadFile();
@@ -643,6 +708,7 @@ class DatasetsController extends Controller
                     $em->remove($entity);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+
                     return $this->redirect($this->generateUrl('datasets_list'));
                 }
                 $rows = $fileReader->getRows('./assets'.$entity->getFile()['fileName'], $format);
@@ -653,6 +719,7 @@ class DatasetsController extends Controller
                 unset($rows[0]);
             } else {
                 $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
+
                 return $this->redirect($this->generateUrl('datasets_list'));
             }
             $hasHeaders = false;
@@ -669,7 +736,7 @@ class DatasetsController extends Controller
                 foreach ($rows[1] as $key => $header) {
                     // Remove spaces in header, to fit arff format
                     $header = preg_replace('/\s+/', '_', $header);
-                    
+
                     // Check string is numeric or normal string
                     if (is_numeric($rows[2][$key])) {
                         if (is_int($rows[2][$key] + 0)) {
@@ -717,9 +784,11 @@ class DatasetsController extends Controller
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+
             return $this->redirect($this->generateUrl('datasets_list'));
         }
         $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error!', array(), 'DatasetsBundle'));
+
         return $this->redirect($this->generateUrl('datasets_new'));
     }
 }

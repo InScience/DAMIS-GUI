@@ -772,7 +772,7 @@ class ExperimentController extends Controller
                     } else {
                         $arff .= $value;
                     }
-                } 
+                }
                 $arff .= PHP_EOL;
             }
             $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
