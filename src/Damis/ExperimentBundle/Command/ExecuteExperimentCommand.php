@@ -26,6 +26,16 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             ->setName('experiment:execute')
             ->setDescription('Execute experiment workflow tasks')
             ;
+        
+        // This script is executed throught console. And php uses etc/php5/cli/php.ini
+        // We set all parameters here
+        ini_set('date.timezone', "Europe/Vilnius");
+        ini_set('max_execution_time', 120);
+        // Can't be set here
+        //php_value post_max_size 110M
+        //php_value upload_max_filesize 100M
+        ini_set('memory_limit', "768M");
+        ini_set('default_socket_timeout', 6000);
     }
 
     /**
@@ -179,7 +189,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             //----------------------------------------------------------------------------------------------------//
             // execute
             //----------------------------------------------------------------------------------------------------//
-
+           
             /* @var $client \SoapClient */
             $client = new \SoapClient(
                 $component->getWsdlRunHost(),
