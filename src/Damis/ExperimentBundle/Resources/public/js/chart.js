@@ -247,6 +247,10 @@
 			// fill the form with current color and symbol values
 			$.each(dataContent.data, function(idx, series) {
 				var colorCode = selectedColors ? selectedColors[idx] : colorPalette[idx].toLowerCase();
+                if (!isFloatCls) {
+                    colorCode = selectedColors ? selectedColors[idx] : colorPalette[series.group % colorPalette.length].toLowerCase();
+                }
+            
 				colorValues.push(colorCode);
 
 				var shapeSelect = $("<select></select>");
