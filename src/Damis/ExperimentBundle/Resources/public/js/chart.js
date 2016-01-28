@@ -117,14 +117,14 @@
 					//max: dataContent["maxX"],                   
 					min: centerX - size/2,
 					max: centerX + size/2,
-                    tickSize: tickSizeX
+                    tickSize: (tickSizeX) ? tickSizeX : 1
 				},
 				yaxis: {
 					//min: dataContent["minY"],
 					//max: dataContent["maxY"],
 					min: centerY - size/2,
 					max: centerY + size/2,
-					tickSize: tickSizeY
+					tickSize: (tickSizeY) ? tickSizeY : 1
 				}
 			};
 
@@ -247,7 +247,7 @@
 			// fill the form with current color and symbol values
 			$.each(dataContent.data, function(idx, series) {
 				var colorCode = selectedColors ? selectedColors[idx] : colorPalette[idx].toLowerCase();
-                if (!isFloatCls) {
+                if (!isFloatCls && parseInt(series.group)) {
                     colorCode = selectedColors ? selectedColors[idx] : colorPalette[series.group % colorPalette.length].toLowerCase();
                 }
             
