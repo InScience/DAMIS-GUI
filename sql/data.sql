@@ -51,7 +51,7 @@ INSERT INTO `component` (`ComponentName`, `ComponentIcon`, `ComponentWSDLRunHost
 ('SAMANN', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.134:8087/cgi-bin/DamisService.cgi?wsdl', 'SAMANN', 'SAMANN algorithm', NULL, NULL, NULL, 29, 'Samann', 1, 4),
 ('SAMANN', 'dimensionality-reduction-ico.jpg', 'http://damis.lt:8087/cgi-bin/DamisService.cgi?wsdl', 'SAMANN', 'SAMANN algorithm', NULL, NULL, NULL, 30, 'Samann', 2, 4),
 ('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://158.129.140.134:8087/cgi-bin/DamisService.cgi?wsdl', 'SOMMDS', 'SOM for Multidimensional Data Visualization', NULL, NULL, NULL, 31, 'SomMds', 1, 4),
-('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://damis.lt:8087/cgi-bin/DamisService.cgi?wsdl', 'SOMMDS', '', NULL, NULL, NULL, 32, 'SomMds', 2, 4),
+('SOM-MDS', 'dimensionality-reduction-ico.jpg', 'http://damis.lt:8087/cgi-bin/DamisService.cgi?wsdl', 'SOMMDS', 'SOM for Multidimensional Data Visualization', NULL, NULL, NULL, 32, 'SomMds', 2, 4),
 ('SOM', 'som-ico.jpeg', 'http://158.129.140.134:8087/cgi-bin/DamisService.cgi?wsdl', 'SOM', 'Self-Organizing Map (SOM)', NULL, NULL, NULL, 33, 'Som', 1, 5),
 ('SOM', 'som-ico.jpeg', 'http://damis.lt:8087/cgi-bin/DamisService.cgi?wsdl', 'SOM', 'Self-Organizing Map (SOM)', NULL, NULL, NULL, 34, 'Som', 2, 5),
 ('MLP', 'mlp-ico.jpeg', 'http://158.129.140.134:8087/cgi-bin/DamisService.cgi?wsdl', 'MLP', 'Multilayer perceptron', NULL, NULL, NULL, 35, 'Mlp', 1, 5),
