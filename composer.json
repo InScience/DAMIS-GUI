@@ -7,8 +7,9 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "php": ">=5.3.3",
-        "symfony/symfony": "~2.8.17,<3.0",
+        "php": ">=5.5.9",
+        "symfony/symfony": "~2.8.27,<3.0",
+        "symfony/framework-bundle": "<3.0",
         "symfony/polyfill-iconv": "~1.0",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
@@ -30,7 +31,7 @@
         "leafo/lessphp": "dev-master",
         "bcc/cron-manager-bundle": "v3.0.*",
         "knplabs/knp-menu-bundle": "~2.0",
-        "doctrine/doctrine-fixtures-bundle": "dev-master",
+        "doctrine/doctrine-fixtures-bundle": "<3.0",
         "pagerfanta/pagerfanta": "dev-master",
         "apy/datagrid-bundle": "~2.3",
         "iphp/filestore-bundle": "@stable",
