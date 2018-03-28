@@ -113,6 +113,7 @@ echo http_build_query($post);
         }
         
         $client = new Client($this->container->getParameter('midas_url'));
+        $client->setSslVerification(false);
         
         // receive user_temp directory id
         $emptyPost = array(
@@ -147,6 +148,7 @@ echo http_build_query($post);
     public function saveInTempDir($filePath, $fileMimeType, $fileName)
     {
         $client = new Client($this->container->getParameter('midas_url'));
+        $client->setSslVerification(false);
         
         if ($this->session->has('sessionToken')) {
             $sessionToken = $this->session->get('sessionToken');
