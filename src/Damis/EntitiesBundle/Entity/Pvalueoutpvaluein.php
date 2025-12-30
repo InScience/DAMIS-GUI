@@ -6,42 +6,37 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Pvalueoutpvaluein
- *
- * @ORM\Table(name="pvalueoutpvaluein", indexes={@ORM\Index(name="FK_PVALUEOUT_PARAMETERVALUE", columns={"InParameterValueID"})})
- * @ORM\Entity
  */
+#[ORM\Table(name: 'pvalueoutpvaluein')]
+#[ORM\Index(name: 'FK_PVALUEOUT_PARAMETERVALUE', columns: ['InParameterValueID'])]
+#[ORM\Entity]
 class Pvalueoutpvaluein
 {
     /**
-     * @var \Damis\EntitiesBundle\Entity\Parametervalue
+     * @var Parametervalue
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      *
-     * @ORM\OneToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="InParameterValueID", referencedColumnName="ParameterValueID", onDelete="CASCADE")
-     * })
      */
+    #[ORM\JoinColumn(name: 'InParameterValueID', referencedColumnName: 'ParameterValueID', onDelete: 'CASCADE')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\OneToOne(targetEntity: Parametervalue::class)]
     private $inparametervalue;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Parametervalue
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="OutParameterValueID", referencedColumnName="ParameterValueID", onDelete="CASCADE")
-     * })
+     * @var Parametervalue
      */
+    #[ORM\JoinColumn(name: 'OutParameterValueID', referencedColumnName: 'ParameterValueID', onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: Parametervalue::class)]
     private $outparametervalue;
 
     /**
      * Set inparametervalue
      *
-     * @param \Damis\EntitiesBundle\Entity\Parametervalue $inparametervalue
+     * @param Parametervalue $inparametervalue
      * @return Pvalueoutpvaluein
      */
-    public function setInparametervalue(\Damis\EntitiesBundle\Entity\Parametervalue $inparametervalue)
+    public function setInparametervalue(Parametervalue $inparametervalue)
     {
         $this->inparametervalue = $inparametervalue;
 
@@ -51,7 +46,7 @@ class Pvalueoutpvaluein
     /**
      * Get inparametervalue
      *
-     * @return \Damis\EntitiesBundle\Entity\Parametervalue
+     * @return Parametervalue
      */
     public function getInparametervalue()
     {
@@ -61,10 +56,10 @@ class Pvalueoutpvaluein
     /**
      * Set outparametervalue
      *
-     * @param \Damis\EntitiesBundle\Entity\Parametervalue $outparametervalue
+     * @param Parametervalue $outparametervalue
      * @return Pvalueoutpvaluein
      */
-    public function setOutparametervalue(\Damis\EntitiesBundle\Entity\Parametervalue $outparametervalue = null)
+    public function setOutparametervalue(Parametervalue $outparametervalue = null)
     {
         $this->outparametervalue = $outparametervalue;
 
@@ -74,7 +69,7 @@ class Pvalueoutpvaluein
     /**
      * Get outparametervalue
      *
-     * @return \Damis\EntitiesBundle\Entity\Parametervalue
+     * @return Parametervalue
      */
     public function getOutparametervalue()
     {

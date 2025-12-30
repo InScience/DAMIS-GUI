@@ -1,0 +1,20 @@
+<?php
+namespace Base\UserBundle\Controller;
+
+use FOS\UserBundle\Controller\SecurityController as BaseController;
+use Symfony\Component\HttpFoundation\Request;
+
+class SecurityController extends BaseController
+{
+    public function loginAction(Request $request)
+    {
+        $response = parent::loginAction($request);
+        
+        // Use the template that exists in BaseUserBundle
+        return $this->render('@BaseUser/Security/login.html.twig', [
+            'last_username' => $request->getSession()->get('_security.last_username'),
+            'error' => $request->getSession()->get('_security.last_error'),
+            'csrf_token' => $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue(),
+        ]);
+    }
+}

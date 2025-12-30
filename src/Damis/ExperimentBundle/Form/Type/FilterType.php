@@ -4,9 +4,11 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class FilterType extends AbstractType
 {
@@ -14,12 +16,12 @@ class FilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('retFilteredData', 'choice', [
-                'choices' => [0 => 'Without outliers', 1 => 'Only outliers'],
+            ->add('retFilteredData', ChoiceType::class, [
+                'choices' => ['Without outliers' => 0, 'Only outliers' => 1],
                 'required' => false,
                 'data' => 0,
                 'mapped' => false,
-                'empty_value' => false,
+                'placeholder' => false,
                 'multiple' => false,
                 'expanded' => true,
                 'constraints' => [
@@ -27,8 +29,8 @@ class FilterType extends AbstractType
                 ],
                 'label' => 'Choose filtering result'
             ])
-            ->add('zValue', 'number', [
-                'precision' => 2,
+            ->add('zValue', NumberType::class, [
+                'scale' => 2,
                 'required' => true,
                 'data' => 3.00,
                 'constraints' => [
@@ -39,21 +41,25 @@ class FilterType extends AbstractType
                 ],
                 'label' => 'Z value'
             ])
-            ->add('attrIndex', 'choice', [
-                'choices' => $options['data']['choices'],
+            ->add('attrIndex', ChoiceType::class, [
+                'choices' => $options['choices'],
                 'required' => true,
                 'label' => 'Attribute'
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => null,
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'filter_type';
     }

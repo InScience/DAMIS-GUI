@@ -2,50 +2,64 @@
 
 namespace Damis\AlgorithmBundle\Form\Type;
 
+use Damis\AlgorithmBundle\Entity\File;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType as SymfonyFileType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FileType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('fileTitle', 'text', array(
-                    'label' => 'Title',
-                    'required' => true,
-                    'attr' => array('class' => 'form-control'),
-                    'constraints' => [
-                        new NotBlank()
-                    ]
-                    ))
-                ->add('fileDescription', 'textarea', array(
-                    'label' => 'Description',
-                    'required' => false,
-                    'attr' =>
-                        array(
-                            'class' => 'form-control',
-                            'rows' => 4,
-                            'cols' => 40)))
-                // File validation is past to Entity\File
-                ->add('file', 'file', array(
-                        'label' => 'File',
-                        ));
+            ->add('fileTitle', TextType::class, [
+                'label' => 'Title',
+                'required' => true,
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
+            ->add('fileDescription', TextareaType::class, [
+                'label' => 'Description',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 4,
+                ],
+            ]);
+
+        if ($options['is_edit'] === false) {
+            $builder->add('file', SymfonyFileType::class, [
+                'label' => 'File',
+                // This field is not directly mapped to a database column,
+                // so we must tell Symfony that. The controller handles the upload.
+                'mapped' => false,
+                'required' => true, // A file is required when creating
+                'constraints' => [
+                    new NotBlank(['message' => 'Please upload an algorithm file.']),
+                ]
+            ]);
+        }
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Damis\AlgorithmBundle\Entity\File',
-            'csrf_protection' => false,
-            'translation_domain' => 'AlgorithmBundle'
-        ));
+        $resolver->setDefaults([
+            'data_class' => File::class,
+            'translation_domain' => 'AlgorithmBundle',
+            'is_edit' => false,
+        ]);
+
+        $resolver->setAllowedTypes('is_edit', 'bool');
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return 'file_newtype';
+        return 'file';
     }
 }

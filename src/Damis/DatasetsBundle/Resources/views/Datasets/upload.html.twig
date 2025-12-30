@@ -9,7 +9,7 @@
 
 <div class="toggle-section" style="width:450px; {% if file != null %} display:none {%endif%}" >
     <div class="col-lg-12" style="margin-top: 35px;">
-        <form role="form" id="createDataset" method="post" {{ form_enctype(form) }} novalidate>
+        <form role="form" id="createDataset" method="post" novalidate>
             <div class="form-group">
                 {{ form_label(form.datasetTitle) }}
                 {{ form_widget(form.datasetTitle) }}

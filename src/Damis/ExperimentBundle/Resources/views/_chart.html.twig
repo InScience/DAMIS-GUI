@@ -1,3 +1,4 @@
+{% if not error %}
 <div style="width: 614px; margin: auto;">
     <table class="attribute-choices" style="margin: auto;">
         <tbody>
@@ -38,7 +39,13 @@
         </tbody>
     </table>
 </div>
-{% if not error %}
+{% endif %}
+{% if error %}
+    <div class="alert alert-warning" style="width: 600px; margin: 20px auto; padding: 15px; text-align: center;">
+        <strong>{{ 'Chart Error' | trans({}, 'ExperimentBundle') }}</strong><br/>
+        {{ error_message | default('Unable to generate chart with the selected data.') }}
+    </div>
+{% else %}
     <div class="results-container" style="width: 600px; height: 600px; margin: auto;"></div>
     {% if context.float_cls %}
         <table class="float-cls-choices chart-choices" style="margin: auto; text-align: center;width: 600px;">

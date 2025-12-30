@@ -2,92 +2,81 @@
 
 namespace Damis\AlgorithmBundle\Entity;
 
+use Damis\AlgorithmBundle\Entity\Repository\FileRepository;
+use Base\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
 use Symfony\Component\Validator\Constraints as Assert;
 use Damis\AlgorithmBundle\Form\Validators as Asserts;
 
 /**
  * File
- *
- * @ORM\Table(name="useralgorithm", uniqueConstraints={@ORM\UniqueConstraint(name="USER_ALGORITHM_FILE_PK", columns={"id"})}, indexes={@ORM\Index(name="FK_ALGORITHM_FILE_DAMISUSER", columns={"user_id"})})
- * @FileStore\Uploadable*
- * @ORM\Entity(repositoryClass="Damis\AlgorithmBundle\Entity\Repository\FileRepository")
  */
+#[ORM\Table(name: 'useralgorithm')]
+#[ORM\Index(name: 'FK_ALGORITHM_FILE_DAMISUSER', columns: ['user_id'])]
+#[ORM\UniqueConstraint(name: 'USER_ALGORITHM_FILE_PK', columns: ['id'])]
+#[ORM\Entity(repositoryClass: FileRepository::class)]
 class File
 {
     private $seed = 'dcmaga7v5udgyhj0lwen';
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $fileId;
 
     /**
-     * @var \Base\UserBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="Base\UserBundle\Entity\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
+     * @var User
      */
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $user;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="file_title", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'file_title', type: 'string', length: 80, nullable: false)]
     private $fileTitle;
     
     /**
      * @var integer
-     *
-     * @ORM\Column(name="file_created", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'file_created', type: 'integer', nullable: false)]
     private $fileCreated;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="file_path", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'file_path', type: 'string', length: 255, nullable: true)]
     private $filePath;
     
     /**
      * @var integer
-     *
-     * @ORM\Column(name="file_updated", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'file_updated', type: 'integer', nullable: true)]
     private $fileUpdated;
 
     /**
-     * @var array
+     * NOT persisted to database - only used during form upload
      *
-     * @ORM\Column(name="file", type="array", nullable=true)
-     * @Assert\File( maxSize="20M")
-     * @Assert\NotBlank()
      * @Asserts\FileExtension
-     * @FileStore\UploadableField(mapping="algorithmfile")
      */
+    #[Assert\File(maxSize: '20M')]
+    // #[Assert\NotBlank(groups: ['create'])]
     private $file;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="file_description", type="string", length=500, nullable=true)
      */
+    #[ORM\Column(name: 'file_description', type: 'string', length: 500, nullable: true)]
     private $fileDescription;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="hidden", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'hidden', type: 'integer', nullable: true)]
     private $hidden = 0;
    
     /**
@@ -114,10 +103,8 @@ class File
      */
     public function setFileTitle($fileTitle)
     {
-        // Remove spaces in title, to fit arff format
         $fileTitle = preg_replace('/\s+/', '_', $fileTitle);
         $this->fileTitle = $fileTitle;
-
         return $this;
     }
 
@@ -128,7 +115,8 @@ class File
      */
     public function getFileTitle()
     {
-        return $this->fileTitle;
+        // Convert underscores to spaces for display purposes
+        return str_replace('_', ' ', (string) $this->fileTitle);
     }
     
     /**
@@ -140,7 +128,6 @@ class File
     public function setFileCreated($fileCreated)
     {
         $this->fileCreated = $fileCreated;
-
         return $this;
     }
 
@@ -163,7 +150,6 @@ class File
     public function setFileUpdated($fileUpdated)
     {
         $this->fileUpdated = $fileUpdated;
-
         return $this;
     }
 
@@ -186,7 +172,6 @@ class File
     public function setFileDescription($fileDescription)
     {
         $this->fileDescription = $fileDescription;
-
         return $this;
     }
 
@@ -213,20 +198,19 @@ class File
     /**
      * Set user
      *
-     * @param \Base\UserBundle\Entity\User $user
+     * @param User $user
      * @return File
      */
-    public function setUser(\Base\UserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
-
         return $this;
     }
 
     /**
      * Get user
      *
-     * @return \Base\UserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -240,13 +224,11 @@ class File
      */
     public function getUserIdMd5()
     {
-        return md5($this->seed.$this->user);
+        return md5($this->seed.$this->user->getId());
     }
 
     /**
-     * Create md5 secured with seed and user id string + files subatalog
-     * This parametris is mentioned in application config.yml file
-     * to iPhp mipper
+     * Create md5 secured with seed and user id string + files subcatalog
      *
      * @return string
      */
@@ -260,8 +242,6 @@ class File
 
     /**
      * Create md5 secured with seed and file id string
-     * This parametris is mentioned in application config.yml file
-     * to iPhp mipper
      *
      * @return string
      */
@@ -271,19 +251,17 @@ class File
     }
 
     /**
-     * Set file
-     *
-     * @param array $file
+     * Set file (transient property - not persisted)
      */
-    public function setFile($file)
+    public function setFile(mixed $file)
     {
         $this->file = $file;
     }
 
     /**
-     * Get file
+     * Get file (transient property - not persisted)
      *
-     * @return array
+     * @return mixed
      */
     public function getFile()
     {

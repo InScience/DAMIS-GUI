@@ -2,111 +2,96 @@
 
 namespace Damis\ExperimentBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Component
- *
- * @ORM\Table(name="component", uniqueConstraints={@ORM\UniqueConstraint(name="COMPONENT_PK", columns={"ComponentID"})}, indexes={@ORM\Index(name="FK_COMPONENT_CLUSTER", columns={"ClusterID"}), @ORM\Index(name="FK_COMPONENT_COMPONENTTYPE", columns={"ComponentTypeID"})})
- * @ORM\Entity(repositoryClass="Damis\ExperimentBundle\Entity\ComponentRepository")
  */
+#[ORM\Table(name: 'component')]
+#[ORM\Index(name: 'FK_COMPONENT_CLUSTER', columns: ['ClusterID'])]
+#[ORM\Index(name: 'FK_COMPONENT_COMPONENTTYPE', columns: ['ComponentTypeID'])]
+#[ORM\UniqueConstraint(name: 'COMPONENT_PK', columns: ['ComponentID'])]
+#[ORM\Entity(repositoryClass: ComponentRepository::class)]
 class Component
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentName", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ComponentName', type: 'string', length: 80, nullable: false)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentIcon", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'ComponentIcon', type: 'string', length: 255, nullable: false)]
     private $icon;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentWSDLRunHost", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ComponentWSDLRunHost', type: 'string', length: 255, nullable: true)]
     private $wsdlRunHost;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentWSDLCallFunction", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ComponentWSDLCallFunction', type: 'string', length: 80, nullable: false)]
     private $wsdlCallFunction;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentDescription", type="string", length=500, nullable=true)
      */
+    #[ORM\Column(name: 'ComponentDescription', type: 'string', length: 500, nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentAltDescription", type="string", length=80, nullable=true)
      */
+    #[ORM\Column(name: 'ComponentAltDescription', type: 'string', length: 80, nullable: true)]
     private $altDescription;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentLabelLT", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ComponentLabelLT', type: 'string', length: 255, nullable: true)]
     private $labelLt;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentLabelEN", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ComponentLabelEN', type: 'string', length: 255, nullable: true)]
     private $labelEn;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ComponentID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ComponentID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\Cluster
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Cluster")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ClusterID", referencedColumnName="ClusterID")
-     * })
+     * @var Cluster
      */
+    #[ORM\JoinColumn(name: 'ClusterID', referencedColumnName: 'ClusterID')]
+    #[ORM\ManyToOne(targetEntity: Cluster::class)]
     private $clusterId;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\ComponentType
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\ComponentType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ComponentTypeID", referencedColumnName="ComponentTypeID")
-     * })
+     * @var ComponentType
      */
+    #[ORM\JoinColumn(name: 'ComponentTypeID', referencedColumnName: 'ComponentTypeID')]
+    #[ORM\ManyToOne(targetEntity: ComponentType::class)]
     private $typeId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="FormType", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'FormType', type: 'string', length: 255, nullable: true)]
     private $formType;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Damis\ExperimentBundle\Entity\Parameter" , mappedBy="component")
-     */
+    #[ORM\OneToMany(targetEntity: Parameter::class, mappedBy: 'component')]
     private $parameters;
 
     /**
@@ -115,6 +100,21 @@ class Component
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * @param string|null $locale
+     * @return string
+     */
+    public function getTitle(?string $locale = null): string
+    {
+        if ($locale === 'lt' && !empty($this->labelLt)) {
+            return $this->labelLt;
+        }
+        if ($locale !== 'lt' && !empty($this->labelEn)) {
+             return $this->labelEn;
+        }
+        return $this->name;
     }
 
     /**
@@ -317,7 +317,7 @@ class Component
      * @param Cluster $clusterId
      * @return Component
      */
-    public function setClusterId(Cluster $clusterId = null)
+    public function setClusterId(?int $clusterId = null)
     {
         $this->clusterId = $clusterId;
 
@@ -340,7 +340,7 @@ class Component
      * @param ComponentType $typeId
      * @return Component
      */
-    public function setTypeId(ComponentType $typeId = null)
+    public function setTypeId(?int $typeId = null)
     {
         $this->typeId = $typeId;
 
@@ -378,6 +378,6 @@ class Component
      */
     public function __construct()
     {
-        $this->parameters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->parameters = new ArrayCollection();
     }
 }

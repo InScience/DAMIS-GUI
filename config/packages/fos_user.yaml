@@ -1,0 +1,71 @@
+# fos_user:
+#     db_driver: orm
+#     firewall_name: main
+#     user_class: Base\UserBundle\Entity\User
+#     service:
+#     #     mailer: fos_user.mailer.default
+#         mailer: fos_user.mailer.noop
+
+#     from_email:
+#         address: "%project_email%"
+#         sender_name: "%project%"
+#     use_authentication_listener: true
+#     use_listener: true
+#     use_flash_notifications: true
+#     change_password:
+#         form:
+#             type: Base\UserBundle\Form\Type\ChangePasswordFormType
+#     profile:
+#         form:
+#             type: Base\UserBundle\Form\Type\ProfileFormType
+#     resetting:
+#         email:
+#             from_email:
+#                 address: "%project_email%"
+#                 sender_name: "%project%"
+#         form:
+#             type: Base\UserBundle\Form\Type\ResettingFormType
+#     registration:
+#         form:
+#             type: Base\UserBundle\Form\Type\RegistrationFormType
+
+
+# config/packages/fos_user.yaml
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: Base\UserBundle\Entity\User
+    service:
+        # mailer: fos_user.mailer.default
+        mailer: fos_user.mailer.noop # OK for dev/testing
+
+    from_email:
+        address: "%project_email%"
+        sender_name: "%project%"
+
+    # --- REMOVED Deprecated Flags ---
+    # use_authentication_listener: true
+    # use_listener: true
+    # use_flash_notifications: true
+    # --- End Removed Flags ---
+
+    # Your custom form types (Looks correct)
+    change_password:
+        form:
+            type: Base\UserBundle\Form\Type\ChangePasswordFormType
+    profile:
+        form:
+            type: Base\UserBundle\Form\Type\ProfileFormType
+    resetting:
+        email:
+            from_email: # Keep this specific from_email if needed for resetting
+                address: "%project_email%"
+                sender_name: "%project%"
+        form:
+            type: Base\UserBundle\Form\Type\ResettingFormType
+    registration:
+        form:
+            type: Base\UserBundle\Form\Type\RegistrationFormType
+
+# Add any other FOSUserBundle configurations you might need for v4
+# E.g., email confirmation settings, etc.

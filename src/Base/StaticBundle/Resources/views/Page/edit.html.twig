@@ -1,9 +1,9 @@
-{% extends 'BaseMainBundle::layout.html.twig' %}
+{% extends '@BaseMain/layout.html.twig' %}
 
 {% block body -%}
-    {% include "BaseStaticBundle::messages.html.twig" %}
+    {% include "@BaseStatic/messages.html.twig" %}
 
-    <form class="form-normal" role="form" action="{{ path('page_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+    {{ form_start(edit_form, {'action': path('page_update', { 'id': entity.id }), 'method': 'POST', 'attr': {'class': 'form-normal', 'role': 'form'}}) }}
         <input type="hidden" name="_method" value="PUT" />
         <h1>{{ 'form.edit_page'|trans({}, 'StaticBundle') }}</h1>
 
@@ -32,17 +32,15 @@
         </div>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'form.edit'|trans({}, 'StaticBundle') }}" >{{ 'form.edit'|trans({}, 'StaticBundle') }}</button>
-    </form>
+    {{ form_end(edit_form, {'render_rest': false}) }}
 
-    <form class="form-normal" role="form" action="{{ path('page_delete', { 'id': entity.id }) }}" method="post" id="delete_form">
+    {{ form_start(delete_form, {'action': path('page_delete', { 'id': entity.id }), 'method': 'POST', 'attr': {'class': 'form-normal', 'role': 'form', 'id': 'delete_form'}}) }}
         <input type="hidden" name="_method" value="DELETE" />
-        {{ form_widget(delete_form) }}
-
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'form.delete'|trans({}, 'StaticBundle') }}" >{{ 'form.delete'|trans({}, 'StaticBundle') }}</button>
-    </form>
+    {{ form_end(delete_form) }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {% include "BaseMainBundle::jsTinymce.html.twig" %}
+    {% include "@BaseMain/jsTinymce.html.twig" %}
 {% endblock %}

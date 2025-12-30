@@ -2,10 +2,10 @@
     {% for parameter in parameters %}
         {% if parameter.connectionType.type == 'OUTPUT_CONNECTION'
             or parameter.connectionType.type == 'INPUT_CONNECTION' %}
-            {% include "DamisExperimentBundle::_experiment_connection.html.twig"
+            {% include "@DamisExperiment/_experiment_connection.html.twig"
                 with {parameter : parameter} %}
         {% else %}
-            {% include "DamisExperimentBundle::_experiment_component.html.twig"
+            {% include "@DamisExperiment/_experiment_component.html.twig"
             with {parameter : parameter} %}
         {% endif %}
     {% endfor %}

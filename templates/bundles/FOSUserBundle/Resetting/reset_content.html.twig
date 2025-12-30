@@ -1,0 +1,25 @@
+{% for flashMessage in app.flashes('notice') %}
+    <div class="alert alert-success">
+        {{ flashMessage | trans({}, 'FOSUserBundle')}}
+    </div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ flashMessage | trans({}, 'FOSUserBundle')}}
+    </div>
+{% endfor %}
+
+<form class="form-signin fos_user_resetting_reset" role="form" action="{{ path('fos_user_resetting_reset', {'token': token}) }}" method="post">
+    <h1>{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }}</h1>
+    {{ form_widget(form._token) }}
+
+    {{ form_errors(form.plainPassword.first) }}
+    {{ form_widget(form.plainPassword.first) }}
+
+    {{ form_errors(form.plainPassword.second) }}
+    {{ form_widget(form.plainPassword.second) }}
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" >{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</button>
+</form>
+

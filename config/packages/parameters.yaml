@@ -1,0 +1,4 @@
+parameters:
+    project: 'DAMIS-GUI'  # Set your actual value
+    is_damis_algorithm_enabled: true  # Set your actual value
+    design_style: 'default'  # Set your actual value

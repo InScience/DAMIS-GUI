@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container" style="max-width: 400px; margin-top: 100px;">
+    <form method="post" action="{{ path('fos_user_security_check') }}">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" name="_username" value="{{ last_username }}" id="inputUsername" class="form-control mb-2" placeholder="Username" required autofocus>
+        
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="_password" id="inputPassword" class="form-control mb-2" placeholder="Password" required>
+        
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" name="_remember_me"> Remember me
+            </label>
+        </div>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+</div>
+{% endblock %}

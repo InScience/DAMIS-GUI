@@ -1,5 +1,68 @@
-{% extends "FOSUserBundle::layout.html.twig" %}
+{% extends "@BaseUser/layout.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
 
-{% block fos_user_content %}
-    {% include "FOSUserBundle:Registration:register_content.html.twig" %}
-{% endblock fos_user_content %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ 'registration.submit'|trans }}</h3>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+                        
+                        {{ form_errors(form) }}
+                        
+                        <div class="form-group">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.username) }}
+                            {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.username) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.plainPassword.first) }}
+                            {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.plainPassword.first) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.plainPassword.second) }}
+                            {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.plainPassword.second) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.surname) }}
+                            {{ form_widget(form.surname, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.surname) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.organisation) }}
+                            {{ form_widget(form.organisation, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.organisation) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary btn-block" value="{{ 'registration.submit'|trans }}" />
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,11 +1,11 @@
-{% extends "::base.html.twig" %}
+{% extends "base.html.twig" %}
 {% block body %}
     <ul class="nav nav-tabs">
         <li class="active"><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="{{ path('datasets_midas_new') }}">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
-    {% include "DamisDatasetsBundle::messages.html.twig" %}
+    {% include "@DamisDatasets/messages.html.twig" %}
     <div class="row" style="margin-top: 35px;">
         <div class="col-lg-12">
             {% if entities | length > 0 %}
@@ -51,7 +51,7 @@
                                 </a>
                             </td>
                             <td nowrap="nowrap">
-                                {{ entity.file.size|convert_bytes }}
+                                {{ entity.file.size|default(0)|convert_bytes }}
                             </td>
                             <td nowrap="nowrap">
                                 {{ entity.datasetCreated | date('Y-m-d')}}

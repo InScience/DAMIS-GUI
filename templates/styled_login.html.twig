@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <form class="form-signin" action="{{ path('fos_user_security_check') }}" method="post">
+        <h2>Login</h2>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+        <input type="text" name="_username" class="form-control" placeholder="Username" required autofocus>
+        <input type="password" name="_password" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+</div>
+{% endblock %}

@@ -38,6 +38,28 @@ class Chart
         $helper = new ReadFile();
         $result = [];
 
+        $totalAttributes = count($helper->getAttributes($fileUrl, true));
+        
+        // Check if we have enough attributes for charting (need at least 2)
+        if ($totalAttributes < 2) {
+            return [
+                'error' => 'Insufficient data for chart visualization. Please select at least 2 attributes.',
+                'attributes' => [],
+                'content' => [
+                    'data' => [],
+                    'minX' => 0,
+                    'minY' => 0,
+                    'maxX' => 0,
+                    'maxY' => 0,
+                    'minCls' => 0,
+                    'maxCls' => 0,
+                ],
+                'x' => null,
+                'y' => null,
+                'clsCol' => null
+            ];
+        }
+
         foreach ($helper->getAttributes($fileUrl, true) as $key => $attr) {
             $colName = $attr['name'];
             $colType = $attr['type'];
@@ -47,17 +69,22 @@ class Chart
             } elseif ($y === null && $colType != 'string')
                 $y = $key;
 
-            if (strtolower($colType) == 'class' || strtolower($colName) == 'class') {
+            if (strtolower((string) $colType) == 'class' || strtolower((string) $colName) == 'class') {
                 $arffCls = $key;
             }
         }
 
-        if ($x > count($helper->getAttributes($fileUrl, true)) - 1) {
+        if ($x > $totalAttributes - 1) {
             $x = 0;
         }
 
-        if ($y > count($helper->getAttributes($fileUrl, true)) - 1) {
-            $y = 1;
+        if ($y > $totalAttributes - 1) {
+            $y = ($totalAttributes > 1) ? 1 : 0;
+        }
+        
+        // Ensure x and y are different columns
+        if ($x === $y && $totalAttributes > 1) {
+            $y = ($x === 0) ? 1 : 0;
         }
 
         if ($clsCol == null) {
@@ -72,7 +99,7 @@ class Chart
             $clsType = $helper->getAttributes($fileUrl, true)[$clsCol]['type'];
         }
 
-        if (mb_strtolower($helper->getAttributes($fileUrl, true)[$clsCol]['name']) == 'class') {
+        if (mb_strtolower((string) $helper->getAttributes($fileUrl, true)[$clsCol]['name']) == 'class') {
             $clsType = 'class';
         }
 
@@ -80,26 +107,32 @@ class Chart
         $data = false;
         foreach ($helper->getRows($fileUrl, 'arff') as $row) {
             if (!$data) {
-                if (strtolower($row[0]) == '@data') {
+                if (strtolower((string) $row[0]) == '@data') {
                     $data = true;
                 }
                 continue;
             }
 
-            if ($minX === null || (float) $row[$x] < $minX) {
-                $minX = (float) $row[$x];
+            // Check if we have valid column indices before accessing
+            if ($x !== null && isset($row[$x])) {
+                if ($minX === null || (float) $row[$x] < $minX) {
+                    $minX = (float) $row[$x];
+                }
+                if ($maxX === null || (float) $row[$x] > $maxX) {
+                    $maxX = (float) $row[$x];
+                }
             }
-            if ($minY === null || (float) $row[$y] < $minY) {
-                $minY = (float) $row[$y];
-            }
-            if ($maxX === null || (float) $row[$x] > $maxX) {
-                $maxX = (float) $row[$x];
-            }
-            if ($maxY === null || (float) $row[$y] > $maxY) {
-                $maxY = (float) $row[$y];
+            
+            if ($y !== null && isset($row[$y])) {
+                if ($minY === null || (float) $row[$y] < $minY) {
+                    $minY = (float) $row[$y];
+                }
+                if ($maxY === null || (float) $row[$y] > $maxY) {
+                    $maxY = (float) $row[$y];
+                }
             }
 
-            if ($clsType != "string") {
+            if ($clsType != "string" && $clsCol !== null && isset($row[$clsCol])) {
                 if ($minCls == null or (float) $row[$clsCol] < $minCls) {
                         $minCls = (float) $row[$clsCol];
                 }
@@ -112,9 +145,12 @@ class Chart
                 continue;
             }
 
-            $classCell = $row[$clsCol];
-
-            $result[$classCell][] = [$row[$x], $row[$y]];
+            // Only add data if we have valid x, y, and class columns
+            if ($x !== null && $y !== null && $clsCol !== null && 
+                isset($row[$x]) && isset($row[$y]) && isset($row[$clsCol])) {
+                $classCell = $row[$clsCol];
+                $result[$classCell][] = [$row[$x], $row[$y]];
+            }
         }
 
         if ($clsType != 'string' and $clsType != 'integer' and $clsType != 'class') {
@@ -129,11 +165,18 @@ class Chart
             $data = false;
             foreach ($helper->getRows($fileUrl, 'arff') as $row) {
                 if (!$data) {
-                    if (strtolower($row[0]) == '@data') {
+                    if (strtolower((string) $row[0]) == '@data') {
                         $data = true;
                     }
                     continue;
                 }
+                
+                // Skip if we don't have all required columns
+                if ($x === null || $y === null || $clsCol === null ||
+                    !isset($row[$x]) || !isset($row[$y]) || !isset($row[$clsCol])) {
+                    continue;
+                }
+                
                 $value = $row[$clsCol];
 
                 if (($maxCls - $minCls) != 0) {

@@ -1,0 +1,62 @@
+# src/Base/UserBundle/Resources/config/routing.yml - CORRECTED FOR SYMFONY 3.4
+
+# fos_user_security_login:
+#     path: /login.html
+#     defaults:  { _controller: fos_user.security.controller:loginAction }
+
+# fos_user_security_check:
+#     path: /login_check
+#     defaults:  { _controller: fos_user.security.controller:checkAction }
+
+# fos_user_security_logout:
+#     path: /logout.html
+#     defaults:  { _controller: fos_user.security.controller:logoutAction }
+
+# fos_user_registration_register:
+#     path: /register.html
+#     defaults:  { _controller: fos_user.registration.controller:registerAction }
+
+# fos_user_registration_check_email:
+#     path: /register/check-email.html
+#     defaults:  { _controller: fos_user.registration.controller:checkEmailAction }
+#     methods: [GET] # Use 'methods' instead of the 'requirements' hack
+
+# fos_user_registration_confirm:
+#     path: /register/confirm/{token}
+#     defaults:  { _controller: fos_user.registration.controller:confirmAction }
+#     methods: [GET]
+
+# fos_user_registration_confirmed:
+#     path: /register/confirmed.html
+#     defaults:  { _controller: fos_user.registration.controller:confirmedAction }
+#     methods: [GET]
+
+# fos_user_resetting_request:
+#     path: /reset-password.html
+#     defaults:  { _controller: fos_user.resetting.controller:requestAction }
+#     methods: [GET]
+
+# fos_user_resetting_send_email:
+#     path: /reset-password/send-email.html
+#     defaults:  { _controller: fos_user.resetting.controller:sendEmailAction }
+#     methods: [POST]
+
+# fos_user_resetting_check_email:
+#     path: /reset-password/check-email.html
+#     defaults:  { _controller: fos_user.resetting.controller:checkEmailAction }
+#     methods: [GET]
+
+# fos_user_resetting_reset:
+#     path: /reset-password/reset/{token}
+#     defaults:  { _controller: fos_user.resetting.controller:resetAction }
+#     methods: [GET, POST]
+
+# fos_user_change_password:
+#     path: /profile/change-password.html
+#     defaults:  { _controller: fos_user.change_password.controller:changePasswordAction }
+#     methods: [GET, POST]
+
+# fos_user_profile_edit:
+#     path: /profile/edit.html
+#     defaults:  { _controller: fos_user.profile.controller:editAction }
+#     methods: [GET, POST] # Profile edit needs POST too

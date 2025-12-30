@@ -3,11 +3,13 @@
 namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * This class is currently unused
@@ -18,53 +20,47 @@ class C45Type extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('q', 'number', [
+            ->add('q', NumberType::class, [
                 'required' => true,
                 'data' => 0.25,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
                         'min' => 0,
                         'max' => 1,
-                        'minMessage' => 'Confidence level must be in interval (0; 1]',
-                        'maxMessage' => 'Confidence level must be in interval (0; 1]'
+                        'notInRangeMessage' => 'Confidence level must be in interval (0; 1]',
                     ]),
                 ],
                 'label' => 'Confidence level',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('dL', 'integer', [
+        ->add('dL', IntegerType::class, [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 100],
                 'constraints' => [
                     new Assert\Range([
                         'min' => 0,
                         'max' => 100,
-                        'minMessage' => 'Number of percents in interval [0; 100]',
-                        'maxMessage' => 'Number of percents in interval [0; 100]'
+                        'notInRangeMessage' => 'Number of percents in interval [0; 100]',
                     ]),
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Size of training data',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('dT', 'integer', [
+        ->add('dT', IntegerType::class, [
                 'required' => true,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
-                'read_only' => true,
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 100],
+                'disabled' => true,
                 'data' => 20,
                 'constraints' => [
                     new Assert\Range([
                         'min' => 0,
                         'max' => 100,
-                        'minMessage' => 'Number of percents in interval [0; 100]',
-                        'maxMessage' => 'Number of percents in interval [0; 100]'
+                        'notInRangeMessage' => 'Number of percents in interval [0; 100]',
                     ]),
                     new NotBlank()
                 ],
@@ -73,14 +69,12 @@ class C45Type extends AbstractType
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefaults(['translation_domain' => 'ExperimentBundle']);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'c45_type';
     }

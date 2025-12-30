@@ -2,74 +2,155 @@
 
 namespace Base\UserBundle\Entity;
 
-use FOS\UserBundle\Entity\User as BaseUser;
+// Commented out the old import for FOS\UserBundle\Entity\User during the upgrade to Symfony 3.4
+// use FOS\UserBundle\Entity\User as BaseUser;
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use APY\DataGridBundle\Grid\Mapping as GRID;
+use Doctrine\DBAL\Types\Types;
+use Base\UserBundle\Entity\UserRepository;
 
-/**
- * User
- *
- * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="Base\UserBundle\Entity\UserRepository")
- * @Gedmo\Loggable(logEntryClass="Base\LogBundle\Entity\EntityLog")
- * @GRID\Source(columns="id, name, surname, email, username, roles, locked")
- */
+
+#[ORM\Table(name: 'users')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User extends BaseUser
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @var \DateTime
-     * @Gedmo\Versioned
-     * @ORM\Column(name="registeredAt", type="datetime")
-     */
-    protected $registeredAt;
+    #[ORM\Column(name: 'locked', type: Types::BOOLEAN)]
+    protected $locked = false;
 
-    /**
-     * @var string
-     * @Gedmo\Versioned
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'expired', type: Types::BOOLEAN)]
+    protected $expired = false;
+
+    #[ORM\Column(name: 'credentials_expired', type: Types::BOOLEAN)]
+    protected $credentialsExpired = false;
+
+    #[ORM\Column(name: 'registeredAt', type: Types::DATETIME_MUTABLE)]
+    protected \DateTime $registeredAt;
+
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, nullable: true)]
     protected $name = null;
 
-    /**
-     * @var string
-     * @Gedmo\Versioned
-     * @ORM\Column(name="surname", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'surname', type: Types::STRING, length: 255, nullable: true)]
     protected $surname = null;
 
-    /**
-     * @var string
-     * @Gedmo\Versioned
-     * @ORM\Column(name="organisation", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'organisation', type: Types::STRING, length: 255, nullable: true)]
     protected $organisation = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="user_id", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'user_id', type: Types::STRING, length: 255, nullable: true)]
     protected $userId;
+
+    /**
+     * Set locked
+     *
+     * @param boolean $locked
+     * @return User
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+        return $this;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Check if user is locked
+     *
+     * @return boolean
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Set expired
+     *
+     * @param boolean $expired
+     * @return User
+     */
+    public function setExpired($expired)
+    {
+        $this->expired = $expired;
+        return $this;
+    }
+
+    /**
+     * Get expired
+     *
+     * @return boolean
+     */
+    public function getExpired()
+    {
+        return $this->expired;
+    }
+
+    /**
+     * Check if user is expired
+     *
+     * @return boolean
+     */
+    public function isExpired()
+    {
+        return $this->expired;
+    }
+
+    /**
+     * Set credentialsExpired
+     *
+     * @param boolean $credentialsExpired
+     * @return User
+     */
+    public function setCredentialsExpired($credentialsExpired)
+    {
+        $this->credentialsExpired = $credentialsExpired;
+        return $this;
+    }
+
+    /**
+     * Get credentialsExpired
+     *
+     * @return boolean
+     */
+    public function getCredentialsExpired()
+    {
+        return $this->credentialsExpired;
+    }
+
+    /**
+     * Check if credentials are expired
+     *
+     * @return boolean
+     */
+    public function isCredentialsExpired()
+    {
+        return $this->credentialsExpired;
+    }
 
     /**
      * Set registeredAt
      *
+     * @param \DateTime $registeredAt
      * @return User
      */
-    public function setRegisteredAt()
+    public function setRegisteredAt($registeredAt = null)
     {
-        $this->registeredAt = new \DateTime("now");
-
+        if ($registeredAt === null) {
+            $registeredAt = new \DateTime("now");
+        }
+        $this->registeredAt = $registeredAt;
         return $this;
     }
 
@@ -92,7 +173,6 @@ class User extends BaseUser
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -115,7 +195,6 @@ class User extends BaseUser
     public function setSurname($surname)
     {
         $this->surname = $surname;
-
         return $this;
     }
 
@@ -132,18 +211,20 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-
         $this->registeredAt = new \DateTime("now");
+        $this->salt = '';
     }
 
     public function setEmail($email)
     {
         $this->email = $email;
+        parent::setEmail($email);
     }
 
     public function setUsername($name)
     {
         $this->username = $name;
+        parent::setUsername($name);
     }
 
     /**
@@ -154,7 +235,6 @@ class User extends BaseUser
     public function getNameSurname()
     {
         return trim($this->getName().' '.$this->getSurname());
-        ;
     }
 
     /**
@@ -165,9 +245,7 @@ class User extends BaseUser
     public function getSurnameName()
     {
         return trim($this->getSurname().' '.$this->getName());
-        ;
     }
-
 
     /**
      * Set user name and surname from string
@@ -201,14 +279,20 @@ class User extends BaseUser
     }
 
     /**
+     * Set organisation
+     *
      * @param string $organisation
+     * @return User
      */
     public function setOrganisation($organisation)
     {
         $this->organisation = $organisation;
+        return $this;
     }
 
     /**
+     * Get organisation
+     *
      * @return string
      */
     public function getOrganisation()
@@ -217,6 +301,8 @@ class User extends BaseUser
     }
 
     /**
+     * Get userId
+     *
      * @return string
      */
     public function getUserId()
@@ -225,10 +311,14 @@ class User extends BaseUser
     }
 
     /**
+     * Set userId
+     *
      * @param string $userId
+     * @return User
      */
     public function setUserId($userId)
     {
         $this->userId = $userId;
+        return $this;
     }
 }

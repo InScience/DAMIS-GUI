@@ -1,0 +1,3 @@
+apy_data_grid:
+    pagerfanta:
+        enable: true

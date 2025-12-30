@@ -2,45 +2,69 @@
 
 namespace Base\UserBundle\Controller;
 
-use FOS\UserBundle\Controller\ProfileController as BaseController;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use FOS\UserBundle\Form\Factory\FactoryInterface;
+use FOS\UserBundle\Model\UserInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
-class ProfileController extends BaseController
+class ProfileController extends AbstractController
 {
-    /**
-     * Edit the user
-     */
-    public function editAction()
+    private $formFactory;
+    private $userManager;
+
+    public function __construct(FactoryInterface $formFactory, UserManagerInterface $userManager)
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $this->formFactory = $formFactory;
+        $this->userManager = $userManager;
+    }
+
+    /**
+     * Show the user profile
+     */
+    #[Route('/profile/', name: 'fos_user_profile_show', methods: ['GET'])]
+    public function show(): Response
+    {
+        $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        $form = $this->container->get('fos_user.profile.form');
-        $formHandler = $this->container->get('fos_user.profile.form.handler');
-
-        $process = $formHandler->process($user);
-        if ($process) {
-            $this->setFlash('notice', 'profile.flash.updated');
-
-            return new RedirectResponse($this->getRedirectionUrl($user));
-        }
-
-        return $this->container->get('templating')->renderResponse(
-            'FOSUserBundle:Profile:edit.html.'.$this->container->getParameter('fos_user.template.engine'),
-            array('form' => $form->createView())
-        );
+        return $this->render('@FOSUser/Profile/show.html.twig', [
+            'user' => $user,
+        ]);
     }
 
     /**
-     * {@inheritDoc}
+     * Edit user profile
      */
-    protected function getRedirectionUrl(UserInterface $user)
+    #[Route('/profile/edit', name: 'fos_user_profile_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request): Response
     {
-        return $this->container->get('router')->generate('fos_user_profile_edit');
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $form = $this->formFactory->createForm();
+        $form->setData($user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userManager->updateUser($user);
+
+            $this->addFlash('success', 'profile.flash.updated');
+
+            return new RedirectResponse($this->generateUrl('fos_user_profile_edit'));
+        }
+
+        return $this->render('@FOSUser/Profile/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

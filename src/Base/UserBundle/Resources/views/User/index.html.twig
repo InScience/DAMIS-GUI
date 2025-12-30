@@ -1,9 +1,44 @@
-{% extends "FOSUserBundle::layout.html.twig" %}
+{% extends "@BaseUser/layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .grid {
+            margin: 20px 0;
+        }
+        .grid table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .grid table th {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+        .grid table td {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .grid table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .grid-search input {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .grid-search {
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock %}
 
 {% block body -%}
-    {% include "BaseUserBundle::messages.html.twig" %}
+    {% include "@BaseUser/messages.html.twig" %}
 
     <h2>{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</h2>
 
-    {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
+    {{ grid(grid, "@BaseMain/Grid/blocks.html.twig") }}
 {% endblock %}

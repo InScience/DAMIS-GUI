@@ -1,6 +1,48 @@
-{% include "BaseUserBundle::messages.html.twig" %}
+{% include "@BaseUser/messages.html.twig" %}
 
-<form class="form-signin fos_user_profile_edit" role="form" action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST">
+{{ form_start(form, {
+    'action': path('fos_user_profile_edit'),
+    'attr': {
+        'class': 'form-signin fos_user_profile_edit',
+        'role': 'form'
+    }
+}) }}
+
+    <h1>{{ 'profile.title'|trans({}, 'FOSUserBundle') }}</h1>
+    {{ form_widget(form._token) }}
+
+    {{ form_label(form.username) }}
+    {{ form_errors(form.username) }}
+    {{ form_widget(form.username) }}
+
+    {{ form_label(form.email) }}
+    {{ form_errors(form.email) }}
+    {{ form_widget(form.email) }}
+
+    {{ form_label(form.name) }}
+    {{ form_errors(form.name) }}
+    {{ form_widget(form.name) }}
+
+    {{ form_label(form.surname) }}
+    {{ form_errors(form.surname) }}
+    {{ form_widget(form.surname) }}
+
+    {{ form_label(form.organisation) }}
+    {{ form_errors(form.organisation) }}
+    {{ form_widget(form.organisation) }}
+
+    {{ form_label(form.current_password) }}
+    {{ form_errors(form.current_password) }}
+    {{ form_widget(form.current_password) }}
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">
+        {{ 'profile.edit.submit'|trans({}, 'FOSUserBundle') }}
+    </button>
+{{ form_end(form) }}
+
+{# {% include "@BaseUser/messages.html.twig" %}
+
+<form class="form-signin fos_user_profile_edit" role="form" action="{{ path('fos_user_profile_edit') }}" method="POST">
     <h1>{{ 'profile.title'|trans({}, 'FOSUserBundle') }}</h1>
     {{ form_widget(form._token) }}
 
@@ -29,4 +71,4 @@
     {{ form_widget(form.current_password) }}
 
     <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'profile.edit.submit'|trans({}, 'FOSUserBundle') }}" >{{ 'profile.edit.submit'|trans({}, 'FOSUserBundle') }}</button>
-</form>
+</form> #}

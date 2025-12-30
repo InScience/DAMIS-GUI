@@ -4,9 +4,11 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class SamannType extends AbstractType
 {
@@ -14,79 +16,67 @@ class SamannType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('d', 'integer', [
+            ->add('d', IntegerType::class, [
                 'required' => true,
                 'data' => 2,
-                'read_only' => true,
-                'attr' => array('class' => 'form-control', 'min' => 1),
+                'disabled' => true,
+                'attr' => ['class' => 'form-control', 'min' => 1],
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Projection space',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('maxIteration', 'integer', [
+        ->add('maxIteration', IntegerType::class, [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 1000],
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
                         'max' => 1000,
-                        'minMessage' => 'Number of iteration must be in interval [1; 1000]',
-                        'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
+                        'notInRangeMessage' => 'Number of iteration must be in interval [1; 1000]'
                     ]),
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Maximum number of iteration',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('mTrain', 'number', [
+        ->add('mTrain', NumberType::class, [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'data' => 10.0,
                 'constraints' => [
                     new Assert\Range([
                         'min' => 0.00000000001,
                         'max' => 100,
-                        'minMessage' => 'Relative size of the training data must be in interval (0; 100] %',
-                        'maxMessage' => 'Relative size of the training data must be in interval (0; 100] %'
+                        'notInRangeMessage' => 'Relative size of the training data must be in interval (0; 100] %'
                     ]),
                     new NotBlank()
                 ],
                 'label' => 'Relative size of the training data',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-            ->add('nNeurons', 'number', [
+            ->add('nNeurons', NumberType::class, [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(),
                     new Assert\GreaterThan([
                         'value' => 0,
                         'message' => 'Number of neurons in the hidden layer must be greater than 0'
                     ]),
-                    new Assert\Regex(array(
-                        'pattern' => '/^[0-9]+$/',
-                        'match' =>  true,
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Regex(['pattern' => '/^[0-9]+$/', 'match' =>  true, 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Number of neurons in the hidden layer',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-            ->add('eta', 'number', [
+            ->add('eta', NumberType::class, [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'data' => 1.0,
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
@@ -100,14 +90,18 @@ class SamannType extends AbstractType
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+        
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'samann_type';
     }

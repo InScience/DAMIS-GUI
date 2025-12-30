@@ -1,0 +1,134 @@
+{% extends '@BaseMain/Default/index.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ 'cron.edit_title'|trans({}, 'general') }}</h1>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ cron_job.name }}</h3>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                        <div class="form-group">
+                            {{ form_label(form.name, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.name) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.schedule, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.schedule) }}
+                                {{ form_errors(form.schedule) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="custom-schedule-group" style="display: none;">
+                            {{ form_label(form.scheduleCustom, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.scheduleCustom) }}
+                                {{ form_errors(form.scheduleCustom) }}
+                                <p class="help-block">{{ 'cron.help.schedule'|trans({}, 'general') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.command, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.command) }}
+                                {{ form_errors(form.command) }}
+                                <p class="help-block">{{ 'cron.help.command'|trans({}, 'general') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.description) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.logFile, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.logFile) }}
+                                {{ form_errors(form.logFile) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.errorFile, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.errorFile) }}
+                                {{ form_errors(form.errorFile) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        {{ form_widget(form.enabled) }}
+                                        {{ form.enabled.vars.label|trans({}, 'general') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-floppy-disk"></span> {{ 'cron.actions.save'|trans({}, 'general') }}
+                                    </button>
+                                    <a href="{{ path('cron_index') }}" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span> {{ 'cron.actions.cancel'|trans({}, 'general') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{ form_rest(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var scheduleSelect = document.getElementById('{{ form.schedule.vars.id }}');
+    var customGroup = document.getElementById('custom-schedule-group');
+    var customInput = document.getElementById('{{ form.scheduleCustom.vars.id }}');
+    
+    // Set custom input value from current schedule if it's not a preset
+    var presetSchedules = ['* * * * *', '*/5 * * * *', '*/15 * * * *', '*/30 * * * *', '0 * * * *', '0 0 * * *', '0 0 * * 0', '0 0 1 * *'];
+    var currentSchedule = '{{ cron_job.schedule }}';
+    
+    if (!presetSchedules.includes(currentSchedule)) {
+        scheduleSelect.value = 'custom';
+        customInput.value = currentSchedule;
+        customGroup.style.display = 'block';
+        customInput.required = true;
+    }
+    
+    scheduleSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customGroup.style.display = 'block';
+            customInput.required = true;
+        } else {
+            customGroup.style.display = 'none';
+            customInput.required = false;
+        }
+    });
+});
+</script>
+{% endblock %}
+

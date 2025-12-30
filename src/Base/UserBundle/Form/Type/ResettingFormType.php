@@ -3,23 +3,41 @@
 namespace Base\UserBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use FOS\UserBundle\Form\Type\ResettingFormType as BaseType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
-class ResettingFormType extends BaseType
+class ResettingFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $class;
+
+    public function __construct(string $class)
     {
-        $builder->add('new', 'repeated', array(
-            'type' => 'password',
-            'options' => array('translation_domain' => 'FOSUserBundle'),
-            'first_options' => array('label' => 'form.new_password', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.new_password'),),
-            'second_options' => array('label' => 'form.new_password_confirmation', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.new_password_confirmation'),),
-            'invalid_message' => 'fos_user.password.mismatch',
-        ));
+        $this->class = $class;
     }
 
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        return 'base_user_resetting';
+        $builder->add('plainPassword', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'options' => ['translation_domain' => 'FOSUserBundle', 'attr' => ['autocomplete' => 'new-password']],
+            'first_options' => ['label' => 'form.new_password', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.new_password']],
+            'second_options' => ['label' => 'form.new_password_confirmation', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.new_password_confirmation']],
+            'invalid_message' => 'fos_user.password.mismatch',
+        ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => $this->class,
+            'csrf_token_id' => 'resetting',
+        ]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'fos_user_resetting';
     }
 }

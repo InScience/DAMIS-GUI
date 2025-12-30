@@ -1,0 +1,23 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    paths:
+        '%kernel.project_dir%/src/Base/UserBundle/Resources/views': BaseUser
+        '%kernel.project_dir%/src/Base/MainBundle/Resources/views': BaseMain
+        '%kernel.project_dir%/src/Base/StaticBundle/Resources/views': BaseStatic
+        '%kernel.project_dir%/src/Damis/ExperimentBundle/Resources/views': DamisExperiment
+        '%kernel.project_dir%/src/Damis/DatasetsBundle/Resources/views': DamisDatasets
+        '%kernel.project_dir%/src/Damis/AlgorithmBundle/Resources/views': DamisAlgorithm
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
+    globals:
+        kernelRootDir: '%kernel.project_dir%'
+        design_style: '%design_style%'
+        project: '%project%'
+        project_domain: '%project_domain%'
+        project_email: '%project_email%'
+        project_full_host: '%project_full_host%'
+        is_damis_algorithm_enabled: '%is_damis_algorithm_enabled%'
+        service_provider_code: '%service_provider_code%'
+        first_time_page: '%first_time_page%'
+        use_ssl_connections: '%use_ssl_connections%'
+        midas_url: '%midas_url%'

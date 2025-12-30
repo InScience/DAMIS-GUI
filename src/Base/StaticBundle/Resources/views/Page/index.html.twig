@@ -1,10 +1,96 @@
-{% extends 'BaseMainBundle::layout.html.twig' %}
+{% extends '@BaseMain/layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .grid {
+            margin: 20px 0;
+        }
+        .grid table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* This helps with column alignment */
+        }
+        .grid table th {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            font-weight: 600;
+            text-align: left;
+        }
+        .grid table td {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        .grid table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .grid-search input {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .grid-search {
+            margin-bottom: 15px;
+        }
+        /* Fix column widths for better alignment */
+        .grid table th:first-child,
+        .grid table td:first-child {
+            width: 20%;
+        }
+        .grid table th:nth-child(2),
+        .grid table td:nth-child(2) {
+            width: 15%;
+        }
+        .grid table th:nth-child(3),
+        .grid table td:nth-child(3) {
+            width: auto; /* Let text column take remaining space */
+        }
+        .grid table th:last-child,
+        .grid table td:last-child {
+            width: 200px; /* Fixed width for action columns */
+            text-align: center;
+        }
+        /* Style the action buttons */
+        .grid table td a {
+            margin: 0 2px;
+        }
+        /* Style the "Create" button */
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .btn-default {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+        .btn-default:hover {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+        }
+    </style>
+{% endblock %}
 
 {% block body -%}
-    {% include "BaseStaticBundle::messages.html.twig" %}
+    {% include "@BaseStatic/messages.html.twig" %}
 
     <h1>{{ 'form.pages'|trans({}, 'StaticBundle') }}</h1>
     <a class="btn btn-default" href="{{ path("page_new") }}">{{ "form.create" | trans({}, 'StaticBundle') }} <span class="glyphicon glyphicon-plus"></span></a>
 
-    {{ grid(grid, "BaseMainBundle:Grid:blocks.html.twig") }}
+    {{ grid(grid, "@APYDataGrid/blocks.html.twig") }}
 {% endblock %}

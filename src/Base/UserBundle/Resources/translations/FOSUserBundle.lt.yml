@@ -34,6 +34,7 @@ profile:
 
 # Password change
 change_password:
+    title: Pakeisti slaptažodį
     submit: Pakeisti slaptažodį
     flash:
         success: Slaptažodis buvo pakeistas

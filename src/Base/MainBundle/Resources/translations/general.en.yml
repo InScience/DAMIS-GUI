@@ -4,6 +4,95 @@ en_US: English
 en: English
 cron: Cron
 pages: Pages
+info_video_label: Information video
+
+# Cron Manager translations
+cron.menu: Cron Manager
+cron.title: Cron Manager
+cron.list_title: Cron Job List
+cron.add_title: Add a Cron Job
+cron.edit_title: Edit Cron Job
+cron.show_title: Cron Job Details
+cron.no_jobs: No cron jobs defined yet.
+cron.add_info: "Keep in mind that cron user is %user% and its root directory is %root%."
+cron.full_expression: Full Cron Expression
+
+# Table headers
+cron.table.name: Name
+cron.table.schedule: Schedule
+cron.table.command: Command
+cron.table.status: Status
+cron.table.actions: Actions
+
+# Form labels
+cron.form.name: Name
+cron.form.schedule: Schedule
+cron.form.schedule_custom: Custom Schedule
+cron.form.command: Command
+cron.form.description: Description / Comment
+cron.form.log_file: Log File
+cron.form.error_file: Error File
+cron.form.enabled: Enabled
+
+# Schedule options
+cron.schedule.every_minute: Every minute
+cron.schedule.every_five_minutes: Every 5 minutes
+cron.schedule.every_fifteen_minutes: Every 15 minutes
+cron.schedule.every_thirty_minutes: Every 30 minutes
+cron.schedule.hourly: Hourly
+cron.schedule.daily: Daily (midnight)
+cron.schedule.weekly: Weekly (Sunday midnight)
+cron.schedule.monthly: Monthly (1st day midnight)
+cron.schedule.custom: Custom
+
+# Status
+cron.status.enabled: Enabled
+cron.status.disabled: Disabled
+
+# Actions
+cron.actions.add: Add Cron Job
+cron.actions.edit: Edit
+cron.actions.save: Save Changes
+cron.actions.cancel: Cancel
+cron.actions.delete: Delete
+cron.actions.enable: Enable
+cron.actions.disable: Disable
+cron.actions.details: Details
+cron.actions.back: Back to List
+cron.actions.export: Export to Crontab
+
+# Flash messages
+cron.flash.job_added: Cron job successfully added.
+cron.flash.job_updated: Cron job successfully updated.
+cron.flash.job_deleted: Cron job successfully deleted.
+cron.flash.job_enabled: Cron job enabled.
+cron.flash.job_disabled: Cron job disabled.
+cron.flash.custom_schedule_required: Custom schedule is required when 'Custom' is selected.
+cron.flash.sync_success: System crontab synchronized successfully.
+cron.flash.sync_failed: 'Warning: Failed to sync to system crontab: %error%'
+
+# Info
+cron.info.user: Cron user
+cron.info.root: Root directory
+cron.log: Log file
+cron.error: Error file
+
+# Fields
+cron.field.created_at: Created At
+cron.field.last_run: Last Run
+
+# Help texts
+cron.help.schedule: "Format: minute hour day month weekday (e.g., * * * * * for every minute)"
+cron.help.command: "Full command path (e.g., /usr/bin/php /path/to/bin/console command:name)"
+
+# Confirmations
+cron.confirm.delete: Are you sure you want to delete this cron job?
+
+# Access denied translations
+access_denied.title: Access Denied
+access_denied.message: You do not have permission to access this page. Please wait for an administrator to confirm your account.
+access_denied.back_home: Back to Home
+
 #Default controller translations
 MIDAS user login request parameters are wrong! : MIDAS user login request parameters are wrong!
 User with this email already exists!: User with this email already exists!. Please remove user or change user email

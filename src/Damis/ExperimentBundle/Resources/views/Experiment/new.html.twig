@@ -1,25 +1,28 @@
-{% extends 'BaseMainBundle::layout.html.twig' %}
+{% extends '@BaseMain/layout.html.twig' %}
+
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets 'bundles/damisexperiment/css/*' filter='cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/colpick.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCanvas.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCreate.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/jquery.dataTables.css') }}">
 {% endblock %}
+
 {% block body %}
-<div class="tabbable">
-    <div class="tab-content">
-        <div>
-        {% include "DamisExperimentBundle::messages.html.twig" %}
-        {% include "DamisExperimentBundle::_experiment_form.html.twig"
-        with { components : components, taskBoxesCount : taskBoxesCount, experimentId : experimentId,
-        experimentTitle : experimentTitle } %}
-        <div id="workflow-editor-container">
-            <div id="toolbox-container">
-                <ul class="nav nav-tabs" id="cluster-tabs">
-                    {% for cluster in clusters %}
-                    <li id="cluster-{{ cluster.id }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
-                        <a href="#">{{ cluster.name | trans({}, 'ExperimentBundle')}}</a>
-                        <span>
+    <div class="tabbable">
+        <div class="tab-content">
+            <div>
+                {% include "@DamisExperiment/messages.html.twig" %}
+                {% include "@DamisExperiment/_experiment_form.html.twig"
+                with { components : components, taskBoxesCount : taskBoxesCount, experimentId : experimentId,
+                experimentTitle : experimentTitle } %}
+                <div id="workflow-editor-container">
+                    <div id="toolbox-container">
+                        <ul class="nav nav-tabs" id="cluster-tabs">
+                            {% for cluster in clusters %}
+                                <li id="cluster-{{ cluster.id }}-tab" {% if loop.index == 1 %}class="active"{% endif %}>
+                                    <a href="#">{{ cluster.name | trans({}, 'ExperimentBundle')}}</a>
+                                    <span>
                             <i class="component-tooltip cluster-tooltip glyphicon glyphicon-info-sign" data-placement="bottom"
                                data-content="{{ (cluster.description) | trans({}, 'ExperimentBundle')}}
                                </br></br>
@@ -33,56 +36,57 @@
                                 <span style="display: none;">{{ 'Cluster information' | trans({}, 'ExperimentBundle') }}</span>
                             </i>
                         </span>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <div id="toolbox">
-                    {% for cluster in clusters %}
-                        <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
-                            {% for category in componentsCategories %}
-                            {% spaceless %}
-                                <h3 {% if loop.index == 1 %}class="first"{% endif %}>
-                                    {{ category.getType | trans({}, 'ExperimentBundle') }}
-                                </h3>
-                                <div style="padding: 0;">
-                                    <div class="tools-padding">
-                                    {% for component in components
-                                        if (component.clusterId == cluster and component.typeId == category) %}
-                                        <div class="prototype-box {% if loop.index is divisibleby(3) %}last{% endif %}">
-                                            <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
-                                                 width="64px" height="64px" />
-                                            <i style="cursor:pointer; " class="component-tooltip glyphicon glyphicon-info-sign"
-                                               data-placement="bottom" data-content="{{ component.description | trans({} , 'ExperimentBundle')}}"
-                                               data-original-title="" title="">
-                                                <span style="display: none;">{{ component.getName | trans({}, 'ExperimentBundle') }}</span>
-                                            </i>
-                                            <div class="desc">
-                                                <div>{{ component.getName | trans({}, 'ExperimentBundle') }}</div>
-                                            </div><input type="hidden" value="{{ component.getId }}"></div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div id="toolbox">
+                            {% for cluster in clusters %}
+                                <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
+                                    {% for category in componentsCategories %}
+                                        {% apply spaceless %}
+                                            <h3 {% if loop.index == 1 %}class="first"{% endif %}>
+                                                {{ category.getType | trans({}, 'ExperimentBundle') }}
+                                            </h3>
+                                            <div style="padding: 0;">
+                                                <div class="tools-padding">
+                                                    {% for component in components %}
+                                                        {% if component.clusterId == cluster and component.typeId == category %}
+                                                            <div class="prototype-box {% if loop.index is divisible by(3) %}last{% endif %}">
+                                                                <img src="{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}"
+                                                                    width="64px" height="64px" />
+                                                                <i style="cursor:pointer; " class="component-tooltip glyphicon glyphicon-info-sign"
+                                                                data-placement="bottom" data-content="{{ component.description | trans({} , 'ExperimentBundle')}}"
+                                                                data-original-title="" title="">
+                                                                    <span style="display: none;">{{ component.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }}</span>
+                                                                </i>
+                                                                <div class="desc">
+                                                                    <div>{{ component.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }}</div>
+                                                                </div><input type="hidden" value="{{ component.getId }}"></div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endapply %}
                                     {% endfor %}
-                                    </div>
                                 </div>
-                            {% endspaceless %}
                             {% endfor %}
                         </div>
-                    {% endfor %}
+                    </div>
+
+                    <div id="canvas">
+                        <div id="flowchart-container" ></div>
+                    </div>
+                </div>
+                <div id="buttons-block" style="width:614px; float:left">
+                    <div class="pull-right">
+                        <button class="btn btn-success" type="button" id="new-experiment-btn">{{ "New experiment"| trans({}, 'ExperimentBundle')  }}</button>
+                        <button class="btn btn-success" type="button" id="save-btn">{{ "Save"| trans({}, 'ExperimentBundle')  }}</button>
+                        <button class="btn btn-primary" type="button" id="execute-btn">{{"Execute"| trans({}, 'ExperimentBundle')   }}</button>
+                    </div>
                 </div>
             </div>
-
-            <div id="canvas">
-                <div id="flowchart-container" ></div>
-            </div>
-        </div>
-        <div id="buttons-block" style="width:614px; float:left">
-            <div class="pull-right">
-                <button class="btn btn-success" type="button" id="new-experiment-btn">{{ "New experiment"| trans({}, 'ExperimentBundle')  }}</button>
-                <button class="btn btn-success" type="button" id="save-btn">{{ "Save"| trans({}, 'ExperimentBundle')  }}</button>
-                <button class="btn btn-primary" type="button" id="execute-btn">{{"Execute"| trans({}, 'ExperimentBundle')   }}</button>
-            </div>
-        </div>
         </div>
     </div>
-</div>
 
     <form id="file-upload-form" method="POST" action="{{ path('dataset_upload_handler') }}" enctype="multipart/form-data" target="file-upload-iframe" style="display:none;" autocomplete="off"></form>
     <iframe id="file-upload-iframe" name="file-upload-iframe" style="display: none;"></iframe>
@@ -91,109 +95,127 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts '@DamisExperimentBundle/Resources/public/js/*' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 
+    {# These are all the JS files from your directory, now included correctly #}
+    <script src="{{ asset('bundles/damisexperiment/js/chart.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/componentForm.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/componentNoForm.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/componentSettings.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/endpoints.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/eventObservers.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/existingFile.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/experiment.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/experimentCanvas.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/experimentForm.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/files.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/matrixView.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/midasFile.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/params.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/persistWorkflow.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/taskBoxes.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/technicalDetails.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/utils.js') }}"></script>
+    <script src="{{ asset('bundles/damisexperiment/js/validation.js') }}"></script>
 
+    {# This is your original inline JavaScript, which MUST be kept #}
     <script type="text/javascript">
- (function() {
-        jsPlumb.ready(function() {
-            // jsPlumb initialization
-            experimentCanvas.init({
-                id: "flowchart-container"
-            });
+        (function() {
+            jsPlumb.ready(function() {
+                // jsPlumb initialization
+                experimentCanvas.init({
+                    id: "flowchart-container"
+                });
 
-            // mapping native components to Ajax urls for dialog rendering
-            window.componentFormUrls = {};
-            window.componentFormUrls['UPLOAD FILE'] = "{{ path('dataset_upload') }}";
+                // mapping native components to Ajax urls for dialog rendering
+                window.componentFormUrls = {};
+                window.componentFormUrls['UPLOAD FILE'] = "{{ path('dataset_upload') }}";
 
-            window.componentSettings.details = {};
-            {% for component in components %}
-            window.componentSettings.details["{{ component.getId }}"] = {
-                label: "{{ component.getName }}",
-                ico: "{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}",
-                cluster_ico: "{{ asset('bundles/damisexperiment/images/cluster_' ~ component.clusterId.id ~ '_icon.jpeg') }}",
-                type: "{{ component.formType }}",
-                componentId : "{{ component.getId }}"
-            };
-            {% endfor %}
+                window.componentSettings.details = {};
+                {% for component in components %}
+                window.componentSettings.details["{{ component.getId }}"] = {
+                    label: "{{ component.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }}",
+                    ico: "{{ asset('bundles/damisexperiment/images/' ~ component.getIcon) }}",
+                    cluster_ico: "{{ asset('bundles/damisexperiment/images/cluster_' ~ component.clusterId.id ~ '_icon.jpeg') }}",
+                    type: "{{ component.formType }}",
+                    componentId : "{{ component.getId }}"
+                };
+                {% endfor %}
 
-            window.datasets = {};
-            {% if datasets is defined %}
-            {% for taskBox, dataset in datasets %}
+                window.datasets = {};
+                {% if datasets is defined %}
+                {% for taskBox, dataset in datasets %}
                 window.datasets['{{taskBox}}'] = [];
                 {% for ds in dataset %}
-                    window.datasets['{{ taskBox}}'].push('{{ds}}');
+                window.datasets['{{ taskBox}}'].push('{{ds}}');
                 {% endfor %}
-            {% endfor %}
-            {% endif %}
-            window.experimentForm.params = {
-                {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
-                experimentNewUrl: "{{ path('new_experiment') }}",
-                taskFormPrefix: "form-"
-            };
+                {% endfor %}
+                {% endif %}
+                window.experimentForm.params = {
+                    {#parameterPrefixesUrl: "{% url 'gen-parameter-prefixes' %}",#}
+                    experimentNewUrl: "{{ path('new_experiment') }}",
+                    taskFormPrefix: "form-"
+                };
 
-            //decide if an empty canvas or a persisted worklow should be
-            //displayed
-            var persistedStr = $("input[name=id_experiment-workflow_state]").val();
+                //decide if an empty canvas or a persisted worklow should be
+                //displayed
+                var persistedStr = $("input[name=id_experiment-workflow_state]").val();
 
-            if (persistedStr) {
-                jsPlumb.setSuspendDrawing(true);
+                if (persistedStr) {
+                    jsPlumb.setSuspendDrawing(true);
 
-                window.persistWorkflow.restoreBoxes(persistedStr);
-                window.persistWorkflow.restoreCountBoxes(persistedStr);
+                    window.persistWorkflow.restoreBoxes(persistedStr);
+                    window.persistWorkflow.restoreCountBoxes(persistedStr);
 
-                window.experimentForm.init();
-                window.experimentForm.reinitExperimentForm();
+                    window.experimentForm.init();
+                    window.experimentForm.reinitExperimentForm();
 
-                window.persistWorkflow.restoreConnections(persistedStr);
+                    window.persistWorkflow.restoreConnections(persistedStr);
 
-                jsPlumb.setSuspendDrawing(false, true);
-            } else {
-                window.experimentForm.init();
-            }
-
-            window.toolBox = {
-                // Make boxes in the toolbox draggable
-                init: function(spec) {
-                    // drag task
-                    $(spec.task).draggable({
-                        appendTo: spec.canvas,
-                        helper: "clone"
-                    });
-                    $(spec.canvas).droppable({
-                        activeClass: "active-canvas",
-                        accept: spec.task,
-                        drop: function(ev, ui) {
-                            if ($(ui.draggable).hasClass(spec.task.replace(".", ""))) {
-                                jsPlumb.setSuspendDrawing(true);
-                                window.taskBoxes.createTaskBox(ev, ui, spec.canvas);
-                                jsPlumb.setSuspendDrawing(false, true);
-                                return;
-                            }
-                        }
-                    });
+                    jsPlumb.setSuspendDrawing(false, true);
+                } else {
+                    window.experimentForm.init();
                 }
-            }
 
-            window.toolBox.init({
-                task: ".prototype-box",
-                canvas: "#flowchart-container"});
+                window.toolBox = {
+                    // Make boxes in the toolbox draggable
+                    init: function(spec) {
+                        // drag task
+                        $(spec.task).draggable({
+                            appendTo: spec.canvas,
+                            helper: "clone"
+                        });
+                        $(spec.canvas).droppable({
+                            activeClass: "active-canvas",
+                            accept: spec.task,
+                            drop: function(ev, ui) {
+                                if ($(ui.draggable).hasClass(spec.task.replace(".", ""))) {
+                                    jsPlumb.setSuspendDrawing(true);
+                                    window.taskBoxes.createTaskBox(ev, ui, spec.canvas);
+                                    jsPlumb.setSuspendDrawing(false, true);
+                                    return;
+                                }
+                            }
+                        });
+                    }
+                }
 
-            window.submitedForms = {};
-            
-            {% if tasksBoxsWithErrors is defined %}
-            {% for taskBox in tasksBoxsWithErrors %}
+                window.toolBox.init({
+                    task: ".prototype-box",
+                    canvas: "#flowchart-container"});
+
+                window.submitedForms = {};
+
+                {% if tasksBoxsWithErrors is defined %}
+                {% for taskBox in tasksBoxsWithErrors %}
                 $("#" + "{{ taskBox }}").addClass("error");
-            {% endfor %}
+                {% endfor %}
 
-            {% for taskBox in executedTasksBoxs %}
-            $("#" + "{{ taskBox }}").addClass("done");
-            {% endfor %}
-            {% endif %}
-        });
- })();
+                {% for taskBox in executedTasksBoxs %}
+                $("#" + "{{ taskBox }}").addClass("done");
+                {% endfor %}
+                {% endif %}
+            });
+        })();
     </script>
     <script>
         $('#experiment-form').keypress(function(event){

@@ -1,10 +1,8 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    - { resource: @BCCCronManagerBundle/Resources/config/assetic.yml }
 
 framework:
-    #esi:             ~
     translator:      { fallback: "%locale%" }
     secret:          "%secret%"
     router:
@@ -15,27 +13,24 @@ framework:
     validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
-        #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
         cookie_domain: "%project_domain%"
-        # handler_id set to null will use default session handler from php.ini
-        # if commented, sessions will be storred in cache folders
-        #handler_id:  ~
     fragments:       ~
     http_method_override: true
 
-# Twig Configuration
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form_themes:
+        -  'bootstrap_3_layout.html.twig'
     globals:
         project: "%project%"
         login_form: true
-        is_damis_algorithm_enabled: %is_damis_algorithm_enabled%
-        design_style: %design_style%
+        is_damis_algorithm_enabled: "%is_damis_algorithm_enabled%"
+        design_style: "%design_style%"
 
 # Assetic Configuration
 assetic:
@@ -78,53 +73,87 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-stof_doctrine_extensions:
-        default_locale: en_us
-        translation_fallback: true
-        uploadable:
-            validate_writable_directory: false
-        orm:
-            default:
-                timestampable: true
-                sluggable: true
-                tree: true
-                loggable: true
+# Commented during upgrade to Symfony 3.4
+# stof_doctrine_extensions:
+#         default_locale: en_us
+#         translation_fallback: true
+#         uploadable:
+#             validate_writable_directory: false
+#         orm:
+#             default:
+#                 timestampable: true
+#                 sluggable: true
+#                 tree: true
+#                 loggable: true
 
+# fos_user:
+#     db_driver: orm
+#     firewall_name: main
+#     user_class: Base\UserBundle\Entity\User
+#     from_email:
+#         address:        "%project_email%"
+#         sender_name:    "%project%"
+#     change_password:
+#         form:
+#             type: base_user_change_password
+#     profile:
+#         form:
+#             type: base_user_profile
+#     resetting:
+#         email:
+#             from_email:
+#                 address:        "%project_email%"
+#                 sender_name:    "%project%"
+#         form:
+#             type: base_user_resetting
+#     registration:
+#         form:
+#             type: base_user_registration
 fos_user:
-    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    db_driver: orm
     firewall_name: main
     user_class: Base\UserBundle\Entity\User
+    from_email:
+        address:        "%project_email%"
+        sender_name:    "%project%"
     change_password:
         form:
-            type: base_user_change_password
+            type: Base\UserBundle\Form\Type\ChangePasswordFormType
     profile:
         form:
-            type: base_user_profile
+            type: Base\UserBundle\Form\Type\ProfileFormType
     resetting:
         email:
             from_email:
                 address:        "%project_email%"
                 sender_name:    "%project%"
         form:
-            type: base_user_resetting
+            type: Base\UserBundle\Form\Type\ResettingFormType
     registration:
         form:
-            type: base_user_registration
+            type: Base\UserBundle\Form\Type\RegistrationFormType
+
+# Commented during upgrade to Symfony 3.4
+# apy_data_grid:
+#     pagerfanta:
+#         enable: true    #default false
+#         view_class: Pagerfanta\View\DefaultView #default    Pagerfanta\View\DefaultView
+#         options:            #all options of pager fanta view constructor
+#            previous_message : «
+#            next_message : »
+#            proximity: 3
 
 apy_data_grid:
-    pagerfanta:
-        enable: true    #default false
-        view_class: Pagerfanta\View\DefaultView #default    Pagerfanta\View\DefaultView
-        options:            #all options of pager fanta view constructor
-           previous_message : «
-           next_message : »
-           proximity: 3
+    persistence: true
+    no_data_message: No data
+    no_result_message: No result
 
+# Commented during upgrade to Symfony 3.4
 iphp_file_store:
     mappings:
-        dataset:
-            upload_dir:  %kernel.root_dir%/../web/assets
-            upload_path: /assets
+        dataset: 
+            upload_dir: '%kernel.project_dir%/web/uploads/datasets'
+            upload_path: '/uploads/datasets'
             namer:
                 translit: ~
                 property:
@@ -134,9 +163,10 @@ iphp_file_store:
                     params: { field: userIdMd5Dataset }
             delete_on_remove: true
             overwrite_duplicates: true
+            
         algorithmfile:
-            upload_dir:  %kernel.root_dir%/../web/assets
-            upload_path: /assets
+            upload_dir: '%kernel.project_dir%/web/uploads/algorithms'
+            upload_path: '/uploads/algorithms'
             namer:
                 translit: ~
                 property:
@@ -145,7 +175,7 @@ iphp_file_store:
                 property:
                     params: { field: userIdMd5File }
             delete_on_remove: true
-            overwrite_duplicates: true            
+            overwrite_duplicates: true
 
 knp_paginator:
     page_range: 13

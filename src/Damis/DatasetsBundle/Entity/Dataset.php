@@ -2,95 +2,84 @@
 
 namespace Damis\DatasetsBundle\Entity;
 
+use Damis\DatasetsBundle\Entity\Repository\DatasetRepository;
+use Base\UserBundle\Entity\User;
 use Damis\DatasetsBundle\Form\Validators as Asserts;
 use Doctrine\ORM\Mapping as ORM;
-use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
-
+// use Iphp\FileStoreBundle\Mapping\Annotation as FileStore;
 /**
  * Dataset
- *
- * @ORM\Table(name="dataset", uniqueConstraints={@ORM\UniqueConstraint(name="DATASET_PK", columns={"DatasetID"})}, indexes={@ORM\Index(name="FK_DATASET_DAMISUSER", columns={"UserID"})})
- * @FileStore\Uploadable*
- * @ORM\Entity(repositoryClass="Damis\DatasetsBundle\Entity\Repository\DatasetRepository")
  */
+#[ORM\Table(name: 'dataset')]
+#[ORM\Index(name: 'FK_DATASET_DAMISUSER', columns: ['UserID'])]
+#[ORM\UniqueConstraint(name: 'DATASET_PK', columns: ['DatasetID'])]
+#[ORM\Entity(repositoryClass: DatasetRepository::class)]
 class Dataset
 {
     private $seed = 'dcmaga7v5udgyhj0lwen';
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="DatasetIsMIDAS", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'DatasetIsMIDAS', type: 'integer', nullable: false)]
     private $datasetIsMidas;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="DatasetTitle", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'DatasetTitle', type: 'string', length: 80, nullable: false)]
     private $datasetTitle;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="DatasetCreated", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'DatasetCreated', type: 'integer', nullable: false)]
     private $datasetCreated;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="DatasetFilePath", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'DatasetFilePath', type: 'string', length: 255, nullable: true)]
     private $filePath;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="DatasetUpdated", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'DatasetUpdated', type: 'integer', nullable: true)]
     private $datasetUpdated;
 
     /**
-     * @var array
-     * @Asserts\FileExtension
-     * @ORM\Column(name="file", type="array", nullable=true)
-     * @FileStore\UploadableField(mapping="dataset")
+     * File upload property - needs new implementation for SF4.4
+     * 
+     * @var mixed
      */
     private $file;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="DatasetDescription", type="string", length=500, nullable=true)
      */
+    #[ORM\Column(name: 'DatasetDescription', type: 'string', length: 500, nullable: true)]
     private $datasetDescription;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="DatasetID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'DatasetID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $datasetId;
 
     /**
-     * @var \Base\UserBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="Base\UserBundle\Entity\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
-     * })
+     * @var User
      */
+    #[ORM\JoinColumn(name: 'UserID', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $user;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Hidden", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'Hidden', type: 'integer', nullable: true)]
     private $hidden = 0;
 
     /**
@@ -239,10 +228,10 @@ class Dataset
     /**
      * Set user
      *
-     * @param \Base\UserBundle\Entity\User $user
+     * @param User $user
      * @return Dataset
      */
-    public function setUser(\Base\UserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -252,7 +241,7 @@ class Dataset
     /**
      * Get user
      *
-     * @return \Base\UserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -309,6 +298,18 @@ class Dataset
      */
     public function getFile()
     {
+        if ($this->file === null) {
+            $size = 0;
+            // Try to calculate size from filePath
+            if ($this->filePath) {
+                 $projectRoot = realpath(__DIR__ . '/../../../../'); 
+                 $fullPath = $projectRoot . '/public' . $this->filePath;
+                 if (file_exists($fullPath)) {
+                     $size = filesize($fullPath);
+                 }
+            }
+            return ['size' => $size];
+        }
         return $this->file;
     }
 
@@ -330,5 +331,10 @@ class Dataset
     public function getFilePath()
     {
         return $this->filePath;
+    }
+
+    public function getId()
+    {
+        return $this->datasetId;
     }
 }

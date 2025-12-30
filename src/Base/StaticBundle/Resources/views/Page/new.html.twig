@@ -1,13 +1,9 @@
-{% extends 'BaseMainBundle::layout.html.twig' %}
+{% extends '@BaseMain/layout.html.twig' %}
 
 {% block body -%}
-    {% include "BaseStaticBundle::messages.html.twig" %}
-
-    <form class="form-normal" role="form" action="{{ path('page_create') }}" method="post" {{ form_enctype(form) }}>
+    {% include "@BaseStatic/messages.html.twig" %}
+    {{ form_start(form, {'attr': {'class': 'form-normal', 'role': 'form'}}) }}
         <h1>{{ 'form.create_page'|trans({}, 'StaticBundle') }}</h1>
-
-        {{ form_widget(form._token) }}
-
         {{ form_label(form.title) }}
         {{ form_errors(form.title) }}
         {{ form_widget(form.title) }}
@@ -31,11 +27,12 @@
         </div>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'form.create'|trans({}, 'StaticBundle') }}" >{{ 'form.create'|trans({}, 'StaticBundle') }}</button>
-    </form>
+
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {% include "BaseMainBundle::jsTinymce.html.twig" %}
+    {% include "@BaseMain/jsTinymce.html.twig" %}
     <script src="{{ asset('bundles/basestatic/js/pages.js') }}" type="text/javascript"></script>
 {% endblock %}

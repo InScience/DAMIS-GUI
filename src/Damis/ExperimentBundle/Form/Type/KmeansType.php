@@ -4,68 +4,62 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class KmeansType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder
-        ->add('maxIteration', 'integer', [
+        ->add('maxIteration', IntegerType::class, [
             'required' => true,
             'data' => 100,
-            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+            'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 1000],
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
                     'max' => 1000,
-                    'minMessage' => 'Number of iteration must be in interval [1; 1000]',
-                    'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
+                    'notInRangeMessage' => 'Number of iteration must be in interval [1; 1000]'
                 ]),
                 new NotBlank(),
-                new Assert\Type(array(
-                    'type' => 'integer',
-                    'message' => 'This value type should be integer'
-                ))
+                new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
             ],
             'label' => 'Maximum number of iteration',
             'label_attr' => ['class' => 'col-md-9']
-        ])->add('kMax', 'integer', [
+        ])
+        ->add('kMax', IntegerType::class, [
             'required' => true,
             'data' => 10,
-            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
+            'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 100],
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
                     'max' => 100,
-                    'minMessage' => 'Number of cluster must be in interval [1; 100]',
-                    'maxMessage' => 'Number of cluster must be in interval [1; 100]'
+                    'notInRangeMessage' => 'Number of cluster must be in interval [1; 100]'
                 ]),
                 new NotBlank(),
-                new Assert\Type(array(
-                    'type' => 'integer',
-                    'message' => 'This value type should be integer'
-                ))
+                new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
             ],
             'label' => 'Maximum number of cluster',
             'label_attr' => ['class' => 'col-md-9']
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+        
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'kmeans_type';
     }

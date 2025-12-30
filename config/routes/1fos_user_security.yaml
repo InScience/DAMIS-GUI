@@ -1,0 +1,17 @@
+fos_user_security_login:
+    path: /login
+    defaults:
+        _controller: Base\UserBundle\Controller\SecurityController::loginAction
+    methods: [GET, POST]
+
+fos_user_security_check:
+    path: /login_check
+    defaults:
+        _controller: fos_user.security.controller:checkAction
+    methods: [POST]
+
+fos_user_security_logout:
+    path: /logout
+    defaults:
+        _controller: fos_user.security.controller:logoutAction
+    methods: [GET, POST]

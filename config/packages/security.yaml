@@ -1,0 +1,71 @@
+# config/packages/security.yaml
+security:
+    enable_authenticator_manager: true
+    # 1. Password Hashing
+    # This tells Symfony how to hash passwords for your User entity.
+    password_hashers:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+
+    # 2. User Provider
+    # This tells Symfony to get users from the database using FOSUserBundle.
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+
+    # 3. Firewalls
+    # This is the main security configuration for your site.
+    firewalls:
+        # 'dev' firewall is for developer tools, leave it as is.
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js|translations)/
+            security: false
+
+        # 'main' firewall protects your entire application.
+        main:
+            # Allows anonymous users to access pages (like the login page).
+            # anonymous: true
+            lazy: true
+            
+            # Links this firewall to the user provider we defined above.
+            provider: fos_userbundle
+
+            # THIS IS THE BLOCK THAT FIXES YOUR ERROR
+            form_login:
+                # The route name of your login page.
+                login_path: fos_user_security_login
+                # The route name the form submits to. The firewall will intercept this.
+                check_path: fos_user_security_check
+                # Links the form login to our user provider.
+                provider: fos_userbundle
+                # Where to go after a successful login.
+                default_target_path: / # Change this to your desired homepage route name if needed
+
+            logout:
+                # The route name for logging out.
+                path: fos_user_security_logout
+                # Where to redirect after logging out.
+                target: /
+
+    # 4. Access Control
+    # Defines which pages require which roles.
+    access_control:
+        - { path: ^/login$, role: PUBLIC_ACCESS }
+        - { path: ^/register, role: PUBLIC_ACCESS }
+        - { path: ^/resetting, role: PUBLIC_ACCESS }
+        # Allow public access to translations endpoint (prevents redirect loops)
+        - { path: ^/translations/, role: PUBLIC_ACCESS }
+        # Home page is public
+        - { path: ^/$, role: PUBLIC_ACCESS }
+        # Static pages (FAQ, Help, etc.) are public
+        - { path: ^/page/[^/]+\.html$, role: PUBLIC_ACCESS }
+        # Profile requires login (any logged-in user, even non-confirmed)
+        - { path: ^/profile, role: ROLE_USER }
+        # Admin-only areas
+        - { path: ^/users, role: ROLE_ADMIN }
+        - { path: ^/cron, role: ROLE_ADMIN }
+        - { path: ^/pages, role: ROLE_ADMIN }
+        # Protected areas - require ROLE_CONFIRMED
+        - { path: ^/experiment, role: ROLE_CONFIRMED }
+        - { path: ^/datasets, role: ROLE_CONFIRMED }
+        - { path: ^/algorithm, role: ROLE_CONFIRMED }

@@ -1,0 +1,67 @@
+# config/packages/doctrine.yaml
+doctrine:
+    dbal:
+        driver: 'pdo_mysql'
+        host: '%database_host%'
+        port: '%database_port%'
+        dbname: '%database_name%'
+        user: '%database_user%'
+        password: '%database_password%'
+        charset: UTF8
+        types:
+            array: Doctrine\DBAL\Types\JsonType
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: false
+        resolve_target_entities:
+            FOS\UserBundle\Model\UserInterface: Base\UserBundle\Entity\User
+
+        mappings:
+            # This mapping is for your modern, attribute-based entities
+            App:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+
+            # This mapping is for your UserBundle entities
+            BaseUserBundle:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Base/UserBundle/Entity'
+                prefix: 'Base\UserBundle\Entity'
+                alias: BaseUserBundle
+            
+            # This mapping is for your Damis entities
+            Damis:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Damis'
+                prefix: 'Damis'
+                alias: Damis
+                
+            # CORRECTED MAPPING for your LogBundle
+            BaseLogBundle:
+                is_bundle: false
+                type: attribute # Assumes attributes. Change to 'annotation' if needed.
+                dir: '%kernel.project_dir%/src/Base/LogBundle/Entity'
+                prefix: 'Base\LogBundle\Entity'
+                alias: BaseLogBundle
+
+            # CORRECTED MAPPING for your StaticBundle (containing Page)
+            BaseStaticBundle:
+                is_bundle: false
+                type: attribute # Assumes attributes. Change to 'annotation' if needed.
+                dir: '%kernel.project_dir%/src/Base/StaticBundle/Entity'
+                prefix: 'Base\StaticBundle\Entity'
+                alias: BaseStaticBundle
+            
+            BaseMainBundle:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Base/MainBundle/Entity'
+                prefix: 'Base\MainBundle\Entity'
+                alias: BaseMainBundle

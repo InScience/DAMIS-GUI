@@ -1,0 +1,16 @@
+# This file fixes autowiring issues for services excluded by default
+# or provides services that are no longer available directly (like SessionInterface).
+services:
+    # This tells Symfony: "When any service asks for SessionInterface,
+    # get the 'request_stack' service and call its 'getSession()' method."
+    # This fixes the error in MidasController's constructor by providing
+    # the session object correctly in Symfony 6+.
+    Symfony\Component\HttpFoundation\Session\SessionInterface:
+        factory: ['@request_stack', 'getSession']
+
+    # This tells Symfony: "When any service asks for ContainerInterface,
+    # give it the actual service container."
+    # This fixes the error in MidasController's constructor.
+    Symfony\Component\DependencyInjection\ContainerInterface:
+        alias: 'service_container'
+

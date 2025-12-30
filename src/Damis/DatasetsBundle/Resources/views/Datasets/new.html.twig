@@ -1,14 +1,14 @@
-{% extends "::base.html.twig" %}
+{% extends "base.html.twig" %}
 {% block body %}
     <ul class="nav nav-tabs">
         <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }}</a></li>
         <li class="active"><a href="{{ path('datasets_new') }}">{{ 'Upload file from computer' | trans({}, 'DatasetsBundle') }}</a></li>
         <li><a href="{{ path('datasets_midas_new') }}">{{ 'Upload file from MIDAS' | trans({}, 'DatasetsBundle') }}</a></li>
     </ul>
-    {% include "DamisDatasetsBundle::messages.html.twig" %}
+    {% include "@DamisDatasets/messages.html.twig" %}
     <div class="row">
         <div class="col-lg-4" style="margin-top: 35px;">
-            <form role="form" id="createDataset" action="{{ path('datasets_create') }}" method="post" {{ form_enctype(form) }}>
+            {{ form_start(form, {'action': path('datasets_create'), 'attr': {'role': 'form', 'id': 'createDataset'}}) }}
                 <div class="form-group">
                     {{ form_label(form.datasetTitle) }}
                     {{ form_widget(form.datasetTitle) }}
@@ -39,7 +39,8 @@
                     {{ form_errors(form.datasetDescription) }}
                 </div>
                 <button type="submit" class="btn btn-primary">{{ 'Upload dataset' | trans({}, 'DatasetsBundle') }}</button>
-            </form>
+            
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}

@@ -6,26 +6,24 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ParameterConnectionType
- *
- * @ORM\Table(name="parameterconnectiontype", uniqueConstraints={@ORM\UniqueConstraint(name="PARAMETERCONNECTIONTYPE_PK", columns={"ParameterConnectionTypeID"})})
- * @ORM\Entity
  */
+#[ORM\Table(name: 'parameterconnectiontype')]
+#[ORM\UniqueConstraint(name: 'PARAMETERCONNECTIONTYPE_PK', columns: ['ParameterConnectionTypeID'])]
+#[ORM\Entity]
 class ParameterConnectionType
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterConnectionType", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ParameterConnectionType', type: 'string', length: 80, nullable: false)]
     private $type;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ParameterConnectionTypeID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ParameterConnectionTypeID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
 

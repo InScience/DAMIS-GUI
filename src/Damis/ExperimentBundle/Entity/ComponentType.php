@@ -6,26 +6,24 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ComponentType
- *
- * @ORM\Table(name="componenttype", uniqueConstraints={@ORM\UniqueConstraint(name="COMPONENTTYPE_PK", columns={"ComponentTypeID"})})
- * @ORM\Entity
  */
+#[ORM\Table(name: 'componenttype')]
+#[ORM\UniqueConstraint(name: 'COMPONENTTYPE_PK', columns: ['ComponentTypeID'])]
+#[ORM\Entity]
 class ComponentType
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ComponentType", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ComponentType', type: 'string', length: 80, nullable: false)]
     private $type;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ComponentTypeID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ComponentTypeID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
 

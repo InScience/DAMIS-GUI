@@ -82,7 +82,6 @@ Triangle: Trikampis
 Cross: Kryžiukas
 This component should be connected to a selected file or an executed task in order to view results : Komponentė turi būti sujungta su failo komponente arba eksperimentas turi būti įvykdytas
 This component should be connected to a selected file : Komponentė turi būti sujungta su failo komponente
-Cross: Kryžiukas
 Choose object sort type : Pasirinkite objektų rikiavimo būdą
 Order left intact : Tvarka nekeičiama
 Set splitting to files parameter values : Nurodykite skaidymo į failus parametrų reikšmes
@@ -105,8 +104,6 @@ Number of columns : Stulpelių skaičius
 Number of rows : Eilučių skaičius
 Confidence level : Pasikliovimo lygmuo
 Resistance to noise : Atsparumas triukšmui
-Size of training data : Mokymo objektų kiekis
-Size of test data : Testavimo objektų kiekis
 This component should be connected to a selected file or an executed task in order to view results. : Norėdami peržiūrėti rezultatus, turite sujungti komponentę su pasirinktu failu arba įvykdyta komponente.
 Object No. : Objekto nr.
 Matrix view : Matricinis vaizdavimas

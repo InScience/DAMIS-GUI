@@ -1,0 +1,65 @@
+{% extends "@BaseMain/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+<div class="container">
+
+    {{ form_start(form, {
+        'action': path('fos_user_profile_edit'),
+        'attr': {
+            'class': 'form-signin fos_user_profile_edit',
+            'role': 'form'
+        }
+    }) }}
+
+        <h2 class="form-signin-heading">{{ 'profile.title'|trans }}</h2>
+
+        {% include "@BaseUser/messages.html.twig" ignore missing %}
+
+        {{ form_errors(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.username) }}
+            {{ form_widget(form.username, {'attr': {'class': 'form-control', 'readonly': true}}) }}
+            {{ form_errors(form.username) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.surname) }}
+            {{ form_widget(form.surname, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.surname) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.organisation) }}
+            {{ form_widget(form.organisation, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.organisation) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.current_password) }}
+            {{ form_widget(form.current_password, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.current_password) }}
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">
+            {{ 'profile.edit.submit'|trans }}
+        </button>
+
+    {{ form_end(form) }}
+
+</div>
+{% endblock %}

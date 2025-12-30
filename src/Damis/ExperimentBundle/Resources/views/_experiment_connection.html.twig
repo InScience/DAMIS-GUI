@@ -1,7 +1,7 @@
 <div style="display:none;">
-    <span title="">{{parameter.name | trans({}, 'ExperimentBundle') }}
+    <span title="">{{parameter.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }}
 
-        <span class="helptext">( {{ parameter.name }})<br></span>
+        <span class="helptext">( {{ parameter.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }})<br></span>
 
 
         <input id="value" name="value" type="text">

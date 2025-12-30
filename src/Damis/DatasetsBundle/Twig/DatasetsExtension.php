@@ -4,22 +4,26 @@
  * User: Deividas
  * Date: 14.3.13
  * Time: 16.09
+ * Updated for Twig 2.x
  */
 
 namespace Damis\DatasetsBundle\Twig;
 
-use Twig_Extension;
+// These are the new classes for Twig 2.x
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class DatasetsExtension extends Twig_Extension
+// We now extend AbstractExtension instead of Twig_Extension
+class DatasetsExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
-        return array(
-            'convert_bytes' => new \Twig_Filter_Method($this, 'convertBytes'),
-        );
+        return [
+            new TwigFilter('convert_bytes', $this->convertBytes(...)),
+        ];
     }
 
-    public function convertBytes($value)
+    public function convertBytes($value): string
     {
         $value = intval($value);
         if ($value < 512000) {
@@ -33,10 +37,5 @@ class DatasetsExtension extends Twig_Extension
             $ext = 'GB';
         }
         return sprintf('%s %s', round($value, 2), $ext);
-    }
-
-    public function getName()
-    {
-        return 'datasets_extension';
     }
 }

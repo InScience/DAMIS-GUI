@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
 umask(0000);
 
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+// $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+$loader = require __DIR__.'/../vendor/autoload.php';
 
 // Use APC for autoloading to improve performance.
 // Change 'sf2' to a unique prefix in order to prevent cache key conflicts

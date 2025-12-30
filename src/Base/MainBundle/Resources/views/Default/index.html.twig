@@ -1,5 +1,14 @@
-{% extends 'BaseMainBundle::layout.html.twig' %}
+{% extends "@BaseMain/layout.html.twig" %}
 
 {% block body %}
-    {{ render(controller('BaseStaticBundle:Page:staticInfo', {groupName : 'front_page'})) }}
+    {{ render(controller('Base\\StaticBundle\\Controller\\PageController::staticInfo', {groupName : 'front_page'})) }}
+    
+    <h5>{{ 'info_video_label'|trans({}, 'general') }} – <a href="{{ asset('docs/Damis.mp4') }}">https://damis.midas.lt/docs/Damis.mp4</a></h5>
+    
+    <div style="margin-top: 10px;">
+        <video width="50%" height="50%" controls>
+            <source src="{{ asset('docs/Damis.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 {% endblock %}

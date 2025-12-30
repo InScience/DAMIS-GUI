@@ -2,108 +2,94 @@
 
 namespace Damis\ExperimentBundle\Entity;
 
+use Base\UserBundle\Entity\User;
+use Damis\EntitiesBundle\Entity\Workflowtask;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use APY\DataGridBundle\Grid\Mapping as GRID;
 
 /**
  * Experiment
- *
- * @ORM\Table(name="experiment", uniqueConstraints={@ORM\UniqueConstraint(name="EXPERIMENT_PK", columns={"ExperimentID"})}, indexes={@ORM\Index(name="FK_EXPERIMET_EXPERIMENTSTATUS", columns={"ExperimentStatusID"}), @ORM\Index(name="FK_EXPERIMET_DAMISUSER", columns={"UserID"})})
- * @ORM\Entity(repositoryClass="Damis\ExperimentBundle\Entity\ExperimentRepository")
- * @GRID\Source(columns="id, name, status.experimentstatus")
  */
+#[ORM\Table(name: 'experiment')]
+#[ORM\Index(name: 'FK_EXPERIMET_EXPERIMENTSTATUS', columns: ['ExperimentStatusID'])]
+#[ORM\Index(name: 'FK_EXPERIMET_DAMISUSER', columns: ['UserID'])]
+#[ORM\UniqueConstraint(name: 'EXPERIMENT_PK', columns: ['ExperimentID'])]
+#[ORM\Entity(repositoryClass: ExperimentRepository::class)]
 class Experiment
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ExperimentName", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ExperimentName', type: 'string', length: 80, nullable: false)]
     private $name;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="ExperimentMaxDuration", type="time", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentMaxDuration', type: 'time', nullable: true)]
     private $maxDuration;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExpermentStart", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ExpermentStart', type: 'integer', nullable: true)]
     private $start;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExperimentFinish", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentFinish', type: 'integer', nullable: true)]
     private $finish;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExperimentUseCPU", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentUseCPU', type: 'integer', nullable: true)]
     private $useCpu;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExperimentUsePrimaryMemory", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentUsePrimaryMemory', type: 'integer', nullable: true)]
     private $usePrimaryMemory;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExperimentUseSecMemory", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentUseSecMemory', type: 'integer', nullable: true)]
     private $useSecMemory;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ExperimentGUIData", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'ExperimentGUIData', type: 'text', nullable: true)]
     private $guiData;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ExperimentID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ExperimentID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\Experimentstatus
+     * @var Experimentstatus
      *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experimentstatus")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ExperimentStatusID", referencedColumnName="ExperimentStatusID")
-     * })
      *
-     * @GRID\Column(field="status.experimentstatus", type="status")
      */
+    #[ORM\JoinColumn(name: 'ExperimentStatusID', referencedColumnName: 'ExperimentStatusID')]
+    #[ORM\ManyToOne(targetEntity: Experimentstatus::class)]
     private $status;
 
     /**
-     * @var \Base\UserBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="Base\UserBundle\Entity\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="UserID", referencedColumnName="id")
-     * })
+     * @var User
      */
+    #[ORM\JoinColumn(name: 'UserID', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $user;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask", mappedBy="experiment")
-     */
+    #[ORM\OneToMany(targetEntity: Workflowtask::class, mappedBy: 'experiment')]
     private $workflowtasks;
 
     /**
@@ -303,10 +289,10 @@ class Experiment
     /**
      * Set status
      *
-     * @param \Damis\ExperimentBundle\Entity\Experimentstatus $status
+     * @param Experimentstatus $status
      * @return Experiment
      */
-    public function setStatus(\Damis\ExperimentBundle\Entity\Experimentstatus $status = null)
+    public function setStatus(Experimentstatus $status = null)
     {
         $this->status = $status;
 
@@ -316,7 +302,7 @@ class Experiment
     /**
      * Get status
      *
-     * @return \Damis\ExperimentBundle\Entity\Experimentstatus
+     * @return Experimentstatus
      */
     public function getStatus()
     {
@@ -326,10 +312,10 @@ class Experiment
     /**
      * Set user
      *
-     * @param \Base\UserBundle\Entity\User $user
+     * @param User $user
      * @return Experiment
      */
-    public function setUser(\Base\UserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -339,7 +325,7 @@ class Experiment
     /**
      * Get user
      *
-     * @return \Base\UserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -351,7 +337,7 @@ class Experiment
      */
     public function __construct()
     {
-        $this->workflowtasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->workflowtasks = new ArrayCollection();
     }
 
     /**
