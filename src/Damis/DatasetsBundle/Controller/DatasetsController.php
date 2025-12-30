@@ -2,99 +2,108 @@
 
 namespace Damis\DatasetsBundle\Controller;
 
-use Base\ConvertBundle\Helpers\ReadFile;
-use Damis\DatasetsBundle\Form\Type\DatasetType;
-use Damis\DatasetsBundle\Entity\Dataset;
-use Guzzle\Http\Client;
-use PHPExcel_IOFactory;
-use ReflectionClass;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Damis\EntitiesBundle\Entity\Parametervalue;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Guzzle\Http\Exception\BadResponseException;
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use ZipArchive;
+use Symfony\Component\Routing\Annotation\Route;
+use Damis\DatasetsBundle\Entity\Dataset;
+use Damis\DatasetsBundle\Form\Type\DatasetType;
+use Base\ConvertBundle\Helpers\ReadFile;
+use Symfony\Component\Form\FormError;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\File\File;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Iphp\FileStoreBundle\Mapping\Factory;
+use Iphp\FileStoreBundle\FileStorage\FileStorageInterface;
+use Psr\Log\LoggerInterface;
 
-/**
- * Datasets controller.
- *
- * @Route("/datasets")
- */
-class DatasetsController extends Controller
+
+class DatasetsController extends AbstractController
 {
+    public function __construct(
+        private readonly ManagerRegistry $doctrine,
+        private readonly PaginatorInterface $paginator,
+        private readonly ParameterBagInterface $params,
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
+        private readonly ?Factory $mappingFactory = null,
+        private readonly ?FileStorageInterface $fileStorage = null
+    )
+    {
+    }
+
     /**
      * User datasets list window
      *
      * @param Request $request
      *
-     * @return array
-     *
-     * @Route("/list.html", name="datasets_list")
-     * @Method({"GET","POST"})
-     * @Template()
+     * @return Response
      */
-    public function listAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/list.html', name: 'datasets_list', methods: ['GET', 'POST'])]
+    public function list(Request $request): Response
     {
         $sort = $request->get('order_by');
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+
         if ($sort == 'titleASC') {
-            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
-                ->getUserDatasets($user, array('title' => 'ASC'));
-        } elseif ($sort == 'titleDESC')
-            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
-                ->getUserDatasets($user, array('title' => 'DESC'));
-        elseif ($sort == 'createdASC')
-            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
-                ->getUserDatasets($user, array('created' => 'ASC'));
-        elseif ($sort == 'createdDESC')
-            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')
-                ->getUserDatasets($user, array('created' => 'DESC'));
-        else {
-            $entities = $em->getRepository('DamisDatasetsBundle:Dataset')->getUserDatasets($user);
+            $entities = $em->getRepository(Dataset::class)
+                ->getUserDatasets($user, ['title' => 'ASC']);
+        } elseif ($sort == 'titleDESC') {
+            $entities = $em->getRepository(Dataset::class)
+                ->getUserDatasets($user, ['title' => 'DESC']);
+        } elseif ($sort == 'createdASC') {
+            $entities = $em->getRepository(Dataset::class)
+                ->getUserDatasets($user, ['created' => 'ASC']);
+        } elseif ($sort == 'createdDESC') {
+            $entities = $em->getRepository(Dataset::class)
+                ->getUserDatasets($user, ['created' => 'DESC']);
+        } else {
+            $entities = $em->getRepository(Dataset::class)->getUserDatasets($user);
         }
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
+
+        $pagination = $this->paginator->paginate(
             $entities,
-            $this->get('request')->query->get('page', 1),
+            $request->query->getInt('page', 1),
             15
         );
 
-        return array(
+        return $this->render('@DamisDatasets/Datasets/list.html.twig', [
             'entities' => $pagination,
-        );
+        ]);
     }
+
 
     /**
      * Delete datasets
      *
      * @param Request $request
      *
-     * @return void Redirect to list.html
-     *
-     * @Route("/delete.html", name="datasets_delete")
-     * @Method("POST")
-     * @Template()
+     * @return RedirectResponse
      */
-    public function deleteAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/delete.html', name: 'datasets_delete', methods: ['POST'])]
+    public function delete(Request $request): RedirectResponse
     {
-        /* @var $user \Base\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
-
+        $user = $this->getUser();
         $files = json_decode($request->request->get('file-delete-list'));
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         foreach ($files as $id) {
-            /* @var $file \Damis\DatasetsBundle\Entity\Dataset */
-            $file = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
+            $file = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
             if ($file && ($file->getUser() == $user)) {
-                $inUse = $em->getRepository('DamisEntitiesBundle:Parametervalue')->checkDatasets($id);
+                $inUse = $em->getRepository(Parametervalue::class)->checkDatasets($id);
                 if (!$inUse) {
-                    if (file_exists('.'.$file->getFilePath())) {
-                        if ($file->getFilePath()) {
-                            unlink('.'.$file->getFilePath());
-                        }
+                    $filePath = $this->getParameter('kernel.project_dir') . '/public' . $file->getFilePath();
+                    if ($file->getFilePath() && file_exists($filePath)) {
+                        unlink($filePath);
                     }
                     $em->remove($file);
                 } else {
@@ -105,26 +114,262 @@ class DatasetsController extends Controller
             }
         }
 
-        return $this->redirect($this->generateUrl('datasets_list'));
+        return $this->redirectToRoute('datasets_list');
     }
 
     /**
      * Upload new dataset
      *
-     * @return array
-     *
-     * @Route("/new.html", name="datasets_new")
-     * @Method("GET")
-     * @Template()
+     * @return Response
      */
-    public function newAction()
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/new.html', name: 'datasets_new', methods: ['GET'])]
+    public function new(): Response
     {
         $entity = new Dataset();
-        $form = $this->createForm(new DatasetType(), $entity);
+        $form = $this->createForm(DatasetType::class, $entity);
 
-        return array(
+        return $this->render('@DamisDatasets/Datasets/new.html.twig', [
             'form' => $form->createView(),
-        );
+        ]);
+    }
+
+    /**
+     * Create new dataset
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    #[Route('/create.html', name: 'datasets_create', methods: ['POST'])]
+    public function create(Request $request)
+    {
+        $entity = new Dataset();
+        $form = $this->createForm(DatasetType::class, $entity);
+        $form->handleRequest($request);
+
+        $user = $this->getUser();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->doctrine->getManager();
+
+            /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('file')->getData();
+
+            if ($file) {
+                $entity->setFile($file);
+            }
+
+            $entity->setDatasetCreated(time());
+            $entity->setUser($user);
+            $entity->setDatasetIsMidas(false);
+
+            $em->persist($entity);
+            $em->flush();
+
+            return $this->uploadArff($request, $entity->getDatasetId());
+        }
+
+        return $this->render('@DamisDatasets/Datasets/new.html.twig', ['entity' => $entity, 'form'   => $form->createView()]);
+    }
+
+    /**
+     * When uploading csv/txt/tab/xls/xlsx types to arff
+     * convert it and save
+     *
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function uploadArff(Request $request, $id)
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+
+        if (!$entity) {
+            $request->getSession()->getFlashBag()->add('error', 'Error! Could not find dataset entity.');
+            return $this->redirectToRoute('datasets_new');
+        }
+
+        $fileData = $entity->getFile();
+        if (!$fileData) {
+            $request->getSession()->getFlashBag()->add('error', 'File data not found for dataset.');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        // Handle different file data types
+        if ($fileData instanceof UploadedFile) {
+            // Handle UploadedFile object
+            $fileName = $fileData->getClientOriginalName();
+            $fullFilePath = $fileData->getRealPath();
+            $format = strtolower($fileData->getClientOriginalExtension());
+
+            // Move uploaded file to a permanent location
+            $projectRoot = $this->getParameter('kernel.project_dir');
+            $uploadDir = $projectRoot . '/public/uploads/datasets/';
+
+            // Create directory if it doesn't exist
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $newFileName = uniqid() . '_' . $fileName;
+            $fileData->move($uploadDir, $newFileName);
+            $fullFilePath = $uploadDir . $newFileName;
+            $relativePath = '/uploads/datasets/' . $newFileName;
+
+        } elseif (is_array($fileData)) {
+            // Handle array format (from iphp/filestore-bundle)
+            $fileName = $fileData['fileName'] ?? $fileData['originalName'] ?? 'unknown';
+            $format = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+            $projectRoot = $this->getParameter('kernel.project_dir');
+            $relativePath = $fileData['path'];
+            $fullFilePath = $projectRoot . '/public' . $relativePath;
+
+            if (!file_exists($fullFilePath)) {
+                // Try /web directory for backward compatibility
+                $fullFilePath = $projectRoot . '/web' . $relativePath;
+                if (!file_exists($fullFilePath)) {
+                    $request->getSession()->getFlashBag()->add('error', 'Uploaded file could not be found at path: ' . $fullFilePath);
+                    return $this->redirectToRoute('datasets_list');
+                }
+            }
+        } else {
+            // Unknown file data format
+            $request->getSession()->getFlashBag()->add('error', 'Invalid file data format.');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $rows = [];
+
+        try {
+            if ($format == 'zip') {
+                $request->getSession()->getFlashBag()->add('error', 'ZIP file processing is not fully implemented.');
+                return $this->redirectToRoute('datasets_list');
+
+            } elseif ($format == 'arff') {
+                $entity->setFilePath($relativePath);
+                $em->persist($entity);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('success', 'ARFF dataset successfully uploaded!');
+                return $this->redirectToRoute('datasets_list');
+
+            } elseif (in_array($format, ['txt', 'tab', 'csv'])) {
+                $fileReader = new ReadFile();
+                $rows = $fileReader->getRows($fullFilePath, $format);
+
+            } elseif (in_array($format, ['xls', 'xlsx'])) {
+                $spreadsheet = IOFactory::load($fullFilePath);
+                $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                $rows = array_filter($rows, fn($row) => !empty(array_filter($row)));
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'Dataset has wrong format!');
+                return $this->redirectToRoute('datasets_list');
+            }
+        } catch (\Exception $e) {
+            $request->getSession()->getFlashBag()->add('error', 'Error processing file: ' . $e->getMessage());
+            $em->remove($entity);
+            $em->flush();
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        if (empty($rows)) {
+            $request->getSession()->getFlashBag()->add('error', 'Could not read any data from the uploaded file.');
+            $em->remove($entity);
+            $em->flush();
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        // ARFF Conversion Logic
+        $hasHeaders = false;
+        $firstRow = reset($rows);
+        foreach ($firstRow as $cell) {
+            if (!is_numeric($cell)) {
+                $hasHeaders = true;
+                break;
+            }
+        }
+
+        $arff = '@RELATION ' . preg_replace('/\s+/', '_', (string) $entity->getDatasetTitle()) . PHP_EOL;
+        $headerRow = $hasHeaders ? array_values(array_shift($rows)) : array_keys($firstRow);
+        $firstDataRow = reset($rows);
+
+        foreach ($headerRow as $key => $header) {
+            $attributeName = $hasHeaders ? preg_replace('/[^\w\d_]/', '_', (string) $header) : 'attribute_' . $key;
+            $sampleValue = $firstDataRow[$key] ?? null;
+            $type = 'STRING';
+            if (is_numeric($sampleValue)) {
+                $type = (!str_contains($sampleValue, '.')) ? 'INTEGER' : 'REAL';
+            }
+            $arff .= '@ATTRIBUTE ' . $attributeName . ' ' . $type . PHP_EOL;
+        }
+
+        $arff .= '@DATA' . PHP_EOL;
+        foreach ($rows as $row) {
+            $arff .= implode(',', array_values($row)) . PHP_EOL;
+        }
+
+        // Save ARFF file
+        $arffFileName = uniqid() . '_' . pathinfo((string) $fileName, PATHINFO_FILENAME) . ".arff";
+        $uploadDir = $projectRoot . '/public/uploads/datasets/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $arffPath = $uploadDir . $arffFileName;
+        file_put_contents($arffPath, $arff);
+
+        $entity->setFilePath('/uploads/datasets/' . $arffFileName);
+        $em->persist($entity);
+        $em->flush();
+
+        $request->getSession()->getFlashBag()->add('success', 'Dataset successfully uploaded and converted to ARFF!');
+        return $this->redirectToRoute('datasets_list');
+    }
+
+    /**
+     * Dataset upload handler for component form
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    #[Route('/upload_handler.html', name: 'dataset_upload_handler', methods: ['POST'])]
+    public function uploadHandler(Request $request): Response
+    {
+        $entity = new Dataset();
+        $form = $this->createForm(DatasetType::class, $entity);
+        $form->handleRequest($request);
+        $user = $this->getUser();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+
+            if ($file === null) {
+                $form->get('file')->addError(new FormError($this->translator->trans('This value should not be blank.', [], 'validators')));
+            } else {
+                $entity->setFile($file);
+
+                $em = $this->doctrine->getManager();
+                $entity->setDatasetCreated(time());
+                $entity->setUser($user);
+                $entity->setDatasetIsMidas(false);
+                $em->persist($entity);
+                $em->flush();
+
+                $this->uploadArff($request, $entity->getDatasetId());
+
+                return $this->render('@DamisDatasets/Datasets/upload.html.twig', [
+                    'form' => $form->createView(),
+                    'file' => $entity,
+                ]);
+            }
+        }
+
+        return $this->render('@DamisDatasets/Datasets/upload.html.twig', [
+            'form' => $form->createView(),
+            'file' => null,
+        ]);
     }
 
     /**
@@ -132,71 +377,67 @@ class DatasetsController extends Controller
      *
      * @param Request $request
      *
-     * @return array
-     *
-     * @Route("/midasnew.html", name="datasets_midas_new")
-     * @Method("GET")
-     * @Template()
+     * @return Response
      */
-    public function newMidasAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/midasnew.html', name: 'datasets_midas_new', methods: ['GET'])]
+    public function newMidas(Request $request): Response
     {
-        $client = new Client($this->container->getParameter('midas_url'));
+        $client = new Client();
+        $midasBaseUrl = $this->params->get('midas_url');
+
         $notLogged = false;
         $session = $request->getSession();
-        $sessionToken = '';
-        if ($session->has('sessionToken')) {
-            $sessionToken = $session->get('sessionToken');
-        } else {
+        $sessionToken = $session->get('sessionToken', '');
+
+        if (empty($sessionToken)) {
             $notLogged = true;
         }
-        $page = ($request->get('page')) ? $request->get('page') : 1;
-        $path = ($request->get('path')) ? $request->get('path') : '';
-        $uuid = ($request->get('uuid')) ? $request->get('uuid') : 'research'; // publishedResearch,research a067ccd3-5fbc-4000-8e76-8570b7a5c632 (temp)
-        $id = $request->get('id');
 
-        $data = json_decode($request->get('data'));
-        if ($request->get('data') && !empty($data) && $request->get('edit') != 1) {
-            $id = json_decode($request->get('data'))[0]->value;
-            $path = json_decode($id, true)['path'];
-            $page = json_decode($id, true)['page'];
+        $page = $request->query->getInt('page', 1);
+        $path = $request->query->get('path', '');
+        $uuid = $request->query->get('uuid', 'research');
+        $id = $request->query->get('id');
 
-            $folders = explode('/', $path);
-            $count = count($folders);
-            $path = '';
-            foreach ($folders as $key => $p) {
-                if ($key < $count - 1) {
-                    $path .= $p.'/';
-                }
-            }
+        $data = json_decode($request->query->get('data'));
+        if ($data && !empty($data) && $request->query->get('edit') != 1) {
+            $id = $data[0]->value;
+            $decodedId = json_decode($id, true);
+            $path = $decodedId['path'];
+            $page = $decodedId['page'];
+
+            $folders = explode('/', (string) $path);
+            array_pop($folders); // Remove the last element
+            $path = implode('/', $folders) . '/';
         }
+
         // Default path
         if (!$path) {
-            $files = array('details' =>
-                array('folderDetailsList' =>
-                    array(
-                        0 => array (
-                            'name' =>  $this->get('translator')->trans('Published research', array(), 'DatasetsBundle'),
+            $files = [
+                'details' => [
+                    'folderDetailsList' => [
+                        [
+                            'name' => $this->translator->trans('Published research', [], 'DatasetsBundle'),
                             'path' => 'publishedResearch',
                             'type' => 'RESEARCH',
                             'modifyDate' => time() * 1000,
                             'page' => 0,
                             'uuid' => 'publishedResearch',
                             'resourceId'   => '',
-                        ),
-                        1 => array (
-                            'name' => $this->get('translator')->trans('Not published research', array(), 'DatasetsBundle'),
+                        ],
+                        [
+                            'name' => $this->translator->trans('Not published research', [], 'DatasetsBundle'),
                             'path' => 'research',
                             'type' => 'RESEARCH',
                             'modifyDate' => time() * 1000,
                             'page' => 0,
                             'uuid' => 'research',
                             'resourceId'   => '',
-                        ),
-                    ),
-                ),
-            );
+                        ],
+                    ],
+                ],
+            ];
 
-            return array(
+            return $this->render('@DamisDatasets/Datasets/newMidas.html.twig', [
                 'notLogged' => $notLogged,
                 'files' => $files,
                 'page' => 0,
@@ -207,59 +448,50 @@ class DatasetsController extends Controller
                 'path' => $path,
                 'uuid' => '',
                 'selected' => 0,
-            );
-        } else {
-            // Else if $path is selected
-            $post = array(
-                //'path' => $path,
-                'page' => $page,
-                'pageSize' => 10,
-                //'extensions' => array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'), // Folders are excluded if we use this parameter
-                //'repositoryType' => 'research'
-                'uuid' => $uuid,
-            );
+            ]);
         }
+
+        $post = [
+            'page' => $page,
+            'pageSize' => 10,
+            'uuid' => $uuid,
+        ];
         $files = [];
 
-        $req = $client->post(
-            '/action/research/folders',
-            array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken),
-            json_encode($post)
-        );
         try {
-            $response = $req->send();
-            if ($response->getStatusCode() == 200) {
-                $files = json_decode($response->getBody(true), true);
-            }
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $req = $client->post('/action/authentication/session/'.$sessionToken.'/check', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array($post));
-            try {
-                $req->send()->getBody(true);
-            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                $notLogged = true;
-            }
+            $response = $client->request('POST', $midasBaseUrl . '/action/research/folders', [
+                'headers' => [
+                    'Content-Type' => 'application/json;charset=utf-8',
+                    'authorization' => $sessionToken
+                ],
+                'json' => $post, // 'json' option automatically encodes the body and sets the correct header
+                'http_errors' => true // This will cause an exception for 4xx/5xx responses
+            ]);
+
+            $files = json_decode($response->getBody()->getContents(), true);
+
+        } catch (RequestException) {
+            $notLogged = true; // Assume any failure is a login issue for simplicity
         }
+
+        $pageCount = 0;
+        $totalFiles = 0;
         if (isset($files['details'])) {
             $pageCount = $files['details']['pageCount'];
             $totalFiles= $files['details']['totalElements'];
             // Remove bad files
-            $extensions = array('txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip');
-            $tmpItems = $files['details']['folderDetailsList'];
-            foreach ($tmpItems as $nr => $item) {
-                if ($item['type'] == 'FILE' && !in_array(pathinfo($item['name'], PATHINFO_EXTENSION), $extensions)) {
-                    unset($files['details']['folderDetailsList'][$nr]);
-                    $totalFiles--;
-                }
-                if ($item['type'] != 'FILE') {
-                    $totalFiles--;
-                }
+            $extensions = ['txt', 'tab', 'csv', 'xls', 'xlsx', 'arff', 'zip'];
+            if (!empty($files['details']['folderDetailsList'])) {
+                $files['details']['folderDetailsList'] = array_filter($files['details']['folderDetailsList'], function($item) use ($extensions) {
+                    if ($item['type'] === 'FILE') {
+                        return in_array(strtolower(pathinfo((string) $item['name'], PATHINFO_EXTENSION)), $extensions);
+                    }
+                    return true; // Keep folders
+                });
             }
-        } else {
-            $pageCount = 0;
-            $totalFiles = 0;
         }
 
-        return array(
+        return $this->render('@DamisDatasets/Datasets/newMidas.html.twig', [
             'notLogged' => $notLogged,
             'files' => $files,
             'page' => $page,
@@ -270,39 +502,7 @@ class DatasetsController extends Controller
             'path' => $path,
             'uuid' => $uuid,
             'selected' => $id,
-        );
-    }
-    /**
-     * Create new dataset
-     *
-     * @param Request $request
-     *
-     * @return array
-     *
-     * @Route("/create.html", name="datasets_create")
-     * @Method("POST")
-     * @Template("DamisDatasetsBundle:Datasets:new.html.twig")
-     */
-    public function createAction(Request $request)
-    {
-        $entity = new Dataset();
-        $form = $this->createForm(new DatasetType(), $entity);
-        $form->submit($request);
-        $user = $this->get('security.context')->getToken()->getUser();
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity->setDatasetCreated(time());
-            $entity->setUser($user);
-            $entity->setDatasetIsMidas(false);
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->uploadArff($entity->getDatasetId());
-        }
-
-        return array(
-            'form' => $form->createView(),
-        );
+        ]);
     }
 
     /**
@@ -311,54 +511,56 @@ class DatasetsController extends Controller
      * @param Request $request
      *
      * @return mixed
-     *
-     * @Route("/createmidas.html", name="datasets_create_midas")
-     * @Method("POST")
-     * @Template("DamisDatasetsBundle:Datasets:newMidas.html.twig")
      */
-    public function createMidasAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/createmidas.html', name: 'datasets_create_midas', methods: ['POST'])]
+    public function createMidas(Request $request): RedirectResponse
     {
-        $em = $this->getDoctrine()->getManager();
-        $client = new Client($this->container->getParameter('midas_url'));
+        $em = $this->doctrine->getManager();
+        // $client = new Client($this->getParameter('midas_url'));
+        $client = new Client($this->params->get('midas_url'));
         $data = json_decode($request->request->get('dataset_pk'), true);
         if (!$data) {
-            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('File is not selected', array(), 'DatasetsBundle'));
-
-            return $this->redirect($this->generateUrl('datasets_midas_new'));
+            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('File is not selected', [], 'DatasetsBundle'));
+            return $this->redirectToRoute('datasets_midas_new');
         }
         $session = $request->getSession();
         if ($session->has('sessionToken')) {
             $sessionToken = $session->get('sessionToken');
         } else {
-            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
-
-            return $this->redirect($this->generateUrl('datasets_midas_new'));
+            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', [], 'DatasetsBundle'));
+            return $this->redirectToRoute('datasets_midas_new');
         }
-        //$req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&repositoryType=research&type=FILE&authorization='.$sessionToken);
-        //http://test.midas.lt/action/file-explorer/file?name=HBK&idCSV=1104&Authorization=3to1oofbek6s9ljo8d038qe96p
+
         $req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
         try {
             $body = $req->send()->getBody(true);
             $file = new Dataset();
-            $file->setDatasetTitle(basename($data['name']));
+            $file->setDatasetTitle(basename((string) $data['name']));
             $file->setDatasetCreated(time());
-            $user = $this->get('security.context')->getToken()->getUser();
+            $user = $this->getUser();
             $file->setUser($user);
             $file->setDatasetIsMidas(true);
-            $tempFile = $this->container->getParameter("kernel.cache_dir").'/../'.time().$data['name'];
+            $tempFile = $this->params->get("kernel.cache_dir").'/../'.time().$data['name'];
             $em->persist($file);
             $em->flush();
             $fp = fopen($tempFile, "w");
-            fwrite($fp, $body);
+            fwrite($fp, (string) $body);
             fclose($fp);
 
             $file2 = new File($tempFile);
 
-            $refClass = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-            $mapping = $this->container->get('iphp.filestore.mapping.factory')->getMappingFromField($file, $refClass, 'file');
-            $fileData = $this->container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file2);
+            $refClass = new ReflectionClass(Dataset::class);
 
-            $orgFilename = basename($data['name']);
+            if ($this->mappingFactory && $this->fileStorage) {
+                $mapping = $this->mappingFactory->getMappingFromField($file, $refClass, 'file');
+                $fileData = $this->fileStorage->upload($mapping, $file2);
+            } else {
+                // Fallback if services aren't available
+                $request->getSession()->getFlashBag()->add('error', 'File storage service not configured');
+                return $this->redirectToRoute('datasets_midas_new');
+            }
+
+            $orgFilename = basename((string) $data['name']);
             $fileData['originalName'] = $orgFilename;
 
             $file->setFile($fileData);
@@ -366,48 +568,36 @@ class DatasetsController extends Controller
             $em->flush();
             unlink($tempFile);
 
-            return $this->uploadArff($file->getDatasetId());
+            return $this->uploadArff($request, $file->getDatasetId());
 
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', array(), 'DatasetsBundle'));
-
-            return $this->redirect($this->generateUrl('datasets_midas_new'));
+        } catch (BadResponseException) {
+            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', [], 'DatasetsBundle'));
+            return $this->redirectToRoute('datasets_midas_new');
         }
     }
 
     /**
      * Edit dataset
-     *
-     * @param int $id Dataset id
-     *
-     * @return array
-     *
-     * @Route("/{id}/edit.html", name="datasets_edit")
-     * @Method("GET")
-     * @Template()
      */
-    public function editAction($id)
+    #[Route('/{id}/edit.html', name: 'datasets_edit', methods: ['GET'])]
+    public function edit($id): Response
     {
-        /* @var $user \Base\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
 
-        $em = $this->getDoctrine()->getManager();
-        /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
-        // Validation of user access to current experiment
         if (!$entity || ($entity->getUser() != $user)) {
-            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
-
+            $this->logger->error('Invalid try to access dataset by user id: '.$user->getId());
             return $this->redirectToRoute('datasets_list');
         }
-        $form = $this->createForm(new DatasetType(), null);
-        $form->get('datasetTitle')->setData($entity->getDatasetTitle());
-        $form->get('datasetDescription')->setData($entity->getDatasetDescription());
 
-        return array(
+        $form = $this->createForm(DatasetType::class, $entity);
+
+        return $this->render('@DamisDatasets/Datasets/edit.html.twig', [
             'form' => $form->createView(),
-            'id' => $entity->getDatasetId(),
-        );
+            'entity' => $entity,
+            'id' => $id,
+        ]);
     }
 
     /**
@@ -416,47 +606,48 @@ class DatasetsController extends Controller
      * @param Request $request
      * @param int     $id      Dataset id
      *
-     * @return array
-     *
-     * @Route("/{id}/update.html", name="datasets_update")
-     * @Method("POST")
-     * @Template("DamisDatasetsBundle:Datasets:edit.html.twig")
+     * @return Response
      */
-    public function updateAction(Request $request, $id)
+    #[Route('/{id}/update.html', name: 'datasets_update', methods: ['POST'])]
+    public function update(Request $request, $id): Response
     {
-        /* @var $user \Base\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
 
-        $em = $this->getDoctrine()->getManager();
-        /* @var $entity \Damis\DatasetsBundle\Entity\Dataset */
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($id);
-        // Validation of user access to current experiment
         if (!$entity || ($entity->getUser() != $user)) {
-            $this->container->get('logger')->addError('Unvalid try to access dataset by user id: '.$user->getId());
-
+            $this->logger->error('Invalid try to access dataset by user id: '.$user->getId());
             return $this->redirectToRoute('datasets_list');
         }
-        $form = $this->createForm(new DatasetType(), null);
-        $form->get('datasetTitle')->setData($entity->getDatasetTitle());
-        $form->get('datasetDescription')->setData($entity->getDatasetDescription());
-        $form->submit($request);
-        if ($form->isValid()) {
-            $data = $request->get('datasets_newtype');
+
+        $form = $this->createForm(DatasetType::class, $entity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $newFile = $form->get('file')->getData();
+
+            if ($newFile) {
+                $entity->setFile($newFile);
+
+                $entity->setDatasetUpdated(time());
+                $em->flush();
+
+                return $this->uploadArff($request, $entity->getDatasetId());
+            }
+
             $entity->setDatasetUpdated(time());
-            $entity->setDatasetTitle($data['datasetTitle']);
-            $entity->setDatasetDescription($data['datasetDescription']);
-            $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('success', 'Dataset successfully updated!');
+            $this->addFlash('success', 'Dataset successfully updated!');
 
             return $this->redirectToRoute('datasets_list');
         }
 
-        return array(
+        return $this->render('@DamisDatasets/Datasets/edit.html.twig', [
             'form' => $form->createView(),
-            'id' => $id,
-        );
+            'entity' => $entity,
+        ]);
     }
 
     /**
@@ -464,331 +655,468 @@ class DatasetsController extends Controller
      *
      * @param Request $request
      *
-     * @return array
-     *
-     * @Route("/upload.html", name="dataset_upload")
-     * @Template()
+     * @return Response
      */
-    public function uploadAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/upload.html', name: 'dataset_upload')]
+    public function upload(Request $request): Response
     {
-        /* @var $user \Base\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->getUser();
 
         $entity = new Dataset();
-        $form = $this->createForm(new DatasetType(), $entity);
-        $data = json_decode($request->query->all()['dataset_url']);
-        if ($request->query->all() && !empty($data)) {
-            $datasetId = $data[0]->value;
-            $em = $this->getDoctrine()->getManager();
-            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')
-                        ->findOneBy(['datasetId' => $datasetId, 'user' => $user]);
+        $form = $this->createForm(DatasetType::class, $entity);
 
-            return [
-                'form' => $form->createView(),
-                'file' => $dataset,
-            ];
+        $dataset = null;
+        $datasetUrlJson = $request->query->get('dataset_url');
+
+        if ($datasetUrlJson) {
+            $data = json_decode($datasetUrlJson);
+            if (!empty($data) && isset($data[0]->value)) {
+                $datasetId = $data[0]->value;
+                $em = $this->doctrine->getManager();
+                $dataset = $em->getRepository(Dataset::class)
+                    ->findOneBy(['datasetId' => $datasetId, 'user' => $user]);
+            }
         }
 
-        return array(
+        return $this->render('@DamisDatasets/Datasets/upload.html.twig', [
             'form' => $form->createView(),
-            'file' => null,
-        );
+            'file' => $dataset,
+        ]);
     }
 
     /**
-     * Dataset upload handler for component form
-     *
-     * @param Request $request
-     *
-     * @return array
-     *
-     * @Route("/upload_handler.html", name="dataset_upload_handler")
-     * @Method("POST")
-     * @Template("DamisDatasetsBundle:Datasets:upload.html.twig")
+     * Convert dataset to CSV format
      */
-    public function uploadHandlerAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_csv', name: 'convert_csv', methods: ['GET'])]
+    public function convertCsv($id): Response
     {
-        $entity = new Dataset();
-        $form = $this->createForm(new DatasetType(), $entity);
-        $form->submit($request);
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if ($form->isValid()) {
-            if ($entity->getFile() == null) {
-                $form->get('file')
-                    ->addError(new FormError($this->get('translator')->trans('This value should not be blank.', array(), 'validators')));
-            } else {
-                $em = $this->getDoctrine()->getManager();
-                $entity->setDatasetCreated(time());
-                $entity->setUser($user);
-                $entity->setDatasetIsMidas(false);
-                $em->persist($entity);
-                $em->flush();
-                $format = explode('.', $entity->getFile()['fileName']);
-                $format = $format[count($format)-1];
-                if ($format == 'zip') {
-                    $zip = new ZipArchive();
-                    $res = $zip->open('./assets'.$entity->getFile()['fileName']);
-                    $name = $zip->getNameIndex(0);
-                    if ($zip->numFiles > 1) {
-                        $em->remove($entity);
-                        $em->flush();
-                        $form->get('file')
-                            ->addError(new FormError($this->get('translator')->trans('Too many files in zip!', array(), 'DatasetsBundle')));
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
+        }
 
-                        return [
-                            'form' => $form->createView(),
-                            'file' => null,
-                        ];
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
+
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $fileReader = new ReadFile();
+        $rows = $fileReader->getRows($filePath, 'arff');
+
+        if (!$rows) {
+            $this->addFlash('error', 'Could not read file');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $headers = [];
+        $dataRows = [];
+        $isData = false;
+
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+
+            $firstToken = strtolower(trim($row[0] ?? ''));
+
+            if (!$isData) {
+                if (str_starts_with($firstToken, '@attribute')) {
+                    $str = preg_replace('/\s+/i', " ", $firstToken);
+                    $parts = explode(' ', trim($str));
+
+                    if (count($parts) >= 2) {
+                        $headers[] = $parts[1];
                     }
-                    if ($res === true) {
-                        $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
-                        $zip->extractTo('.'.$path, $name);
-                        $zip->close();
-                        $format = explode('.', $name);
-                        $format = $format[count($format)-1];
-                        if ($format != 'arff' && $format != 'txt' && $format != 'tab' && $format != 'csv' && $format != 'xls' && $format != 'xlsx') {
-                            $form->get('file')
-                                ->addError(new FormError($this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle')));
-                            $em->remove($entity);
-                            $em->flush();
-
-                            return [
-                                'form' => $form->createView(),
-                                'file' => nul,
-                            ];
-                        }
-                    } else {
-                        $form->get('file')
-                            ->addError(new FormError($this->get('translator')->trans('Error!', array(), 'DatasetsBundle')));
-                        $em->remove($entity);
-                        $em->flush();
-
-                        return [
-                            'form' => $form->createView(),
-                            'file' => null,
-                        ];
-                    }
+                } elseif (str_starts_with($firstToken, '@data')) {
+                    $isData = true;
                 }
-                $this->uploadArff($entity->getDatasetId());
-
-                return [
-                    'form' => $form->createView(),
-                    'file' => $entity,
-                ];
-            }
-        } else {
-            if ($entity->getFile() == null) {
-                $form->get('file')->addError(new FormError($this->get('translator')->trans('This value should not be blank.', array(), 'validators')));
+            } else {
+                if ($firstToken === '' || str_starts_with($firstToken, '%') || str_starts_with($firstToken, '@relation')) {
+                    continue;
+                }
+                $dataRows[] = $row;
             }
         }
 
-        return [
-            'form' => $form->createView(),
-            'file' => null,
-        ];
+        $fp = fopen('php://temp', 'w+');
+        fputcsv($fp, $headers);
+        foreach ($dataRows as $row) {
+            fputcsv($fp, $row);
+        }
+        rewind($fp);
+        $content = stream_get_contents($fp);
+        fclose($fp);
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.csv"');
+
+        return $response;
     }
 
     /**
-     * When uploading csv/txt/tab/xls/xlsx types to arff
-     * convert it and save
-     *
-     * @param String $id
-     * @return boolean
+     * Convert dataset to ARFF format
      */
-    public function uploadArff($id)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_arff', name: 'convert_arff', methods: ['GET'])]
+    public function convertArff($id): Response
     {
-        $memoryLimit = ini_get('memory_limit');
-        $suffix = '';
-        sscanf($memoryLimit, '%u%c', $number, $suffix);
-        if (isset($suffix)) {
-            $number = $number * pow(1024, strpos(' KMG', $suffix));
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
+
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
         }
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity) {
-            $format = explode('.', $entity->getFile()['fileName']);
-            $format = $format[count($format)-1];
-            $filename = $entity->getDatasetTitle();
-            if ($format == 'zip') {
-                $zip = new ZipArchive();
-                $res = $zip->open('./assets'.$entity->getFile()['fileName']);
-                $name = $zip->getNameIndex(0);
-                if ($zip->numFiles > 1) {
-                    $em->remove($entity);
-                    $em->flush();
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
 
-                    return $this->redirect($this->generateUrl('datasets_new'));
-                }
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
 
-                if ($res === true) {
-                    $path = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '/'));
-                    $zip->extractTo('.'.$path, $name);
-                    $zip->close();
-                    $format = explode('.', $name);
-                    $format = $format[count($format)-1];
-                    $fileReader = new ReadFile();
-                    if ($format == 'arff') {
-                        $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
-                        $entity->setFilePath($dir.'.arff');
-                        $rows = $fileReader->getRows('.'.$entity->getFilePath(), $format);
-                        if ($rows === false) {
-                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                            $em->remove($entity);
-                            $em->flush();
-                            unlink('.'.$path.'/'.$name);
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
 
-                            return $this->redirect($this->generateUrl('datasets_list'));
-                        }
-                        unset($rows);
-                        $em->persist($entity);
-                        $em->flush();
-                        rename('.'.$path.'/'.$name, '.'.$dir.'.arff');
-                        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
+        $content = file_get_contents($filePath);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.arff"');
 
-                        return $this->redirect($this->generateUrl('datasets_list'));
-                    } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
-                        $rows = $fileReader->getRows('.'.$path.'/'.$name, $format);
-                        if ($rows === false) {
-                            $em->remove($entity);
-                            $em->flush();
-                            unlink('.'.$path.'/'.$name);
-                            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
+        return $response;
+    }
 
-                            return $this->redirect($this->generateUrl('datasets_list'));
-                        }
-                        unlink('.'.$path.'/'.$name);
-                    } elseif ($format == 'xls' || $format == 'xlsx') {
-                        $objPHPExcel = PHPExcel_IOFactory::load('.'.$path.'/'.$name);
-                        $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
-                        array_unshift($rows, null);
-                        unlink('.'.$path.'/'.$name);
-                        unset($rows[0]);
-                    } else {
-                        $em->remove($entity);
-                        $em->flush();
-                        unlink('.'.$path.'/'.$name);
-                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset has wrong format!', array(), 'DatasetsBundle'));
+    /**
+     * Convert dataset to TXT format
+     */
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_txt', name: 'convert_txt', methods: ['GET'])]
+    public function convertTxt($id): Response
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-                        return $this->redirect($this->generateUrl('datasets_new'));
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
+
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $fileReader = new ReadFile();
+        $rows = $fileReader->getRows($filePath, 'arff');
+
+        if (!$rows) {
+            $this->addFlash('error', 'Could not read file');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $headers = [];
+        $dataRows = [];
+        $isData = false;
+
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+
+            $firstToken = strtolower(trim($row[0] ?? ''));
+
+            if (!$isData) {
+                if (str_starts_with($firstToken, '@attribute')) {
+                    $str = preg_replace('/\s+/i', " ", $firstToken);
+                    $parts = explode(' ', trim($str));
+
+                    if (count($parts) >= 2) {
+                        $headers[] = $parts[1];
                     }
-                }
-            } elseif ($format == 'arff') {
-                $entity->setFilePath($entity->getFile()['path']);
-                if (memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    $em->remove($entity);
-                    $em->flush();
-
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                unset($rows);
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), $format);
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    $em->remove($entity);
-                    $em->flush();
-                    unlink('.'.$entity->getFile()['fileName']);
-
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                unset($rows);
-                $em->persist($entity);
-                $em->flush();
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
-
-                return $this->redirect($this->generateUrl('datasets_list'));
-            } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
-                $fileReader = new ReadFile();
-                if (memory_get_usage(true) + $entity->getFile()['size'] * 5.8 > $number) {
-                    $em->remove($entity);
-                    $em->flush();
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Dataset is too large!', array(), 'DatasetsBundle'));
-
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                $rows = $fileReader->getRows('./assets'.$entity->getFile()['fileName'], $format);
-            } elseif ($format == 'xls' || $format == 'xlsx') {
-                $objPHPExcel = PHPExcel_IOFactory::load('./assets'.$entity->getFile()['fileName']);
-                $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
-                array_unshift($rows, null);
-                unset($rows[0]);
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-
-                return $this->redirect($this->generateUrl('datasets_list'));
-            }
-            $hasHeaders = false;
-            if (!empty($rows)) {
-                foreach ($rows[1] as $header) {
-                    if (!(is_numeric($header))) {
-                        $hasHeaders = true;
-                    }
-                }
-            }
-            $arff = '';
-            $arff .= '@relation '.$filename.PHP_EOL;
-            if ($hasHeaders) {
-                foreach ($rows[1] as $key => $header) {
-                    // Remove spaces in header, to fit arff format
-                    $header = preg_replace('/\s+/', '_', $header);
-
-                    // Check string is numeric or normal string
-                    if (is_numeric($rows[2][$key])) {
-                        if (is_int($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.$header.' '.'integer'.PHP_EOL;
-                        } elseif (is_float($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.$header.' '.'real'.PHP_EOL;
-                        }
-                    } else {
-                        $arff .= '@attribute '.$header.' '.'string'.PHP_EOL;
-                    }
+                } elseif (str_starts_with($firstToken, '@data')) {
+                    $isData = true;
                 }
             } else {
-                foreach ($rows[1] as $key => $header) {
-                    if (is_numeric($rows[2][$key])) {
-                        if (is_int($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.'attr'.$key.' '.'integer'.PHP_EOL;
-                        } elseif (is_float($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.'attr'.$key.' '.'real'.PHP_EOL;
-                        }
-                    } else {
-                        $arff .= '@attribute '.'attr'.$key.' '.'string'.PHP_EOL;
-                    }
+                if ($firstToken === '' || str_starts_with($firstToken, '%') || str_starts_with($firstToken, '@relation')) {
+                    continue;
                 }
+                $dataRows[] = $row;
             }
-            $arff .= '@data'.PHP_EOL;
-            if ($hasHeaders) {
-                unset($rows[1]);
-            }
-            foreach ($rows as $row) {
-                foreach ($row as $key => $value) {
-                    if ($key > 0) {
-                        $arff .= ','.$value;
-                    } else {
-                        $arff .= $value;
-                    }
-                }
-                $arff .= PHP_EOL;
-            }
-            $dir = substr($entity->getFile()['path'], 0, strripos($entity->getFile()['path'], '.'));
-            $fp = fopen($_SERVER['DOCUMENT_ROOT'].$dir.".arff", "w+");
-            fwrite($fp, $arff);
-            fclose($fp);
-            $entity->setFilePath($dir.".arff");
-            $em->persist($entity);
-            $em->flush();
-
-            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Dataset successfully uploaded!', array(), 'DatasetsBundle'));
-
-            return $this->redirect($this->generateUrl('datasets_list'));
         }
-        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error!', array(), 'DatasetsBundle'));
 
-        return $this->redirect($this->generateUrl('datasets_new'));
+        $fp = fopen('php://temp', 'w+');
+        fputcsv($fp, $headers, ' ');
+        foreach ($dataRows as $row) {
+            fputcsv($fp, $row, ' ');
+        }
+        rewind($fp);
+        $content = stream_get_contents($fp);
+        fclose($fp);
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.txt"');
+
+        return $response;
+    }
+
+    /**
+     * Convert dataset to TAB format
+     */
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_tab', name: 'convert_tab', methods: ['GET'])]
+    public function convertTab($id): Response
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
+
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
+
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $fileReader = new ReadFile();
+        $rows = $fileReader->getRows($filePath, 'arff');
+
+        if (!$rows) {
+            $this->addFlash('error', 'Could not read file');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $headers = [];
+        $dataRows = [];
+        $isData = false;
+
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+
+            $firstToken = strtolower(trim($row[0] ?? ''));
+
+            if (!$isData) {
+                if (str_starts_with($firstToken, '@attribute')) {
+                    $str = preg_replace('/\s+/i', " ", $firstToken);
+                    $parts = explode(' ', trim($str));
+
+                    if (count($parts) >= 2) {
+                        $headers[] = $parts[1];
+                    }
+                } elseif (str_starts_with($firstToken, '@data')) {
+                    $isData = true;
+                }
+            } else {
+                if ($firstToken === '' || str_starts_with($firstToken, '%') || str_starts_with($firstToken, '@relation')) {
+                    continue;
+                }
+                $dataRows[] = $row;
+            }
+        }
+
+        $fp = fopen('php://temp', 'w+');
+        fputcsv($fp, $headers, "\t");
+        foreach ($dataRows as $row) {
+            fputcsv($fp, $row, "\t");
+        }
+        rewind($fp);
+        $content = stream_get_contents($fp);
+        fclose($fp);
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.tab"');
+
+        return $response;
+    }
+
+    /**
+     * Convert dataset to XLS format
+     */
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_xls', name: 'convert_xls', methods: ['GET'])]
+    public function convertXls($id): Response
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
+
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
+
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $fileReader = new ReadFile();
+        $rows = $fileReader->getRows($filePath, 'arff');
+
+        if (!$rows) {
+            $this->addFlash('error', 'Could not read file');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $headers = [];
+        $dataRows = [];
+        $isData = false;
+
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+
+            $firstToken = strtolower(trim($row[0] ?? ''));
+
+            if (!$isData) {
+                if (str_starts_with($firstToken, '@attribute')) {
+                    $str = preg_replace('/\s+/i', " ", $firstToken);
+                    $parts = explode(' ', trim($str));
+
+                    if (count($parts) >= 2) {
+                        $headers[] = $parts[1];
+                    }
+                } elseif (str_starts_with($firstToken, '@data')) {
+                    $isData = true;
+                }
+            } else {
+                if ($firstToken === '' || str_starts_with($firstToken, '%') || str_starts_with($firstToken, '@relation')) {
+                    continue;
+                }
+                $dataRows[] = $row;
+            }
+        }
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Write headers
+        $columnIndex = 1;
+        foreach ($headers as $header) {
+            $sheet->setCellValueByColumnAndRow($columnIndex, 1, $header);
+            $columnIndex++;
+        }
+
+        // Write data
+        $rowIndex = 2;
+        foreach ($dataRows as $row) {
+            $columnIndex = 1;
+            foreach ($row as $cell) {
+                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cell);
+                $columnIndex++;
+            }
+            $rowIndex++;
+        }
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.xls"');
+
+        return $response;
+    }
+
+    /**
+     * Convert dataset to XLSX format
+     */
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/{id}/convert_xlsx', name: 'convert_xlsx', methods: ['GET'])]
+    public function convertXlsx($id): Response
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
+
+        if (!$entity || ($entity->getUser() != $user)) {
+            throw $this->createNotFoundException('Dataset not found');
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public' . $entity->getFilePath();
+
+        if (!file_exists($filePath)) {
+            $this->addFlash('error', 'File not found');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $fileReader = new ReadFile();
+        $rows = $fileReader->getRows($filePath, 'arff');
+
+        if (!$rows) {
+            $this->addFlash('error', 'Could not read file');
+            return $this->redirectToRoute('datasets_list');
+        }
+
+        $headers = [];
+        $dataRows = [];
+        $isData = false;
+
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+
+            $firstToken = strtolower(trim($row[0] ?? ''));
+
+            if (!$isData) {
+                if (str_starts_with($firstToken, '@attribute')) {
+                    $str = preg_replace('/\s+/i', " ", $firstToken);
+                    $parts = explode(' ', trim($str));
+
+                    if (count($parts) >= 2) {
+                        $headers[] = $parts[1];
+                    }
+                } elseif (str_starts_with($firstToken, '@data')) {
+                    $isData = true;
+                }
+            } else {
+                if ($firstToken === '' || str_starts_with($firstToken, '%') || str_starts_with($firstToken, '@relation')) {
+                    continue;
+                }
+                $dataRows[] = $row;
+            }
+        }
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Write headers
+        $columnIndex = 1;
+        foreach ($headers as $header) {
+            $sheet->setCellValueByColumnAndRow($columnIndex, 1, $header);
+            $columnIndex++;
+        }
+
+        // Write data
+        $rowIndex = 2;
+        foreach ($dataRows as $row) {
+            $columnIndex = 1;
+            foreach ($row as $cell) {
+                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cell);
+                $columnIndex++;
+            }
+            $rowIndex++;
+        }
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $entity->getDatasetTitle() . '.xlsx"');
+
+        return $response;
     }
 }

@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ 'access_denied.title'|trans({}, 'general') }}{% endblock %}
+
+{% block body %}
+<div class="container" style="margin-top: 50px;">
+    <div class="alert alert-warning" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <h2>{{ 'access_denied.title'|trans({}, 'general') }}</h2>
+        <p style="font-size: 16px; margin-top: 20px;">
+            {{ 'access_denied.message'|trans({}, 'general') }}
+        </p>
+        <hr>
+        <a href="{{ path('base_main_default_index') }}" class="btn btn-primary">{{ 'access_denied.back_home'|trans({}, 'general') }}</a>
+    </div>
+</div>
+{% endblock %}

@@ -31,9 +31,15 @@
                 {{ 'Result file'|trans({}, 'ExperimentBundle') }}
             </td>
             <td>
-                {% if id != null %}
+                {# --- FIX: Check for the 'file' object directly for robustness --- #}
+                {% if file is not null and file.filePath is defined %}
                     <a href="{{ path('convert_arff', {'id' : id}) }}" style="display:block; max-width:250px; overflow : auto;">
-                        {{ app.request.getSchemeAndHttpHost() }}{{ file.filePath }}</a>
+                        {# Note: Using app.request.schemeAndHttpHost is the modern syntax #}
+                        {{ app.request.schemeAndHttpHost }}{{ file.filePath }}
+                    </a>
+                {% else %}
+                    {# Display a helpful message if the file isn't available for any reason #}
+                    {{ 'File not available'|trans({}, 'ExperimentBundle') }}
                 {% endif %}
             </td>
         </tr>

@@ -8,6 +8,7 @@
 
 namespace Base\ConvertBundle\Helpers;
 
+use Base\UserBundle\Entity\User;
 use Damis\DatasetsBundle\Entity\Dataset;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\File\File;
@@ -26,12 +27,12 @@ class ReadFile
     function getRows($path, $format)
     {
         $row = 0;
-        $rows = array();
+        $rows = [];
         $memoryLimit = ini_get('memory_limit');
         $suffix = '';
         sscanf($memoryLimit, '%u%c', $number, $suffix);
         if (isset($suffix)) {
-            $number = $number * pow(1024, strpos(' KMG', $suffix));
+            $number = $number * 1024 ** strpos(' KMG', (string) $suffix);
         }
         if (memory_get_usage(true) + filesize($path) * 5.8 > $number) {
             return false;
@@ -41,12 +42,7 @@ class ReadFile
         } elseif ($format == 'arff')
             $delimiter = ",";
         else {
-            $delimiters = array(
-                'comma'     => ",",
-                'semicolon' => ";",
-                'space'     => " ",
-                'tab'       => "\t"
-            );
+            $delimiters = ['comma'     => ",", 'semicolon' => ";", 'space'     => " ", 'tab'       => "\t"];
             $content = file_get_contents($path);
             $content = explode("\n", $content);
             // Find most often delimeter
@@ -54,9 +50,7 @@ class ReadFile
                 $res[$key] = substr_count(trim($content[(int) floor(count($content)/ 2)]), $delim);
             }
             arsort($res);
-
-            reset($res);
-            $first_key = key($res);
+            $first_key = array_key_first($res);
 
             $delimiter = $delimiters[$first_key];
         }
@@ -71,9 +65,7 @@ class ReadFile
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
                     // String should be not empty. If string is '0', empty function return true
-                    if (!empty($data[$c]) || $data[$c] == '0') {
-                        $rows[$row][] = trim($data[$c]);
-                    }
+                   $rows[$row][] = trim((string) $data[$c]);
                 }
             }
             fclose($handle);
@@ -91,15 +83,15 @@ class ReadFile
     function getAttributes($path, $withType = false)
     {
         $rows = $this->getRows($path, 'arff');
-        $attributes = array();
+        $attributes = [];
         foreach ($rows as $row) {
-            if (strpos(strtolower($row[key($row)]), '@attribute') === 0) {
-                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
-                $attr = explode(' ', $str);
+            if (str_starts_with(strtolower((string) $row[key($row)]), '@attribute')) {
+                $str = preg_replace('/\s+/i', " ", (string) $row[key($row)]);
+                $attr = explode(' ', (string) $str);
                 if (!$withType) {
                     $attributes[] = $attr[1];
                 } else {
-                    $attributes[] = array('type' => strtolower($attr[2]), 'name' => $attr[1]);
+                    $attributes[] = ['type' => strtolower($attr[2]), 'name' => $attr[1]];
                 }
             }
         }
@@ -118,13 +110,13 @@ class ReadFile
         $rows = $this->getRows($path, 'arff');
         $attributes = [];
         foreach ($rows as $row) {
-            if (strpos(strtolower($row[key($row)]), '@attribute class') === 0) {
-                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
-                $attr = explode(' ', $str);
+            if (str_starts_with(strtolower((string) $row[key($row)]), '@attribute class')) {
+                $str = preg_replace('/\s+/i', " ", (string) $row[key($row)]);
+                $attr = explode(' ', (string) $str);
                 $attributes[] = $attr[1].'_attr';
-            } elseif (strpos(strtolower($row[key($row)]), '@attribute') === 0) {
-                $str = preg_replace('/\s+/i', " ", $row[key($row)]);
-                $attr = explode(' ', $str);
+            } elseif (str_starts_with(strtolower((string) $row[key($row)]), '@attribute')) {
+                $str = preg_replace('/\s+/i', " ", (string) $row[key($row)]);
+                $attr = explode(' ', (string) $str);
                 $attributes[] = $attr[1];
             }
         }
@@ -141,9 +133,9 @@ class ReadFile
     {
         $range = [];
         foreach ($rows as $row) {
-            if (strpos(strtolower($row[0]), '@attribute') === 0 ||
-                strpos(strtolower($row[0]), '@data') === 0 ||
-                strpos(strtolower($row[0]), '@relation') === 0 ||
+            if (str_starts_with(strtolower((string) $row[0]), '@attribute') ||
+                str_starts_with(strtolower((string) $row[0]), '@data') ||
+                str_starts_with(strtolower((string) $row[0]), '@relation') ||
                 $row[0] == '%') {
                 continue;
             } else {
@@ -166,8 +158,9 @@ class ReadFile
     public function selectFeatures($datasetId, $attr, $class, $userId, $container)
     {
         $em = $container->get('doctrine')->getManager();
-        $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneByDatasetId($datasetId);
-        $rows = @$this->getRows($container->get('kernel')->getRootDir().'/../web'.$dataset->getFilePath(), 'arff');
+        $dataset = $em->getRepository(Dataset::class)->findOneByDatasetId($datasetId);
+        $projectDir = $container->getParameter('kernel.project_dir');
+        $rows = @$this->getRows($projectDir . '/public' . $dataset->getFilePath(), 'arff');
         $nr = 0;
         $file = '';
 
@@ -179,9 +172,9 @@ class ReadFile
         }
 
         foreach ($rows as $row) {
-            if (strpos(strtolower($row[0]), '@attribute') === 0) {
+            if (str_starts_with(strtolower((string) $row[0]), '@attribute')) {
                 if ($nr == $class && $class != "") {
-                    if (strpos(strtolower($row[0]), '@attribute class') === 0) {
+                    if (str_starts_with(strtolower((string) $row[0]), '@attribute class')) {
                         // Set class atributes
                         $classAttributes = preg_replace('/.*\{(.*)\}.*/i', "{\\1}", implode(', ', $row));
                         $file .= '@attribute class '.$classAttributes;
@@ -197,8 +190,8 @@ class ReadFile
                     $file .= PHP_EOL;
                 }
                 $nr++;
-            } elseif (strpos(strtolower($row[0]), '@data') === 0 ||
-                        strpos(strtolower($row[0]), '@relation') === 0) {
+            } elseif (str_starts_with(strtolower((string) $row[0]), '@data') ||
+                        str_starts_with(strtolower((string) $row[0]), '@relation')) {
                 foreach ($row as $value) {
                     $file .= $value;
                 }
@@ -207,14 +200,17 @@ class ReadFile
             } elseif ($row[0] == '%') {
                 continue;
             } else {
-                foreach ($attrs as $key => $at) {
-                    if ($key > 0) {
-                        $file .= ','.$row[$at];
-                    } else {
-                        $file .= $row[$at];
+                $rowData = [];
+                foreach ($attrs as $at) {
+                    // Check if the index exists in the row
+                    if (isset($row[$at])) {
+                        $rowData[] = $row[$at];
                     }
                 }
-                $file .= PHP_EOL;
+                // Only write the row if we have data
+                if (!empty($rowData)) {
+                    $file .= implode(',', $rowData) . PHP_EOL;
+                }
             }
         }
         $temp_folder = $container->getParameter("kernel.cache_dir");
@@ -225,7 +221,7 @@ class ReadFile
         fclose($filew);
 
         $file = new File($temp_file);
-        $user = $em->getRepository('BaseUserBundle:User')->findOneById($userId);
+        $user = $em->getRepository(User::class)->findOneById($userId);
         $file_entity = new Dataset();
         $file_entity->setUser($user);
         $file_entity->setDatasetTitle('experiment result');
@@ -235,16 +231,37 @@ class ReadFile
         $em->persist($file_entity);
         $em->flush();
 
-        $ref_class = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-        $mapping = $container->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity, $ref_class, 'file');
-        $file_data = $container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file);
-        $file_entity->setFile($file_data);
-        $file_entity->setFilePath($file_data['path']);
+        // Manual file save replacement
+        $projectDir = $container->getParameter('kernel.project_dir');
+        $targetDir = $projectDir . '/public/uploads/datasets';
+        
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $originalName = $file->getFilename();
+        $newName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $originalName);
+        
+        $file->move($targetDir, $newName);
+        
+        $relativePath = '/uploads/datasets/' . $newName;
+        $file_entity->setFilePath($relativePath);
+        $file_entity->setFile(['path' => $relativePath]);
+
         $em->flush();
 
-        unlink($temp_file);
+        // $ref_class = new ReflectionClass(Dataset::class);
+        // $mapping = $container->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity, $ref_class, 'file');
+        // $file_data = $container->get('iphp.filestore.filestorage.file_system')->upload($mapping, $file);
+        // $file_entity->setFile($file_data);
+        // $file_entity->setFilePath($file_data['path']);
+        // $em->flush();
+
+        // $file->move() already moved the file, so original temp file is gone.
+        // @unlink($temp_file);
 
         return $file_entity->getDatasetId();
 
     }
 }
+

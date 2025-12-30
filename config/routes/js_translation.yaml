@@ -1,0 +1,3 @@
+# config/routes/js_translation.yaml
+bazinga_js_translation:
+    resource: '../../vendor/willdurand/js-translation-bundle/Resources/config/routing/routing.yml'

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include "@BaseUser/messages.html.twig" ignore missing %}
+    <form class="form-signin fos_user_registration_register" role="form" action="{{ path('fos_user_registration_register') }}" method="post">
+        <h1>{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}</h1>
+        {{ form_widget(form._token) }}
+        {{ form_errors(form.username) }}
+        {{ form_widget(form.username) }}
+        {{ form_errors(form.email) }}
+        {{ form_widget(form.email) }}
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name) }}
+        {{ form_errors(form.surname) }}
+        {{ form_widget(form.surname) }}
+        {{ form_errors(form.organisation) }}
+        {{ form_widget(form.organisation) }}
+        {{ form_errors(form.plainPassword.first) }}
+        {{ form_widget(form.plainPassword.first) }}
+        {{ form_errors(form.plainPassword.second) }}
+        {{ form_widget(form.plainPassword.second) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}</button>
+    </form>
+{% endblock %}

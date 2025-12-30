@@ -1,0 +1,76 @@
+{% extends '@BaseMain/Default/index.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ 'cron.show_title'|trans({}, 'general') }}</h1>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ cron_job.name }}</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>{{ 'cron.form.name'|trans({}, 'general') }}:</dt>
+                        <dd>{{ cron_job.name }}</dd>
+
+                        <dt>{{ 'cron.form.schedule'|trans({}, 'general') }}:</dt>
+                        <dd><code>{{ cron_job.schedule }}</code></dd>
+
+                        <dt>{{ 'cron.form.command'|trans({}, 'general') }}:</dt>
+                        <dd><code>{{ cron_job.command }}</code></dd>
+
+                        {% if cron_job.description %}
+                            <dt>{{ 'cron.form.description'|trans({}, 'general') }}:</dt>
+                            <dd>{{ cron_job.description }}</dd>
+                        {% endif %}
+
+                        {% if cron_job.logFile %}
+                            <dt>{{ 'cron.form.log_file'|trans({}, 'general') }}:</dt>
+                            <dd><code>{{ cron_job.logFile }}</code></dd>
+                        {% endif %}
+
+                        {% if cron_job.errorFile %}
+                            <dt>{{ 'cron.form.error_file'|trans({}, 'general') }}:</dt>
+                            <dd><code>{{ cron_job.errorFile }}</code></dd>
+                        {% endif %}
+
+                        <dt>{{ 'cron.table.status'|trans({}, 'general') }}:</dt>
+                        <dd>
+                            {% if cron_job.enabled %}
+                                <span class="label label-success">{{ 'cron.status.enabled'|trans({}, 'general') }}</span>
+                            {% else %}
+                                <span class="label label-default">{{ 'cron.status.disabled'|trans({}, 'general') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt>{{ 'cron.field.created_at'|trans({}, 'general') }}:</dt>
+                        <dd>{{ cron_job.createdAt|date('Y-m-d H:i:s') }}</dd>
+
+                        {% if cron_job.lastRun %}
+                            <dt>{{ 'cron.field.last_run'|trans({}, 'general') }}:</dt>
+                            <dd>{{ cron_job.lastRun|date('Y-m-d H:i:s') }}</dd>
+                        {% endif %}
+                    </dl>
+
+                    <div class="well">
+                        <h4>{{ 'cron.full_expression'|trans({}, 'general') }}</h4>
+                        <pre>{{ cron_job.fullCronExpression }}</pre>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="{{ path('cron_index') }}" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-left"></span> {{ 'cron.actions.back'|trans({}, 'general') }}
+                        </a>
+                        <a href="{{ path('cron_edit', {'id': cron_job.id}) }}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'cron.actions.edit'|trans({}, 'general') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -4,86 +4,78 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class SomType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('rows', 'integer', [
+            ->add('rows', IntegerType::class, [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
+                'attr' => ['class' => 'form-control', 'min' => 3, 'max' => 100],
                 'constraints' => [
                     new Assert\Range([
                         'min' => 3,
                         'max' => 100,
-                        'minMessage' => 'Rows and columns quantity must be in interval [3; 100]',
-                        'maxMessage' => 'Rows and columns quantity must be in interval [3; 100]'
+                        'notInRangeMessage' => 'Rows and columns quantity must be between {{ min }} and {{ max }}.',
                     ]),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    )),
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer']),
                     new NotBlank()
                 ],
                 'label' => 'Number of rows',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-            ->add('columns', 'integer', [
+            ->add('columns', IntegerType::class, [
                 'required' => true,
                 'data' => 10,
-                'attr' => array('class' => 'form-control', 'min' => 3, 'max' => 100),
+                'attr' => ['class' => 'form-control', 'min' => 3, 'max' => 100],
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
                         'min' => 3,
                         'max' => 100,
-                        'minMessage' => 'Rows and columns quantity must be in interval [3; 100]',
-                        'maxMessage' => 'Rows and columns quantity must be in interval [3; 100]'
+                        'notInRangeMessage' => 'Rows and columns quantity must be between {{ min }} and {{ max }}.',
                     ]),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Number of columns',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('eHat', 'integer', [
+            ->add('eHat', IntegerType::class, [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 1000],
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
                         'max' => 1000,
-                        'minMessage' => 'Number of training epochs mus be in interval [1; 1000]',
-                        'maxMessage' => 'Number of training epochs mus be in interval [1; 1000]'
+                        'notInRangeMessage' => 'Number of training epochs must be between {{ min }} and {{ max }}.',
                     ]),
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Number of training epochs',
                 'label_attr' => ['class' => 'col-md-9']
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'som_type';
     }

@@ -1,4 +1,4 @@
-{% include "BaseUserBundle::messages.html.twig" %}
+{% include "@BaseUser/messages.html.twig" %}
 
 <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="form-signin fos_user_resetting_request" role="form">
     <h1>{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</h1>

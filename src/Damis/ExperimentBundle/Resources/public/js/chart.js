@@ -83,6 +83,7 @@
             if (sizeX < sizeY) {
                 size = sizeY
             }
+            size = size * 1.1;
             
 			$.each(dataContent.data, function(idx, rec) {
 				data.push({

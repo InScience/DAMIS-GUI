@@ -4,10 +4,14 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Range;
 
 class SmacofType extends AbstractType
 {
@@ -15,58 +19,48 @@ class SmacofType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('zeidel', 'choice', [
-                'empty_value' => false,
+        ->add('zeidel', ChoiceType::class, [
+                'placeholder' => false,
                 'required' => false,
                 'data' => 0,
                 'expanded' => true,
-                'choices' => array(
-                    0 => 'No',
-                    1 => 'Yes'
-                ),
+                'choices' => ['No' => 0, 'Yes' => 1],
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => 'Does apply Seidel modification?',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-            ->add('d', 'integer', [
+            ->add('d', IntegerType::class, [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control', 'min' => 1),
+                'attr' => ['class' => 'form-control', 'min' => 1],
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Projection space',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('maxIteration', 'integer', [
+        ->add('maxIteration', IntegerType::class, [
                 'required' => true,
                 'data' => 100,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 1000],
                 'constraints' => [
                     new Assert\Range([
                         'min' => 1,
                         'max' => 1000,
-                        'minMessage' => 'Number of iteration must be in interval [1; 1000]',
-                        'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
+                        'notInRangeMessage' => 'Number of iteration must be between {{ min }} and {{ max }}.'
                     ]),
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Maximum number of iteration',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('eps', 'text', [
+        ->add('eps', TextType::class, [
                 'required' => true,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'data' => '0.0001',
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
@@ -80,14 +74,18 @@ class SmacofType extends AbstractType
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+        
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smacof_type';
     }

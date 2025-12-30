@@ -2,437 +2,269 @@
 
 namespace Base\ConvertBundle\Controller;
 
+use Damis\DatasetsBundle\Entity\Dataset;
 use Base\ConvertBundle\Helpers\ReadFile;
-use Guzzle\Http\Message\Request;
 use PHPExcel;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use PHPExcel_IOFactory;
 use PHPExcel_Writer_Excel2007;
+use Doctrine\Persistence\ManagerRegistry;
 
-class ConvertController extends Controller
+class ConvertController extends AbstractController
 {
+    public function __construct(private readonly ManagerRegistry $doctrine)
+    {
+    }
+
+    /**
+     * A helper function to get the full, absolute path to a dataset file.
+     *
+     * @param Dataset $entity
+     * @return string|null
+     */
+    private function getFullFilePath($entity)
+    {
+        if (!$entity || !$entity->getFilePath()) {
+            return null;
+        }
+        $projectRoot = $this->getParameter('kernel.project_dir');
+        return $projectRoot . '/web' . $entity->getFilePath();
+    }
+
     /**
      * Converts csv/txt/tab/xls/xlsx types to arff
      * and downloads it
      *
-     * @param String $id
+     * @param int $id
      * @return Response response
      *
      * @Route("{id}/convert/arff.html", name="convert_arff")
-     * @Template()
      */
-    public function convertToArffAction($id)
+    public function convertToArff($id)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity && $entity->getFilePath()) {
-            $format = explode('.', $entity->getFilePath());
-            $format = $format[count($format)-1];
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+
+        $fullFilePath = $this->getFullFilePath($entity);
+
+        if ($fullFilePath && file_exists($fullFilePath)) {
+            $format = pathinfo($fullFilePath, PATHINFO_EXTENSION);
             $filename = $entity->getDatasetTitle();
             $fileReader = new ReadFile();
-            if ($format == 'arff') {
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), $format);
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                unset($rows);
-                $content = file_get_contents('.'.$entity->getFilePath());
-                $content = explode("\n", $content);
-                reset($content);
-                $firstKey = key($content);
-                if (strpos(strtolower($content[$firstKey]), '@relation') === 0) {
-                    $content[$firstKey] = '@relation '.$filename;
-                } else {
-                    $content[$firstKey] = '@relation '.$filename."\n".$content[$firstKey];
-                }
-                $fileContent = '';
-                foreach ($content as $row) {
-                    $fileContent .= $row."\n";
-                }
-                $response = new Response($fileContent);
-                $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
-                $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.arff"', $filename));
+            $rows = [];
 
+            if ($format == 'arff') {
+                $content = file_get_contents($fullFilePath);
+                $contentLines = explode("\n", $content);
+                if (isset($contentLines[0]) && stripos($contentLines[0], '@relation') === 0) {
+                    $contentLines[0] = '@relation ' . preg_replace('/\s+/', '_', (string) $filename);
+                }
+                $fileContent = implode("\n", $contentLines);
+
+                $response = new Response($fileContent);
+                $response->headers->set('Content-Type', 'application/octet-stream');
+                $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.arff"', $filename));
                 return $response;
 
-            } elseif ($format == 'txt' || $format == 'tab' || $format == 'csv') {
-                $rows = $fileReader->getRows('.'.$entity->getFile()['fileName'], $format);
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-            } elseif ($format == 'xls' || $format == 'xlsx') {
-                $objPHPExcel = PHPExcel_IOFactory::load('.'.$entity->getFile()['fileName']);
-                $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
-                array_unshift($rows, null);
-                unset($rows[0]);
+            } elseif (in_array($format, ['txt', 'tab', 'csv'])) {
+                $rows = $fileReader->getRows($fullFilePath, $format);
+            } elseif (in_array($format, ['xls', 'xlsx'])) {
+                $objPHPExcel = PHPExcel_IOFactory::load($fullFilePath);
+                $rows = $objPHPExcel->getActiveSheet()->toArray();
             } else {
                 $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-                return $this->redirect($this->generateUrl('datasets_list'));
+                return $this->redirectToRoute('datasets_list');
             }
+
+            if ($rows === false) {
+                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', [], 'DatasetsBundle'));
+                return $this->redirectToRoute('datasets_list');
+            }
+
             $hasHeaders = false;
             if (!empty($rows)) {
-                foreach ($rows[1] as $header) {
-                    if (!(is_numeric($header))) {
+                foreach (reset($rows) as $header) {
+                    if (!is_numeric($header)) {
                         $hasHeaders = true;
+                        break;
                     }
                 }
             }
-            $arff = '';
-            $arff .= '@relation '.$filename.PHP_EOL;
-            if ($hasHeaders) {
-                foreach ($rows[1] as $key => $header) {
-                    // Remove spaces in header, to fit arff format
-                    $header = preg_replace('/\s+/', '_', $header);
-                    
-                    // Check string is numeric or normal string
-                    if (is_numeric($rows[2][$key])) {
-                        if (is_int($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.$header.' '.'integer'.PHP_EOL;
-                        } elseif (is_float($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.$header.' '.'real'.PHP_EOL;
-                        }
-                    } else {
-                        $arff .= '@attribute '.$header.' '.'string'.PHP_EOL;
-                    }
+
+            $arff = '@relation ' . preg_replace('/\s+/', '_', (string) $filename) . PHP_EOL;
+            $headerRow = $hasHeaders ? array_values(array_shift($rows)) : array_keys(reset($rows));
+            $firstDataRow = reset($rows);
+
+            foreach ($headerRow as $key => $header) {
+                $attributeName = $hasHeaders ? preg_replace('/[^\w\d_]/', '_', (string) $header) : 'attribute_' . $key;
+                $sampleValue = $firstDataRow[$key] ?? null;
+                $type = 'string';
+                if (is_numeric($sampleValue)) {
+                    $type = (!str_contains((string)$sampleValue, '.')) ? 'integer' : 'real';
                 }
-            } else {
-                foreach ($rows[1] as $key => $header) {
-                    if (is_numeric($rows[2][$key])) {
-                        if (is_int($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.'attr'.$key.' '.'integer'.PHP_EOL;
-                        } elseif (is_float($rows[2][$key] + 0)) {
-                            $arff .= '@attribute '.'attr'.$key.' '.'real'.PHP_EOL;
-                        }
-                    } else {
-                        $arff .= '@attribute '.'attr'.$key.' '.'string'.PHP_EOL;
-                    }
-                }
+                $arff .= '@attribute ' . $attributeName . ' ' . $type . PHP_EOL;
             }
-            $arff .= '@data'.PHP_EOL;
-            if ($hasHeaders) {
-                unset($rows[1]);
-            }
+
+            $arff .= '@data' . PHP_EOL;
             foreach ($rows as $row) {
-                foreach ($row as $key => $value) {
-                    if ($key > 0) {
-                        $arff .= ','.$value;
-                    } else {
-                        $arff .= $value;
-                    }
-                }
-                $arff .= PHP_EOL;
+                $arff .= implode(',', array_values($row)) . PHP_EOL;
             }
+
             $response = new Response($arff);
-            $response->headers->set('Content-Type', 'application/arff; charset=utf-8');
+            $response->headers->set('Content-Type', 'application/octet-stream');
             $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.arff"', $filename));
+            return $response;
+        }
+        return $this->redirectToRoute('datasets_list');
+    }
+
+    /**
+     * Converts arff type to a delimited format (txt, tab, csv)
+     * and downloads it
+     *
+     * @param int $id
+     * @param string $delimiter
+     * @param string $extension
+     * @return Response
+     */
+    private function convertFromArffAction($id, $delimiter, $extension)
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+        $fullFilePath = $this->getFullFilePath($entity);
+
+        if ($fullFilePath && file_exists($fullFilePath)) {
+            $filename = $entity->getDatasetTitle();
+            $fileReader = new ReadFile();
+            $rows = $fileReader->getRows($fullFilePath, 'arff');
+
+            if ($rows === false) {
+                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', [], 'DatasetsBundle'));
+                return $this->redirectToRoute('datasets_list');
+            }
+
+            $output = '';
+            $headers = [];
+            $dataStarted = false;
+
+            foreach ($rows as $row) {
+                $line = $row[0];
+                if ($dataStarted) {
+                    $output .= str_replace(',', $delimiter, $line) . PHP_EOL;
+                } elseif (stripos((string) $line, '@attribute') === 0) {
+                    $parts = preg_split('/\s+/', (string) $line, 3);
+                    $headers[] = $parts[1];
+                } elseif (stripos((string) $line, '@data') === 0) {
+                    $output .= implode($delimiter, $headers) . PHP_EOL;
+                    $dataStarted = true;
+                }
+            }
+
+            $response = new Response($output);
+            $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.%s"', $filename, $extension));
+            return $response;
+        }
+        $this->get('session')->getFlashBag()->add('error', 'Error!');
+        return $this->redirectToRoute('datasets_list');
+    }
+
+    /**
+     * @Route("{id}/convert/txt.html", name="convert_txt")
+     */
+    public function convertToTxt($id)
+    {
+        return $this->convertFromArffAction($id, ',', 'txt');
+    }
+
+    /**
+     * @Route("{id}/convert/tab.html", name="convert_tab")
+     */
+    public function convertToTab($id)
+    {
+        return $this->convertFromArffAction($id, "\t", 'tab');
+    }
+
+    /**
+     * @Route("{id}/convert/csv.html", name="convert_csv")
+     */
+    public function convertToCsv($id)
+    {
+        return $this->convertFromArffAction($id, ';', 'csv');
+    }
+
+    /**
+     * Converts arff type to xlsx
+     * and downloads it
+     *
+     * @param int $id
+     * @param int $midas
+     * @return Response
+     *
+     * @Route("{id}/convert/xls.html", name="convert_xls")
+     */
+    public function convertToXls($id, $midas = 0)
+    {
+        $user = $this->getUser();
+        $em = $this->doctrine->getManager();
+        $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+        $fullFilePath = $this->getFullFilePath($entity);
+
+        if ($fullFilePath && file_exists($fullFilePath)) {
+            $filename = $entity->getDatasetTitle();
+            $fileReader = new ReadFile();
+            $rows = $fileReader->getRows($fullFilePath, 'arff');
+
+            if ($rows === false) {
+                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', [], 'DatasetsBundle'));
+                return $this->redirectToRoute('datasets_list');
+            }
+
+            $objPHPExcel = new PHPExcel();
+            $sheet = $objPHPExcel->setActiveSheetIndex(0);
+            $headers = [];
+            $dataRows = [];
+            $dataStarted = false;
+
+            foreach ($rows as $row) {
+                $line = $row[0];
+                if ($dataStarted) {
+                    $dataRows[] = explode(',', (string) $line);
+                } elseif (stripos((string) $line, '@attribute') === 0) {
+                    $parts = preg_split('/\s+/', (string) $line, 3);
+                    $headers[] = $parts[1];
+                } elseif (stripos((string) $line, '@data') === 0) {
+                    $dataStarted = true;
+                }
+            }
+
+            $sheet->fromArray($headers, null, 'A1');
+            $sheet->fromArray($dataRows, null, 'A2');
+
+            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+
+            if ($midas == 1) {
+                $tempFile = $this->getParameter("kernel.cache_dir") . '/' . time() . $id . '.xlsx';
+                $objWriter->save($tempFile);
+                return new Response($tempFile);
+            }
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.xlsx"', $filename));
+
+            ob_start();
+            $objWriter->save('php://output');
+            $response->setContent(ob_get_clean());
 
             return $response;
         }
-        return $this->redirect($this->generateUrl('datasets_list'));
-    }
-
-    /**
-     * Converts arff type to txt
-     * and downloads it
-     *
-     * @param String $id
-     * @return Response response
-     *
-     * @Route("{id}/convert/txt.html", name="convert_txt")
-     * @Template()
-     */
-    public function convertToTxtAction($id)
-    {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity && $entity->getFilePath()) {
-            $format = explode('.', $entity->getFilePath());
-            $format = $format[count($format)-1];
-            $filename = $entity->getDatasetTitle();
-            if ($format == 'arff') {
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), 'arff');
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                $file = '';
-                $first = true;
-                foreach ($rows as $key => $row) {
-                    if (strpos(strtolower($row[0]), '@attribute') === 0) {
-                        $header = explode(' ', $row[0]);
-                        if (!$first) {
-                            $file .= ',';
-                        } else {
-                            $first = false;
-                        }
-                        if (!isset($header[1])) {
-                            $header[1] = '';
-                        }
-                        $file .= $header[1];
-                    }
-                    if (strtolower($row[0]) != '@data') {
-                        unset($rows[$key]);
-                    } else {
-                        $file .= PHP_EOL;
-                        unset($rows[$key]);
-                        break;
-                    }
-                }
-                foreach ($rows as $row) {
-                    foreach ($row as $key => $value) {
-                        if ($key > 0) {
-                            $file .= ','.$value;
-                        } else {
-                            $file .= $value;
-                        }
-                    }
-                    $file .= PHP_EOL;
-                }
-                $response = new Response($file);
-                $response->headers->set('Content-Type', 'application/txt; charset=utf-8');
-                $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.txt"', $filename));
-
-                return $response;
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-                return $this->redirect($this->generateUrl('datasets_list'));
-            }
-        }
         $this->get('session')->getFlashBag()->add('error', 'Error!');
-        return $this->redirect($this->generateUrl('datasets_list'));
-    }
-    /**
-     * Converts arff type to txt
-     * and downloads it
-     *
-     * @param String $id
-     * @return Response response
-     *
-     * @Route("{id}/convert/tab.html", name="convert_tab")
-     * @Template()
-     */
-    public function convertToTabAction($id)
-    {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity && $entity->getFilePath()) {
-            $format = explode('.', $entity->getFilePath());
-            $format = $format[count($format)-1];
-            $filename = $entity->getDatasetTitle();
-            if ($format == 'arff') {
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), 'arff');
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                $file = '';
-                $first = true;
-                foreach ($rows as $key => $row) {
-                    if (strpos(strtolower($row[0]), '@attribute') === 0) {
-                        $header = explode(' ', $row[0]);
-                        if (!$first) {
-                            $file .= "\t";
-                        } else {
-                            $first = false;
-                        }
-                        if (!isset($header[1])) {
-                            $header[1] = '';
-                        }
-                        $file .= $header[1];
-                    }
-                    if (strtolower($row[0]) != '@data') {
-                        unset($rows[$key]);
-                    } else {
-                        $file .= PHP_EOL;
-                        unset($rows[$key]);
-                        break;
-                    }
-                }
-                foreach ($rows as $row) {
-                    foreach ($row as $key => $value) {
-                        if ($key > 0) {
-                            $file .= "\t".$value;
-                        } else {
-                            $file .= $value;
-                        }
-                    }
-                    $file .= PHP_EOL;
-                }
-                $response = new Response($file);
-                $response->headers->set('Content-Type', 'application/tab; charset=utf-8');
-                $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.tab"', $filename));
-
-                return $response;
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-                return $this->redirect($this->generateUrl('datasets_list'));
-            }
-        }
-        $this->get('session')->getFlashBag()->add('error', 'Error!');
-        return $this->redirect($this->generateUrl('datasets_list'));
-    }
-    /**
-     * Converts arff type to csv
-     * and downloads it
-     *
-     * @param String $id
-     * @return Response response
-     *
-     * @Route("{id}/convert/csv.html", name="convert_csv")
-     * @Template()
-     */
-    public function convertToCsvAction($id)
-    {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity && $entity->getFilePath()) {
-            $format = explode('.', $entity->getFilePath());
-            $format = $format[count($format)-1];
-            $filename = $entity->getDatasetTitle();
-            if ($format == 'arff') {
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), 'arff');
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                $file = '';
-                $first = true;
-                foreach ($rows as $key => $row) {
-                    if (strpos(strtolower($row[0]), '@attribute') === 0) {
-                        $header = explode(' ', $row[0]);
-                        if (!$first) {
-                            $file .= ';';
-                        } else {
-                            $first = false;
-                        }
-                        if (!isset($header[1])) {
-                            $header[1] = '';
-                        }
-                        $file .= $header[1];
-                    }
-                    if (strtolower($row[0]) != '@data') {
-                        unset($rows[$key]);
-                    } else {
-                        $file .= PHP_EOL;
-                        unset($rows[$key]);
-                        break;
-                    }
-                }
-                foreach ($rows as $row) {
-                    foreach ($row as $key => $value) {
-                        if ($key > 0) {
-                            $file .= ';'.$value;
-                        } else {
-                            $file .= $value;
-                        }
-                    }
-                    $file .= PHP_EOL;
-                }
-                $response = new Response($file);
-                $response->headers->set('Content-Type', 'application/csv; charset=utf-8');
-                $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s.csv"', $filename));
-
-                return $response;
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-                return $this->redirect($this->generateUrl('datasets_list'));
-            }
-        }
-        $this->get('session')->getFlashBag()->add('error', 'Error!');
-        return $this->redirect($this->generateUrl('datasets_list'));
-    }
-    /**
-     * Converts arff type to xsl
-     * and downloads it
-     *
-     * @param String $id
-     * @return Response response
-     *
-     * @Route("{id}/convert/xls.html", name="convert_xls")
-     * @Template()
-     */
-    public function convertToXlsAction($id, $midas = 0)
-    {
-        $user = $this->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('DamisDatasetsBundle:Dataset')
-            ->findOneBy(array('user' => $user, 'datasetId' => $id));
-        if ($entity && $entity->getFilePath()) {
-            $format = explode('.', $entity->getFilePath());
-            $format = $format[count($format)-1];
-            $filename = $entity->getDatasetTitle();
-            if ($format == 'arff') {
-                $fileReader = new ReadFile();
-                $rows = $fileReader->getRows('.'.$entity->getFilePath(), 'arff');
-                if ($rows === false) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Exceeded memory limit!', array(), 'DatasetsBundle'));
-                    return $this->redirect($this->generateUrl('datasets_list'));
-                }
-                $objPHPExcel = new PHPExcel();
-                $objPHPExcel->setActiveSheetIndex(0);
-                $colCount = 0;
-                foreach ($rows as $key => $row) {
-                    if (strpos(strtolower($row[0]), '@attribute') === 0) {
-                        $header = explode(' ', $row[0]);
-                        if (!isset($header[1])) {
-                            $header[1] = '';
-                        }
-                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($colCount, 1, $header[1]);
-                        $colCount++;
-                    }
-                    if (strtolower($row[0]) != '@data') {
-                        unset($rows[$key]);
-                    } else {
-                        unset($rows[$key]);
-                        break;
-                    }
-                }
-                $rowCount = 2;
-                $colCount = 0;
-                foreach ($rows as $row) {
-                    foreach ($row as $value) {
-                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($colCount, $rowCount, $value);
-                        $colCount++;
-                    }
-                    $colCount = 0;
-                    $rowCount++;
-                }
-                $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-
-
-                if ($midas == 1) {
-                    $tempFile = $this->container->getParameter("kernel.cache_dir").'/../'.time().$id;
-                    $objWriter->save($tempFile);
-                    return new Response($tempFile);
-                }
-                header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment;'.sprintf('filename="%s.xlsx"', $filename));
-
-                $objWriter->save('php://output');
-
-                return new Response();
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
-                return $this->redirect($this->generateUrl('datasets_list'));
-            }
-        }
-        $this->get('session')->getFlashBag()->add('error', 'Error!');
-        return $this->redirect($this->generateUrl('datasets_list'));
+        return $this->redirectToRoute('datasets_list');
     }
 }

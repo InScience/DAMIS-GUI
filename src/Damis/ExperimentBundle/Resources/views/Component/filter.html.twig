@@ -2,6 +2,9 @@
     <div class="col-lg-12">
         <form method="POST">
             <input type="hidden" name="params" id="params" value="{{ response }}" />
+            {% if dataset_id is defined %}
+                <input type="hidden" name="dataset_id" value="{{ dataset_id }}" />
+            {% endif %}
             <div class="form-group">
                 {{ form_label(form.retFilteredData) }}
                 {{ form_widget(form.retFilteredData) }}

@@ -1,7 +1,7 @@
 services:
   experiment:
       class: Damis\ExperimentBundle\Helpers\Experiment
-      arguments: [@doctrine.orm.entity_manager]
+      arguments: ['@doctrine.orm.entity_manager']
   grid.column.status:
       class: Damis\ExperimentBundle\Grid\Column\StatusColumn
       public: false

@@ -17,17 +17,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="form-group col-lg-4" style="vertical-align: top;">
+                    <td class="form-group col-lg-4" style="vertical-align: middle;">
                         {{ form_widget(form.attr, {'attr': {'style': 'height:250px;'}}) }}
                     </td>
-                    <td class="form-group col-lg-2" style="text-align: center;">
-                        <button title="{{ 'Add'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-src-dst"
-                                style=" margin-bottom: 20px; margin-left: 4px;"><i class="glyphicon glyphicon-arrow-right"/></button>
-                        <br/>
-                        <button title="{{ 'Remove'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-dst-src"><i class="glyphicon glyphicon-arrow-left"/></button>
+                    <td class="form-group col-lg-2" style="vertical-align: middle; text-align: center; height: 250px;">
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                            <button title="{{ 'Add'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-src-dst"
+                                    style="margin-bottom: 20px;"><i class="glyphicon glyphicon-arrow-right"></i></button>
+                            <button title="{{ 'Remove'|trans({}, 'ExperimentBundle') }}" class="btn btn-default shuttle-control-dst-src"><i class="glyphicon glyphicon-arrow-left"></i></button>
+                        </div>
                     </td>
                     <td class="form-group col-lg-4" style="vertical-align: top;">
-                        {{ form_widget(form.selAttr, {'attr': {'style': 'height:150px;'}}) }}
+                        {{ form_widget(form.selAttr, {'attr': {'style': 'height:250px;'}}) }}
                         {{ form_errors(form.selAttr) }}
                         <div style="margin-top: 15px;">
                             {{ form_label(form.classAttr) }}

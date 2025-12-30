@@ -5,26 +5,45 @@ parameters:
     base.user_profile.class: Base\UserBundle\Form\Type\ProfileFormType
 
 services:
-    base.user_registration:
-        class: "%base.user_registration.class%"
-        arguments: [%fos_user.model.user.class%]
+    Base\UserBundle\Form\Type\RegistrationFormType:
+        parent: fos_user.registration.form.type
         tags:
-            - { name: form.type, alias: base_user_registration }
+            - { name: form.type }
 
-    base.user_resetting:
-        class: "%base.user_resetting.class%"
-        arguments: [%fos_user.model.user.class%]
-        tags:
-            - { name: form.type, alias: base_user_resetting }
+    base_user.form.type.registration:
+        alias: Base\UserBundle\Form\Type\RegistrationFormType
 
-    base.user_change_password:
-        class: "%base.user_change_password.class%"
-        arguments: [%fos_user.model.user.class%, "@service_container"]
+    Base\UserBundle\Form\Type\ProfileFormType:
+        parent: fos_user.profile.form.type
         tags:
-            - { name: form.type, alias: base_user_change_password }
+            - { name: form.type }
 
     base.user_profile:
-        class: "%base.user_profile.class%"
-        arguments: [%fos_user.model.user.class%, "@service_container"]
+        alias: Base\UserBundle\Form\Type\ProfileFormType
+
+    Base\UserBundle\Form\Type\ChangePasswordFormType:
+        parent: fos_user.change_password.form.type
         tags:
-            - { name: form.type, alias: base_user_profile }
+            - { name: form.type }
+
+    base.user_change_password:
+        alias: Base\UserBundle\Form\Type\ChangePasswordFormType
+
+    Base\UserBundle\Form\Type\ResettingFormType:
+        parent: fos_user.resetting.form.type
+        tags:
+            - { name: form.type }
+
+    base.user_resetting:
+        alias: Base\UserBundle\Form\Type\ResettingFormType
+
+    fos_user.controller.registration:
+        class: FOS\UserBundle\Controller\RegistrationController
+        public: true
+        arguments:
+            - "@event_dispatcher"
+            - "@fos_user.registration.form.factory"
+            - "@fos_user.user_manager"
+            - "@security.token_storage"
+        calls:
+            - [setContainer, ["@service_container"]]

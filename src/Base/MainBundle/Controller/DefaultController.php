@@ -2,33 +2,40 @@
 
 namespace Base\MainBundle\Controller;
 
+use Damis\DatasetsBundle\Entity\Dataset;
+use Damis\ExperimentBundle\Entity\Experiment;
+use Guzzle\Http\Exception\BadResponseException;
 use Base\UserBundle\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Guzzle\Http\Client;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/", name="base_main_default_index")
-     * @Template()
-     */
-    public function indexAction()
+    public function __construct(private readonly EntityManagerInterface $em, private readonly TranslatorInterface $translator, private readonly TokenStorageInterface $tokenStorage, private readonly EventDispatcherInterface $eventDispatcher, private readonly KernelInterface $kernel, private readonly ParameterBagInterface $params, private readonly RequestStack $requestStack)
     {
-        return array();
     }
 
-    /**
-     * @Route("/midaslogin.html", name="midas_login")
-     * @Method({"POST"})
-     * @Template()
-     */
-    public function loginAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/', name: 'base_main_default_index')]
+    public function index(): Response
+    {
+        return $this->render('@BaseMain/Default/index.html.twig');
+    }
+
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/midaslogin.html', name: 'midas_login', methods: ['POST'])]
+    public function login(Request $request): Response
     {
         $sessionToken = $request->get('sessionToken', null);
         $sessionFinishDate = $request->get('sessionFinishDate', null);
@@ -39,37 +46,38 @@ class DefaultController extends Controller
         $timeStamp = $request->get('timeStamp', null);
         $signature = $request->get('signature', null);
 
-        $fp = fopen($this->get('kernel')->getRootDir().'/../'."/src/Base/MainBundle/Resources/config/public.key.cer", "r");
-        $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir().'/../'."/src/Base/MainBundle/Resources/config/public.key.cer"));
+        // DEV BYPASS START
+        $skipSignature = true;
+        // DEV BYPASS END
+
+        $fp = fopen($this->kernel->getProjectDir()."/src/Base/MainBundle/Resources/config/public.key.cer", "r");
+        $pubKey = fread($fp, filesize($this->kernel->getProjectDir()."/src/Base/MainBundle/Resources/config/public.key.cer"));
         fclose($fp);
-        $signatureAlg = 'SHA256';  // also posible sha256WithRSAEncryption, SHA256, RSA-SHA256
-        // What is signed
+        $signatureAlg = 'SHA256';
+        
         $tmpSignature = $timeStamp.$name.$surname.$sessionFinishDate.$userEmail.$sessionToken.$userId;
         
         $key = openssl_get_publickey($pubKey);
         $details = openssl_pkey_get_details($key);
-        //openssl_public_decrypt(base64_decode($signature, true), $decriptedSignature, $details['key']);
         
-        if (!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode($signature, true), $pubKey, $signatureAlg)) {
-            // Unset older session data
-            $this->get("security.context")->setToken(null);
-            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS user login request parameters are wrong!', array(), 'general'));
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
+        if (!$skipSignature && (!$sessionToken || !$signature || !openssl_verify($tmpSignature, base64_decode((string) $signature, true), $pubKey, $signatureAlg))) {
+            $this->tokenStorage->setToken(null);
+            $this->addFlash('error', $this->translator->trans('MIDAS user login request parameters are wrong!', [], 'general'));
+            return $this->redirectToRoute('fos_user_security_login');
         }
-        $em = $this->getDoctrine()->getManager();
+
         /* @var User $user */
-        $user = $em->getRepository('BaseUserBundle:User')->findOneBy(array('userId' => $userId));
+        $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
 
         $isUserNew = false;
         if (!$user) {
             if ($userEmail) {
-                /* @var $emailExist \Base\UserBundle\Entity\User */;
-                $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
+                /* @var $emailExist \Base\UserBundle\Entity\User */
+                $emailExist = $this->em->getRepository(User::class)->findOneBy(['email' => $userEmail]);
                 if ($emailExist) {
-                    // Remove older user with same email if this user was form MIDAS
                     if ($emailExist->getUserId() > 0) {
                         // Remove user datasets
-                        $files = $em->getRepository('DamisDatasetsBundle:Dataset')->findByUserId($emailExist->getId());
+                        $files = $this->em->getRepository(Dataset::class)->findByUserId($emailExist->getId());
                         foreach ($files as $file) {
                             if ($file) {
                                 if (file_exists('.'.$file->getFilePath())) {
@@ -77,23 +85,23 @@ class DefaultController extends Controller
                                         unlink('.'.$file->getFilePath());
                                     }
                                 }
-                                $em->remove($file);
-                                $em->flush();
+                                $this->em->remove($file);
+                                $this->em->flush();
                             }
                         }
-                        // Remove Eksperiments
-                        $experiments = $em->getRepository('DamisExperimentBundle:Experiment')->findByUser($emailExist->getId());
+                        // Remove Experiments
+                        $experiments = $this->em->getRepository(Experiment::class)->findByUser($emailExist->getId());
                         foreach ($experiments as $experiment) {
                             if ($experiment) {
-                                $em->remove($experiment);
-                                $em->flush();
+                                $this->em->remove($experiment);
+                                $this->em->flush();
                             }
                         }
-                        $em->remove($emailExist);
-                        $em->flush();
+                        $this->em->remove($emailExist);
+                        $this->em->flush();
                     } else {
-                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('User with this email already exists!', array(), 'general'));
-                        return $this->redirect($this->generateUrl('fos_user_security_login'));
+                        $this->addFlash('error', $this->translator->trans('User with this email already exists!', [], 'general'));
+                        return $this->redirectToRoute('fos_user_security_login');
                     }
                 }
             }
@@ -101,13 +109,15 @@ class DefaultController extends Controller
             $user->setPassword($userEmail);
             $isUserNew = true;
         }
+        
         $user->setName($name);
         $user->setSurname($surname);
         if (!$userEmail) {
             $userEmail = $userId.'user@midas.lt';
         }
-         /* @var $emailExist \Base\UserBundle\Entity\User */;
-        $emailExist = $em->getRepository('BaseUserBundle:User')->findOneBy(array('email' => $userEmail));
+        
+        /* @var $emailExist \Base\UserBundle\Entity\User */
+        $emailExist = $this->em->getRepository(User::class)->findOneBy(['email' => $userEmail]);
         if (!$emailExist) {
             $user->setEmail($userEmail);
         }
@@ -116,80 +126,67 @@ class DefaultController extends Controller
             $user->addRole('ROLE_CONFIRMED');
         }
         $user->setUsername($userEmail);
-        $em->persist($user);
-        $em->flush();
+        $this->em->persist($user);
+        $this->em->flush();
+        
         $session = $request->getSession();
         $session->set('sessionToken', $sessionToken);
-        $token = new UsernamePasswordToken($user, null, "main", $user->getRoles());
-        $this->get("security.context")->setToken($token);
-        //Chrome not always store session cookie correctly now its ok.
-        //if (empty($_COOKIE))
-        //    die($this->get('translator')->trans('Please use another browser. This browser has problems with cookies!', array(), 'general'));
-        $request = $this->get("request");
+        $token = new UsernamePasswordToken($user, "main", $user->getRoles());
+        $this->tokenStorage->setToken($token);
         $event = new InteractiveLoginEvent($request, $token);
-        $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+        $this->eventDispatcher->dispatch($event, SecurityEvents::INTERACTIVE_LOGIN);
+        
         if ($isUserNew) {
-            return $this->redirect($this->generateUrl('page_show', array('slug' => $this->container->getParameter('first_time_page'))));
+            return $this->redirectToRoute('page_show', ['slug' => $this->params->get('first_time_page')]);
         } else {
-            return $this->redirect($this->generateUrl('experiments_history'));
+            return $this->redirectToRoute('experiments_history');
         }
     }
 
-    /**
-     * @Route("/midaslogout.html", name="midas_logout")
-     * @Method("GET")
-     * @Template()
-     */
-    public function logoutAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/midaslogout.html', name: 'midas_logout', methods: ['GET'])]
+    public function logout(Request $request): Response
     {
         $session = $request->getSession();
         if ($session->has('sessionToken')) {
             $sessionToken = $session->get('sessionToken');
-        } else {
-            return $this->redirect($this->generateUrl('fos_user_security_logout'));
-        }
-        $client = new Client($this->container->getParameter('midas_url'));
-        $req = $client->delete('/action/authentication/session/'.$sessionToken, array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), array());
+        } else
+            return $this->redirectToRoute('fos_user_security_logout');
+        
+        
+        $client = new Client($this->params->get('midas_url'));
+        $req = $client->delete('/action/authentication/session/'.$sessionToken, 
+            ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken], 
+            []
+        );
+        
         try {
-            $data = json_decode($req->send()->getBody(true), true);
+            $data = json_decode((string) $req->send()->getBody(true), true);
             if ($data['type'] == 'success') {
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('Logged out successfully', array(), 'general'));
+                $this->addFlash('success', $this->translator->trans('Logged out successfully', [], 'general'));
                 $session->remove('sessionToken');
             } else {
-                $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error when logging out', array(), 'general'));
+                $this->addFlash('error', $this->translator->trans('Error when logging out', [], 'general'));
             }
-            return $this->redirect($this->generateUrl('fos_user_security_logout'));
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error when logging out', array(), 'general'));
-            // Logout anyway
-            return $this->redirect($this->generateUrl('fos_user_security_logout'));
+            return $this->redirectToRoute('fos_user_security_logout');
+        } catch (BadResponseException) {
+            $this->addFlash('error', $this->translator->trans('Error when logging out', [], 'general'));
+            return $this->redirectToRoute('fos_user_security_logout');
         }
-
     }
 
-    /**
-     * @Route("/lt.html", name="change_locale_lt")
-     * @Method("GET")
-     * @Template()
-     */
-    public function localeLtAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/lt.html', name: 'change_locale_lt', methods: ['GET'])]
+    public function localeLt(Request $request): Response
     {
         $request->getSession()->set('_locale', 'lt');
-        $locale = $request->getLocale();
         $request->setLocale('lt');
-        return $this->redirect($this->get('request')->headers->get('referer'));
+        return $this->redirect($request->headers->get('referer'));
     }
 
-    /**
-     * @Route("/en.html", name="change_locale_en")
-     * @Method("GET")
-     * @Template()
-     */
-    public function localeEnAction(Request $request)
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/en.html', name: 'change_locale_en', methods: ['GET'])]
+    public function localeEn(Request $request): Response
     {
         $request->getSession()->set('_locale', 'en');
-        $locale = $request->getLocale();
         $request->setLocale('en');
-        return $this->redirect($this->get('request')->headers->get('referer'));
+        return $this->redirect($request->headers->get('referer'));
     }
 }

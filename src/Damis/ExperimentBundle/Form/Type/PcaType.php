@@ -4,72 +4,76 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class PcaType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
-            $pca = $_POST['pca_type'];
-            if ($pca['projType'] == 1 && ($object <= 0 || $object > 100)) {
+        $dataValidator = function ($object, ExecutionContextInterface $context) {
+            $pca = $_POST['pca_type'] ?? null;
+            
+            if ($pca && isset($pca['projType']) && $pca['projType'] == 1 && ($object <= 0 || $object > 100)) {
                 $context->addViolation('Relative cumulative variance must be in interval (0; 100]', [], null);
             }
         };
-        $dataValidator2 = function ($object, ExecutionContextInterface $context) use ($builder) {
-            $pca = $_POST['pca_type'];
-            if ($pca['projType'] == 0 && ($object <= 0)) {
+
+        $dataValidator2 = function ($object, ExecutionContextInterface $context) {
+            $pca = $_POST['pca_type'] ?? null;
+            
+            if ($pca && isset($pca['projType']) && $pca['projType'] == 0 && ($object <= 0)) {
                 $context->addViolation('This value type should be integer', [], null);
             }
         };
+
         $builder
-        ->add('projType', 'choice', [
+        ->add('projType', ChoiceType::class, [
                 'required' => false,
-                'empty_value' => false,
+                'placeholder' => false,
                 'data' => 0,
                 'expanded' => true,
-                'choices' => array(
-                    0 => 'Space',
-                    1 => 'Attribute relative cumulative variance'
-                ),
+                'choices' => ['Space' => 0, 'Attribute relative cumulative variance' => 1],
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => 'Choose PCA projection',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('d', 'integer', [
+        ->add('d', IntegerType::class, [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control', 'min' => 1),
+                'attr' => ['class' => 'form-control', 'min' => 1],
                 'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    )),
-                    new Callback([$dataValidator]),
-                    new Callback([$dataValidator2])
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer']),
+                    new Callback($dataValidator),
+                    new Callback($dataValidator2)
                 ],
                 'label' => 'Space/Variance',
                 'label_attr' => ['class' => 'col-md-9']
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+        
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'pca_type';
     }

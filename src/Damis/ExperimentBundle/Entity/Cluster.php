@@ -6,54 +6,47 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Cluster
- *
- * @ORM\Table(name="cluster")
- * @ORM\Entity
  */
+#[ORM\Table(name: 'cluster')]
+#[ORM\Entity]
 class Cluster
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ClusterName", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ClusterName', type: 'string', length: 80, nullable: false)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ClusterWorkloadHost", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'ClusterWorkloadHost', type: 'string', length: 255, nullable: false)]
     private $workloadHost;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="WorkloadUrl", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'WorkloadUrl', type: 'string', length: 255, nullable: true)]
     private $workloadUrl;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ClusterUrl", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ClusterUrl', type: 'string', length: 255, nullable: true)]
     private $clusterUrl;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ClusterDescription", type="string", length=500, nullable=true)
      */
+    #[ORM\Column(name: 'ClusterDescription', type: 'string', length: 500, nullable: true)]
     private $description;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ClusterID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ClusterID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
 

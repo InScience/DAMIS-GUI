@@ -1,0 +1,127 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: damis
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: lt_LT
+    secret: f781fb4417d6d72748d4747219dca7ca
+    database_path: null
+    project: SOMETHING
+    project_domain: .something
+    project_email: info@something.lt
+    project_full_host: http://www.something.lt
+    is_damis_algorithm_enabled: true
+    service_provider_code: damis
+    first_time_page: vartotojo-instrukcija
+    design_style: original
+    use_ssl_connections: false
+base_user:
+    midas_url: 'https://www.midas.lt'
+
+
+services:
+    _defaults:
+        autowire: true     
+        autoconfigure: true 
+        public: false      
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Base/' 
+            - '../src/Damis/'
+            - '../src/Tests/'
+
+    Base\:
+        resource: '../src/Base/*'
+        exclude:
+            - '../src/Base/*/Entity/' 
+
+    Damis\:
+        resource: '../src/Damis/*'
+        exclude:
+            - '../src/Damis/*/Entity/'
+
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    Base\MainBundle\Controller\:
+        resource: '../src/Base/MainBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+    Base\UserBundle\Controller\:
+        resource: '../src/Base/UserBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+    Base\StaticBundle\Controller\:
+        resource: '../src/Base/StaticBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+    Damis\AlgorithmBundle\Controller\:
+        resource: '../src/Damis/AlgorithmBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+    Damis\DatasetsBundle\Controller\:
+        resource: '../src/Damis/DatasetsBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+    Damis\ExperimentBundle\Controller\:
+        resource: '../src/Damis/ExperimentBundle/Controller/'
+        tags: ['controller.service_arguments']
+
+
+    Base\UserBundle\Controller\ProfileController:
+        arguments:
+            - '@fos_user.profile.form.factory'
+            - '@fos_user.user_manager'
+        tags: ['controller.service_arguments']
+        autoconfigure: true
+    
+
+    Base\UserBundle\Controller\RegistrationController:
+        arguments:
+            - '@event_dispatcher'
+            - '@fos_user.registration.form.factory'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'
+        tags: ['controller.service_arguments']
+        autoconfigure: true
+        
+
+    APY\DataGridBundle\Grid\Column\NumberColumn:
+        tags:
+            - { name: 'grid.column', alias: 'number' }
+            - { name: 'grid.column', alias: 'integer' }
+            - { name: 'grid.column', alias: 'smallint' }
+            - { name: 'grid.column', alias: 'bigint' }
+            - { name: 'grid.column', alias: 'decimal' }
+            - { name: 'grid.column', alias: 'float' }
+
+
+    FOS\UserBundle\Form\Factory\FactoryInterface: '@fos_user.change_password.form.factory'
+
+    Base\UserBundle\Form\Type\ChangePasswordFormType:
+        arguments:
+            $class: '%fos_user.model.user.class%'
+        tags: ['form.type']
+
+    Base\UserBundle\Form\Type\ResettingFormType:
+        arguments:
+            $class: '%fos_user.model.user.class%'
+        tags: ['form.type']
+
+    # --- Cron Tab Manager Service ---
+    Base\MainBundle\Service\CronTabManager:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

@@ -3,171 +3,195 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Damis\DatasetsBundle\Entity\Dataset;
-use Damis\ExperimentBundle\DamisExperimentBundle;
 use Damis\ExperimentBundle\Helpers\Chart;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Damis\ExperimentBundle\Entity\Experiment as Experiment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Damis\ExperimentBundle\Form\Type\FilterType;
 use Symfony\Component\HttpFoundation\Response;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client; 
 use CURLFile;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class ChartController extends Controller
+class ChartController extends AbstractController
 {
+    public function __construct(
+        private readonly ParameterBagInterface $params
+    ) {
+    }
+
     /**
      * Chart generation
-     *
-     * @Route("/experiment/chart/dataset.html", name="dataset_chart", options={"expose" = true})
-     * @Method({"GET", "POST"})
      */
-    function getAction(Request $request)
+    #[Route("/experiment/chart/dataset.html", name: "dataset_chart", methods: ["GET", "POST"], options: ["expose" => true])]
+    function getAction(Request $request, ManagerRegistry $doctrine, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
             if ($request->get('dst') == 'user-computer') {
                 return $this->_downloadImage($request->get('image'), $request->get('format'));
-            } // Midas
+            } 
             elseif ($request->get('dst') == 'midas') {
                 if ($request->get('format') == 'jpeg' || $request->get('format') == 'png') {
                     $temp_file = $this->_getImageFilePath($request->get('image'), $request->get('format'));
                 } else {
-                    // Error
-                    return 0;
+                    return new Response('Invalid format', 400);
                 }
                 
-                $client = new Client($this->container->getParameter('midas_url'));
-                $session = $this->get('request')->getSession();
+                $client = new Client(['base_uri' => $this->params->get('midas_url')]);
+                $session = $request->getSession(); 
+                
                 if ($session->has('sessionToken')) {
                     $sessionToken = $session->get('sessionToken');
                 } else {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+                    $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
                     return $this->redirect($request->headers->get('referer'));
                 }
-              //  $sessionToken = 'e8tbeefhjt455e4kpbbo02o4vp';
+                
                 $fileinfo = pathinfo($temp_file);
                 $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileinfo['basename']);
                         
-                $post = array(
+                $post = [
                     'name' => $name.'.'.$request->get('format'),
-                    //'path' => json_decode($request->get('path'), true)['path'],
-                    //'repositoryType' => 'research',
-                    'parentFolderId' => json_decode($request->get('path'), true)['idCSV'],
-                    'size' => filesize($temp_file)
-                );
-                $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
+                    'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
+                    'size' => filesize($temp_file),
+                ];
 
                 try {
-                    $response = json_decode($req->send()->getBody(true), true);
-                    if ($response['type'] == 'error') {
-                        $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans($response["msgCode"], array(), 'DatasetsBundle'));
+                    $req = $client->post('/action/file-explorer/file/init', [
+                        'headers' => ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken],
+                        'body' => json_encode($post)
+                    ]);
+                    $response = json_decode($req->getBody()->getContents(), true);
+
+                    if (isset($response['type']) && $response['type'] == 'error') {
+                        $session->getFlashBag()->add('error', $translator->trans($response["msgCode"], [], 'DatasetsBundle'));
                         return $this->redirect($request->headers->get('referer'));
                     }
 
                     $fileId = $response['file']['id'];
-                    $header = array('Content-Type: multipart/form-data', 'Authorization:'.$sessionToken);
+                    $header = ['Content-Type: multipart/form-data', 'Authorization:'.$sessionToken];
 
                     $file = new CURLFile($temp_file, 'image/'.$request->get('format'), $name);
-
-                    $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
+                    $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url').'/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $this->params->get('midas_url').'/action/file-explorer/file/slice');
+                    
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);
                     curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
 
                     $result = curl_exec($resource);
-
                     curl_close($resource);
-                    unlink($temp_file);
-                    $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('File uploaded successfully', array(), 'DatasetsBundle'));
+                    
+                    if (file_exists($temp_file)) unlink($temp_file);
+                    
+                    $session->getFlashBag()->add('success', $translator->trans('File uploaded successfully', [], 'DatasetsBundle'));
                     return $this->redirect($request->headers->get('referer'));
-                } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-                    $this->get('session')->getFlashBag()->add('error', $this->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+
+                } catch (\Exception $e) {
+                    $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
                     return $this->redirect($request->headers->get('referer'));
                 }
             }
-        } else {
+        } 
+        else {
             $params = $request->query->all();
-            /* @var $dataset Dataset */
-            $dataset = $this->getDoctrine()
-                ->getRepository('DamisDatasetsBundle:Dataset')
-                ->findOneByDatasetId($params['dataset_url']);
+            
+            $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $params['dataset_url']]);
+
+            if (!$dataset) {
+                 return new JsonResponse(['status' => 'ERROR', 'message' => 'Dataset not found']);
+            }
 
             $helper = new Chart();
-            $x = isset($params['x']) ? $params['x'] : null;
-            $y = isset($params['y']) ? $params['y'] : null;
-            $clsCol = isset($params['cls']) ? $params['cls'] : null;
-            $chart = $helper->classifieData('.'.$dataset->getFilePath(), $x, $y, $clsCol);
+            $fullPath = $this->params->get('kernel.project_dir') . '/public' . $dataset->getFilePath();
+            
+            $x = $params['x'] ?? null;
+            $y = $params['y'] ?? null;
+            $clsCol = $params['cls'] ?? null;
+            
+            $chart = $helper->classifieData($fullPath, $x, $y, $clsCol);
+
+            // Check if there was an error (insufficient data)
+            if (isset($chart['error'])) {
+                $html = $this->renderView('@DamisExperiment/_chart.html.twig', [
+                    'context' => [],
+                    'error' => true,
+                    'error_message' => $chart['error']
+                ]);
+
+                return new JsonResponse([
+                    'status' => 'ERROR',
+                    'html' => $html,
+                    'message' => $chart['error'],
+                    'content' => $chart['content']
+                ]);
+            }
 
             $context = [
                 "attrs" => $chart['attributes'],
                 "x" => $chart['x'],
                 "y" => $chart['y'],
                 "cls" => $chart['clsCol'],
-                "float_cls" => ($chart['attributes'][$chart['clsCol']][0]['type'] == 'real' || $chart['attributes'][$chart['clsCol']][0]['type'] == 'numeric'),
+                "float_cls" => (isset($chart['attributes'][$chart['clsCol']][0]['type']) && ($chart['attributes'][$chart['clsCol']][0]['type'] == 'real' || $chart['attributes'][$chart['clsCol']][0]['type'] == 'numeric')),
                 "minCls" => $chart['content']["minCls"],
                 "maxCls"=> $chart['content']["maxCls"],
             ];
 
-            $html = $this->render(
-                'DamisExperimentBundle::_chart.html.twig',
-                ['context' => $context, 'error' => false]
-            );
+            $html = $this->renderView('@DamisExperiment/_chart.html.twig', ['context' => $context, 'error' => false]);
 
-            return new JsonResponse(
-                [
-                    'status' => 'SUCCESS',
-                    'html' => $html->getContent(),
-                    'content' => $chart['content']
-                ]
-            );
+            return new JsonResponse([
+                'status' => 'SUCCESS',
+                'html' => $html,
+                'content' => $chart['content']
+            ]);
         }
     }
 
     private function _downloadImage($image, $format)
     {
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+            $image = substr($image, strpos($image, ',') + 1);
+            $format = strtolower($type[1]); 
+        }
+
         $image = str_replace(' ', '+', $image);
-
         $data = base64_decode($image);
+        
+        if ($data === false) {
+            return new Response("Error decoding image data", 500);
+        }
 
-        $imageInfo = $image; // Your method to get the data
-        $image = fopen($imageInfo, 'wb');
-        file_put_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart.'.$format, $image);
-        fclose($image);
-        $response = new Response();
-        $response->headers->set('Content-Type', $format);
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'image/' . $format);
         $response->headers->set('Content-Disposition', 'attachment; filename="chart.'.$format.'"');
 
-        $response->setContent(file_get_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart.'.$format));
         return $response;
     }
     
     /**
      * Create temp image file file
-     *
-     * @param type $image
-     * @param type $format
-     * @return type
      */
     private function _getImageFilePath($image, $format)
     {
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+            $image = substr($image, strpos($image, ',') + 1);
+        }
+
         $image = str_replace(' ', '+', $image);
-        // To create unique file
         $id = time();
 
         $data = base64_decode($image);
+        
+        $cacheDir = $this->params->get('kernel.cache_dir');
+        $filePath = $cacheDir . '/chart' . $id . '.' . $format;
+        
+        file_put_contents($filePath, $data);
 
-        $imageInfo = $image; // Your method to get the data
-        $image = fopen($imageInfo, 'wb');
-        file_put_contents(realpath($this->get('kernel')->getRootDir()).'/cache/chart'.$id.'.'.$format, $image);
-        fclose($image);
-
-        return realpath($this->get('kernel')->getRootDir()).'/cache/chart'.$id.'.'.$format;
+        return $filePath;
     }
 }

@@ -2,66 +2,59 @@
 
 namespace Damis\EntitiesBundle\Entity;
 
+use Damis\ExperimentBundle\Entity\Experiment;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Workflowtask
- *
- * @ORM\Table(name="workflowtask", uniqueConstraints={@ORM\UniqueConstraint(name="WORKFLOWTASK_PK", columns={"WorkflowTaskID"})}, indexes={@ORM\Index(name="FK_WORKFLOWTASK_EXPERIMENT", columns={"ExperimentID"})})
- * @ORM\Entity(repositoryClass="Damis\EntitiesBundle\Entity\WorkflowtaskRepository")
  */
+#[ORM\Table(name: 'workflowtask')]
+#[ORM\Index(name: 'FK_WORKFLOWTASK_EXPERIMENT', columns: ['ExperimentID'])]
+#[ORM\UniqueConstraint(name: 'WORKFLOWTASK_PK', columns: ['WorkflowTaskID'])]
+#[ORM\Entity(repositoryClass: WorkflowtaskRepository::class)]
 class Workflowtask
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="WorkflowTaskIsRunning", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'WorkflowTaskIsRunning', type: 'integer', nullable: false)]
     private $workflowtaskisrunning;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="WorkflowTaskID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'WorkflowTaskID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $workflowtaskid;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\Experiment
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Experiment", inversedBy="workflowtasks" )
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ExperimentID", referencedColumnName="ExperimentID", onDelete="CASCADE")
-     * })
+     * @var Experiment
      */
+    #[ORM\JoinColumn(name: 'ExperimentID', referencedColumnName: 'ExperimentID', onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: Experiment::class, inversedBy: 'workflowtasks')]
     private $experiment;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="TaskBox", type="string", length=256, nullable=true)
      */
+    #[ORM\Column(name: 'TaskBox', type: 'string', length: 256, nullable: true)]
     private $taskBox;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Message", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'Message', type: 'text', nullable: true)]
     private $message;
 
     /**
      * @var float
-     *
-     * @ORM\Column(name="ExecutionTime", type="float", nullable=true)
      */
+    #[ORM\Column(name: 'ExecutionTime', type: 'float', nullable: true)]
     private $executionTime;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Damis\EntitiesBundle\Entity\Parametervalue", mappedBy="workflowtask")
-     */
+    #[ORM\OneToMany(targetEntity: Parametervalue::class, mappedBy: 'workflowtask')]
     private $parameterValues;
 
     /**
@@ -69,13 +62,10 @@ class Workflowtask
      */
     public function __construct()
     {
-        $this->parameterValues = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->parameterValues = new ArrayCollection();
     }
 
-    /**
-     * @param mixed $parameterValues
-     */
-    public function setParameterValues($parameterValues)
+    public function setParameterValues(mixed $parameterValues)
     {
         $this->parameterValues = $parameterValues;
     }
@@ -125,10 +115,10 @@ class Workflowtask
     /**
      * Set experiment
      *
-     * @param \Damis\ExperimentBundle\Entity\Experiment $experiment
+     * @param Experiment $experiment
      * @return Workflowtask
      */
-    public function setExperiment(\Damis\ExperimentBundle\Entity\Experiment $experiment = null)
+    public function setExperiment(Experiment $experiment = null)
     {
         $this->experiment = $experiment;
 
@@ -138,7 +128,7 @@ class Workflowtask
     /**
      * Get experiment
      *
-     * @return \Damis\ExperimentBundle\Entity\Experiment
+     * @return Experiment
      */
     public function getExperiment()
     {

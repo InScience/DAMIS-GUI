@@ -38,7 +38,7 @@ class EntityLogRepository extends EntityRepository
 
         if ($action !== null) {
             if (!is_array($action)) {
-                $action = array($action);
+                $action = [$action];
             }
             $query->andWhere('b.action in (:act)')
                 ->setParameter('act', $action);

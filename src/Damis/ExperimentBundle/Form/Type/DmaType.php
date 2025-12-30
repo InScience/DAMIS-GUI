@@ -4,9 +4,11 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class DmaType extends AbstractType
 {
@@ -15,30 +17,26 @@ class DmaType extends AbstractType
     {
 
         $builder
-        ->add('neighbour', 'integer', [
+        ->add('neighbour', IntegerType::class, [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 100),
+                'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 100],
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    )),
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer']),
                     new Assert\Range([
                         'min' => 1,
                         'max' => 100,
-                        'minMessage' => 'Relative neighbor quantity must be in interval (0; 100] %',
-                        'maxMessage' => 'Relative neighbor quantity must be in interval (0; 100] %'
+                        'notInRangeMessage' => 'Relative neighbor quantity must be in interval (0; 100] %'
                     ]),
                 ],
                 'label' => 'Relative number of neighbours',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('d', 'integer', [
+        ->add('d', IntegerType::class, [
                 'required' => true,
                 'data' => 2,
-                'attr' => array('class' => 'form-control', 'min' => 1),
+                'attr' => ['class' => 'form-control', 'min' => 1],
                 'invalid_message' => 'This value type should be integer',
                 'constraints' => [
                     new NotBlank(),
@@ -46,37 +44,30 @@ class DmaType extends AbstractType
                         'value' => 1,
                         'message' => 'This value type should be integer'
                     ]),
-                    new Assert\Type(array(
-                        'type' => 'integer',
-                        'message' => 'This value type should be integer'
-                    ))
+                    new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
                 ],
                 'label' => 'Projection space',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('maxIteration', 'integer', [
+        ->add('maxIteration', IntegerType::class, [
             'required' => true,
             'data' => 100,
-            'attr' => array('class' => 'form-control', 'min' => 1, 'max' => 1000),
+            'attr' => ['class' => 'form-control', 'min' => 1, 'max' => 1000],
             'constraints' => [
                 new Assert\Range([
                     'min' => 1,
                     'max' => 1000,
-                    'minMessage' => 'Number of iteration must be in interval [1; 1000]',
-                    'maxMessage' => 'Number of iteration must be in interval [1; 1000]'
+                    'notInRangeMessage' => 'Number of iteration must be in interval [1; 1000]'
                 ]),
                 new NotBlank(),
-                new Assert\Type(array(
-                    'type' => 'integer',
-                    'message' => 'This value type should be integer'
-                ))
+                new Assert\Type(['type' => 'integer', 'message' => 'This value type should be integer'])
             ],
             'label' => 'Maximum number of iteration',
             'label_attr' => ['class' => 'col-md-9']
         ])
-        ->add('eps', 'text', [
+        ->add('eps', TextType::class, [
             'required' => true,
-            'attr' => array('class' => 'form-control'),
+            'attr' => ['class' => 'form-control'],
             'data' => '0.0001',
             'constraints' => [
                 new Assert\GreaterThanOrEqual([
@@ -90,14 +81,18 @@ class DmaType extends AbstractType
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+        
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => [],
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'dma_type';
     }

@@ -1,7 +1,7 @@
 {% block body %}
     <div class="row">
         <div class="col-lg-12">
-            {% if file != null %}
+            {% if file is not null %}
                 <div class="message">
                     {{'Dataset used in the experiment' | trans({}, 'DatasetsBundle') }}: <b><a target="_blank" href="{{ file.filePath }}">{{ file.datasetTitle }}</a></b>
                 </div>
@@ -29,12 +29,16 @@
                     {% for entity in entities %}
                         <tr>
                             <td>
-                                <input type="radio" {% if entity.datasetID == selected %} checked {% endif %}
+                                <input type="radio" {% if entity.datasetId == selected %} checked {% endif %}
                                        value="{{ entity.datasetId }}" name="dataset_pk">
                                 {{ entity.datasetTitle }}
                             </td>
                             <td nowrap="nowrap">
-                                {{ entity.file.size|convert_bytes }}
+                                {% if entity.file is not null and entity.file.size is defined %}
+                                    {{ entity.file.size|convert_bytes }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
                             </td>
                             <td nowrap="nowrap">
                                 {{ entity.datasetCreated | date('Y-m-d')}}

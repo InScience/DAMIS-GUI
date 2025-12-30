@@ -21,11 +21,11 @@ class FileExtensionValidator extends ConstraintValidator
 
     private function endsWith($haystack, $needle)
     {
-        $length = strlen($needle);
+        $length = strlen((string) $needle);
         if ($length == 0) {
             return true;
         }
 
-        return (substr($haystack, -$length) === $needle);
+        return (substr((string) $haystack, -$length) === $needle);
     }
 }

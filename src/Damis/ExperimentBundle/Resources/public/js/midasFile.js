@@ -39,13 +39,13 @@
 
 				// bind paging handler
 				container.find("a").on("click", function(ev) {
-                    if(!$(this).hasClass('fileView')) {
-                        ev.preventDefault();
-                        var page_url = $(this).attr("href");
-                        if (!page_url.match(/.*#.*/g)) {
-                            window.midasFile.update(dialog, page_url);
-                        }
-                    }
+					if(!$(this).hasClass('fileView')) {
+						ev.preventDefault();
+						var page_url = $(this).attr("href");
+						if (!page_url.match(/.*#.*/g)) {
+							window.midasFile.update(dialog, page_url);
+						}
+					}
 				});
 
 				window.utils.initToggleSectionBtn(container);
@@ -54,6 +54,27 @@
 				dialog.dialog("option", "minWidth", 0);
 				dialog.dialog("option", "width", "auto");
 				window.utils.hideProgress();
+			}).fail(function(xhr, status, error) {
+				window.utils.hideProgress();
+				
+				var container = $(this);
+				var errorMsg = xhr.responseText || 'Error loading MIDAS files. Please ensure you are logged into MIDAS.';
+				
+				if (xhr.status === 403) {
+					container.html('<div class="alert alert-danger">' + errorMsg + '</div>');
+					
+					dialog.closest(".ui-dialog").find("button").removeAttr("disabled");
+					
+					dialog.dialog("option", "buttons", [{
+						"text": Translator.trans('Close', {}, 'ExperimentBundle'),
+						"class": "btn",
+						"click": function(ev) {
+							$(this).dialog("close");
+						}
+					}]);
+				} else {
+					container.html('<div class="alert alert-danger">An error occurred while loading MIDAS files. Please try again.</div>');
+				}
 			});
 		},
 

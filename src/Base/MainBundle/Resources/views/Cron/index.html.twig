@@ -1,0 +1,225 @@
+{% extends '@BaseMain/layout.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ 'cron.title'|trans({}, 'general') }}</h1>
+            
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message|trans({}, 'general') }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ 'cron.list_title'|trans({}, 'general') }}</h3>
+                </div>
+                <div class="panel-body">
+                    {% if cron_jobs|length > 0 %}
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'cron.table.name'|trans({}, 'general') }}</th>
+                                    <th>{{ 'cron.table.schedule'|trans({}, 'general') }}</th>
+                                    <th>{{ 'cron.table.command'|trans({}, 'general') }}</th>
+                                    <th>{{ 'cron.table.status'|trans({}, 'general') }}</th>
+                                    <th>{{ 'cron.table.actions'|trans({}, 'general') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in cron_jobs %}
+                                    <tr class="{{ not job.enabled ? 'text-muted' : '' }}">
+                                        <td>
+                                            <strong>{{ job.name }}</strong>
+                                            {% if job.description %}
+                                                <br><small class="text-muted">{{ job.description }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td><code>{{ job.schedule }}</code></td>
+                                        <td>
+                                            <code>{{ job.command }}</code>
+                                            {% if job.logFile %}
+                                                <br><small class="text-muted">{{ 'cron.log'|trans({}, 'general') }}: {{ job.logFile }}</small>
+                                            {% endif %}
+                                            {% if job.errorFile %}
+                                                <br><small class="text-muted">{{ 'cron.error'|trans({}, 'general') }}: {{ job.errorFile }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if job.enabled %}
+                                                <span class="label label-success">{{ 'cron.status.enabled'|trans({}, 'general') }}</span>
+                                            {% else %}
+                                                <span class="label label-default">{{ 'cron.status.disabled'|trans({}, 'general') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ path('cron_show', {'id': job.id}) }}" class="btn btn-info" title="{{ 'cron.actions.details'|trans({}, 'general') }}">
+                                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                                </a>
+                                                <a href="{{ path('cron_edit', {'id': job.id}) }}" class="btn btn-primary" title="{{ 'cron.actions.edit'|trans({}, 'general') }}">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </a>
+                                                <form method="post" action="{{ path('cron_toggle', {'id': job.id}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ job.id) }}">
+                                                    <button type="submit" class="btn btn-warning" title="{{ job.enabled ? 'cron.actions.disable'|trans({}, 'general') : 'cron.actions.enable'|trans({}, 'general') }}">
+                                                        <span class="glyphicon glyphicon-{{ job.enabled ? 'pause' : 'play' }}"></span>
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{{ path('cron_delete', {'id': job.id}) }}" style="display: inline;" onsubmit="return confirm('{{ 'cron.confirm.delete'|trans({}, 'general') }}');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ job.id) }}">
+                                                    <button type="submit" class="btn btn-danger" title="{{ 'cron.actions.delete'|trans({}, 'general') }}">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="well well-sm">
+                            <p>
+                                <strong>{{ 'cron.info.user'|trans({}, 'general') }}:</strong> <code>{{ cron_user }}</code><br>
+                                <strong>{{ 'cron.info.root'|trans({}, 'general') }}:</strong> <code>{{ cron_root }}</code>
+                            </p>
+                            <a href="{{ path('cron_export') }}" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-download-alt"></span> {{ 'cron.actions.export'|trans({}, 'general') }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            {{ 'cron.no_jobs'|trans({}, 'general') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ 'cron.add_title'|trans({}, 'general') }}</h3>
+                </div>
+                <div class="panel-body">
+                    <p class="text-muted">
+                        {{ 'cron.add_info'|trans({'%user%': cron_user, '%root%': cron_root}, 'general') }}
+                    </p>
+
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                        <div class="form-group">
+                            {{ form_label(form.name, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.name) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.schedule, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.schedule) }}
+                                {{ form_errors(form.schedule) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="custom-schedule-group" style="display: none;">
+                            {{ form_label(form.scheduleCustom, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.scheduleCustom) }}
+                                {{ form_errors(form.scheduleCustom) }}
+                                <p class="help-block">{{ 'cron.help.schedule'|trans({}, 'general') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.command, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.command) }}
+                                {{ form_errors(form.command) }}
+                                <p class="help-block">{{ 'cron.help.command'|trans({}, 'general') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.description) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.logFile, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.logFile) }}
+                                {{ form_errors(form.logFile) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.errorFile, null, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+                            <div class="col-sm-10">
+                                {{ form_widget(form.errorFile) }}
+                                {{ form_errors(form.errorFile) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        {{ form_widget(form.enabled) }}
+                                        {{ form.enabled.vars.label|trans({}, 'general') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-plus"></span> {{ 'cron.actions.add'|trans({}, 'general') }}
+                                </button>
+                            </div>
+                        </div>
+
+                        {{ form_rest(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var scheduleSelect = document.getElementById('{{ form.schedule.vars.id }}');
+    var customGroup = document.getElementById('custom-schedule-group');
+    var customInput = document.getElementById('{{ form.scheduleCustom.vars.id }}');
+    
+    scheduleSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customGroup.style.display = 'block';
+            customInput.required = true;
+        } else {
+            customGroup.style.display = 'none';
+            customInput.required = false;
+        }
+    });
+    
+    // Trigger on page load in case custom is already selected
+    if (scheduleSelect.value === 'custom') {
+        customGroup.style.display = 'block';
+        customInput.required = true;
+    }
+});
+</script>
+{% endblock %}
+

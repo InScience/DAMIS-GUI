@@ -2,58 +2,67 @@
 
 namespace Damis\ExperimentBundle\Command;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\HttpFoundation\Request;
-use DateTime;
-use ReflectionClass;
-use DOMDocument;
-use DOMXPath;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\HttpFoundation\File\File;
+use Damis\EntitiesBundle\Entity\Workflowtask;
+use Damis\ExperimentBundle\Entity\Component;
+use Damis\EntitiesBundle\Entity\Parametervalue;
+use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
+use Damis\ExperimentBundle\Entity\Experiment;
+use Damis\ExperimentBundle\Entity\Experimentstatus;
 use Damis\DatasetsBundle\Entity\Dataset;
 use Base\ConvertBundle\Helpers\ReadFile;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use DateTime;
+use Exception;
+use SoapClient;
 
-class ExecuteExperimentCommand extends ContainerAwareCommand
+#[AsCommand(
+    name: 'experiment:execute',
+    description: 'Execute experiment workflow tasks'
+)]
+class ExecuteExperimentCommand extends Command
 {
-    protected function configure()
+    private EntityManagerInterface $entityManager;
+    private ParameterBagInterface $params;
+    private ContainerInterface $container;
+
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        ParameterBagInterface $params,
+        ContainerInterface $container
+    ) {
+        parent::__construct();
+        $this->entityManager = $entityManager;
+        $this->params = $params;
+        // that are dynamically retrieved later.
+        $this->container = $container;
+    }
+
+    protected function configure(): void
     {
-        $this
-            ->setName('experiment:execute')
-            ->setDescription('Execute experiment workflow tasks')
-            ;
-        
-        // This script is executed throught console. And php uses etc/php5/cli/php.ini
-        // We set all parameters here
         ini_set('date.timezone', "Europe/Vilnius");
         ini_set('max_execution_time', 120);
-        // Can't be set here
-        //php_value post_max_size 110M
-        //php_value upload_max_filesize 100M
         ini_set('memory_limit', "768M");
         ini_set('default_socket_timeout', 6000);
     }
 
     /**
      * Gets runnable tasks, runs them, and updates experiments statuses accordingly
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Executing workflow task');
 
-        /* @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine')->getManager('default');
+        $em = $this->entityManager;
 
         //find specified number of executable workflow tasks (task not in progres|finished, parameter in not null, experiment - executing)
-        $workflowTasks = $em->getRepository('DamisEntitiesBundle:Workflowtask')->getRunnableTasks(100);
+        $workflowTasks = $em->getRepository(Workflowtask::class)->getRunnableTasks(100);
 
         //for all found workflow tasks
         /* @var $task \Damis\EntitiesBundle\Entity\Workflowtask */
@@ -62,13 +71,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $task->setWorkflowtaskisrunning(1);//running
             $em->flush();
 
-            //----------------------------------------------------------------------------------------------------//
             // collect all data
-            //----------------------------------------------------------------------------------------------------//
 
             //find damned component
             /* @var $component \Damis\ExperimentBundle\Entity\Component */
-            $component = $em->getRepository('DamisExperimentBundle:Component')->getTasksComponent($task);
+            $component = $em->getRepository(Component::class)->getTasksComponent($task);
             if (!$component) {
                 continue;
             }
@@ -81,31 +88,31 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             // filter out un callable functions
             if (!$component->getWsdlRunHost()) {//locally executable actions
                 if ($component->getWsdlCallFunction() == 'SELECT') {
-                    $selAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'selAttr')['parametervalue'];
-                    $classAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueBySlug($task, 'classAttr')['parametervalue'];
-                    $inAttr = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getValueByType($task, 1)['parametervalue'];
-                    $outAttrEntity = $em->getRepository('DamisEntitiesBundle:Parametervalue')->getParameterByType($task, 2);
-                   
+                    $selAttr = $em->getRepository(Parametervalue::class)->getValueBySlug($task, 'selAttr')['parametervalue'];
+                    $classAttr = $em->getRepository(Parametervalue::class)->getValueBySlug($task, 'classAttr')['parametervalue'];
+                    $inAttr = $em->getRepository(Parametervalue::class)->getValueByType($task, 1)['parametervalue'];
+                    $outAttrEntity = $em->getRepository(Parametervalue::class)->getParameterByType($task, 2);
+                    
                     if ($inAttr === null or $selAttr === null or $classAttr === null or $outAttrEntity == null) {
                         $output->writeln('Missing task parameters, closing.');
                         $task->setWorkflowtaskisrunning(3);//error
                         $task->setMessage('Missing task parameters');
                     } else {
                         $fileSelect = new ReadFile();
-                        $selAttr = json_decode($selAttr);
-                        $classAttr = json_decode($classAttr);
+                        $selAttr = json_decode((string) $selAttr);
+                        $classAttr = json_decode((string) $classAttr);
 
                         $processedFileId = $fileSelect->selectFeatures(
                             $inAttr,
                             $selAttr,
                             $classAttr,
                             $task->getExperiment()->getUser()->getId(),
-                            $this->getContainer()
+                            $this->container 
                         );
 
                         // set proper out and in if available and successfull
                         $outAttrEntity->setParametervalue($processedFileId);
-                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outAttrEntity->getParametervalueid()));
+                        $inNexts = $em->getRepository(Pvalueoutpvaluein::class)->findBy(['outparametervalue' => $outAttrEntity->getParametervalueid()]);
                         foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($processedFileId);
                         }
@@ -123,11 +130,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 continue;
             }
 
-            $params = array();
+            $params = [];
 
             $inDatasetEntity = null;
             $outDatasetEntities = null;
-            foreach ($em->getRepository('DamisEntitiesBundle:Parametervalue')->getOrderedParameters($task) as $value) {
+            foreach ($em->getRepository(Parametervalue::class)->getOrderedParameters($task) as $value) {
                 if ($value->getParameter()->getConnectionType()->getId() == 1) {
                     $inDatasetEntity = $value;
                 }
@@ -142,7 +149,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             if (!$inDatasetEntity) {
                 continue;
             }
-            $dataset = $em->getRepository('DamisDatasetsBundle:Dataset')->findOneBy(['datasetId' => $inDatasetEntity->getParametervalue()]);
+            $dataset = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $inDatasetEntity->getParametervalue()]);
             if (!$dataset) {
                 continue;
             }
@@ -152,7 +159,7 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $calcTime = $this->hoursToSecods($task->getExperiment()->getMaxDuration()->format('H:i:s'));
             }
 
-            $proc = array();
+            $proc = [];
             if ($component->getWsdlCallFunction() == 'MLP' or
                 $component->getWsdlCallFunction() == 'SMACOFMDS' or
                 $component->getWsdlCallFunction() == 'SAMANN' or
@@ -166,60 +173,42 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             }
 
             $params = array_merge(
-                array(
-                    'X' => $this->getContainer()->getParameter('project_full_host').$dataset->getFilePath(),
-                ),
+                ['X' => $this->params->get('project_full_host').$dataset->getFilePath()],
                 $params,
                 $proc,
-                array(
-                    'maxCalcTime' => $calcTime,
-                )
+                ['maxCalcTime' => $calcTime]
             );
             if (!$params['maxCalcTime']) {
                 $params['maxCalcTime'] = 1;
             }
             
-            //----------------------------------------------------------------------------------------------------//
 
             $output->writeln('Wsdl function parameters: '.print_r($params, true));
                 
             //FOR TESTING PURPOSES ONLY
             //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
 
-            //----------------------------------------------------------------------------------------------------//
             // execute
-            //----------------------------------------------------------------------------------------------------//
            
             /* @var $client \SoapClient */
             $client = new \SoapClient(
                 $component->getWsdlRunHost(),
-                array(
-                    'trace' => 1,
-                    'exception' => 0,
-                    'connection_timeout' => 3600
-                )
+                ['trace' => 1, 'exception' => 0, 'connection_timeout' => 3600]
             );
 
             $result = false;
             $error = false;
             try {
                 //@TODO SSL implementation
-                $output->writeln('Starting call to wsdl fucntion');
+                $output->writeln('Starting call to wsdl function');
                 $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
-                $output->writeln('End of call to wsdl fucntion');
+                $output->writeln('End of call to wsdl function');
             } catch (\SoapFault $e) {
                 $error['message'] = $e->getMessage();
                 $error['detail'] = @$e->detail;
-                
-                // @TODO implement loging
-                /* @var $logger \Monolog\Logger */
-                //$logger = $this->getApplication()->get('logger');
-                //$logger->addError($content);
             }
 
-            //----------------------------------------------------------------------------------------------------//
             // process result
-            //----------------------------------------------------------------------------------------------------//
 
             if ($error) {
                 //save error message
@@ -236,47 +225,71 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 }
 
                 // saing received files
-                $temp_folder = $this->getContainer()->getParameter("kernel.cache_dir");
+                $temp_folder = $this->params->get("kernel.cache_dir");
 
                 //Y
-                $temp_file_y = $temp_folder.'/'.basename($result['Y']);
+                $output->writeln("DEBUG: C++ returned URL: " . ($result['Y'] ?? '[missing]')); // See exactly what we are fetching
+                
+                $temp_file_y = $temp_folder.'/'.basename((string) ($result['Y'] ?? ''));
                 $err_y = false;
-                try {
-                    if ($this->getContainer()->getParameter('use_ssl_connections') == true) {
-                        // Do not validate the server sertificate
-                        $arrContextOptions=array(
-                           "ssl"=>array(
-                               "verify_peer"=>false,
-                               "verify_peer_name"=>false,
-                           ),
-                        );
-                        file_put_contents($temp_file_y, file_get_contents($result['Y'], false, stream_context_create($arrContextOptions)));
-                    } else {
-                        file_put_contents($temp_file_y, file_get_contents($result['Y']));
-                    }
-                } catch (Exception $e) {
+                
+                if (empty($result['Y'])) {
                     $err_y = true;
+                    $output->writeln("ERROR DETAILS: Empty Y URL returned from WSDL call");
+                } else {
+                    try {
+                        $arrContextOptions = [
+                            "ssl" => [
+                                "verify_peer" => false,
+                                "verify_peer_name" => false,
+                            ],
+                            "http" => [
+                                "timeout" => 60, // Wait up to 60 seconds
+                                "ignore_errors" => true // Fetch content even on 404/500 to see error page
+                            ]
+                        ];
+
+                        // Attempt download
+                        $content = @file_get_contents($result['Y'], false, stream_context_create($arrContextOptions));
+
+                        if ($content === false) {
+                            $error = error_get_last();
+                            throw new Exception("Download failed: " . ($error['message'] ?? 'Unknown error'));
+                        }
+
+                        if (strpos($http_response_header[0] ?? '', '200') === false) {
+                             throw new Exception("HTTP Error: " . ($http_response_header[0] ?? 'Unknown HTTP status'));
+                        }
+
+                        file_put_contents($temp_file_y, $content);
+                        $output->writeln("DEBUG: File saved successfully to " . $temp_file_y);
+
+                    } catch (Exception $e) {
+                        $err_y = true;
+                        $output->writeln("ERROR DETAILS: " . $e->getMessage()); 
+                    }
                 }
 
                 //Yalt
                 $err_yalt = false;
                 if (isset($result['Yalt'])) {
-                    $temp_file_yalt = $temp_folder.'/'.basename($result['Yalt']);
-                    try {
-                        if ($this->getContainer()->getParameter('use_ssl_connections') == true) {
-                            // Do not validate the server sertificate
-                            $arrContextOptions=array(
-                                "ssl"=>array(
-                                    "verify_peer"=>false,
-                                    "verify_peer_name"=>false,
-                                ),
-                            );
-                            file_put_contents($temp_file_y, file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptions)));
-                        } else {
-                            file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                    // Treat empty string the same as "no Yalt" (optional output)
+                    if (empty($result['Yalt'])) {
+                        $output->writeln("INFO: Yalt URL not provided, skipping optional output");
+                    } else {
+                        $temp_file_yalt = $temp_folder.'/'.basename((string) $result['Yalt']);
+                        try {
+                            if ($this->params->get('use_ssl_connections') == true) {
+                                // Do not validate the server sertificate
+                                $arrContextOptions=["ssl"=>["verify_peer"=>false, "verify_peer_name"=>false]];
+                                file_put_contents($temp_file_yalt, file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptions)));
+                            } else {
+                                file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                            }
+                        } catch (Exception $e) {
+                            $err_yalt = true;
+                            $output->writeln("ERROR DETAILS Yalt: " . $e->getMessage());
                         }
-                    } catch (Exception $e) {
-                        $err_yalt = true;
                     }
                 }
 
@@ -293,16 +306,12 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     $em->persist($file_entity_y);
                     $em->flush();//HACK, ENTITY MUST BE PERSISTED, FOR MANUAL UPLOAD TO WORK
 
-                    $ref_class_y = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-                    $mapping_y = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity_y, $ref_class_y, 'file');
-                    $file_data_y = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping_y, $file_y);
-                    $file_entity_y->setFile($file_data_y);
-                    $file_entity_y->setFilePath($file_data_y['path']);
+                    $this->saveDatasetFile($file_entity_y, $file_y);
                     $em->flush();
 
                     @unlink($temp_file_y);
 
-                    if (isset($result['Yalt'])) {
+                    if (!empty($result['Yalt'])) {
                         //create dataset Yalt
                         $file_alt = new File($temp_file_yalt);
 
@@ -313,13 +322,9 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                         $file_entity_alt->setDatasetIsMidas(false);
                         $file_entity_alt->setHidden(true);
                         $em->persist($file_entity_alt);
-                        $em->flush();//HACK, ENTITY MUST BE PERSISTED, FOR MANUAL UPLOAD TO WORK
-
-                        $ref_class_alt = new ReflectionClass('Damis\DatasetsBundle\Entity\Dataset');
-                        $mapping_alt = $this->getContainer()->get('iphp.filestore.mapping.factory')->getMappingFromField($file_entity_alt, $ref_class_alt, 'file');
-                        $file_data_alt = $this->getContainer()->get('iphp.filestore.filestorage.file_system')->upload($mapping_alt, $file_alt);
-                        $file_entity_alt->setFile($file_data_alt);
-                        $file_entity_alt->setFilePath($file_data_alt['path']);
+                        $em->flush();
+//
+                        $this->saveDatasetFile($file_entity_alt, $file_alt);
                         $em->flush();
 
                         @unlink($temp_file_yalt);
@@ -329,16 +334,16 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                     if (isset($outDatasetEntities['Y'])) {
                         $outDatasetEntities['Y']->setParametervalue($file_entity_y->getDatasetId());
 
-                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Y']->getParametervalueid()));
+                        $inNexts = $em->getRepository(Pvalueoutpvaluein::class)->findBy(['outparametervalue' => $outDatasetEntities['Y']->getParametervalueid()]);
                         foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($file_entity_y->getDatasetId());
                         }
                     }
 
-                    if (isset($outDatasetEntities['Yalt'])) {
+                    if (isset($outDatasetEntities['Yalt']) && isset($file_entity_alt)) {
                         $outDatasetEntities['Yalt']->setParametervalue($file_entity_alt->getDatasetId());
 
-                        $inNexts = $em->getRepository('DamisEntitiesBundle:Pvalueoutpvaluein')->findBy(array('outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()));
+                        $inNexts = $em->getRepository(Pvalueoutpvaluein::class)->findBy(['outparametervalue' => $outDatasetEntities['Yalt']->getParametervalueid()]);
                         foreach ($inNexts as $inNext) {
                             $inNext->getInparametervalue()->setParametervalue($file_entity_alt->getDatasetId());
                         }
@@ -355,7 +360,6 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
                 $output->writeln('Wsdl result got: '.print_r($result, true));
             }
 
-            //----------------------------------------------------------------------------------------------------//
 
             //set to finished
             $output->writeln('Task finished, closing.');
@@ -363,27 +367,75 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
             $em->flush();
         }
 
-        //----------------------------------------------------------------------------------------------------//
         // find tasks which cannot be run, i.e. in file tasks and set to finished
-        //----------------------------------------------------------------------------------------------------//
 
-        $workflowTasksUn = $em->getRepository('DamisEntitiesBundle:Workflowtask')->getUnrunableTasks(100);
+        $workflowTasksUn = $em->getRepository(Workflowtask::class)->getUnrunableTasks(100);
         foreach ($workflowTasksUn as $taskUn) {
+            // Check for missing parameter values for Uploaded File components (Type 1)
+            /* @var $component \Damis\ExperimentBundle\Entity\Component */
+            $component = $em->getRepository(Component::class)->getTasksComponent($taskUn);
+            if ($component && $component->getTypeId()->getId() == 1) { // 1 = Uploaded File
+                foreach ($taskUn->getParameterValues() as $pValue) {
+                    if ($pValue->getParameter()->getConnectionType()->getId() == 2 // Output
+                        && empty($pValue->getParametervalue())) {
+                        
+                        $output->writeln("Attempting to fix missing parameter for task " . $taskUn->getWorkflowtaskid());
+                        
+                        $guiDataRaw = (string) $taskUn->getExperiment()->getGuiData();
+                        $guiDataParts = explode('***', $guiDataRaw);
+                        $guiData = json_decode($guiDataParts[0], true);
+                        
+                        if (!$guiData) {
+                             $output->writeln("GUIData is empty or invalid JSON");
+                        } else {
+                             $boxId = $taskUn->getTaskBox();
+                             $output->writeln("Looking for boxId: " . $boxId);
+                             
+                             if (isset($guiData[$boxId]['form_parameters'])) {
+                                 $output->writeln("Found form_parameters for box " . $boxId);
+                                 if (is_array($guiData[$boxId]['form_parameters'])) {
+                                    foreach ($guiData[$boxId]['form_parameters'] as $fp) {
+                                        if (isset($fp['value']) && $fp['value']) {
+                                            $val = $fp['value'];
+                                            $pValue->setParametervalue($val);
+                                            $em->persist($pValue);
+                                            $output->writeln("Fixed parameter value: " . $val);
+                                            break; 
+                                        }
+                                    }
+                                 }
+                            } else {
+                                 $output->writeln("No form_parameters found for box " . $boxId);
+                            }
+                        }
+                    }
+                }
+            }
+
             $output->writeln('==============================');
             $output->writeln('Task id : '.$taskUn->getWorkflowtaskid());
             $output->writeln('Un runable task, set to finish.');
+            
+            foreach ($taskUn->getParameterValues() as $pValue) {
+                $param = $pValue->getParameter();
+                if ($param && $param->getConnectionType() && $param->getConnectionType()->getId() == 2) {
+                     $inNexts = $em->getRepository(Pvalueoutpvaluein::class)->findBy(['outparametervalue' => $pValue->getParametervalueid()]);
+                     foreach ($inNexts as $inNext) {
+                         $inNext->getInparametervalue()->setParametervalue($pValue->getParametervalue());
+                     }
+                }
+            }
+
             $taskUn->setWorkflowtaskisrunning(2);//finished
             $em->persist($taskUn);
         }
         $em->flush();
 
-        //----------------------------------------------------------------------------------------------------//
         // find finished experiments and set to finished
-        //----------------------------------------------------------------------------------------------------//
 
-        $experimentsToCloe = $em->getRepository('DamisExperimentBundle:Experiment')->getClosableExperiments(100);
+        $experimentsToCloe = $em->getRepository(Experiment::class)->getClosableExperiments(100);
         $experimentStatus = $em
-            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->getRepository(Experimentstatus::class)
             ->findOneBy(['experimentstatus' => 'FINISHED']);
         foreach ($experimentsToCloe as $exCl) {
             $output->writeln('==============================');
@@ -395,13 +447,11 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         }
         $em->flush();
 
-        //----------------------------------------------------------------------------------------------------//
         // find errored experiments and set to error
-        //----------------------------------------------------------------------------------------------------//
 
-        $experimentsToCloe = $em->getRepository('DamisExperimentBundle:Experiment')->getClosableErrExperiments(100);
+        $experimentsToCloe = $em->getRepository(Experiment::class)->getClosableErrExperiments(100);
         $experimentStatus = $em
-            ->getRepository('DamisExperimentBundle:Experimentstatus')
+            ->getRepository(Experimentstatus::class)
             ->findOneBy(['experimentstatus' => 'ERROR']);
         foreach ($experimentsToCloe as $exCl) {
             $output->writeln('==============================');
@@ -413,17 +463,38 @@ class ExecuteExperimentCommand extends ContainerAwareCommand
         }
         $em->flush();
 
-        //----------------------------------------------------------------------------------------------------//
 
         $output->writeln('==============================');
         $output->writeln('Executing finished');
+
+        return Command::SUCCESS;
     }
 
-    function hoursToSecods($hour)
+    private function saveDatasetFile(Dataset $dataset, File $file): void
     {
- // $hour must be a string type: "HH:mm:ss"
-        $parse = array();
-        if (!preg_match('#^(?<hours>[\d]{2}):(?<mins>[\d]{2}):(?<secs>[\d]{2})$#', $hour, $parse)) {
+        $projectDir = $this->params->get('kernel.project_dir');
+        $targetDir = $projectDir . '/public/uploads/datasets';
+        
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $originalName = $file->getFilename();
+        // Ensure we have a safe filename
+        $newName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $originalName);
+        
+        $file->move($targetDir, $newName);
+        
+        $relativePath = '/uploads/datasets/' . $newName;
+        $dataset->setFilePath($relativePath);
+        $dataset->setFile(['path' => $relativePath]);
+    }
+
+    private function hoursToSecods($hour): int
+    {
+    // $hour must be a string type: "HH:mm:ss"
+        $parse = [];
+        if (!preg_match('#^(?<hours>[\d]{2}):(?<mins>[\d]{2}):(?<secs>[\d]{2})$#', (string) $hour, $parse)) {
             return 0;
         }
 

@@ -1,5 +1,5 @@
 <div style="display:none">
-<span>{{ parameter.name }}<span class="req">*</span>
+<span>{{ parameter.getTitle(app.request.locale) | trans({}, 'ExperimentBundle') }}<span class="req">*</span>
 
         <input id="value" name="value" type="text" />
     </span>

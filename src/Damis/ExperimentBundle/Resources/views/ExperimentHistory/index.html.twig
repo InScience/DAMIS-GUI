@@ -1,8 +1,8 @@
-{% extends "FOSUserBundle::layout.html.twig" %}
+{% extends "@FOSUser/layout.html.twig" %}
 
 {% block body -%}
-   {% include "BaseUserBundle::messages.html.twig" %}
-   {% include "DamisExperimentBundle::messages.html.twig" %}
+   {% include "@BaseUser/messages.html.twig" %}
+   {% include "@DamisExperiment/messages.html.twig" %}
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="{{ path('experiments_history') }}">{{ 'Experiment history'|trans({}, 'ExperimentBundle') }}</a></li>

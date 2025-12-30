@@ -1,0 +1,16 @@
+{% extends "@BaseMain/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+    <div class="container">
+        <h2>{{ 'profile.flash.updated'|trans }}</h2>
+        
+        <div class="fos_user_user_show">
+            <p>{{ 'profile.show.username'|trans }}: {{ user.username }}</p>
+            <p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
+        </div>
+        
+        <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary">{{ 'profile.flash.updated'|trans }}</a>
+    </div>
+{% endblock %}

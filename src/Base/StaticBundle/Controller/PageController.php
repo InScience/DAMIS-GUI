@@ -2,69 +2,70 @@
 
 namespace Base\StaticBundle\Controller;
 
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Attribute\Route;
 use Base\StaticBundle\Entity\Page;
 use Base\StaticBundle\Form\PageType;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
+use APY\DataGridBundle\Grid\Grid;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Page controller.
  */
-class PageController extends Controller
+class PageController extends AbstractController
 {
+     public function __construct(private readonly ManagerRegistry $doctrine) {}
+
     /**
      * Show for static menu
      */
-    public function staticMenuAction($groupName, Request $request)
+    public function staticMenu($groupName, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager(); // <-- Use injected doctrine
 
-        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));
-        ;
+        $entities = $em->getRepository(Page::class)->findBy(
+            ['groupName' => $groupName, 'language' => $request->getLocale()],
+            ['position' => 'ASC']
+        );
 
-        return $this->container->get('templating')->renderResponse("BaseStaticBundle::staticMenu.html.twig", array(
-            'pages' => $entities,
-        ));
+        return $this->render('@BaseStatic/staticMenu.html.twig', ['pages' => $entities]);
     }
 
     /**
      * Show for static info
      */
-    public function staticInfoAction($groupName, Request $request)
+    public function staticInfo($groupName, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $entities = $em->getRepository('BaseStaticBundle:Page')->findBy(array('groupName' => $groupName, 'language' => $request->getLocale() ), array('position' => 'ASC'));
-        ;
+        $entities = $em->getRepository(Page::class)->findBy(
+            ['groupName' => $groupName, 'language' => $request->getLocale()],
+            ['position' => 'ASC']
+        );
 
-        return $this->container->get('templating')->renderResponse("BaseStaticBundle::staticInfo.html.twig", array(
-            'pages' => $entities,
-        ));
+        return $this->render('@BaseStatic/staticInfo.html.twig', ['pages' => $entities]);
     }
 
     /**
      * Lists all Page entities.
-     *
-     * @Route("/pages.html", name="page")
-     * @Template()
      */
-    public function indexAction()
+    #[Route("/pages.html", name: "page")]
+    public function index(Grid $grid, TranslatorInterface $translator, Request $request)
     {
-        $source = new Entity('BaseStaticBundle:Page');
+        $source = new Entity(Page::class);
 
         /* @var $grid \APY\DataGridBundle\Grid\Grid */
-        $grid = $this->get('grid');
-
         $tableAlias = $source->getTableAlias();
         $source->manipulateQuery(
             function ($query) use ($tableAlias) {
-            
                 $query->resetDQLPart('orderBy');
                 $query->addOrderBy($tableAlias.'.groupName', 'ASC');
                 $query->addOrderBy($tableAlias.'.position', 'ASC');
@@ -72,143 +73,140 @@ class PageController extends Controller
         );
 
         $grid->setSource($source);
-        $grid->setLimits(25);
-        $grid->setNoResultMessage($this->get('translator')->trans('No data'));
+        $grid->setLimits([25]);
+        $grid->setNoResultMessage($translator->trans('No data'));
 
-        //custom colums config
-        $grid->hideColumns('id');
+        $grid->hideColumns(['id']);
 
         /* @var $column \APY\DataGridBundle\Grid\Column\Column */
-        $column = $grid->getColumn('title');
-        $column->setOperators(array('like'));
-        $column->setOperatorsVisible(false);
-        $column->setDefaultOperator('like');
-        $column->setSortable(false);
-        $column->setTitle($this->get('translator')->trans('form.title', array(), 'StaticBundle'));
+        if ($grid->hasColumn('title')) {
+            $column = $grid->getColumn('title');
+            $column->setOperators(['like']);
+            $column->setOperatorsVisible(false);
+            $column->setDefaultOperator('like');
+            $column->setSortable(false);
+            $column->setTitle($translator->trans('form.title', [], 'StaticBundle'));
+        }
 
-        $column = $grid->getColumn('groupName');
-        $column->setOperators(array('like'));
-        $column->setOperatorsVisible(false);
-        $column->setDefaultOperator('like');
-        $column->setSortable(false);
-        $column->setTitle($this->get('translator')->trans('form.group', array(), 'StaticBundle'));
+        if ($grid->hasColumn('groupName')) {
+            $column = $grid->getColumn('groupName');
+            $column->setOperators(['like']);
+            $column->setOperatorsVisible(false);
+            $column->setDefaultOperator('like');
+            $column->setSortable(false);
+            $column->setTitle($translator->trans('form.group', [], 'StaticBundle'));
+        }
 
-        //add actions column
-        $rowAction = new RowAction($this->get('translator')->trans('Edit'), 'page_edit');
-        $actionsColumn2 = new ActionsColumn('info_column', $this->get('translator')->trans('Actions'), array($rowAction), "<br/>");
+        if ($grid->hasColumn('language')) {
+            $column = $grid->getColumn('language');
+            $column->manipulateRenderCell(
+                function ($value, $row, $router) {
+                    if ($value instanceof \Base\StaticBundle\Entity\LanguageEnum) {
+                        return $value->value;
+                    }
+                    return $value;
+                }
+            );
+            $column->setTitle($translator->trans('form.language', [], 'StaticBundle'));
+        }
+
+        $rowAction = new RowAction($translator->trans('Edit'), 'page_edit');
+        $actionsColumn2 = new ActionsColumn('info_column', $translator->trans('Actions'));
+        $actionsColumn2->setRowActions([$rowAction]);
         $grid->addColumn($actionsColumn2);
 
-        return $grid->getGridResponse('BaseStaticBundle::Page\index.html.twig');
+        return $grid->getGridResponse('@BaseStatic/Page/index.html.twig');
     }
 
     /**
      * Creates a new Page entity.
-     *
-     * @Route("/pages/", name="page_create")
-     * @Method("POST")
-     * @Template("BaseStaticBundle:Page:new.html.twig")
      */
-    public function createAction(Request $request)
+    #[Route("/pages/", name: "page_create", methods: ["POST"])]
+    public function create(Request $request, SessionInterface $session)
     {
         $entity = new Page();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->doctrine->getManager();
 
-            $position = $em->getRepository('BaseStaticBundle:Page')->getMaxTextPosition($entity->getGroupName())['max_position']+1;
-            if (empty($position)) {
-                $position = 1;
-            }
+            $maxPosResult = $em->getRepository(Page::class)->getMaxTextPosition($entity->getGroupName());
+            $position = ($maxPosResult && isset($maxPosResult['max_position'])) ? $maxPosResult['max_position'] + 1 : 1;
 
             $entity->setPosition($position);
 
             $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('notice', 'form.created');
+            $session->getFlashBag()->add('notice', 'form.created');
 
-            return $this->redirect($this->generateUrl('page'));
+            return $this->redirectToRoute('page');
         }
 
-        return array(
+        return $this->render('@BaseStatic/Page/new.html.twig', [
             'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+            'form'   => $form->createView()
+        ]);
     }
 
     /**
     * Creates a form to create a Page entity.
-    *
-    * @param Page $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(Page $entity)
+    private function createCreateForm(Page $entity): Form
     {
-        $form = $this->createForm(new PageType(), $entity, array(
+        $form = $this->createForm(PageType::class, $entity, [
             'action' => $this->generateUrl('page_create'),
-            'method' => 'POST',
-        ));
+            'method' => 'POST'
+        ]);
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
 
         return $form;
     }
 
     /**
      * Displays a form to create a new Page entity.
-     *
-     * @Route("/pages/new.html", name="page_new")
-     * @Method("GET")
-     * @Template()
      */
-    public function newAction()
+    #[Route("/pages/new.html", name: "page_new", methods: ["GET"])]
+    public function new()
     {
         $entity = new Page();
         $form   = $this->createCreateForm($entity);
 
-        return array(
+        return $this->render('@BaseStatic/Page/new.html.twig', [
             'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+            'form'   => $form->createView()
+        ]);
     }
 
     /**
      * Finds and displays a Page entity.
-     *
-     * @Route("/page/{slug}.html", name="page_show")
-     * @Method("GET")
-     * @Template()
      */
-    public function showAction($slug)
+    #[Route("/page/{slug}.html", name: "page_show", methods: ["GET"])]
+    public function show($slug)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager(); // <-- Use injected doctrine
 
-        $entity = $em->getRepository('BaseStaticBundle:Page')->findOneBy(array('slug' => $slug));
+        $entity = $em->getRepository(Page::class)->findOneBy(['slug' => $slug]);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Page entity.');
         }
-        $entity->setText(str_replace('<table', '<table class="list"', $entity->getText()));
-        return array(
-            'entity'      => $entity,
-        );
+        $entity->setText(str_replace('<table', '<table class="list"', (string) $entity->getText()));
+
+        return $this->render('@BaseStatic/Page/show.html.twig', ['entity' => $entity]);
     }
 
     /**
      * Displays a form to edit an existing Page entity.
-     *
-     * @Route("/pages/{id}/edit.html", name="page_edit")
-     * @Method("GET")
-     * @Template()
      */
-    public function editAction($id)
+    #[Route("/pages/{id}/edit.html", name: "page_edit", methods: ["GET"])]
+    public function edit($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $entity = $em->getRepository('BaseStaticBundle:Page')->find($id);
+        $entity = $em->getRepository(Page::class)->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Page entity.');
@@ -217,43 +215,37 @@ class PageController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        return $this->render('@BaseStatic/Page/edit.html.twig', [
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+            'delete_form' => $deleteForm->createView()
+        ]);
     }
 
     /**
     * Creates a form to edit a Page entity.
-    *
-    * @param Page $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Page $entity)
+    private function createEditForm(Page $entity): Form
     {
-        $form = $this->createForm(new PageType(), $entity, array(
-            'action' => $this->generateUrl('page_update', array('id' => $entity->getId())),
+        $form = $this->createForm(PageType::class, $entity, [
+            'action' => $this->generateUrl('page_update', ['id' => $entity->getId()]),
             'method' => 'PUT',
-        ));
+        ]);
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, ['label' => 'Update']);
 
         return $form;
     }
+
     /**
      * Edits an existing Page entity.
-     *
-     * @Route("/pages/{id}", name="page_update")
-     * @Method("PUT")
-     * @Template("BaseStaticBundle:Page:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    #[Route("/pages/{id}", name: "page_update", methods: ["PUT"])]
+    public function update(Request $request, $id, SessionInterface $session)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $entity = $em->getRepository('BaseStaticBundle:Page')->find($id);
+        $entity = $em->getRepository(Page::class)->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Page entity.');
@@ -263,36 +255,34 @@ class PageController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $entity->setSlug(null);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
 
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('notice', 'form.updated');
+            $session->getFlashBag()->add('notice', 'form.updated');
 
-            return $this->redirect($this->generateUrl('page_edit', array('id' => $id)));
+            return $this->redirectToRoute('page_edit', ['id' => $id]);
         }
 
-        return array(
+        return $this->render('@BaseStatic/Page/edit.html.twig', [
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+            'delete_form' => $deleteForm->createView()
+        ]);
     }
+
     /**
      * Deletes a Page entity.
-     *
-     * @Route("/pages/{id}", name="page_delete")
-     * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    #[Route("/pages/{id}", name: "page_delete", methods: ["DELETE"])]
+    public function delete(Request $request, $id, SessionInterface $session)
     {
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('BaseStaticBundle:Page')->find($id);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->doctrine->getManager(); // <-- Use injected doctrine
+            $entity = $em->getRepository(Page::class)->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Page entity.');
@@ -301,89 +291,105 @@ class PageController extends Controller
             $em->remove($entity);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->add('notice', 'form.deleted');
+            $session->getFlashBag()->add('notice', 'form.deleted');
+        } else {
+             $session->getFlashBag()->add('error', 'Invalid delete request.');
         }
 
-        return $this->redirect($this->generateUrl('page'));
+
+        return $this->redirectToRoute('page');
     }
 
     /**
-     * Creates a form to delete a Page entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
+    * Creates a form to delete a Page entity by id.
+    * (Internal method, no route)
+    */
+    private function createDeleteForm(mixed $id): Form
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('page_delete', array('id' => $id)))
-            ->setMethod('DELETE')
+            ->setAction($this->generateUrl('page_delete', ['id' => $id]))
+            ->setMethod(Request::METHOD_DELETE)
+            ->add('submit', SubmitType::class, ['label' => 'Delete', 'attr' => ['class' => 'btn btn-danger']])
             ->getForm()
         ;
     }
 
     /**
-     * Change position of shop group text.
-     *
-     * @Route("/pages/{id}/up", name="page_up")
-     * @Method("GET")
+     * Move Page position up.
      */
-    public function upPagePositionAction($id)
+    #[Route("/pages/{id}/up", name: "page_up", methods: ["GET"])]
+    public function upPagePosition($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager(); // <-- Use injected doctrine
 
-        $entityText = $em->getRepository('BaseStaticBundle:Page')->find($id);
+        $entityText = $em->getRepository(Page::class)->find($id);
 
         if (!$entityText) {
             throw $this->createNotFoundException('Unable to find Page entity.');
         }
 
         if ($entityText->getPosition() > 1) {
-            $newPosition = $entityText->getPosition()-1;
-            $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextUpPosition($newPosition, $entityText->getGroupName());
+            $currentPosition = $entityText->getPosition();
+            $newPosition = $currentPosition - 1;
+
+            // Find the entity currently at the new position within the same group
+            $entityTextSwap = $em->getRepository(Page::class)->findOneBy([
+                'position' => $newPosition,
+                'groupName' => $entityText->getGroupName()
+            ]);
 
             if ($entityTextSwap) {
-                $entityTextSwap->setPosition($entityText->getPosition());
+                // Swap positions
+                $entityTextSwap->setPosition($currentPosition);
                 $entityText->setPosition($newPosition);
 
-                $em->merge($entityText);
-                $em->merge($entityTextSwap);
+                $em->persist($entityText);
+                $em->persist($entityTextSwap);
                 $em->flush();
+            } else {
+                 $entityText->setPosition($newPosition);
+                 $em->persist($entityText);
+                 $em->flush();
             }
         }
 
-        return $this->redirect($this->generateUrl('page'));
+        return $this->redirectToRoute('page');
     }
 
     /**
-     * Change position of shop group text.
-     *
-     * @Route("/pages/{id}/down", name="page_down")
-     * @Method("GET")
+     * Move Page position down.
      */
-    public function downPagePositionAction($id)
+    #[Route("/pages/{id}/down", name: "page_down", methods: ["GET"])]
+    public function downPagePosition($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $entityText = $em->getRepository('BaseStaticBundle:Page')->find($id);
+        $entityText = $em->getRepository(Page::class)->find($id);
 
         if (!$entityText) {
             throw $this->createNotFoundException('Unable to find Page entity.');
         }
 
-        $newPosition = $entityText->getPosition()+1;
-        $entityTextSwap = $em->getRepository('BaseStaticBundle:Page')->getNextDownPosition($newPosition, $entityText->getGroupName());
+        $currentPosition = $entityText->getPosition();
+        $newPosition = $currentPosition + 1;
+
+        $entityTextSwap = $em->getRepository(Page::class)->findOneBy([
+            'position' => $newPosition,
+            'groupName' => $entityText->getGroupName()
+        ]);
+
 
         if ($entityTextSwap) {
-            $entityTextSwap->setPosition($entityText->getPosition());
+            $entityTextSwap->setPosition($currentPosition);
             $entityText->setPosition($newPosition);
 
-            $em->merge($entityText);
-            $em->merge($entityTextSwap);
+            $em->persist($entityText);
+            $em->persist($entityTextSwap);
             $em->flush();
+        } else {
         }
 
-        return $this->redirect($this->generateUrl('page'));
+
+        return $this->redirectToRoute('page');
     }
 }

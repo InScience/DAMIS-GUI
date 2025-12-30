@@ -4,54 +4,48 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class NormDataType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $dataValidator = function ($object, ExecutionContextInterface $context) use ($builder) {
-            $data = $_POST['normdata_type'];
-            if ($object >= $data['b'] && $data['normMeanStd'] == 1) {
-                $context->addViolation('Interval upper bound must be greater than lower', [], null);
-            }
-        };
         $builder
-        ->add('normMeanStd', 'choice', [
-                'empty_value' => false,
+            ->add('normMeanStd', ChoiceType::class, [
+                'placeholder' => false,
                 'required' => false,
                 'data' => 1,
                 'expanded' => true,
-                'choices' => array(
-                    1 => 'Mean a, Standard deviation b',
-                    0 => 'Interval [a;b]'
-                ),
+                'choices' => [
+                    'Mean a, Standard deviation b' => 1,
+                    'Interval [a;b]' => 0
+                ],
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => 'Choose norm method',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('a', 'number', [
+            ->add('a', NumberType::class, [
                 'required' => true,
                 'data' => 0,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(),
-                    new Callback([$dataValidator])
                 ],
                 'label' => 'a',
                 'label_attr' => ['class' => 'col-md-1']
             ])
-        ->add('b', 'number', [
+            ->add('b', NumberType::class, [
                 'required' => true,
                 'data' => 1,
-                'attr' => array('class' => 'form-control'),
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(),
                     new Assert\GreaterThanOrEqual([
@@ -64,14 +58,36 @@ class NormDataType extends AbstractType
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $formValidator = function ($data, ExecutionContextInterface $context) {
+            $method = $data['normMeanStd'] ?? null;
+            $a = $data['a'] ?? null;
+            $b = $data['b'] ?? null;
+
+            if ($method !== null && $method == 0) { 
+                if ($a !== null && $b !== null && $a >= $b) {
+                    $context->buildViolation('Interval upper bound must be greater than lower')
+                        ->atPath('a')
+                        ->addViolation();
+                }
+            }
+        };
+
+        $resolver->setDefined(['choices', 'class']);
+
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => null,
+            'constraints' => [
+                new Callback($formValidator)
+            ]
+        ]);
     }
 
-    public function getName()
+
+    public function getBlockPrefix()
     {
         return 'normdata_type';
     }

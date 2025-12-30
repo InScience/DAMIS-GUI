@@ -2,58 +2,56 @@
 
 namespace Base\UserBundle\Form;
 
+use Base\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class UserType extends AbstractType
 {
-        /**
+    /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.username'),))
-            ->add('name', null, array('label' => 'form.name', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.name'),))
-            ->add('surname', null, array('label' => 'form.surname', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.surname'),))
-            ->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.email'),))
-            ->add('organisation', null, array('label' => 'form.organisation', 'translation_domain' => 'FOSUserBundle', 'attr' => array('class' => 'form-control', 'placeholder' => 'form.organisation'),))
-            ->add('roles', 'choice', array(
+            ->add('username', TextType::class, ['label' => 'form.username', 'translation_domain' => 'FOSUserBundle', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.username']])
+            ->add('name', TextType::class, ['label' => 'form.name', 'translation_domain' => 'FOSUserBundle', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.name']])
+            ->add('surname', TextType::class, ['label' => 'form.surname', 'translation_domain' => 'FOSUserBundle', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.surname']])
+            ->add('email', EmailType::class, ['label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.email']])
+            ->add('organisation', TextType::class, ['label' => 'form.organisation', 'translation_domain' => 'FOSUserBundle', 'attr' => ['class' => 'form-control', 'placeholder' => 'form.organisation']])
+            ->add('roles', ChoiceType::class, [
                 'required' => false,
-                'translation_domain' => 'FOSUserBundle',
                 'multiple' => true,
                 'expanded' => true,
-                'choices' => $this->refactorRoles(),
-                'attr' => array('class' => 'checkbox'),
-            ))
-            ->add('locked', null, array('label' => 'form.locked', 'translation_domain' => 'FOSUserBundle', 'required' => false,))
+                'choices' => [
+                    'admin.role_confirmed' => 'ROLE_CONFIRMED',
+                    'admin.role_admin' => 'ROLE_ADMIN',
+                ],
+                'choice_translation_domain' => 'FOSUserBundle',
+                'attr' => ['class' => 'checkbox']
+            ])
+            ->add('locked', CheckboxType::class, ['label' => 'form.locked', 'translation_domain' => 'FOSUserBundle', 'required' => false])
         ;
     }
 
-    private function refactorRoles()
-    {
-        //$result['ROLE_USER'] = 'admin.role_user'; //negalima panaikinti vartotojui tokios roles
-        $result['ROLE_CONFIRMED'] = 'admin.role_confirmed'; //negalima panaikinti vartotojui tokios roles
-        $result['ROLE_ADMIN'] = 'admin.role_admin';
-        return $result;
-    }
-
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Base\UserBundle\Entity\User'
-        ));
+        $resolver->setDefaults(['data_class' => User::class]);
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'base_userbundle_user';
     }

@@ -1,10 +1,22 @@
 services:
-    datasets.twig.datasets_extension:
-        class: Damis\DatasetsBundle\Twig\DatasetsExtension
-        tags:
-            - { name: twig.extension }
+    # datasets.twig.datasets_extension:
+    #     class: Damis\DatasetsBundle\Twig\DatasetsExtension
+    #     tags:
+    #         - { name: twig.extension }
     midas_service:
         class:  Damis\DatasetsBundle\Controller\MidasController
         arguments:
-            session: @session
-            container: @service_container
+            $session: '@session'
+            $translator: '@translator'
+            $logger: '@logger'
+
+    Damis\DatasetsBundle\Controller\DatasetsController:
+        arguments:
+            - '@doctrine'
+            - '@knp_paginator'
+            - '@parameter_bag'
+            - '@translator'
+            - '@?iphp.filestore.mapping.factory'
+            - '@?iphp.filestore.filestorage.file_system'
+        tags: ['controller.service_arguments']
+        public: true

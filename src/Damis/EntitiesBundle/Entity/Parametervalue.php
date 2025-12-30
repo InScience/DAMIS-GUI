@@ -2,50 +2,45 @@
 
 namespace Damis\EntitiesBundle\Entity;
 
+use Damis\ExperimentBundle\Entity\Parameter;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Parametervalue
- *
- * @ORM\Table(name="parametervalue", uniqueConstraints={@ORM\UniqueConstraint(name="PARAMETERVALUE_PK", columns={"ParameterValueID"})}, indexes={@ORM\Index(name="FK_PARAMETERVALUE_WORKFLOWTASK", columns={"WorkflowTaskID"}), @ORM\Index(name="FK_PARAMETERVALUE_PARAMETER", columns={"ParameterID"})})
- * @ORM\Entity(repositoryClass="Damis\EntitiesBundle\Entity\ParametervalueRepository")
  */
+#[ORM\Table(name: 'parametervalue')]
+#[ORM\Index(name: 'FK_PARAMETERVALUE_WORKFLOWTASK', columns: ['WorkflowTaskID'])]
+#[ORM\Index(name: 'FK_PARAMETERVALUE_PARAMETER', columns: ['ParameterID'])]
+#[ORM\UniqueConstraint(name: 'PARAMETERVALUE_PK', columns: ['ParameterValueID'])]
+#[ORM\Entity(repositoryClass: ParametervalueRepository::class)]
 class Parametervalue
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterValue", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterValue', type: 'string', length: 255, nullable: true)]
     private $parametervalue;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ParameterValueID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ParameterValueID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $parametervalueid;
 
     /**
-     * @var \Damis\EntitiesBundle\Entity\Workflowtask
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\EntitiesBundle\Entity\Workflowtask", inversedBy="parameterValues")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="WorkflowTaskID", referencedColumnName="WorkflowTaskID", onDelete="CASCADE")
-     * })
+     * @var Workflowtask
      */
+    #[ORM\JoinColumn(name: 'WorkflowTaskID', referencedColumnName: 'WorkflowTaskID', onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: Workflowtask::class, inversedBy: 'parameterValues')]
     private $workflowtask;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\Parameter
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Parameter")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ParameterID", referencedColumnName="ParameterID")
-     * })
+     * @var Parameter
      */
+    #[ORM\JoinColumn(name: 'ParameterID', referencedColumnName: 'ParameterID')]
+    #[ORM\ManyToOne(targetEntity: Parameter::class)]
     private $parameter;
 
     /**
@@ -84,10 +79,10 @@ class Parametervalue
     /**
      * Set workflowtask
      *
-     * @param \Damis\EntitiesBundle\Entity\Workflowtask $workflowtask
+     * @param Workflowtask $workflowtask
      * @return Parametervalue
      */
-    public function setWorkflowtask(\Damis\EntitiesBundle\Entity\Workflowtask $workflowtask = null)
+    public function setWorkflowtask(Workflowtask $workflowtask = null)
     {
         $this->workflowtask = $workflowtask;
 
@@ -97,7 +92,7 @@ class Parametervalue
     /**
      * Get workflowtask
      *
-     * @return \Damis\EntitiesBundle\Entity\Workflowtask
+     * @return Workflowtask
      */
     public function getWorkflowtask()
     {
@@ -107,10 +102,10 @@ class Parametervalue
     /**
      * Set parameter
      *
-     * @param \Damis\ExperimentBundle\Entity\Parameter $parameter
+     * @param Parameter $parameter
      * @return Parametervalue
      */
-    public function setParameter(\Damis\ExperimentBundle\Entity\Parameter $parameter = null)
+    public function setParameter(Parameter $parameter = null)
     {
         $this->parameter = $parameter;
 
@@ -120,7 +115,7 @@ class Parametervalue
     /**
      * Get parameter
      *
-     * @return \Damis\ExperimentBundle\Entity\Parameter
+     * @return Parameter
      */
     public function getParameter()
     {

@@ -4,78 +4,80 @@ namespace Damis\ExperimentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class SplitDataType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('reshufleObjects', 'choice', [
+            ->add('reshufleObjects', ChoiceType::class, [
                 'required' => false,
-                'empty_value' => false,
+                'placeholder' => false,
                 'data' => 0,
                 'expanded' => true,
-                'choices' => array(
-                    0 => 'Order left intact',
-                    1 => 'Random'
-                ),
+                'choices' => [
+                    'Order left intact' => 0,
+                    'Random' => 1
+                ],
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => 'Choose object sort type',
                 'label_attr' => ['class' => 'col-md-9']
             ])
-        ->add('firstSubsetPerc', 'integer', [
+            ->add('firstSubsetPerc', IntegerType::class, [
                 'required' => true,
                 'data' => 80,
-                'attr' => array('class' => 'form-control', 'min' => 0, 'max' => 100),
+                'attr' => ['class' => 'form-control', 'min' => 0, 'max' => 100],
                 'constraints' => [
                     new NotBlank(),
                     new Assert\Range([
                         'min' => 0,
                         'max' => 100,
-                        'minMessage' => 'Number of percents must be in interval [0; 100]',
-                        'maxMessage' => 'Number of percents must be in interval [0; 100]'
+                        'notInRangeMessage' => 'Number of percents must be between {{ min }} and {{ max }}.',
                     ]),
-                    new Assert\Type(array(
+                    new Assert\Type([
                         'type' => 'integer',
                         'message' => 'This value type should be integer'
-                    ))
+                    ])
                 ],
                 'label' => 'First subset size',
                 'label_attr' => ['class' => 'col-md-8']
             ])
-        ->add('secondSubsetPerc', 'integer', [
+            ->add('secondSubsetPerc', IntegerType::class, [
                 'required' => true,
                 'data' => 20,
-                'attr' => array('class' => 'form-control', 'min' => 1),
-                'read_only' => true,
+                'attr' => ['class' => 'form-control', 'min' => 1],
+                'disabled' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Assert\Type(array(
+                    new Assert\Type([
                         'type' => 'integer',
                         'message' => 'This value type should be integer'
-                    ))
+                    ])
                 ],
                 'label' => 'Second subset size',
                 'label_attr' => ['class' => 'col-md-8']
             ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'ExperimentBundle'
-        ));
+        $resolver->setDefined(['choices', 'class']);
+
+        $resolver->setDefaults([
+            'translation_domain' => 'ExperimentBundle',
+            'choices' => [],
+            'class' => null,
+        ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'splitdata_type';
     }

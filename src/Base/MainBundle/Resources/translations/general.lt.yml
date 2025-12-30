@@ -4,6 +4,95 @@ en_US: English
 en: English
 cron: Cron
 pages: Puslapiai
+info_video_label: Informacinis filmukas
+
+# Cron Manager translations
+cron.menu: Cron Valdymas
+cron.title: Cron Valdymas
+cron.list_title: Cron Užduočių Sąrašas
+cron.add_title: Pridėti Cron Užduotį
+cron.edit_title: Redaguoti Cron Užduotį
+cron.show_title: Cron Užduoties Detalės
+cron.no_jobs: Nėra apibrėžtų cron užduočių.
+cron.add_info: "Turėkite omenyje, kad cron vartotojas yra %user%, o jo šakninis katalogas yra %root%."
+cron.full_expression: Pilna Cron Išraiška
+
+# Table headers
+cron.table.name: Pavadinimas
+cron.table.schedule: Tvarkaraštis
+cron.table.command: Komanda
+cron.table.status: Būsena
+cron.table.actions: Veiksmai
+
+# Form labels
+cron.form.name: Pavadinimas
+cron.form.schedule: Tvarkaraštis
+cron.form.schedule_custom: Pasirinktinis Tvarkaraštis
+cron.form.command: Komanda
+cron.form.description: Aprašymas / Komentaras
+cron.form.log_file: Žurnalo Failas
+cron.form.error_file: Klaidų Failas
+cron.form.enabled: Įjungta
+
+# Schedule options
+cron.schedule.every_minute: Kas minutę
+cron.schedule.every_five_minutes: Kas 5 minutes
+cron.schedule.every_fifteen_minutes: Kas 15 minučių
+cron.schedule.every_thirty_minutes: Kas 30 minučių
+cron.schedule.hourly: Kas valandą
+cron.schedule.daily: Kasdien (vidurnaktį)
+cron.schedule.weekly: Kas savaitę (sekmadienį vidurnaktį)
+cron.schedule.monthly: Kas mėnesį (1-ą dieną vidurnaktį)
+cron.schedule.custom: Pasirinktinis
+
+# Status
+cron.status.enabled: Įjungta
+cron.status.disabled: Išjungta
+
+# Actions
+cron.actions.add: Pridėti Cron Užduotį
+cron.actions.edit: Redaguoti
+cron.actions.save: Išsaugoti Pakeitimus
+cron.actions.cancel: Atšaukti
+cron.actions.delete: Ištrinti
+cron.actions.enable: Įjungti
+cron.actions.disable: Išjungti
+cron.actions.details: Detalės
+cron.actions.back: Grįžti į Sąrašą
+cron.actions.export: Eksportuoti į Crontab
+
+# Flash messages
+cron.flash.job_added: Cron užduotis sėkmingai pridėta.
+cron.flash.job_updated: Cron užduotis sėkmingai atnaujinta.
+cron.flash.job_deleted: Cron užduotis sėkmingai ištrinta.
+cron.flash.job_enabled: Cron užduotis įjungta.
+cron.flash.job_disabled: Cron užduotis išjungta.
+cron.flash.custom_schedule_required: Pasirinktinis tvarkaraštis yra privalomas, kai pasirinkta 'Pasirinktinis'.
+cron.flash.sync_success: Sistemos crontab sėkmingai sinchronizuotas.
+cron.flash.sync_failed: 'Įspėjimas: Nepavyko sinchronizuoti su sistemos crontab: %error%'
+
+# Info
+cron.info.user: Cron vartotojas
+cron.info.root: Šakninis katalogas
+cron.log: Žurnalo failas
+cron.error: Klaidų failas
+
+# Fields
+cron.field.created_at: Sukurta
+cron.field.last_run: Paskutinis Paleidimas
+
+# Help texts
+cron.help.schedule: "Formatas: minutė valanda diena mėnuo savaitės diena (pvz., * * * * * kas minutę)"
+cron.help.command: "Pilnas komandos kelias (pvz., /usr/bin/php /path/to/bin/console komanda:pavadinimas)"
+
+# Confirmations
+cron.confirm.delete: Ar tikrai norite ištrinti šią cron užduotį?
+
+# Access denied translations
+access_denied.title: Neleista
+access_denied.message: Nėra teisių pasiekti šį puslapį. Palaukite kol jus patvirtins administratorius.
+access_denied.back_home: Grįžti į pradžią
+
 #Default controller translations
 MIDAS user login request parameters are wrong! : MIDAS varotojo prisijungimo duomenys yra neteisingi!
 User with this email already exists! : Varotojas su tokiu pašto adresu egzisuoja DAMIS sistemoje. Prašome pašalinti vartotoją iš DAMIS arba pasikeiskite pašto savo adresą

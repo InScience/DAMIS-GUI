@@ -1,0 +1,12 @@
+{% extends '@FOSUser/layout.html.twig' %}
+
+{% block fos_user_content %}
+<div class="alert alert-info">
+    {% set email = app.request.query.get('username') %}
+    {% if email %}
+        <p>An email has been sent to <strong>{{ email }}</strong>. It contains a link you must click to reset your password.</p>
+    {% else %}
+        <p>{{ 'resetting.check_email'|trans({}, 'FOSUserBundle') }}</p>
+    {% endif %}
+</div>
+{% endblock %}

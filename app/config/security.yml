@@ -9,23 +9,24 @@ security:
 
     providers:
         fos_userbundle:
-            id: fos_user.user_manager
+        # Changed from fos_user.user_manager to fos_user.user_provider.username during upgrade to Symfony 3.4
+            id:  fos_user.user_provider.username
 
     firewalls:
         dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            pattern:  ^/(_(profiler|wdt)|css|images|js|translations)/
             security: false
 
         main:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                csrf_provider: form.csrf_provider
-                login_path: /login.html
+                # csrf_provider: form.csrf_provider
+                login_path: /login
                 use_referer: true
                 default_target_path: /experiment/new.html
             logout:
-                path:   /logout.html
+                path:   fos_user_security_logout
                 target: /
 
             anonymous: ~
@@ -35,7 +36,8 @@ security:
             security: false
 
             remember_me:
-                key: "%secret%"
+            # Changed from key to secret during upgrade to Symfony 3.4
+                secret: "%secret%"
                 lifetime: 31536000 # 365 days in seconds
                 path: /
                 domain: ~ # Defaults to the current domain from $_SERVER
@@ -49,6 +51,7 @@ security:
         - { path: ^/_profiler, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         #general
+        - { path: ^/translations, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/js/routing, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
         #user bundle

@@ -3,11 +3,9 @@
         <li><a href="{{ path('new_experiment') }}">{{ 'Create experiment' | trans({}, 'ExperimentBundle') }} <span class="glyphicon glyphicon-plus"></span></a></li>
         <li><a href="{{ path('experiments_history') }}">{{ 'Experiments' | trans({}, 'ExperimentBundle') }} <span class="glyphicon glyphicon-list"></span></a></li>
         <li><a href="{{ path('datasets_list') }}">{{ 'Datasets list' | trans({}, 'DatasetsBundle') }} <span class="glyphicon glyphicon-file"></span></a></li>
-        {% if is_damis_algorithm_enabled %}
+        {% if is_damis_algorithm_enabled is defined and is_damis_algorithm_enabled %}
         <li><a href="{{ path('algorithm_list') }}">{{ 'Algorithms list' | trans({}, 'AlgorithmBundle') }} <span class="glyphicon glyphicon-cloud-upload"></span></a></li>
         {% endif %}
-    {% else %}
-        <li></li>
     {% endif %}
 </ul>
 
@@ -19,8 +17,8 @@
         <ul class="dropdown-menu">
             <li class="dropdown-header">{{ app.user.publicName }}</li>
             <li class="divider"></li>
-            <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'profile.title'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></a></li>
-            <li><a href="{{ path('fos_user_change_password') }}">{{ 'change_password.submit'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></a></li>
+            <li><a href="{{ path('fos_user_profile_edit') }}">{{ 'profile.title'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></span></a></li>
+            <li><a href="{{ path('fos_user_change_password') }}">{{ 'change_password.title'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-wrench"></span></a></li>
             <li class="divider"></li>
             <li><a href="{{ path('midas_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-log-out"></span></a></li>
         </ul>
@@ -30,7 +28,7 @@
             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="{{ path('users') }}">{{ 'layout.users'|trans({}, 'FOSUserBundle') }}</a></li>
-                <li><a href="{{ path('BCCCronManagerBundle_index') }}">{{ 'cron'|trans({}, 'general') }}</a></li>
+                <li><a href="{{ path('cron_index') }}">{{ 'cron.menu'|trans({}, 'general') }}</a></li>
                 <li><a href="{{ path('page') }}">{{ 'pages'|trans({}, 'general') }}</a></li>
             </ul>
         </li>
@@ -40,9 +38,9 @@
     <li><a href="{{ path('fos_user_registration_register') }}">{{ 'layout.register'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-pencil"></span></a></li>
 {% endif %}
 
-{{ render(controller('BaseStaticBundle:Page:staticMenu', {groupName : 'help'})) }}
+{{ render(controller('Base\\StaticBundle\\Controller\\PageController::staticMenu', {groupName : 'help'})) }}
 
-{% if design_style == "midas" %}
+{% if design_style is defined and design_style == "midas" %}
 <li class="language_box">
     <ul><li>
     {% if app.request.locale == "lt" %}
@@ -60,8 +58,6 @@
         <li><a href="{{ path('change_locale_lt') }}">{{ 'lt_LT'|trans({}, 'general') }}</a></li>
         <li><a href="{{ path('change_locale_en') }}">{{ 'en_US'|trans({}, 'general') }}</a></li>
     </ul>
-</li>    
+</li>
 {% endif %}
 </ul>
-
-

@@ -6,106 +6,106 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Parameter
- *
- * @ORM\Table(name="parameter", uniqueConstraints={@ORM\UniqueConstraint(name="PARAMETER_PK", columns={"ParameterID"})}, indexes={@ORM\Index(name="FK_PARAMETER_PARAMTYPERTYPE", columns={"ParameterTypeID"}), @ORM\Index(name="FK_PARAMETER_PARAMCONNTYPE", columns={"ParameterConnectionTypeID"}), @ORM\Index(name="FK_PARAMETER_COMPONENT", columns={"ComponentID"})})
- * @ORM\Entity
  */
+#[ORM\Table(name: 'parameter')]
+#[ORM\Index(name: 'FK_PARAMETER_PARAMTYPERTYPE', columns: ['ParameterTypeID'])]
+#[ORM\Index(name: 'FK_PARAMETER_PARAMCONNTYPE', columns: ['ParameterConnectionTypeID'])]
+#[ORM\Index(name: 'FK_PARAMETER_COMPONENT', columns: ['ComponentID'])]
+#[ORM\UniqueConstraint(name: 'PARAMETER_PK', columns: ['ParameterID'])]
+#[ORM\Entity]
 class Parameter
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterName", type="string", length=80, nullable=false)
      */
+    #[ORM\Column(name: 'ParameterName', type: 'string', length: 80, nullable: false)]
     private $name;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ParameterIsRequired", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'ParameterIsRequired', type: 'integer', nullable: false)]
     private $isRequired;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterDefault", type="string", length=80, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterDefault', type: 'string', length: 80, nullable: true)]
     private $default;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterDescription", type="string", length=500, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterDescription', type: 'string', length: 500, nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterLabelLT", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterLabelLT', type: 'string', length: 255, nullable: true)]
     private $labelLt;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterLabelEN", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterLabelEN', type: 'string', length: 255, nullable: true)]
     private $labelEn;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ParameterID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'ParameterID', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
     /**
-     * @var \Damis\ExperimentBundle\Entity\ParameterType
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\ParameterType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ParameterTypeID", referencedColumnName="ParameterTypeID")
-     * })
+     * @var ParameterType
      */
+    #[ORM\JoinColumn(name: 'ParameterTypeID', referencedColumnName: 'ParameterTypeID')]
+    #[ORM\ManyToOne(targetEntity: ParameterType::class)]
     private $type;
 
     /**
      * @var ParameterConnectionType
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\ParameterConnectionType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ParameterConnectionTypeID", referencedColumnName="ParameterConnectionTypeID")
-     * })
      */
+    #[ORM\JoinColumn(name: 'ParameterConnectionTypeID', referencedColumnName: 'ParameterConnectionTypeID')]
+    #[ORM\ManyToOne(targetEntity: ParameterConnectionType::class)]
     private $connectionType;
 
     /**
      * @var Component
-     *
-     * @ORM\ManyToOne(targetEntity="Damis\ExperimentBundle\Entity\Component", inversedBy="parameters")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ComponentID", referencedColumnName="ComponentID")
-     * })
      */
+    #[ORM\JoinColumn(name: 'ComponentID', referencedColumnName: 'ComponentID')]
+    #[ORM\ManyToOne(targetEntity: Component::class, inversedBy: 'parameters')]
     private $component;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ParameterSlug", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'ParameterSlug', type: 'string', length: 255, nullable: true)]
     private $slug;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="ParameterPosition", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'ParameterPosition', type: 'integer', nullable: true)]
     private $position;
+
+    /**
+     * @param string|null $locale
+     * @return string
+     */
+    public function getTitle(?string $locale = null): string
+    {
+        if ($locale === 'lt' && !empty($this->labelLt)) {
+            return $this->labelLt;
+        }
+        if ($locale !== 'lt' && !empty($this->labelEn)) {
+             return $this->labelEn;
+        }
+        return $this->name;
+    }
 
     /**
      * Set name
@@ -294,7 +294,7 @@ class Parameter
     /**
      * Get connectionType
      *
-     * @return \Damis\ExperimentBundle\Entity\Parameterconnectiontype
+     * @return Parameterconnectiontype
      */
     public function getConnectionType()
     {

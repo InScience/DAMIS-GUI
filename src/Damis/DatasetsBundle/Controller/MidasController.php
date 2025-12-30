@@ -2,81 +2,80 @@
 
 namespace Damis\DatasetsBundle\Controller;
 
-use Guzzle\Http\Client;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CURLFile;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface; // Added
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use CURLFile;
+use Psr\Log\LoggerInterface;
 
-class MidasController extends Controller
+class MidasController extends AbstractController
 {
-   /**
-    *
-    * @var \Symfony\Component\HttpFoundation\Session\Session
-    */
-    private $session;
-   
-   /**
-    *
-    * @var \Container
-    */
-    protected $container;
-           
-    
-   /**
-    * @param \Symfony\Component\HttpFoundation\Session\Session $session
-    * @param \Container                                        $container
-    */
-    public function __construct(Session $session, Container $container)
-    {
-        $this->session = $session;
-        $this->container = $container;
-       
+
+    /**
+     * @param SessionInterface $session
+     * @param TranslatorInterface $translator
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(
+        private readonly SessionInterface $session,
+        private readonly TranslatorInterface $translator, 
+        private readonly ?LoggerInterface $logger = null
+    ) {
     }
 
     /**
      * This function reconnect MIDAS user if connection was lost
-     * Function is not workig MIDAS becouse of MIDAS specification misleedings
+     * Function is not working MIDAS because of MIDAS specification misleadings
      *
      * @todo Fix or remove this functionality
      * @return int
      */
     public function relogin()
     {
-        return 0;
-/*        
-        // 2015-02-06T13:12:52VardasadminPavardeadmin2015-02-06T13:31:04vardenis.pavardenis@ittc.vu.lt1i62bqims8oj0vh04b2n12b7nk750
-        $sourceUrl = $this->container->getParameter('project_full_host') . '/midaslogin.html';
-        $sourceUrl = 'http://193.219.89.37:8080/midaslogin.html';
+        return 0;    
+        
+        $sourceUrl = $this->getParameter('project_full_host') . '/midaslogin.html';
+        
         $timeStamp = date("Y-m-d H:i:s");
-        $serviceProviderCode = $this->container->getParameter('service_provider_code');
+        $serviceProviderCode = $this->getParameter('service_provider_code');
         $sessionToken = '';
+
         if($this->session->has('sessionToken'))
             $sessionToken = $this->session->get('sessionToken');
         else {
-            $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Midas login session is over. Please login to MIDAS and try again.', array(), 'DatasetsBundle'));
+            // Use injected $this->translator
+            $this->session->getFlashBag()->add('error', $this->translator->trans('Midas login session is over. Please login to MIDAS and try again.', array(), 'DatasetsBundle'));
             return 0;
         }
-        
-echo        $toSign = $sourceUrl . $sessionToken . $timeStamp . $serviceProviderCode;
-        
-        $client = new Client($this->container->getParameter('midas_url'));
-*/
+
+        echo        $toSign = $sourceUrl . $sessionToken . $timeStamp . $serviceProviderCode;
+
+        $client = new Client([
+            'base_uri' => $this->getParameter('midas_url'),
+            'verify'   => false,
+        ]);
+
         /* @var $user \Base\UserBundle\Entity\User */
-/*        $user = $this->getUser();
+        $user = $this->getUser();
         // Check it is MIDAS user
         if ($user && $user->getUserId()) {
-            // read DAMIS private key
-            $fp = fopen ($this->get('kernel')->getRootDir() . '/../' . "/src/Base/MainBundle/Resources/config/damis.private.key","r");
-            $pubKey = fread($fp, filesize($this->get('kernel')->getRootDir() . '/../' . "//src/Base/MainBundle/Resources/config/damis.private.key"));
+            
+            $projectDir = $this->getParameter('kernel.project_dir');
+            $keyPath = $projectDir . "/src/Base/MainBundle/Resources/config/damis.private.key";
+
+            $fp = fopen ($keyPath, "r");
+            $pubKey = fread($fp, filesize($keyPath));
             fclose($fp);
             $signatureAlg = 'SHA1';  // also posible SHA1RSA
-            
+
             $pkeyId = openssl_pkey_get_private($pubKey, '');
             // Sign with sertificate
             openssl_sign($toSign, $signature, $pkeyId, $signatureAlg);
             $signature = base64_encode($signature);
-            
+
             $post = array(
                 'sourceUrl' => $sourceUrl,
                 'sessionToken' => $sessionToken,
@@ -84,19 +83,18 @@ echo        $toSign = $sourceUrl . $sessionToken . $timeStamp . $serviceProvider
                 'serviceProviderCode' => $serviceProviderCode,
                 'signature' => $signature
             );
-           
-echo http_build_query($post);            
+
+            echo http_build_query($post);            
             $post =  http_build_query ($post);
-            $req = $client->post('/action/authentication/sso', array('Content-Type' => 'multipart/form-data;charset=utf-8'), $post);
-            var_dump($req);
-            //
-            // What is signed
-            //$tmpSignature = $timeStamp . $name . $surname . $sessionFinishDate . $userEmail . $sessionToken . $userId;            
-            
+            $client->post('/action/authentication/sso', [
+                'headers' => ['Content-Type' => 'multipart/form-data;charset=utf-8'],
+                'body'    => $post,
+                'http_errors' => false,
+            ]);
+
         } else {
             return 0;
         }
-*/
     }
 
     /**
@@ -112,26 +110,41 @@ echo http_build_query($post);
             return 0;
         }
         
-        $client = new Client($this->container->getParameter('midas_url'));
-        $client->setSslVerification(false);
+        $client = new Client([
+            'base_uri' => $this->getParameter('midas_url'),
+            'verify'   => false,
+        ]);
         
         // receive user_temp directory id
-        $emptyPost = array(
-            'page' => 1,
-            'pageSize' => 10,
-            'uuid' => 'research',
-            "orderBy" => "name",
-            "sortingOrder" => "asc"
-        );
+        $emptyPost = ['page' => 1, 'pageSize' => 10, 'uuid' => 'research', "orderBy" => "name", "sortingOrder" => "asc"];
         
         try {
-            $req = $client->post('/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
-            $response = json_decode($req->send()->getBody(true), true);
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            if (!empty($response["msgCodeTranslation"])) {
-                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle').': '.$this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
+            $req = $client->post('/action/research/folders', [
+                'headers' => [
+                    'Content-Type' => 'application/json;charset=utf-8',
+                    'authorization' => $sessionToken,
+                ],
+                'json' => $emptyPost,
+                'http_errors' => true,
+            ]);
+            $response = json_decode((string) $req->getBody(), true);
+            $this->logger?->info('MIDAS checkSession success', ['response' => $response]);
+        } catch (RequestException $e) {
+            $body = $e->getResponse()?->getBody();
+            $response = $body ? json_decode((string) $body, true) : null;
+            $this->logger?->warning('MIDAS checkSession failed', [
+                'error' => $e->getMessage(),
+                'response_body' => $response,
+                'status' => $e->getResponse()?->getStatusCode()
+            ]);
+            if (!empty($response['msgCodeTranslation'])) {
+                $this->session->getFlashBag()->add(
+                    'error',
+                    // Use $this->translator
+                    $this->translator->trans('MIDAS response', [], 'DatasetsBundle').': '.$this->translator->trans($response['msgCodeTranslation'], [], 'DatasetsBundle')
+                );
             } else {
-                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS session was lost', array(), 'DatasetsBundle'));
+                $this->session->getFlashBag()->add('error', $this->translator->trans('MIDAS session was lost', [], 'DatasetsBundle'));
                 $this->session->set('sessionToken', null);
             }
             return 0;
@@ -147,30 +160,40 @@ echo http_build_query($post);
      */
     public function saveInTempDir($filePath, $fileMimeType, $fileName)
     {
-        $client = new Client($this->container->getParameter('midas_url'));
-        $client->setSslVerification(false);
+        $client = new Client([
+            'base_uri' => $this->getParameter('midas_url'),
+            'verify'   => false,
+        ]);
         
         if ($this->session->has('sessionToken')) {
             $sessionToken = $this->session->get('sessionToken');
         } else {
-            $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Midas login session is over. Please login to MIDAS and try again.', array(), 'DatasetsBundle'));
+            // Use $this->translator
+            $this->session->getFlashBag()->add('error', $this->translator->trans('Midas login session is over. Please login to MIDAS and try again.', [], 'DatasetsBundle'));
             return 0;
         }
         
         // receive user_temp directory id
-        $emptyPost = array(
-            'page' => 1,
-            'pageSize' => 10,
-            'uuid' => '',
-            "orderBy" => "name",
-            "sortingOrder" => "asc"
-        );
+        $emptyPost = ['page' => 1, 'pageSize' => 10, 'uuid' => '', "orderBy" => "name", "sortingOrder" => "asc"];
         
         try {
-            $req = $client->post('/action/research/folders', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($emptyPost));
-            $response = json_decode($req->send()->getBody(true), true);
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Error when getting temporal directory id', array(), 'DatasetsBundle'));
+            $req = $client->post('/action/research/folders', [
+                'headers' => [
+                    'Content-Type' => 'application/json;charset=utf-8',
+                    'authorization' => $sessionToken,
+                ],
+                'json' => $emptyPost,
+                'http_errors' => true,
+            ]);
+            $response = json_decode((string) $req->getBody(), true);
+            $this->logger?->info('MIDAS saveInTempDir folders success', ['response' => $response]);
+        } catch (RequestException $e) {
+            $this->logger?->error('MIDAS saveInTempDir folders failed', [
+                'error' => $e->getMessage(),
+                'status' => $e->getResponse()?->getStatusCode(),
+            ]);
+            // Use $this->translator
+            $this->session->getFlashBag()->add('error', $this->translator->trans('Error when getting temporal directory id', [], 'DatasetsBundle'));
             return 0;
         }
         // Get user_temp dir Id
@@ -182,49 +205,65 @@ echo http_build_query($post);
                 }
             }
         } else {
-            $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Error when getting temporal directory id', array(), 'DatasetsBundle'));
+            $this->session->getFlashBag()->add('error', $this->translator->trans('Error when getting temporal directory id', [], 'DatasetsBundle'));
             return 0;
         }
         
         // File Uploading
-        $post = array(
-            'name' => $fileName,
-            'parentFolderId' => $tempDirId,
-            'size' => filesize($filePath)
-        );
+        $post = ['name' => $fileName, 'parentFolderId' => $tempDirId, 'size' => filesize($filePath)];
         try {
             // Initialization
-            $req = $client->post('/action/file-explorer/file/init', array('Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken), json_encode($post));
-            $response = json_decode($req->send()->getBody(true), true);
+            $req = $client->post('/action/file-explorer/file/init', [
+                'headers' => [
+                    'Content-Type' => 'application/json;charset=utf-8',
+                    'authorization' => $sessionToken,
+                ],
+                'json' => $post,
+                'http_errors' => true,
+            ]);
+            $response = json_decode((string) $req->getBody(), true);
+            $this->logger?->info('MIDAS file init response', ['response' => $response]);
 
-            if ($response['type'] == 'error') {
-                $this->session->getFlashBag()->add('error', $this->get('translator')->trans('MIDAS response', array(), 'DatasetsBundle').': '.$this->get('translator')->trans($response["msgCodeTranslation"], array(), 'DatasetsBundle'));
+            if (($response['type'] ?? '') === 'error') {
+                $this->session->getFlashBag()->add('error', $this->translator->trans('MIDAS response', [], 'DatasetsBundle').': '.$this->translator->trans($response["msgCodeTranslation"] ?? 'unknown', [], 'DatasetsBundle'));
                 return 0;
             }
 
-            $fileId = $response['file']['id'];
-            $header = array('Content-Type: multipart/form-data', 'Authorization:'.$sessionToken);
+            $fileId = $response['file']['id'] ?? null;
+            if (!$fileId) {
+                $this->session->getFlashBag()->add('error', $this->translator->trans('Error uploading file', [], 'DatasetsBundle'));
+                return 0;
+            }
+
+            $header = ['Content-Type: multipart/form-data', 'Authorization:'.$sessionToken];
 
             $file = new CURLFile($filePath, $fileMimeType, $fileName);
 
-            $fields = array('slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1);
+            $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
             $resource = curl_init();
-            curl_setopt($resource, CURLOPT_URL, $this->container->getParameter('midas_url').'/action/file-explorer/file/slice');
+            // Use $this->getParameter()
+            curl_setopt($resource, CURLOPT_URL, rtrim((string) $this->getParameter('midas_url'), '/').'/action/file-explorer/file/slice');
             curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
             curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($resource, CURLOPT_POST, 1);
             curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
 
-            $result = curl_exec($resource);
-
+            curl_exec($resource);
+            $curlErr = curl_error($resource);
+            $curlStatus = curl_getinfo($resource);
             curl_close($resource);
+            if ($curlErr) {
+                $this->logger?->error('MIDAS slice upload curl error', ['error' => $curlErr, 'info' => $curlStatus]);
+            } else {
+                $this->logger?->info('MIDAS slice upload success', ['info' => $curlStatus]);
+            }
 
-            $this->session->getFlashBag()->add('success', $this->container->get('translator')->trans('Not enough space in main directory. File uploaded successfully to your temporal MIDAS directory', array(), 'DatasetsBundle'));
+            $this->session->getFlashBag()->add('success', $this->translator->trans('Not enough space in main directory. File uploaded successfully to your temporal MIDAS directory', [], 'DatasetsBundle'));
             return 1;
             
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $this->session->getFlashBag()->add('error', $this->container->get('translator')->trans('Error uploading file', array(), 'DatasetsBundle'));
+        } catch (RequestException) {
+            $this->session->getFlashBag()->add('error', $this->translator->trans('Error uploading file', [], 'DatasetsBundle'));
             return 0;
         }
     }

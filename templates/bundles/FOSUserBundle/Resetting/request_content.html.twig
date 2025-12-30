@@ -1,0 +1,23 @@
+{% for flashMessage in app.flashes('notice') %}
+    <div class="alert alert-success">
+        {{ flashMessage | trans({}, 'FOSUserBundle')}}
+    </div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ flashMessage | trans({}, 'FOSUserBundle')}}
+    </div>
+{% endfor %}
+
+<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="form-signin fos_user_resetting_request" role="form">
+    <h1>{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</h1>
+    {% if invalid_username is defined %}
+        <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+    {% endif %}
+
+    <input type="email" id="username" name="username" required="required" class="form-control" placeholder="{{ 'form.email'|trans({}, 'FOSUserBundle') }}" autofocus/>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" >{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</button>
+</form>
+

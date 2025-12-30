@@ -8,7 +8,9 @@
 
 namespace Damis\ExperimentBundle\Helpers;
 
+use Damis\ExperimentBundle\Entity\Parameter;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Experiment
 {
@@ -20,7 +22,7 @@ class Experiment
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
@@ -33,7 +35,7 @@ class Experiment
      */
     public function getParameters(array $parameterIds)
     {
-        $repository = $this->em->getRepository('DamisExperimentBundle:Parameter');
+        $repository = $this->em->getRepository(Parameter::class);
 
         if (count($parameterIds) == 0) {
             return [];
