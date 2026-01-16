@@ -166,14 +166,18 @@ class ExecuteExperimentCommand extends Command
                 $component->getWsdlCallFunction() == 'SOM'
             ) {
                 if ($task->getExperiment()->getUseCpu()) {
-                    $proc['P'] = $task->getExperiment()->getUseCpu();
+                    $proc['p'] = $task->getExperiment()->getUseCpu();
                 } else {
-                    $proc['P'] = 1;
+                    $proc['p'] = 1;
                 }
             }
 
+            // URL-encode the filename to handle spaces and special characters
+            $filePath = $dataset->getFilePath();
+            $encodedPath = str_replace(' ', '%20', $filePath);
+
             $params = array_merge(
-                ['X' => $this->params->get('project_full_host').$dataset->getFilePath()],
+                ['X' => $this->params->get('project_full_host').$encodedPath],
                 $params,
                 $proc,
                 ['maxCalcTime' => $calcTime]
@@ -181,7 +185,35 @@ class ExecuteExperimentCommand extends Command
             if (!$params['maxCalcTime']) {
                 $params['maxCalcTime'] = 1;
             }
-            
+
+            // Transform MLP parameters from form format to C service format
+            if ($component->getWsdlCallFunction() == 'MLP') {
+                $qty = $params['qty'] ?? 90;
+                $kFold = $params['kFoldValidation'] ?? 0;
+
+                if ($kFold == 0) {
+                    $dV = 1;
+                    $dT = max(1, floor((100 - $qty) * 0.9));
+                    $dL = 100 - $dT - $dV;
+                } else {
+                    $dL = 80;
+                    $dT = 10;
+                    $dV = 10;
+                }
+
+                $params = [
+                    'X' => $params['X'],
+                    'h1pNo' => $params['h1pNo'],
+                    'h2pNo' => $params['h2pNo'],
+                    'h3pNo' => 0,
+                    'dL' => $dL,
+                    'dT' => $dT,
+                    'dV' => $dV,
+                    'maxIteration' => $params['maxIteration'],
+                    'p' => $params['p'],
+                    'maxCalcTime' => $params['maxCalcTime']
+                ];
+            }
 
             $output->writeln('Wsdl function parameters: '.print_r($params, true));
                 
@@ -193,7 +225,7 @@ class ExecuteExperimentCommand extends Command
             /* @var $client \SoapClient */
             $client = new \SoapClient(
                 $component->getWsdlRunHost(),
-                ['trace' => 1, 'exception' => 0, 'connection_timeout' => 3600]
+                ['trace' => 1, 'exception' => 0, 'connection_timeout' => 3600, 'cache_wsdl' => WSDL_CACHE_NONE]
             );
 
             $result = false;
