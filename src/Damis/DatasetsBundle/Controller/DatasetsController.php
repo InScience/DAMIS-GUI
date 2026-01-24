@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Parametervalue;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Guzzle\Http\Exception\BadResponseException;
+use GuzzleHttp\Exception\BadResponseException;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -516,24 +516,30 @@ class DatasetsController extends AbstractController
     public function createMidas(Request $request): RedirectResponse
     {
         $em = $this->doctrine->getManager();
-        // $client = new Client($this->getParameter('midas_url'));
-        $client = new Client($this->params->get('midas_url'));
+        $client = new Client(['base_uri' => $this->params->get('midas_url')]);
         $data = json_decode($request->request->get('dataset_pk'), true);
         if (!$data) {
-            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('File is not selected', [], 'DatasetsBundle'));
+            $request->getSession()->getFlashBag()->add('error', $this->translator->trans('File is not selected', [], 'DatasetsBundle'));
             return $this->redirectToRoute('datasets_midas_new');
         }
         $session = $request->getSession();
         if ($session->has('sessionToken')) {
             $sessionToken = $session->get('sessionToken');
         } else {
-            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', [], 'DatasetsBundle'));
+            $request->getSession()->getFlashBag()->add('error', $this->translator->trans('Error fetching file', [], 'DatasetsBundle'));
             return $this->redirectToRoute('datasets_midas_new');
         }
 
-        $req = $client->get('/action/file-explorer/file?path='.$data['path'].'&name='.$data['name'].'&idCSV='.$data['idCSV'].'&authorization='.$sessionToken);
         try {
-            $body = $req->send()->getBody(true);
+            $response = $client->get('/action/file-explorer/file', [
+                'query' => [
+                    'path' => $data['path'],
+                    'name' => $data['name'],
+                    'idCSV' => $data['idCSV'],
+                    'authorization' => $sessionToken
+                ]
+            ]);
+            $body = $response->getBody()->getContents();
             $file = new Dataset();
             $file->setDatasetTitle(basename((string) $data['name']));
             $file->setDatasetCreated(time());
@@ -571,7 +577,7 @@ class DatasetsController extends AbstractController
             return $this->uploadArff($request, $file->getDatasetId());
 
         } catch (BadResponseException) {
-            $request->getSession()->getFlashBag()->add('error', $this->get('translator')->trans('Error fetching file', [], 'DatasetsBundle'));
+            $request->getSession()->getFlashBag()->add('error', $this->translator->trans('Error fetching file', [], 'DatasetsBundle'));
             return $this->redirectToRoute('datasets_midas_new');
         }
     }

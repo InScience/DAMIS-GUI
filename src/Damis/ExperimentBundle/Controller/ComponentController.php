@@ -38,6 +38,7 @@ class ComponentController extends AbstractController
         private readonly ManagerRegistry $doctrine,
         private readonly PaginatorInterface $paginator,
         private readonly ParameterBagInterface $params,
+        private readonly TranslatorInterface $translator,
         private readonly ?IphpMappingFactory $mappingFactory = null,
         private readonly ?FileStorageInterface $fileStorage = null,
         private readonly ExperimentHelper $experimentHelper,
@@ -445,16 +446,14 @@ class ComponentController extends AbstractController
      */
     #[Route("/experiment/component/existingMidasFolders.html", name: "existing_midas_folders", methods: ["GET", "POST"], options: ["expose" => true])]
     #[Template('@DamisExperiment/component/midasFolders.html.twig')]
-    public function midasFolders(Request $request)
+    public function midasFolders(Request $request, TranslatorInterface $translator)
     {
-        $client = new \Guzzle\Http\Client($this->container->getParameter('midas_url')); // Guzzle 3
+        $client = new \GuzzleHttp\Client(['base_uri' => $this->params->get('midas_url')]);
 
         $session = $request->getSession();
-        $sessionToken = '';
-        if ($session->has('sessionToken')) {
-            $sessionToken = $session->get('sessionToken');
-        } else {
-            return new Response($this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', [], 'ExperimentBundle'));
+        $sessionToken = $session->get('sessionToken', '');
+        if (!$sessionToken) {
+            return new Response($translator->trans('It is impossible access MIDAS. Please re-login to MIDAS', [], 'ExperimentBundle'));
         }
         $page = $request->get('page') ?: 1;
         $path = $request->get('path') ?: '';
@@ -481,8 +480,8 @@ class ComponentController extends AbstractController
             $files = ['details' =>
                 ['folderDetailsList' =>
                     [0 =>
-                        ['name' =>  $this->get('translator')->trans('Published research', [], 'DatasetsBundle'), 'path' => 'publishedResearch', 'type' => 'RESEARCH', 'modifyDate' => time() * 1000, 'page' => 0, 'uuid' => 'publishedResearch', 'resourceId'   => ''], 1 =>
-                        ['name' => $this->get('translator')->trans('Not published research', [], 'DatasetsBundle'), 'path' => 'research', 'type' => 'RESEARCH', 'modifyDate' => time() * 1000, 'page' => 0, 'uuid' => 'research', 'resourceId'   => '']]]];
+                        ['name' =>  $translator->trans('Published research', [], 'DatasetsBundle'), 'path' => 'publishedResearch', 'type' => 'RESEARCH', 'modifyDate' => time() * 1000, 'page' => 0, 'uuid' => 'publishedResearch', 'resourceId'   => ''], 1 =>
+                        ['name' => $translator->trans('Not published research', [], 'DatasetsBundle'), 'path' => 'research', 'type' => 'RESEARCH', 'modifyDate' => time() * 1000, 'page' => 0, 'uuid' => 'research', 'resourceId'   => '']]]];
             return ['files' => $files, 'page' => 0, 'pageCount' => 1, 'totalFiles' => 0, 'previous' => 0, 'next' => 0, 'path' => $path, 'uuid' => '', 'selected' => 0];
         }
         /// Else if $path is selected
@@ -493,22 +492,21 @@ class ComponentController extends AbstractController
         ];
         $files = [];
 
-        $req = $client->post(
-            '/action/research/folders',
-            ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken],
-            json_encode($post) // Guzzle 3 needs body as 3rd param
-        );
         try {
-            $response = $req->send();
+            $response = $client->post('/action/research/folders', [
+                'headers' => ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken],
+                'json' => $post
+            ]);
             if ($response->getStatusCode() == 200) {
-                $files = json_decode((string) $response->getBody(true), true);
+                $files = json_decode($response->getBody()->getContents(), true);
             }
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) { // Guzzle 3 exception
-            $req = $client->post('/action/authentication/session/' . $sessionToken . '/check', ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken]);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
             try {
-                $req->send()->getBody(true);
-            } catch (\Guzzle\Http\Exception\BadResponseException $e2) {
-                return new Response($this->get('translator')->trans('It is impossible access MIDAS. Please re-login to MIDAS', [], 'ExperimentBundle'));
+                $client->post('/action/authentication/session/' . $sessionToken . '/check', [
+                    'headers' => ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken]
+                ]);
+            } catch (\GuzzleHttp\Exception\RequestException $e2) {
+                return new Response($translator->trans('It is impossible access MIDAS. Please re-login to MIDAS', [], 'ExperimentBundle'));
             }
         }
         if (isset($files['details'])) {
@@ -699,7 +697,8 @@ class ComponentController extends AbstractController
                 }
                 file_put_contents($temp_file, (string)$response2->getContent());
 
-                $client = new \Guzzle\Http\Client($this->midasUrl);
+                $midasUrl = $this->params->get('midas_url');
+                $client = new \GuzzleHttp\Client(['base_uri' => $midasUrl]);
 
                 $session = $request->getSession();
                 $sessionToken = $session->get('sessionToken');
@@ -714,13 +713,13 @@ class ComponentController extends AbstractController
                     'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
                     'size' => $entity->getFile()['size'],
                 ];
-                $req = $client->post('/action/file-explorer/file/init',
-                    ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken],
-                    json_encode($post)
-                );
 
                 try {
-                    $response = json_decode((string) $req->send()->getBody(true), true);
+                    $initResponse = $client->post('/action/file-explorer/file/init', [
+                        'headers' => ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken],
+                        'json' => $post
+                    ]);
+                    $response = json_decode($initResponse->getBody()->getContents(), true);
                     if ($response['type'] == 'error') {
                         $this->addFlash('error', $this->translator->trans('MIDAS response', [], 'DatasetsBundle') . ': ' . $this->translator->trans($response["msgCodeTranslation"], [], 'DatasetsBundle'));
                         unlink($temp_file);
@@ -733,7 +732,7 @@ class ComponentController extends AbstractController
                     $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
-                    curl_setopt($resource, CURLOPT_URL, $this->midasUrl . '/action/file-explorer/file/slice');
+                    curl_setopt($resource, CURLOPT_URL, $midasUrl . '/action/file-explorer/file/slice');
                     curl_setopt($resource, CURLOPT_HTTPHEADER, $header);
                     curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($resource, CURLOPT_POST, 1);
@@ -742,7 +741,7 @@ class ComponentController extends AbstractController
                     curl_close($resource);
 
                     $this->addFlash('success', $this->translator->trans('File uploaded successfully', [], 'DatasetsBundle'));
-                } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+                } catch (\GuzzleHttp\Exception\RequestException $e) {
                     $this->logger->error('Guzzle Error during Midas upload: ' . $e->getMessage());
                     $this->addFlash('error', $this->translator->trans('Error uploading file', [], 'DatasetsBundle'));
                 } finally {

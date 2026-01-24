@@ -4,10 +4,10 @@ namespace Base\MainBundle\Controller;
 
 use Damis\DatasetsBundle\Entity\Dataset;
 use Damis\ExperimentBundle\Entity\Experiment;
-use Guzzle\Http\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 use Base\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -153,14 +153,16 @@ class DefaultController extends AbstractController
             return $this->redirectToRoute('fos_user_security_logout');
         
         
-        $client = new Client($this->params->get('midas_url'));
-        $req = $client->delete('/action/authentication/session/'.$sessionToken, 
-            ['Content-Type' => 'application/json;charset=utf-8', 'authorization' => $sessionToken], 
-            []
-        );
-        
+        $client = new Client(['base_uri' => $this->params->get('midas_url')]);
+
         try {
-            $data = json_decode((string) $req->send()->getBody(true), true);
+            $response = $client->delete('/action/authentication/session/'.$sessionToken, [
+                'headers' => [
+                    'Content-Type' => 'application/json;charset=utf-8',
+                    'authorization' => $sessionToken
+                ]
+            ]);
+            $data = json_decode($response->getBody()->getContents(), true);
             if ($data['type'] == 'success') {
                 $this->addFlash('success', $this->translator->trans('Logged out successfully', [], 'general'));
                 $session->remove('sessionToken');
@@ -168,7 +170,7 @@ class DefaultController extends AbstractController
                 $this->addFlash('error', $this->translator->trans('Error when logging out', [], 'general'));
             }
             return $this->redirectToRoute('fos_user_security_logout');
-        } catch (BadResponseException) {
+        } catch (RequestException) {
             $this->addFlash('error', $this->translator->trans('Error when logging out', [], 'general'));
             return $this->redirectToRoute('fos_user_security_logout');
         }

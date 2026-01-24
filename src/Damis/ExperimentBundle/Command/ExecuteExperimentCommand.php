@@ -221,11 +221,29 @@ class ExecuteExperimentCommand extends Command
             //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
 
             // execute
-           
+
             /* @var $client \SoapClient */
+            // Create SSL context to handle HTTPS connections (including self-signed certificates)
+            $sslContext = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+                'http' => [
+                    'timeout' => 3600,
+                ]
+            ]);
+
             $client = new \SoapClient(
                 $component->getWsdlRunHost(),
-                ['trace' => 1, 'exception' => 0, 'connection_timeout' => 3600, 'cache_wsdl' => WSDL_CACHE_NONE]
+                [
+                    'trace' => 1,
+                    'exception' => 0,
+                    'connection_timeout' => 3600,
+                    'cache_wsdl' => WSDL_CACHE_NONE,
+                    'stream_context' => $sslContext
+                ]
             );
 
             $result = false;
@@ -277,7 +295,9 @@ class ExecuteExperimentCommand extends Command
                             ],
                             "http" => [
                                 "timeout" => 60, // Wait up to 60 seconds
-                                "ignore_errors" => true // Fetch content even on 404/500 to see error page
+                                "ignore_errors" => true, // Fetch content even on 404/500 to see error page
+                                "follow_location" => 1, // Follow HTTP redirects (302, 301, etc.)
+                                "max_redirects" => 5
                             ]
                         ];
 
@@ -289,8 +309,15 @@ class ExecuteExperimentCommand extends Command
                             throw new Exception("Download failed: " . ($error['message'] ?? 'Unknown error'));
                         }
 
-                        if (strpos($http_response_header[0] ?? '', '200') === false) {
-                             throw new Exception("HTTP Error: " . ($http_response_header[0] ?? 'Unknown HTTP status'));
+                        // After redirects, check the final HTTP status (last HTTP/x.x line in headers)
+                        $finalStatus = '';
+                        foreach ($http_response_header ?? [] as $header) {
+                            if (strpos($header, 'HTTP/') === 0) {
+                                $finalStatus = $header;
+                            }
+                        }
+                        if (strpos($finalStatus, '200') === false) {
+                             throw new Exception("HTTP Error: " . ($finalStatus ?: 'Unknown HTTP status'));
                         }
 
                         file_put_contents($temp_file_y, $content);
@@ -311,12 +338,23 @@ class ExecuteExperimentCommand extends Command
                     } else {
                         $temp_file_yalt = $temp_folder.'/'.basename((string) $result['Yalt']);
                         try {
-                            if ($this->params->get('use_ssl_connections') == true) {
-                                // Do not validate the server sertificate
-                                $arrContextOptions=["ssl"=>["verify_peer"=>false, "verify_peer_name"=>false]];
-                                file_put_contents($temp_file_yalt, file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptions)));
+                            // Use same context options as Y file (SSL + redirect handling)
+                            $arrContextOptionsYalt = [
+                                "ssl" => [
+                                    "verify_peer" => false,
+                                    "verify_peer_name" => false,
+                                ],
+                                "http" => [
+                                    "timeout" => 60,
+                                    "follow_location" => 1,
+                                    "max_redirects" => 5
+                                ]
+                            ];
+                            $contentYalt = @file_get_contents($result['Yalt'], false, stream_context_create($arrContextOptionsYalt));
+                            if ($contentYalt !== false) {
+                                file_put_contents($temp_file_yalt, $contentYalt);
                             } else {
-                                file_put_contents($temp_file_yalt, file_get_contents($result['Yalt']));
+                                throw new Exception("Failed to download Yalt file");
                             }
                         } catch (Exception $e) {
                             $err_yalt = true;
