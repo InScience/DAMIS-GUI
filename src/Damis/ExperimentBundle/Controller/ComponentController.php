@@ -18,7 +18,6 @@ use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
 use Symfony\Bridge\Twig\Attribute\Template;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Damis\ExperimentBundle\Form\Type\FilterType;
@@ -27,8 +26,6 @@ use ZipArchive;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Iphp\FileStoreBundle\Mapping\Factory as IphpMappingFactory;
-use Iphp\FileStoreBundle\FileStorage\FileStorageInterface;
 use Psr\Log\LoggerInterface;
 
 
@@ -39,8 +36,6 @@ class ComponentController extends AbstractController
         private readonly PaginatorInterface $paginator,
         private readonly ParameterBagInterface $params,
         private readonly TranslatorInterface $translator,
-        private readonly ?IphpMappingFactory $mappingFactory = null,
-        private readonly ?FileStorageInterface $fileStorage = null,
         private readonly ExperimentHelper $experimentHelper,
         private readonly ?LoggerInterface $logger = null
     )
@@ -311,33 +306,39 @@ class ComponentController extends AbstractController
 
                 $file = new Dataset();
                 $file->setDatasetTitle(basename((string) $data['name']));
-                $file->setDatasetCreated(new \DateTime());
+                $file->setDatasetCreated(time());
                 $file->setUser($this->getUser());
                 $file->setDatasetIsMidas(true);
-                $temp_file = $this->params->get("kernel.cache_dir") . '/' . uniqid() . $data['name'];
+
                 $em->persist($file);
                 $em->flush();
-                file_put_contents($temp_file, $body);
 
-                $file2 = new File($temp_file);
+                // Save file directly to upload directory (same approach as DatasetsController::createMidas)
+                $projectRoot = $this->params->get('kernel.project_dir');
+                $uploadDir = $projectRoot . '/public/uploads/datasets/';
 
-                if ($this->mappingFactory && $this->fileStorage) {
-                    $ref_class = new \ReflectionClass(Dataset::class);
-                    $mapping = $this->mappingFactory->getMappingFromField($file, $ref_class, 'file');
-                    $file_data = $this->fileStorage->upload($mapping, $file2);
-                } else {
-                    $this->addFlash('error', 'File storage services are not configured.');
-                    return $this->redirectToRoute('existing_midas_file'); // Or some other appropriate route
+                // Create directory if it doesn't exist
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0775, true);
                 }
 
-                $org_file_name = basename((string) $data['name']);
-                $file_data['originalName'] = $org_file_name;
+                $orgFileName = basename((string) $data['name']);
+                $newFileName = uniqid() . '_' . $orgFileName;
+                $permanentPath = $uploadDir . $newFileName;
+                $relativePath = '/uploads/datasets/' . $newFileName;
+
+                // Write file content directly to permanent location
+                file_put_contents($permanentPath, $body);
+
+                $file_data = [
+                    'path' => $relativePath,
+                    'fileName' => $newFileName,
+                    'originalName' => $orgFileName,
+                ];
 
                 $file->setFile($file_data);
-                // No need to persist again, flush is enough for an already managed entity
+                $file->setFilePath($relativePath);
                 $em->flush();
-                unlink($temp_file);
-                // $this->uploadArff($file->getDatasetId()); // This call needs to be verified
 
             } catch (\GuzzleHttp\Exception\ClientException $e) {
                 $this->addFlash('error', $translator->trans('Error fetching file', [], 'DatasetsBundle'));
