@@ -1,4 +1,6 @@
 Maximum number of cluster : Number of clusters
+Server : Server
+Calculations are performed on the damis.midas.lt server : Calculations are performed on the damis.midas.lt server
 Upload file for data analysis : "Upload data file. It is possible to upload data table from a supported file formats: tab, txt, csv, ARFF and XML files, which are compressed in zip format.  A dataset is roughly equivalent to a two-dimensional spreadsheet or database table."
 Select uploaded file : Open a set of instances from DAMIS data base.
 Select file from MIDAS archive : "Open a set of instances from MIDAS data base. It is possible to upload data table from a supported file formats: tab, txt, csv, ARFF and XML files, which are compressed in zip format.  A dataset is roughly equivalent to a two-dimensional spreadsheet or database table."

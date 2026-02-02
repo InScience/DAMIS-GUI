@@ -128,9 +128,8 @@ Please select file : Prašome pasirinkti failą
 Too many file components : Failo komponentė galima tik viena
 File component is required : Failo komponentė yra privaloma
 There are loops : Vykdymo grafe ciklai negalimi
-MII Cluster : MII klasteris
-Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos instituto paskirstytųjų skaičiavimų klasteris
-Supercomputer of Vilnius University Faculty of Mathematics and Informatics : Vilniaus universiteto Matematikos ir informatikos fakulteto paskirstytųjų skaičiavimų superkompiuteris
+Server : Serveris
+Calculations are performed on the damis.midas.lt server : Skaičiavimai vykdomi damis.midas.lt serveryje
 C4.5 classifier : C4.5 klasifikatorius
 RDF classifier : RDF komponentė klasifikuoja duomenis naudojant klasifikavimo medžius. Pagrindinė atsitiktinio miško formavimo idėja - suformuoti tikslų klasifikatorių, apjungiant sprendimus daugelio binarinių sprendimų medžių, užaugintų naudojant skirtingus duomenų poaibius iš originalios duomenų aibės, ir atsitiktinai parinktus požymių poaibius iš požymių aibės. Toks binarinių medžių rinkinys pasižymi atsparumu persimokymui ir, medžių skaičiui augant, bendros klaidos konvergavimu iki stabilios reikšmės.
 Data cleaning : Pašalinami duomenų įrašai su trūkstamomis reikšmėmis. 
@@ -185,7 +184,6 @@ Add to experiment history : Pridėti prie eksperimentų istorijos. Tuomet šį e
 Copy experiment to example experimets : Padaryti eksperimento kopiją į pavyzdinius eksperimentus
 Experiment was copied to experiment examples : Eksperimentas nukopijuotas į pavyzdinius ekperimentus
 Experiment was copied : Eksperimentas sėkmingai nukopijuotas
-MIF VU SK2 : MIF VU SK2
 PCA : PCA
 SMACOF (MDS) : SMACOF (MDS)
 DMA : DMA

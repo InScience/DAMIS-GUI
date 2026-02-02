@@ -1,8 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 INSERT INTO `cluster` (`ClusterName`, `ClusterWorkloadHost`, `ClusterDescription`, `ClusterID`, `ClusterUrl`, `WorkloadUrl`) VALUES
-('MII Cluster', 'test', 'Distributed Computing cluster of Vilnius University Institute of Mathematics and Informatics', 1, 'http://hpc.mii.vu.lt/', 'http://hpc.mii.vu.lt/ganglia/'),
-('MIF VU SK2', 'test', 'Supercomputer of Vilnius University Faculty of Mathematics and Informatics', 2,'http://mif.vu.lt/cluster/', 'http://k007.mif.vu.lt/ganglia2/');
+('Server', 'test', 'Calculations are performed on the damis.midas.lt server', 1, 'http://hpc.mii.vu.lt/', 'http://hpc.mii.vu.lt/ganglia/');
 
 INSERT INTO `componenttype` (`ComponentType`, `ComponentTypeID`) VALUES
 ('Upload data', 1),
