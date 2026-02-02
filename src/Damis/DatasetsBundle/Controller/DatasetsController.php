@@ -18,12 +18,9 @@ use Base\ConvertBundle\Helpers\ReadFile;
 use Symfony\Component\Form\FormError;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Symfony\Component\HttpFoundation\File\File;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Iphp\FileStoreBundle\Mapping\Factory;
-use Iphp\FileStoreBundle\FileStorage\FileStorageInterface;
 use Psr\Log\LoggerInterface;
 
 
@@ -34,9 +31,7 @@ class DatasetsController extends AbstractController
         private readonly PaginatorInterface $paginator,
         private readonly ParameterBagInterface $params,
         private readonly TranslatorInterface $translator,
-        private readonly LoggerInterface $logger,
-        private readonly ?Factory $mappingFactory = null,
-        private readonly ?FileStorageInterface $fileStorage = null
+        private readonly LoggerInterface $logger
     )
     {
     }
@@ -553,26 +548,32 @@ class DatasetsController extends AbstractController
             fwrite($fp, (string) $body);
             fclose($fp);
 
-            $file2 = new File($tempFile);
+            // Move file to permanent location
+            $projectRoot = $this->params->get('kernel.project_dir');
+            $uploadDir = $projectRoot . '/public/uploads/datasets/';
 
-            $refClass = new ReflectionClass(Dataset::class);
-
-            if ($this->mappingFactory && $this->fileStorage) {
-                $mapping = $this->mappingFactory->getMappingFromField($file, $refClass, 'file');
-                $fileData = $this->fileStorage->upload($mapping, $file2);
-            } else {
-                // Fallback if services aren't available
-                $request->getSession()->getFlashBag()->add('error', 'File storage service not configured');
-                return $this->redirectToRoute('datasets_midas_new');
+            // Create directory if it doesn't exist
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
             }
 
             $orgFilename = basename((string) $data['name']);
-            $fileData['originalName'] = $orgFilename;
+            $newFileName = uniqid() . '_' . $orgFilename;
+            $permanentPath = $uploadDir . $newFileName;
+            $relativePath = '/uploads/datasets/' . $newFileName;
+
+            // Move temp file to permanent location
+            rename($tempFile, $permanentPath);
+
+            $fileData = [
+                'path' => $relativePath,
+                'fileName' => $newFileName,
+                'originalName' => $orgFilename,
+            ];
 
             $file->setFile($fileData);
             $em->persist($file);
             $em->flush();
-            unlink($tempFile);
 
             return $this->uploadArff($request, $file->getDatasetId());
 
