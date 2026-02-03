@@ -78,8 +78,8 @@
                 "text": Translator.trans("OK", {}, 'ExperimentBundle'),
                 "class": "btn btn-primary",
                 "click": function(ev) {
-                    var path = $('input[type=radio][name="folder_path"]:checked').val(); console.log(path);
-                    $('input[name="folderPath"]').val(path);console.log($('input[name="folderPath"]').val());
+                    var path = $('input[type=radio][name="folder_path"]:checked').val();
+                    $('input[name="folderPath"]').val(path);
                     $(this).dialog("destroy");
                 }
             },
