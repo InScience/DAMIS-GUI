@@ -1,3 +1,6 @@
 apy_data_grid:
     pagerfanta:
-        enable: true
+        enable: false
+    persistence: true
+    no_data_message: No data
+    no_result_message: No result
