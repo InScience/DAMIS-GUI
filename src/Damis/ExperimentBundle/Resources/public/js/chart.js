@@ -247,10 +247,16 @@
 
 			// fill the form with current color and symbol values
 			$.each(dataContent.data, function(idx, series) {
-				var colorCode = selectedColors ? selectedColors[idx] : colorPalette[idx].toLowerCase();
-                if (!isFloatCls && parseInt(series.group)) {
-                    colorCode = selectedColors ? selectedColors[idx] : colorPalette[series.group % colorPalette.length].toLowerCase();
-                }
+				// Safely get color from palette with fallback
+				var paletteIdx = idx % colorPalette.length;
+				var paletteColor = colorPalette[paletteIdx] || '#000000';
+				var colorCode = selectedColors ? selectedColors[idx] : paletteColor.toLowerCase();
+
+				if (!isFloatCls && series.group != null && !isNaN(parseInt(series.group))) {
+					var groupIdx = parseInt(series.group) % colorPalette.length;
+					var groupColor = colorPalette[groupIdx] || '#000000';
+					colorCode = selectedColors ? selectedColors[idx] : groupColor.toLowerCase();
+				}
             
 				colorValues.push(colorCode);
 
