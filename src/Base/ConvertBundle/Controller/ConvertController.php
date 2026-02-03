@@ -31,7 +31,7 @@ class ConvertController extends AbstractController
             return null;
         }
         $projectRoot = $this->getParameter('kernel.project_dir');
-        return $projectRoot . '/web' . $entity->getFilePath();
+        return $projectRoot . '/public' . $entity->getFilePath();
     }
 
     /**
@@ -45,9 +45,13 @@ class ConvertController extends AbstractController
      */
     public function convertToArff($id)
     {
-        $user = $this->getUser();
         $em = $this->doctrine->getManager();
+        // First try to find by user, then fallback to any dataset (for experiment results)
+        $user = $this->getUser();
         $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+        if (!$entity) {
+            $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+        }
 
         $fullFilePath = $this->getFullFilePath($entity);
 
@@ -133,9 +137,13 @@ class ConvertController extends AbstractController
      */
     private function convertFromArffAction($id, $delimiter, $extension)
     {
-        $user = $this->getUser();
         $em = $this->doctrine->getManager();
+        // First try to find by user, then fallback to any dataset (for experiment results)
+        $user = $this->getUser();
         $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+        if (!$entity) {
+            $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+        }
         $fullFilePath = $this->getFullFilePath($entity);
 
         if ($fullFilePath && file_exists($fullFilePath)) {
@@ -210,9 +218,13 @@ class ConvertController extends AbstractController
      */
     public function convertToXls($id, $midas = 0)
     {
-        $user = $this->getUser();
         $em = $this->doctrine->getManager();
+        // First try to find by user, then fallback to any dataset (for experiment results)
+        $user = $this->getUser();
         $entity = $em->getRepository(Dataset::class)->findOneBy(['user' => $user, 'datasetId' => $id]);
+        if (!$entity) {
+            $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+        }
         $fullFilePath = $this->getFullFilePath($entity);
 
         if ($fullFilePath && file_exists($fullFilePath)) {

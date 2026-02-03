@@ -12,6 +12,7 @@ use Damis\DatasetsBundle\Entity\Dataset;
 use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
+use Base\ConvertBundle\Controller\ConvertController;
 use GuzzleHttp\Client;
 use PHPExcel_IOFactory;
 use ReflectionClass;
@@ -539,7 +540,7 @@ class ComponentController extends AbstractController
                 if ($request->get('dst') == 'user-computer') {
                     return $this->redirectToRoute('convert_' . $request->get('format'), ['id' => $id]);
                 } elseif ($request->get('dst') == 'midas') {
-                    $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo' . ucfirst((string) $request->get('format')), ['id'  => $id]);
+                    $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $request->get('format')), ['id' => $id]);
 
                     if ($request->get('format') == 'xls' || $request->get('format') == 'xlsx') {
                         $temp_file = $response2->getContent();
@@ -561,10 +562,15 @@ class ComponentController extends AbstractController
                         return $this->redirect($request->headers->get('referer'));
                     }
 
+                    // Get file info, handling missing fields gracefully
+                    $fileData = $entity->getFile();
+                    $originalName = $fileData['originalName'] ?? $fileData['fileName'] ?? $entity->getDatasetTitle() ?? 'file';
+                    $fileSize = $fileData['size'] ?? strlen($response2->getContent());
+
                     $post = [
-                        'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $entity->getFile()['originalName']) . $id . '.' . $request->get('format'),
+                        'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'),
                         'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
-                        'size' => $entity->getFile()['size'],
+                        'size' => $fileSize,
                     ];
 
                     try {
@@ -576,7 +582,7 @@ class ComponentController extends AbstractController
 
                         if ($response['type'] == 'error') {
                             if ($response["msgCode"] == 'FILE_ResearchSpaceIsFull') {
-                                $this->midasService->saveInTempDir($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $entity->getFile()['originalName']) . $id . '.' . $request->get('format'));
+                                $this->midasService->saveInTempDir($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
                             } else {
                                 $this->addFlash('error', $this->translator->trans('MIDAS response', [], 'DatasetsBundle') . ': ' . $this->translator->trans($response["msgCodeTranslation"], [], 'DatasetsBundle'));
                             }
@@ -586,7 +592,7 @@ class ComponentController extends AbstractController
                         $fileId = $response['file']['id'];
                         $header = ['Content-Type' => 'multipart/form-data', 'Authorization' => $sessionToken];
 
-                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $entity->getFile()['originalName']) . $id . '.' . $request->get('format'));
+                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
 
                         $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
@@ -689,7 +695,7 @@ class ComponentController extends AbstractController
                 return $this->redirectToRoute('convert_' . $request->get('format'), ['id' => $id]);
             } elseif ($request->get('dst') == 'midas') {
                 /** @var Response $response2 */
-                $response2 = $this->forward('BaseConvertBundle:Convert:ConvertTo' . ucfirst((string) $request->get('format')), ['id'  => $id, 'midas' => 1]);
+                $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $request->get('format')), ['id' => $id, 'midas' => 1]);
 
                 $temp_file = tempnam(sys_get_temp_dir(), 'damis_upload_');
                 if ($temp_file === false) {
@@ -709,10 +715,15 @@ class ComponentController extends AbstractController
                     return $this->redirect($request->headers->get('referer'));
                 }
 
+                // Get file info, handling missing fields gracefully
+                $fileData = $entity->getFile();
+                $originalName = $fileData['originalName'] ?? $fileData['fileName'] ?? $entity->getDatasetTitle() ?? 'file';
+                $fileSize = $fileData['size'] ?? strlen($response2->getContent());
+
                 $post = [
-                    'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $entity->getFile()['originalName']) . $id . '.' . $request->get('format'),
+                    'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'),
                     'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
-                    'size' => $entity->getFile()['size'],
+                    'size' => $fileSize,
                 ];
 
                 try {
@@ -729,7 +740,7 @@ class ComponentController extends AbstractController
 
                     $fileId = $response['file']['id'];
                     $header = ['Content-Type: multipart/form-data', 'Authorization:' . $sessionToken];
-                    $file = new CURLFile($temp_file, (string)$response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $entity->getFile()['originalName']) . $id . '.' . $request->get('format'));
+                    $file = new CURLFile($temp_file, (string)$response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
                     $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
