@@ -1,5 +1,5 @@
 #workflow-editor-container {
-    min-height: 500px;
+    min-height: 650px;
 }
 
 #toolbox-container {
@@ -30,7 +30,7 @@
 .ui-accordion .ui-accordion-header.first {margin-top: 0}
 
 #canvas {
-    width:614px; min-height: inherit; float:left; margin-left: 4px; border: 1px solid #ddd; -moz-border-radius:4px; border-radius:4px;
+    width:850px; min-height: inherit; float:left; margin-left: 4px; border: 1px solid #ddd; -moz-border-radius:4px; border-radius:4px;
 }
 
 #flowchart-container {
