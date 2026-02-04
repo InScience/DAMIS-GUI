@@ -101,12 +101,13 @@
                         else
                             id = idInput.val();
 
-                        window.params.addParam(window.taskBoxes.getBoxId($(this)), id, datasetId);
-                        window.datasets[window.taskBoxes.getBoxId($(this))] = datasetId;
+                        var boxId = window.taskBoxes.getBoxId($(this));
+                        window.params.addParam(boxId, id, datasetId);
+                        window.datasets[boxId] = datasetId;
                         data = {};
 						valueInput.val(datasetId);
-                        if (window.params.getParams(window.taskBoxes.getBoxId($(this)))) {
-                            data['data'] = JSON.stringify(window.params.getParams(window.taskBoxes.getBoxId($(this))));
+                        if (window.params.getParams(boxId)) {
+                            data['data'] = JSON.stringify(window.params.getParams(boxId));
                         }
                         url = Routing.generate('existing_midas_file', {'id' : id, 'path' : path});
                         $.ajax({
@@ -118,8 +119,11 @@
                             var container = $(this);
                             container.html(resp);
                             var currDatasetInput = $('input[name="dataset_url"]').val();
-                            window.params.addParam(window.taskBoxes.getBoxId($(this).parent()), id, currDatasetInput);
-                            window.datasets[window.taskBoxes.getBoxId($(this).parent())] = currDatasetInput;
+                            var parentBoxId = window.taskBoxes.getBoxId($(this).parent());
+                            window.params.addParam(parentBoxId, id, currDatasetInput);
+                            window.datasets[parentBoxId] = currDatasetInput;
+                            // Update the form's OUTPUT_CONNECTION value with the actual numeric datasetId
+                            valueInput.val(currDatasetInput);
                         });
 					}
                     if($('.toggle-btn-midas').is(':visible'))
