@@ -155,3 +155,20 @@ span.helptext{
 .grid .grid-filter-input-query input, .grid .grid-filter-select-query select {
   width: 90% !important;
 }
+
+/* Fix jQuery UI dialog close button icon */
+.ui-dialog-titlebar-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ui-dialog-titlebar-close::before {
+    content: '\00D7';
+    font-size: 20px;
+    font-weight: bold;
+    color: #888;
+    line-height: 1;
+}
+.ui-dialog-titlebar-close:hover::before {
+    color: #333;
+}
