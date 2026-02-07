@@ -562,10 +562,11 @@ class ComponentController extends AbstractController
                     // Get file info, handling missing fields gracefully
                     $fileData = $entity->getFile();
                     $originalName = $fileData['originalName'] ?? $fileData['fileName'] ?? $entity->getDatasetTitle() ?? 'file';
-                    $fileSize = $fileData['size'] ?? strlen($response2->getContent());
+                    $fileSize = filesize($temp_file);
 
+                    $midasFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . '_' . $id . '_' . time() . '.' . $request->get('format');
                     $post = [
-                        'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'),
+                        'name' =>  $midasFileName,
                         'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
                         'size' => $fileSize,
                     ];
@@ -579,7 +580,7 @@ class ComponentController extends AbstractController
 
                         if ($response['type'] == 'error') {
                             if ($response["msgCode"] == 'FILE_ResearchSpaceIsFull') {
-                                $this->midasService->saveInTempDir($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
+                                $this->midasService->saveInTempDir($temp_file, $response2->headers->get('content-type'), $midasFileName);
                             } else {
                                 $this->addFlash('error', $this->translator->trans('MIDAS response', [], 'DatasetsBundle') . ': ' . $this->translator->trans($response["msgCodeTranslation"], [], 'DatasetsBundle'));
                             }
@@ -589,7 +590,7 @@ class ComponentController extends AbstractController
                         $fileId = $response['file']['id'];
                         $header = ['Content-Type' => 'multipart/form-data', 'Authorization' => $sessionToken];
 
-                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
+                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), $midasFileName);
 
                         $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
