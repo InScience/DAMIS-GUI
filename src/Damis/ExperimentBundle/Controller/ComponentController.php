@@ -14,7 +14,7 @@ use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
 use Base\ConvertBundle\Controller\ConvertController;
 use GuzzleHttp\Client;
-use PHPExcel_IOFactory;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
@@ -542,15 +542,12 @@ class ComponentController extends AbstractController
                 } elseif ($request->get('dst') == 'midas') {
                     $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $request->get('format')), ['id' => $id]);
 
-                    if ($request->get('format') == 'xls' || $request->get('format') == 'xlsx') {
-                        $temp_file = $response2->getContent();
-
-                    } else {
-                        $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id;
-                        $fp = fopen($temp_file, "w");
-                        fwrite($fp, $response2->getContent());
-                        fclose($fp);
-                    }
+                    // Save response content to a temp file for all formats
+                    $extension = ($request->get('format') == 'xls' || $request->get('format') == 'xlsx') ? '.' . $request->get('format') : '';
+                    $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . $extension;
+                    $fp = fopen($temp_file, "w");
+                    fwrite($fp, $response2->getContent());
+                    fclose($fp);
 
                     $client = new Client(['base_uri' => $this->params->get('midas_url')]);
                     $session = $request->getSession();
@@ -847,8 +844,8 @@ class ComponentController extends AbstractController
                         }
                         unlink('.' . $path . '/' . $name);
                     } elseif ($format == 'xls' || $format == 'xlsx') {
-                        $objPHPExcel = PHPExcel_IOFactory::load('.' . $path . '/' . $name);
-                        $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                        $objSpreadsheet = IOFactory::load('.' . $path . '/' . $name);
+                        $rows = $objSpreadsheet->setActiveSheetIndex(0)->toArray();
                         array_unshift($rows, null);
                         unlink('.' . $path . '/' . $name);
                         unset($rows[0]);
@@ -893,8 +890,8 @@ class ComponentController extends AbstractController
                 }
                 $rows = $fileReader->getRows('./assets' . $entity->getFile()['fileName'], $format);
             } elseif ($format == 'xls' || $format == 'xlsx') {
-                $objPHPExcel = PHPExcel_IOFactory::load('./assets' . $entity->getFile()['fileName']);
-                $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                $objSpreadsheet = IOFactory::load('./assets' . $entity->getFile()['fileName']);
+                $rows = $objSpreadsheet->setActiveSheetIndex(0)->toArray();
                 array_unshift($rows, null);
                 unset($rows[0]);
             } else {

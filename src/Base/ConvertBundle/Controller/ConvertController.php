@@ -4,13 +4,13 @@ namespace Base\ConvertBundle\Controller;
 
 use Damis\DatasetsBundle\Entity\Dataset;
 use Base\ConvertBundle\Helpers\ReadFile;
-use PHPExcel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
-use PHPExcel_IOFactory;
-use PHPExcel_Writer_Excel2007;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ConvertController extends AbstractController
@@ -77,8 +77,8 @@ class ConvertController extends AbstractController
             } elseif (in_array($format, ['txt', 'tab', 'csv'])) {
                 $rows = $fileReader->getRows($fullFilePath, $format);
             } elseif (in_array($format, ['xls', 'xlsx'])) {
-                $objPHPExcel = PHPExcel_IOFactory::load($fullFilePath);
-                $rows = $objPHPExcel->getActiveSheet()->toArray();
+                $objSpreadsheet = IOFactory::load($fullFilePath);
+                $rows = $objSpreadsheet->getActiveSheet()->toArray();
             } else {
                 $this->get('session')->getFlashBag()->add('error', 'Dataset has wrong format!');
                 return $this->redirectToRoute('datasets_list');
@@ -237,8 +237,8 @@ class ConvertController extends AbstractController
                 return $this->redirectToRoute('datasets_list');
             }
 
-            $objPHPExcel = new PHPExcel();
-            $sheet = $objPHPExcel->setActiveSheetIndex(0);
+            $objSpreadsheet = new Spreadsheet();
+            $sheet = $objSpreadsheet->setActiveSheetIndex(0);
             $headers = [];
             $dataRows = [];
             $dataStarted = false;
@@ -258,7 +258,7 @@ class ConvertController extends AbstractController
             $sheet->fromArray($headers, null, 'A1');
             $sheet->fromArray($dataRows, null, 'A2');
 
-            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+            $objWriter = new Xlsx($objSpreadsheet);
 
             if ($midas == 1) {
                 $tempFile = $this->getParameter("kernel.cache_dir") . '/' . time() . $id . '.xlsx';

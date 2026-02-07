@@ -13,7 +13,7 @@ use Damis\EntitiesBundle\Entity\Parametervalue;
 use Damis\EntitiesBundle\Entity\Pvalueoutpvaluein;
 use Damis\EntitiesBundle\Entity\Workflowtask;
 use Damis\ExperimentBundle\Entity\Experiment;
-use PHPExcel_IOFactory;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -974,8 +974,8 @@ class ExperimentController extends AbstractController
 
                 } elseif (in_array($extractedFileFormat, ['xls', 'xlsx'])) {
                     try {
-                        $objPHPExcel = PHPExcel_IOFactory::load($extractedFilePath);
-                        $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                        $objSpreadsheet = IOFactory::load($extractedFilePath);
+                        $rows = $objSpreadsheet->setActiveSheetIndex(0)->toArray();
                          array_unshift($rows, null); // Keep this? Seems like a way to adjust indices
                          unset($rows[0]);
                          unlink($extractedFilePath); // Delete extracted excel file
@@ -1044,8 +1044,8 @@ class ExperimentController extends AbstractController
                     return false;
                 }
                  try {
-                    $objPHPExcel = PHPExcel_IOFactory::load($fullFilePath);
-                    $rows = $objPHPExcel->setActiveSheetIndex(0)->toArray();
+                    $objSpreadsheet = IOFactory::load($fullFilePath);
+                    $rows = $objSpreadsheet->setActiveSheetIndex(0)->toArray();
                      array_unshift($rows, null);
                      unset($rows[0]);
                      // Continue to ARFF conversion below...

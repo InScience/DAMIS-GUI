@@ -140,7 +140,6 @@ class MidasController extends AbstractController
             if (!empty($response['msgCodeTranslation'])) {
                 $this->session->getFlashBag()->add(
                     'error',
-                    // Use $this->translator
                     $this->translator->trans('MIDAS response', [], 'DatasetsBundle').': '.$this->translator->trans($response['msgCodeTranslation'], [], 'DatasetsBundle')
                 );
             } else {
