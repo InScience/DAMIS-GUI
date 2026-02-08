@@ -17,7 +17,6 @@ use Damis\DatasetsBundle\Controller\DatasetsController;
 use GuzzleHttp\Client;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
@@ -541,53 +540,25 @@ class ComponentController extends AbstractController
 
             if ($request->isMethod('POST')) {
                 $format = $request->get('format');
-                // Both xls and xlsx use the same convertToXls method and convert_xls route
-                $convertFormat = ($format === 'xlsx') ? 'xls' : $format;
 
                 if ($request->get('dst') == 'user-computer') {
-                    return $this->redirectToRoute('convert_' . $convertFormat, ['id' => $id]);
+                    return $this->redirectToRoute('convert_' . $format, ['id' => $id]);
                 } elseif ($request->get('dst') == 'midas') {
                     $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . '.' . $format;
 
-                    if (in_array($format, ['xls', 'xlsx'])) {
-                        // For xls/xlsx, build the spreadsheet directly to a temp file
-                        $fullFilePath = $this->params->get('kernel.project_dir') . '/public' . $entity->getFilePath();
-                        $fileReader = new ReadFile();
-                        $rows = $fileReader->getRows($fullFilePath, 'arff');
-                        $objSpreadsheet = new Spreadsheet();
-                        $sheet = $objSpreadsheet->setActiveSheetIndex(0);
-                        $headers = [];
-                        $dataRows = [];
-                        $dataStarted = false;
-                        foreach ($rows as $row) {
-                            if ($dataStarted) {
-                                $dataRows[] = array_values($row);
-                            } elseif (stripos((string) $row[0], '@attribute') === 0) {
-                                $parts = preg_split('/\s+/', (string) $row[0], 3);
-                                $headers[] = $parts[1];
-                            } elseif (stripos((string) $row[0], '@data') === 0) {
-                                $dataStarted = true;
-                            }
-                        }
-                        $sheet->fromArray($headers, null, 'A1');
-                        $sheet->fromArray($dataRows, null, 'A2');
-                        $objWriter = new Xlsx($objSpreadsheet);
-                        $objWriter->save($temp_file);
-                        $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                    } else {
-                        // For arff/txt/csv/tab, forward to the same DatasetsController
-                        // methods that handle local downloads
-                        $methodMap = [
-                            'arff' => 'convertArff',
-                            'txt' => 'convertTxt',
-                            'csv' => 'convertCsv',
-                            'tab' => 'convertTab',
-                        ];
-                        $method = $methodMap[$format] ?? 'convertCsv';
-                        $response2 = $this->forward(DatasetsController::class . '::' . $method, ['id' => $id]);
-                        file_put_contents($temp_file, $response2->getContent());
-                        $mimeType = $response2->headers->get('content-type') ?? 'application/octet-stream';
-                    }
+                    // Forward to the same DatasetsController methods that handle local downloads
+                    $methodMap = [
+                        'arff' => 'convertArff',
+                        'txt' => 'convertTxt',
+                        'csv' => 'convertCsv',
+                        'tab' => 'convertTab',
+                        'xls' => 'convertXls',
+                        'xlsx' => 'convertXlsx',
+                    ];
+                    $method = $methodMap[$format] ?? 'convertCsv';
+                    $response2 = $this->forward(DatasetsController::class . '::' . $method, ['id' => $id]);
+                    file_put_contents($temp_file, $response2->getContent());
+                    $mimeType = $response2->headers->get('content-type') ?? 'application/octet-stream';
 
                     $client = new Client(['base_uri' => $this->params->get('midas_url')]);
                     $session = $request->getSession();
