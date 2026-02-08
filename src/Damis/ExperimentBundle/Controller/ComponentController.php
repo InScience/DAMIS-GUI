@@ -13,6 +13,7 @@ use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
 use Base\ConvertBundle\Controller\ConvertController;
+use Damis\DatasetsBundle\Controller\DatasetsController;
 use GuzzleHttp\Client;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -546,35 +547,13 @@ class ComponentController extends AbstractController
                 if ($request->get('dst') == 'user-computer') {
                     return $this->redirectToRoute('convert_' . $convertFormat, ['id' => $id]);
                 } elseif ($request->get('dst') == 'midas') {
-                    // Convert directly instead of using forward() to ensure identical output as local download
-                    $fullFilePath = $this->params->get('kernel.project_dir') . '/public' . $entity->getFilePath();
-                    $fileReader = new ReadFile();
-                    $rows = $fileReader->getRows($fullFilePath, 'arff');
                     $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . '.' . $format;
-                    $mimeType = 'application/octet-stream';
 
-                    if ($format === 'arff') {
-                        copy($fullFilePath, $temp_file);
-                    } elseif (in_array($format, ['txt', 'csv', 'tab'])) {
-                        $delimiters = ['txt' => ' ', 'csv' => ';', 'tab' => "\t"];
-                        $delimiter = $delimiters[$format];
-                        $output = '';
-                        $headers = [];
-                        $dataStarted = false;
-                        foreach ($rows as $row) {
-                            if ($dataStarted) {
-                                $output .= implode($delimiter, $row) . PHP_EOL;
-                            } elseif (stripos((string) $row[0], '@attribute') === 0) {
-                                $parts = preg_split('/\s+/', (string) $row[0], 3);
-                                $headers[] = $parts[1];
-                            } elseif (stripos((string) $row[0], '@data') === 0) {
-                                $output .= implode($delimiter, $headers) . PHP_EOL;
-                                $dataStarted = true;
-                            }
-                        }
-                        file_put_contents($temp_file, $output);
-                        $mimeType = 'text/plain';
-                    } elseif (in_array($format, ['xls', 'xlsx'])) {
+                    if (in_array($format, ['xls', 'xlsx'])) {
+                        // For xls/xlsx, build the spreadsheet directly to a temp file
+                        $fullFilePath = $this->params->get('kernel.project_dir') . '/public' . $entity->getFilePath();
+                        $fileReader = new ReadFile();
+                        $rows = $fileReader->getRows($fullFilePath, 'arff');
                         $objSpreadsheet = new Spreadsheet();
                         $sheet = $objSpreadsheet->setActiveSheetIndex(0);
                         $headers = [];
@@ -595,6 +574,19 @@ class ComponentController extends AbstractController
                         $objWriter = new Xlsx($objSpreadsheet);
                         $objWriter->save($temp_file);
                         $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    } else {
+                        // For arff/txt/csv/tab, forward to the same DatasetsController
+                        // methods that handle local downloads
+                        $methodMap = [
+                            'arff' => 'convertArff',
+                            'txt' => 'convertTxt',
+                            'csv' => 'convertCsv',
+                            'tab' => 'convertTab',
+                        ];
+                        $method = $methodMap[$format] ?? 'convertCsv';
+                        $response2 = $this->forward(DatasetsController::class . '::' . $method, ['id' => $id]);
+                        file_put_contents($temp_file, $response2->getContent());
+                        $mimeType = $response2->headers->get('content-type') ?? 'application/octet-stream';
                     }
 
                     $client = new Client(['base_uri' => $this->params->get('midas_url')]);
