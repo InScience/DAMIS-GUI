@@ -161,13 +161,12 @@ class ConvertController extends AbstractController
             $dataStarted = false;
 
             foreach ($rows as $row) {
-                $line = $row[0];
                 if ($dataStarted) {
-                    $output .= str_replace(',', $delimiter, $line) . PHP_EOL;
-                } elseif (stripos((string) $line, '@attribute') === 0) {
-                    $parts = preg_split('/\s+/', (string) $line, 3);
+                    $output .= implode($delimiter, $row) . PHP_EOL;
+                } elseif (stripos((string) $row[0], '@attribute') === 0) {
+                    $parts = preg_split('/\s+/', (string) $row[0], 3);
                     $headers[] = $parts[1];
-                } elseif (stripos((string) $line, '@data') === 0) {
+                } elseif (stripos((string) $row[0], '@data') === 0) {
                     $output .= implode($delimiter, $headers) . PHP_EOL;
                     $dataStarted = true;
                 }
