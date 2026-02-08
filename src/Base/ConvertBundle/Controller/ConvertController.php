@@ -186,7 +186,7 @@ class ConvertController extends AbstractController
      */
     public function convertToTxt($id)
     {
-        return $this->convertFromArffAction($id, ',', 'txt');
+        return $this->convertFromArffAction($id, ' ', 'txt');
     }
 
     /**

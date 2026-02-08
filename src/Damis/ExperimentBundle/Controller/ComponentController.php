@@ -15,6 +15,8 @@ use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
 use Base\ConvertBundle\Controller\ConvertController;
 use GuzzleHttp\Client;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Damis\ExperimentBundle\Entity\Experiment as Experiment;
@@ -544,14 +546,56 @@ class ComponentController extends AbstractController
                 if ($request->get('dst') == 'user-computer') {
                     return $this->redirectToRoute('convert_' . $convertFormat, ['id' => $id]);
                 } elseif ($request->get('dst') == 'midas') {
-                    $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst($convertFormat), ['id' => $id]);
+                    // Convert directly instead of using forward() to ensure identical output as local download
+                    $fullFilePath = $this->params->get('kernel.project_dir') . '/public' . $entity->getFilePath();
+                    $fileReader = new ReadFile();
+                    $rows = $fileReader->getRows($fullFilePath, 'arff');
+                    $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . '.' . $format;
+                    $mimeType = 'application/octet-stream';
 
-                    // Save response content to a temp file for all formats
-                    $extension = ($request->get('format') == 'xls' || $request->get('format') == 'xlsx') ? '.' . $request->get('format') : '';
-                    $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . $extension;
-                    $fp = fopen($temp_file, "w");
-                    fwrite($fp, $response2->getContent());
-                    fclose($fp);
+                    if ($format === 'arff') {
+                        copy($fullFilePath, $temp_file);
+                    } elseif (in_array($format, ['txt', 'csv', 'tab'])) {
+                        $delimiters = ['txt' => ' ', 'csv' => ';', 'tab' => "\t"];
+                        $delimiter = $delimiters[$format];
+                        $output = '';
+                        $headers = [];
+                        $dataStarted = false;
+                        foreach ($rows as $row) {
+                            if ($dataStarted) {
+                                $output .= implode($delimiter, $row) . PHP_EOL;
+                            } elseif (stripos((string) $row[0], '@attribute') === 0) {
+                                $parts = preg_split('/\s+/', (string) $row[0], 3);
+                                $headers[] = $parts[1];
+                            } elseif (stripos((string) $row[0], '@data') === 0) {
+                                $output .= implode($delimiter, $headers) . PHP_EOL;
+                                $dataStarted = true;
+                            }
+                        }
+                        file_put_contents($temp_file, $output);
+                        $mimeType = 'text/plain';
+                    } elseif (in_array($format, ['xls', 'xlsx'])) {
+                        $objSpreadsheet = new Spreadsheet();
+                        $sheet = $objSpreadsheet->setActiveSheetIndex(0);
+                        $headers = [];
+                        $dataRows = [];
+                        $dataStarted = false;
+                        foreach ($rows as $row) {
+                            if ($dataStarted) {
+                                $dataRows[] = array_values($row);
+                            } elseif (stripos((string) $row[0], '@attribute') === 0) {
+                                $parts = preg_split('/\s+/', (string) $row[0], 3);
+                                $headers[] = $parts[1];
+                            } elseif (stripos((string) $row[0], '@data') === 0) {
+                                $dataStarted = true;
+                            }
+                        }
+                        $sheet->fromArray($headers, null, 'A1');
+                        $sheet->fromArray($dataRows, null, 'A2');
+                        $objWriter = new Xlsx($objSpreadsheet);
+                        $objWriter->save($temp_file);
+                        $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    }
 
                     $client = new Client(['base_uri' => $this->params->get('midas_url')]);
                     $session = $request->getSession();
@@ -584,7 +628,7 @@ class ComponentController extends AbstractController
 
                         if ($response['type'] == 'error') {
                             if ($response["msgCode"] == 'FILE_ResearchSpaceIsFull') {
-                                $this->midasService->saveInTempDir($temp_file, $response2->headers->get('content-type'), $midasFileName);
+                                $this->midasService->saveInTempDir($temp_file, $mimeType, $midasFileName);
                             } else {
                                 $this->addFlash('error', $this->translator->trans('MIDAS response', [], 'DatasetsBundle') . ': ' . $this->translator->trans($response["msgCodeTranslation"], [], 'DatasetsBundle'));
                             }
@@ -594,7 +638,7 @@ class ComponentController extends AbstractController
                         $fileId = $response['file']['id'];
                         $header = ['Content-Type' => 'multipart/form-data', 'Authorization' => $sessionToken];
 
-                        $file = new CURLFile($temp_file, $response2->headers->get('content-type'), $midasFileName);
+                        $file = new CURLFile($temp_file, $mimeType, $midasFileName);
 
                         $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
