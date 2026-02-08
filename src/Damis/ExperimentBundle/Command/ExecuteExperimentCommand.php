@@ -172,8 +172,30 @@ class ExecuteExperimentCommand extends Command
                 }
             }
 
-            // URL-encode the filename to handle spaces and special characters
+            // Check if the ARFF file has a numeric attribute named "class"
+            // which the WSDL parser rejects (it expects class to be nominal with {})
+            $projectDir = $this->params->get('kernel.project_dir');
+            $fullPath = $projectDir . '/public' . $dataset->getFilePath();
+            $tempArffPath = null;
             $filePath = $dataset->getFilePath();
+
+            if (file_exists($fullPath) && strtolower(pathinfo($fullPath, PATHINFO_EXTENSION)) === 'arff') {
+                $arffContent = file_get_contents($fullPath);
+                if (preg_match('/^@attribute\s+class\s+(real|integer|numeric)/mi', $arffContent)) {
+                    $arffContent = preg_replace(
+                        '/^(@attribute\s+)class(\s+(real|integer|numeric))/mi',
+                        '$1class_attr$2',
+                        $arffContent
+                    );
+                    $tempName = uniqid('arff_') . '.arff';
+                    $tempArffPath = $projectDir . '/public/uploads/datasets/' . $tempName;
+                    file_put_contents($tempArffPath, $arffContent);
+                    $filePath = '/uploads/datasets/' . $tempName;
+                    $output->writeln('Renamed numeric "class" attribute to "class_attr" in temp file');
+                }
+            }
+
+            // URL-encode the filename to handle spaces and special characters
             $encodedPath = str_replace(' ', '%20', $filePath);
 
             $params = array_merge(
@@ -259,6 +281,11 @@ class ExecuteExperimentCommand extends Command
             }
 
             // process result
+
+            // Clean up temp ARFF file if created
+            if ($tempArffPath && file_exists($tempArffPath)) {
+                @unlink($tempArffPath);
+            }
 
             if ($error) {
                 //save error message
