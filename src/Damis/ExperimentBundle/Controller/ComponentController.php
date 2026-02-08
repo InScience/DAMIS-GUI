@@ -537,10 +537,14 @@ class ComponentController extends AbstractController
             $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
 
             if ($request->isMethod('POST')) {
+                $format = $request->get('format');
+                // Both xls and xlsx use the same convertToXls method and convert_xls route
+                $convertFormat = ($format === 'xlsx') ? 'xls' : $format;
+
                 if ($request->get('dst') == 'user-computer') {
-                    return $this->redirectToRoute('convert_' . $request->get('format'), ['id' => $id]);
+                    return $this->redirectToRoute('convert_' . $convertFormat, ['id' => $id]);
                 } elseif ($request->get('dst') == 'midas') {
-                    $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $request->get('format')), ['id' => $id]);
+                    $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst($convertFormat), ['id' => $id]);
 
                     // Save response content to a temp file for all formats
                     $extension = ($request->get('format') == 'xls' || $request->get('format') == 'xlsx') ? '.' . $request->get('format') : '';
