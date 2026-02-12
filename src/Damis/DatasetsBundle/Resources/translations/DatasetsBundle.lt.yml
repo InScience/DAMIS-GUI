@@ -19,6 +19,7 @@ Download : Atsisiuntimas
 Created : Sukurta
 Size : Dydis
 Dataset successfully uploaded! : Duomenų failas sėkmingai įkeltas!
+Dataset successfully uploaded and converted to ARFF! : Duomenų failas sėkmingai įkeltas ir konvertuotas į ARFF formatą!
 Dataset used in the experiment: Eksperimentui naudojamas duomenų failas
 New file: Naujas failas
 Change file: Pakeisti failą

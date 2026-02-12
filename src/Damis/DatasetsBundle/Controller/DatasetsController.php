@@ -318,7 +318,7 @@ class DatasetsController extends AbstractController
         $em->persist($entity);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'Dataset successfully uploaded and converted to ARFF!');
+        $request->getSession()->getFlashBag()->add('success', $this->translator->trans('Dataset successfully uploaded and converted to ARFF!', [], 'DatasetsBundle'));
         return $this->redirectToRoute('datasets_list');
     }
 
