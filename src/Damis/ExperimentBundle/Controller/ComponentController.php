@@ -341,6 +341,56 @@ class ComponentController extends AbstractController
 
                 $file->setFile($file_data);
                 $file->setFilePath($relativePath);
+
+                // Convert non-ARFF files to ARFF format
+                $format = strtolower(pathinfo($orgFileName, PATHINFO_EXTENSION));
+                $rows = [];
+
+                if (in_array($format, ['txt', 'tab', 'csv'])) {
+                    $fileReader = new ReadFile();
+                    $rows = $fileReader->getRows($permanentPath, $format);
+                } elseif (in_array($format, ['xls', 'xlsx'])) {
+                    $spreadsheet = IOFactory::load($permanentPath);
+                    $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    $rows = array_filter($rows, fn($row) => !empty(array_filter($row)));
+                }
+
+                if (!empty($rows)) {
+                    $hasHeaders = false;
+                    $firstRow = reset($rows);
+                    foreach ($firstRow as $cell) {
+                        if (!is_numeric($cell)) {
+                            $hasHeaders = true;
+                            break;
+                        }
+                    }
+
+                    $arff = '@RELATION ' . preg_replace('/\s+/', '_', (string) $file->getDatasetTitle()) . PHP_EOL;
+                    $headerRow = $hasHeaders ? array_values(array_shift($rows)) : array_keys($firstRow);
+                    $firstDataRow = reset($rows);
+
+                    foreach ($headerRow as $key => $header) {
+                        $attributeName = $hasHeaders ? preg_replace('/[^\w\d_]/', '_', (string) $header) : 'attribute_' . $key;
+                        $sampleValue = $firstDataRow[$key] ?? null;
+                        $type = 'STRING';
+                        if (is_numeric($sampleValue)) {
+                            $type = (!str_contains((string) $sampleValue, '.')) ? 'INTEGER' : 'REAL';
+                        }
+                        $arff .= '@ATTRIBUTE ' . $attributeName . ' ' . $type . PHP_EOL;
+                    }
+
+                    $arff .= '@DATA' . PHP_EOL;
+                    foreach ($rows as $row) {
+                        $arff .= implode(',', array_values($row)) . PHP_EOL;
+                    }
+
+                    $arffFileName = uniqid() . '_' . pathinfo($orgFileName, PATHINFO_FILENAME) . '.arff';
+                    $arffPath = $uploadDir . $arffFileName;
+                    file_put_contents($arffPath, $arff);
+
+                    $file->setFilePath('/uploads/datasets/' . $arffFileName);
+                }
+
                 $em->flush();
 
             } catch (\GuzzleHttp\Exception\ClientException $e) {
