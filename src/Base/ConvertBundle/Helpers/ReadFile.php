@@ -65,7 +65,12 @@ class ReadFile
                 $row++;
                 for ($c = 0; $c < $num; $c++) {
                     // String should be not empty. If string is '0', empty function return true
-                   $rows[$row][] = trim((string) $data[$c]);
+                    $trimmed = trim((string) $data[$c]);
+                    // Skip empty cells for space delimiter (multiple consecutive spaces = one delimiter)
+                    if ($delimiter === ' ' && $trimmed === '') {
+                        continue;
+                    }
+                    $rows[$row][] = $trimmed;
                 }
             }
             fclose($handle);
