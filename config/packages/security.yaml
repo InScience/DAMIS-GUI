@@ -67,6 +67,7 @@ security:
         - { path: ^/users, role: ROLE_ADMIN }
         - { path: ^/cron, role: ROLE_ADMIN }
         - { path: ^/pages, role: ROLE_ADMIN }
+        - { path: ^/admin/statistics, role: ROLE_ADMIN }
         # Protected areas - require ROLE_CONFIRMED
         - { path: ^/experiment, role: ROLE_CONFIRMED }
         - { path: ^/datasets, role: ROLE_CONFIRMED }

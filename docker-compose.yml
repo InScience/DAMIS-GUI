@@ -9,8 +9,12 @@ services:
     build: ./docker/apache
     ports:
       - "${HTTP_PORT:-8080}:80"
+    environment:
+      # access log file names and times in local time (read by the awstats service)
+      TZ: Europe/Vilnius
     volumes:
       - ./:/var/www/html:ro
+      - apache_logs:/var/log/damis-apache
     depends_on:
       - php
     restart: unless-stopped
@@ -40,10 +44,13 @@ services:
       # application address the service uses to download dataset files
       DAMIS_SERVICE_WSDL: ${DAMIS_SERVICE_WSDL:-http://damis-service/cgi-bin/DamisService.cgi?wsdl}
       DAMIS_DATA_HOST: ${DAMIS_DATA_HOST:-http://apache}
+      # static AWStats pages shown to administrators (see the awstats service)
+      DAMIS_AWSTATS_DIR: /var/lib/damis-awstats
     volumes:
       - ./:/var/www/html
       # Crontabs written from the /cron admin page survive container re-creation
       - php_crontabs:/var/spool/cron/crontabs
+      - awstats_html:/var/lib/damis-awstats:ro
     depends_on:
       mysql:
         condition: service_healthy
@@ -107,8 +114,25 @@ services:
       - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
     restart: unless-stopped
 
+  # Web statistics (AWStats): reads the apache access logs every hour and builds static pages (LT, EN) that
+  # administrators open in the application (admin menu, /admin/statistics). Logs are kept LOG_RETENTION_DAYS.
+  awstats:
+    build: ./docker/awstats
+    environment:
+      AWSTATS_SITE_DOMAIN: ${AWSTATS_SITE_DOMAIN:-damis.midas.lt}
+      LOG_RETENTION_DAYS: ${LOG_RETENTION_DAYS:-90}
+      TZ: Europe/Vilnius
+    volumes:
+      - apache_logs:/var/log/damis-apache
+      - awstats_data:/var/lib/awstats
+      - awstats_html:/var/www/awstats
+    restart: unless-stopped
+
 volumes:
   mysql_data:
   php_crontabs:
   damis_data:
   damis_logs:
+  apache_logs:
+  awstats_data:
+  awstats_html:

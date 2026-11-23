@@ -9,3 +9,8 @@ parameters:
     # service downloads; empty = project_full_host. Inside docker compose: http://apache
     env(DAMIS_DATA_HOST): ''
     damis_data_host: '%env(DAMIS_DATA_HOST)%'
+
+    # directory with the static AWStats pages (<lang>/<YYYY-MM>/awstats.damis*.html, icon/), written by the
+    # awstats container and shown to administrators under /admin/statistics; empty = statistics not installed
+    env(DAMIS_AWSTATS_DIR): ''
+    damis_awstats_dir: '%env(DAMIS_AWSTATS_DIR)%'

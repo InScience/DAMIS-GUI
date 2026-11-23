@@ -4,6 +4,13 @@ en_US: English
 en: English
 cron: Cron
 pages: Pages
+
+# Web statistics (AWStats)
+statistics.menu: Statistics
+statistics.title: Web statistics
+statistics.month: Month
+statistics.updated: Updated every hour.
+statistics.no_data: "There are no statistics yet. They are updated every hour from the web server access logs."
 info_video_label: Information video
 
 # Cron Manager translations
