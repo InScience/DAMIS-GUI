@@ -22,3 +22,10 @@ else
     db < /damis/sql/sql_structure.sql
     db < /damis/sql/data.sql
 fi
+
+# Empty database for the PHPUnit tests (APP_ENV=test uses <database>_test, the schema is created by the tests)
+echo "[damis] Creating test database ${MYSQL_DATABASE}_test"
+db <<SQL
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%';
+SQL

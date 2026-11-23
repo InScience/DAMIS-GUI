@@ -25,6 +25,21 @@ Sample users have legacy password hashes, set a new password to log in:
 Ports, credentials and `APP_ENV` can be overridden via variables in a `.env` file (see `docker-compose.yml`).
 Console: `docker compose exec php bin/console <command>`.
 
+Tests
+=========
+
+Run in the running Docker environment:
+
+- `docker compose exec -u www-data php vendor/bin/phpunit` - functional and unit tests (`tests/`) against the
+  `damis_test` database, recreated on every run (`DAMIS_TEST_KEEP_SCHEMA=1` keeps it for single tests);
+- `docker compose exec -u www-data -e SMOKE_USER=<admin> -e SMOKE_PASSWORD=<password> php bash tests/smoke/smoke.sh`:
+  HTTP smoke test through Apache (all pages, login, dataset upload and conversions) as an administrator;
+- `docker compose exec -u www-data php php tests/smoke/damis-service.php` - every DamisService operation over SOAP.
+
+GitHub Actions (`.github/workflows/ci.yml`) run all three on every push and pull request with a fresh
+`docker compose up --build`, together with InScience/DAMIS and InScience/DAMIS_WebService (the branch of the
+same name when it exists, otherwise the default branch), plus `composer audit` and `npm audit` (also weekly).
+
 Initial configuration
 =========
 
