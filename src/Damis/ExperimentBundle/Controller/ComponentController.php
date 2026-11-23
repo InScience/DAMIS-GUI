@@ -9,6 +9,8 @@ use Damis\EntitiesBundle\Entity\Workflowtask;
 use Base\ConvertBundle\Helpers\ReadFile;
 use CURLFile;
 use Damis\DatasetsBundle\Entity\Dataset;
+use Damis\DatasetsBundle\Security\DatasetVoter;
+use Base\MainBundle\Controller\RequestInputTrait;
 use Damis\ExperimentBundle\Entity\Component;
 use Damis\ExperimentBundle\Entity\Parameter;
 use Damis\ExperimentBundle\Helpers\Experiment as ExperimentHelper;
@@ -34,6 +36,8 @@ use Psr\Log\LoggerInterface;
 
 class ComponentController extends AbstractController
 {
+    use RequestInputTrait;
+
     public function __construct(
         private readonly ManagerRegistry $doctrine,
         private readonly PaginatorInterface $paginator,
@@ -49,6 +53,15 @@ class ComponentController extends AbstractController
     /**
      * Component info
      */
+    /**
+     * The dataset if the current user may read it (owner, administrator, input of an experiment example - see
+     * DatasetVoter), otherwise null, so that a foreign dataset is handled exactly like a missing one.
+     */
+    private function readableDataset(?Dataset $dataset): ?Dataset
+    {
+        return $dataset && $this->isGranted(DatasetVoter::VIEW, $dataset) ? $dataset : null;
+    }
+
     #[Route('/experiment/component/{id}/info.html', name: 'component', methods: ['GET'], options: ['expose' => true])]
     public function component($id): Response
     {
@@ -84,7 +97,7 @@ class ComponentController extends AbstractController
         $datasetId = $request->query->get('dataset_id') ?? $request->request->get('dataset_id');
         if ($datasetId > 0) {
             /** @var \Damis\DatasetsBundle\Entity\Dataset|null $dataset */
-            $dataset = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]);
+            $dataset = $this->readableDataset($em->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]));
             if ($dataset) {
                 $helper = new \Base\ConvertBundle\Helpers\ReadFile();
                 $filePath = $this->getParameter('kernel.project_dir') . '/public' . $dataset->getFilePath();
@@ -243,7 +256,7 @@ class ComponentController extends AbstractController
         }
 
         if ($id && $id !== 'undefined') {
-            $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+            $entity = $this->readableDataset($em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]));
         } else {
             $id = null;
         }
@@ -283,7 +296,7 @@ class ComponentController extends AbstractController
         $sessionToken = $session->get('sessionToken');
         $this->logger?->info('existingMidasFile request', [
             'query' => $request->query->all(),
-            'data' => $request->get('data'),
+            'data' => $this->input($request, 'data'),
             'sessionToken_present' => (bool) $sessionToken,
         ]);
 
@@ -295,7 +308,7 @@ class ComponentController extends AbstractController
         }
 
         if ($request->isMethod("POST")) {
-            $data = json_decode((string) json_decode((string) $request->get('data'), true)[0]['value'], true);
+            $data = json_decode((string) json_decode((string) $this->input($request, 'data'), true)[0]['value'], true);
             try {
                 $response = $client->get('/action/file-explorer/file', [
                     'query' => [
@@ -408,7 +421,7 @@ class ComponentController extends AbstractController
             $data = json_decode((string) $request->query->all()['dataset_url']);
             if ($request->query->all() && !empty($data)) {
                 $datasetId = $data[0]->value;
-                $dataset = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]);
+                $dataset = $this->readableDataset($em->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]));
                 return $this->render('@DamisExperiment/component/existingMidasFile.html.twig', [
                     'file' => $dataset,
                     'files' => null
@@ -420,10 +433,10 @@ class ComponentController extends AbstractController
         $uuid = $request->query->get('uuid', 'research');
         $id = $request->query->get('id');
 
-        $data = json_decode((string) $request->get('data'));
-        if ($request->get('data') && !empty($data) && $request->get('edit') != 1) {
-            $id = json_decode((string) $request->get('data'))[0]->value;
-            $dataset = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+        $data = json_decode((string) $this->input($request, 'data'));
+        if ($this->input($request, 'data') && !empty($data) && $this->input($request, 'edit') != 1) {
+            $id = json_decode((string) $this->input($request, 'data'))[0]->value;
+            $dataset = $this->readableDataset($em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]));
             return $this->render('@DamisExperiment/component/existingMidasFile.html.twig', [
                 'file' => $dataset,
                 'files' => null
@@ -509,14 +522,14 @@ class ComponentController extends AbstractController
         if (!$sessionToken) {
             return new Response($translator->trans('It is impossible access MIDAS. Please re-login to MIDAS', [], 'ExperimentBundle'));
         }
-        $page = $request->get('page') ?: 1;
-        $path = $request->get('path') ?: '';
-        $uuid = $request->get('uuid') ?: 'research';
-        $id = $request->get('id');
+        $page = $this->input($request, 'page') ?: 1;
+        $path = $this->input($request, 'path') ?: '';
+        $uuid = $this->input($request, 'uuid') ?: 'research';
+        $id = $this->input($request, 'id');
 
-        $data = json_decode((string) $request->get('data'));
-        if ($request->get('data') && !empty($data) && $request->get('edit') != 1) {
-            $id = json_decode((string) $request->get('data'))[0]->value;
+        $data = json_decode((string) $this->input($request, 'data'));
+        if ($this->input($request, 'data') && !empty($data) && $this->input($request, 'edit') != 1) {
+            $id = json_decode((string) $this->input($request, 'data'))[0]->value;
             $path = json_decode($id, true)['path'];
             $page = json_decode($id, true)['page'];
 
@@ -586,14 +599,17 @@ class ComponentController extends AbstractController
         if ($id == 'undefined') {
             $id = null;
         } else {
-            $entity = $em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]);
+            $entity = $this->readableDataset($em->getRepository(Dataset::class)->findOneBy(['datasetId' => $id]));
+            if (!$entity) {
+                throw $this->createNotFoundException('Dataset not found');
+            }
 
             if ($request->isMethod('POST')) {
-                $format = $request->get('format');
+                $format = $this->input($request, 'format');
 
-                if ($request->get('dst') == 'user-computer') {
+                if ($this->input($request, 'dst') == 'user-computer') {
                     return $this->redirectToRoute('convert_' . $format, ['id' => $id]);
-                } elseif ($request->get('dst') == 'midas') {
+                } elseif ($this->input($request, 'dst') == 'midas') {
                     $temp_file = $this->params->get("kernel.cache_dir") . '/../' . time() . $id . '.' . $format;
 
                     // Forward to the same DatasetsController methods that handle local downloads
@@ -625,10 +641,10 @@ class ComponentController extends AbstractController
                     $originalName = $fileData['originalName'] ?? $fileData['fileName'] ?? $entity->getDatasetTitle() ?? 'file';
                     $fileSize = filesize($temp_file);
 
-                    $midasFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . '_' . $id . '_' . time() . '.' . $request->get('format');
+                    $midasFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . '_' . $id . '_' . time() . '.' . $this->input($request, 'format');
                     $post = [
                         'name' =>  $midasFileName,
-                        'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
+                        'parentFolderId' => json_decode((string) $this->input($request, 'path'), true)['idCSV'],
                         'size' => $fileSize,
                     ];
 
@@ -740,7 +756,7 @@ class ComponentController extends AbstractController
 
         if ($id === 'undefined' || $id === null) {
         } else {
-            $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
+            $entity = $this->readableDataset($em->getRepository(Dataset::class)->findOneByDatasetId($id));
         }
 
         if (!$entity) {
@@ -748,11 +764,11 @@ class ComponentController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
-            if ($request->get('dst') == 'user-computer') {
-                return $this->redirectToRoute('convert_' . $request->get('format'), ['id' => $id]);
-            } elseif ($request->get('dst') == 'midas') {
+            if ($this->input($request, 'dst') == 'user-computer') {
+                return $this->redirectToRoute('convert_' . $this->input($request, 'format'), ['id' => $id]);
+            } elseif ($this->input($request, 'dst') == 'midas') {
                 /** @var Response $response2 */
-                $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $request->get('format')), ['id' => $id, 'midas' => 1]);
+                $response2 = $this->forward(ConvertController::class . '::convertTo' . ucfirst((string) $this->input($request, 'format')), ['id' => $id, 'midas' => 1]);
 
                 $temp_file = tempnam(sys_get_temp_dir(), 'damis_upload_');
                 if ($temp_file === false) {
@@ -778,8 +794,8 @@ class ComponentController extends AbstractController
                 $fileSize = $fileData['size'] ?? strlen($response2->getContent());
 
                 $post = [
-                    'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'),
-                    'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
+                    'name' =>  preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $this->input($request, 'format'),
+                    'parentFolderId' => json_decode((string) $this->input($request, 'path'), true)['idCSV'],
                     'size' => $fileSize,
                 ];
 
@@ -797,7 +813,7 @@ class ComponentController extends AbstractController
 
                     $fileId = $response['file']['id'];
                     $header = ['Content-Type: multipart/form-data', 'Authorization:' . $sessionToken];
-                    $file = new CURLFile($temp_file, (string)$response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $request->get('format'));
+                    $file = new CURLFile($temp_file, (string)$response2->headers->get('content-type'), preg_replace('/\\.[^.\\s]{3,4}$/', '', (string) $originalName) . $id . '.' . $this->input($request, 'format'));
                     $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
@@ -819,7 +835,7 @@ class ComponentController extends AbstractController
             }
         } else {
             $workflow = $em->getRepository(Workflowtask::class)
-                ->findOneBy(['experiment' => $request->get('experimentId'), 'taskBox' => $request->get('taskBox')]);
+                ->findOneBy(['experiment' => $this->input($request, 'experimentId'), 'taskBox' => $this->input($request, 'taskBox')]);
             if ($workflow) {
                 $runtime = $workflow->getExecutionTime();
                 $message = $workflow->getMessage();

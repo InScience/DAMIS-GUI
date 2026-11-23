@@ -34,7 +34,7 @@
                             {% for cluster in clusters %}
                                 <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
                                     {% for category in componentsCategories %}
-                                        {% apply spaceless %}
+                                        {% apply html_spaceless %}
                                             <h3 {% if loop.index == 1 %}class="first"{% endif %}>
                                                 {{ category.getType | trans({}, 'ExperimentBundle') }}
                                             </h3>

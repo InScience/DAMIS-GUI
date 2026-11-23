@@ -39,6 +39,9 @@ security:
                 provider: fos_userbundle
                 # Where to go after a successful login.
                 default_target_path: / # Change this to your desired homepage route name if needed
+                # Validate the _csrf_token the login form sends (token id "authenticate"); it was rendered but
+                # never checked, so the login form was open to login CSRF.
+                enable_csrf: true
 
             logout:
                 # The route name for logging out.

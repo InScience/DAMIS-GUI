@@ -24,7 +24,8 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-dev}
       APP_SECRET: ${APP_SECRET:-local-docker-secret-change-me}
-      MAILER_DSN: ${MAILER_DSN:-null://null}
+      # local mail goes to Mailpit (http://localhost:8025); production sets its real SMTP server here
+      MAILER_DSN: ${MAILER_DSN:-smtp://mailpit:1025}
       VAR_DUMPER_SERVER: ${VAR_DUMPER_SERVER:-127.0.0.1:9912}
       DATABASE_HOST: mysql
       DATABASE_PORT: 3306
@@ -32,8 +33,13 @@ services:
       DATABASE_USER: ${MYSQL_USER:-damis}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD:-damis}
       PROJECT_DOMAIN: ${PROJECT_DOMAIN:-localhost}
-      # Base URL the DAMIS computing service uses to download dataset files
+      # Public base URL of the application
       PROJECT_FULL_HOST: ${PROJECT_FULL_HOST:-http://localhost:8080}
+      # DAMIS computing service (see damis-service below and config/packages/damis.yaml):
+      # WSDL of the service (overrides the hosts stored in the component table) and the
+      # application address the service uses to download dataset files
+      DAMIS_SERVICE_WSDL: ${DAMIS_SERVICE_WSDL:-http://damis-service/cgi-bin/DamisService.cgi?wsdl}
+      DAMIS_DATA_HOST: ${DAMIS_DATA_HOST:-http://apache}
     volumes:
       - ./:/var/www/html
       # Crontabs written from the /cron admin page survive container re-creation
@@ -41,6 +47,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      damis-service:
+        condition: service_started
     restart: unless-stopped
 
   mysql:
@@ -69,6 +77,38 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  # DAMIS computing service: DamisService.cgi (SOAP, Apache CGI) + the MPI Algorithms binary, built from
+  # the sibling repositories DAMIS_WebService and DAMIS. Only reachable by the other containers; the
+  # port below is bound to localhost for debugging (the service downloads any URL it is given).
+  damis-service:
+    build:
+      context: ${DAMIS_WEBSERVICE_DIR:-../DAMIS_WebService}
+      dockerfile: docker/Dockerfile
+      additional_contexts:
+        algorithms: ${DAMIS_ALGORITHMS_DIR:-../DAMIS}
+    environment:
+      SERVICE_URL: http://damis-service/cgi-bin/DamisService.cgi
+      DATA_URL: http://damis-service/DamisData/
+      # empty = number of CPUs of the container; the GUI "processor number" must not exceed it
+      MPI_PROCESSES: ${DAMIS_MPI_PROCESSES:-}
+      MAX_RUN_TIME: ${DAMIS_MAX_RUN_TIME:-3300}
+    ports:
+      - "127.0.0.1:${DAMIS_SERVICE_PORT:-8087}:80"
+    volumes:
+      - damis_data:/var/lib/damis/data
+      - damis_logs:/var/log/damis
+    restart: unless-stopped
+
+  # Local mail catcher: every e-mail the application sends (password reset, registration) is shown at
+  # http://localhost:8025 instead of being delivered.
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
+    restart: unless-stopped
+
 volumes:
   mysql_data:
   php_crontabs:
+  damis_data:
+  damis_logs:

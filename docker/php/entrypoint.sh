@@ -84,7 +84,7 @@ console fos:js-routing:dump --format=js --target=public/js/fos_js_routes.js
 
 # 7. Cron (experiment:execute jobs are managed from the /cron admin page).
 # Cron jobs do not inherit the container environment, pam_env loads it from /etc/environment.
-printenv | grep -E '^(APP_|DATABASE_|MAILER_|VAR_DUMPER_|PROJECT_)' > /etc/environment || true
+printenv | grep -E '^(APP_|DATABASE_|MAILER_|VAR_DUMPER_|PROJECT_|DAMIS_)' > /etc/environment || true
 cron
 
 log "Ready"

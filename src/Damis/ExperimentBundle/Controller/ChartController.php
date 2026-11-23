@@ -3,6 +3,8 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Damis\DatasetsBundle\Entity\Dataset;
+use Damis\DatasetsBundle\Security\DatasetVoter;
+use Base\MainBundle\Controller\RequestInputTrait;
 use Damis\ExperimentBundle\Helpers\Chart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,6 +19,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ChartController extends AbstractController
 {
+    use RequestInputTrait;
+
     public function __construct(
         private readonly ParameterBagInterface $params
     ) {
@@ -29,12 +33,12 @@ class ChartController extends AbstractController
     function getAction(Request $request, ManagerRegistry $doctrine, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
-            if ($request->get('dst') == 'user-computer') {
-                return $this->_downloadImage($request->get('image'), $request->get('format'));
+            if ($this->input($request, 'dst') == 'user-computer') {
+                return $this->_downloadImage($this->input($request, 'image'), $this->input($request, 'format'));
             } 
-            elseif ($request->get('dst') == 'midas') {
-                if ($request->get('format') == 'jpeg' || $request->get('format') == 'png') {
-                    $temp_file = $this->_getImageFilePath($request->get('image'), $request->get('format'));
+            elseif ($this->input($request, 'dst') == 'midas') {
+                if ($this->input($request, 'format') == 'jpeg' || $this->input($request, 'format') == 'png') {
+                    $temp_file = $this->_getImageFilePath($this->input($request, 'image'), $this->input($request, 'format'));
                 } else {
                     return new Response('Invalid format', 400);
                 }
@@ -53,8 +57,8 @@ class ChartController extends AbstractController
                 $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileinfo['basename']);
                         
                 $post = [
-                    'name' => $name.'.'.$request->get('format'),
-                    'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
+                    'name' => $name.'.'.$this->input($request, 'format'),
+                    'parentFolderId' => json_decode((string) $this->input($request, 'path'), true)['idCSV'],
                     'size' => filesize($temp_file),
                 ];
 
@@ -73,7 +77,7 @@ class ChartController extends AbstractController
                     $fileId = $response['file']['id'];
                     $header = ['Content-Type: multipart/form-data', 'Authorization:'.$sessionToken];
 
-                    $file = new CURLFile($temp_file, 'image/'.$request->get('format'), $name);
+                    $file = new CURLFile($temp_file, 'image/'.$this->input($request, 'format'), $name);
                     $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
@@ -109,7 +113,8 @@ class ChartController extends AbstractController
 
             $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]);
 
-            if (!$dataset) {
+            // only the owner, administrators and inputs of experiment examples (DatasetVoter)
+            if (!$dataset || !$this->isGranted(DatasetVoter::VIEW, $dataset)) {
                  return new JsonResponse(['status' => 'ERROR', 'message' => 'Dataset not found']);
             }
 

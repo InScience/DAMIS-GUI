@@ -5,6 +5,8 @@ namespace Damis\DatasetsBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Damis\EntitiesBundle\Entity\Parametervalue;
+use Damis\DatasetsBundle\Security\DatasetVoter;
+use Base\MainBundle\Controller\RequestInputTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use GuzzleHttp\Exception\BadResponseException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,6 +28,8 @@ use Psr\Log\LoggerInterface;
 
 class DatasetsController extends AbstractController
 {
+    use RequestInputTrait;
+
     public function __construct(
         private readonly ManagerRegistry $doctrine,
         private readonly PaginatorInterface $paginator,
@@ -46,7 +50,7 @@ class DatasetsController extends AbstractController
     #[\Symfony\Component\Routing\Attribute\Route(path: '/list.html', name: 'datasets_list', methods: ['GET', 'POST'])]
     public function list(Request $request): Response
     {
-        $sort = $request->get('order_by');
+        $sort = $this->input($request, 'order_by');
         $user = $this->getUser();
         $em = $this->doctrine->getManager();
 
@@ -89,9 +93,10 @@ class DatasetsController extends AbstractController
     public function delete(Request $request): RedirectResponse
     {
         $user = $this->getUser();
-        $files = json_decode($request->request->get('file-delete-list'));
+        // (string): json_decode(null) is deprecated; a missing list deletes nothing instead of a foreach over null
+        $files = json_decode((string) $request->request->get('file-delete-list'));
         $em = $this->doctrine->getManager();
-        foreach ($files as $id) {
+        foreach ((array) $files as $id) {
             $file = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
             if ($file && ($file->getUser() == $user)) {
                 $inUse = $em->getRepository(Parametervalue::class)->checkDatasets($id);
@@ -393,7 +398,7 @@ class DatasetsController extends AbstractController
         $uuid = $request->query->get('uuid', 'research');
         $id = $request->query->get('id');
 
-        $data = json_decode($request->query->get('data'));
+        $data = json_decode((string) $request->query->get('data'));
         if ($data && !empty($data) && $request->query->get('edit') != 1) {
             $id = $data[0]->value;
             $decodedId = json_decode($id, true);
@@ -512,7 +517,7 @@ class DatasetsController extends AbstractController
     {
         $em = $this->doctrine->getManager();
         $client = new Client(['base_uri' => $this->params->get('midas_url')]);
-        $data = json_decode($request->request->get('dataset_pk'), true);
+        $data = json_decode((string) $request->request->get('dataset_pk'), true);
         if (!$data) {
             $request->getSession()->getFlashBag()->add('error', $this->translator->trans('File is not selected', [], 'DatasetsBundle'));
             return $this->redirectToRoute('datasets_midas_new');
@@ -701,7 +706,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 
@@ -775,7 +781,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 
@@ -805,7 +812,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 
@@ -879,7 +887,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 
@@ -953,7 +962,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 
@@ -1045,7 +1055,8 @@ class DatasetsController extends AbstractController
         $em = $this->doctrine->getManager();
         $entity = $em->getRepository(Dataset::class)->findOneByDatasetId($id);
 
-        if (!$entity || ($entity->getUser() != $user)) {
+        // owner, administrators and inputs of experiment examples (DatasetVoter); editing stays owner-only
+        if (!$entity || !$this->isGranted(DatasetVoter::VIEW, $entity)) {
             throw $this->createNotFoundException('Dataset not found');
         }
 

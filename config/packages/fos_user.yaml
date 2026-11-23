@@ -36,8 +36,9 @@ fos_user:
     firewall_name: main
     user_class: Base\UserBundle\Entity\User
     service:
-        # mailer: fos_user.mailer.default
-        mailer: fos_user.mailer.noop # OK for dev/testing
+        # Symfony Mailer (MAILER_DSN). It was fos_user.mailer.noop, which silently discarded every
+        # "forgot password" e-mail, so password reset could never be completed.
+        mailer: fos_user.mailer.twig_symfony
 
     from_email:
         address: "%project_email%"
