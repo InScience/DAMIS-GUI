@@ -201,7 +201,7 @@ class File
      * @param User $user
      * @return File
      */
-    public function setUser(User $user = null)
+    public function setUser(?User $user = null)
     {
         $this->user = $user;
         return $this;

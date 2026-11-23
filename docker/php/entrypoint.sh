@@ -50,8 +50,14 @@ if [ ! -f public/build/manifest.json ]; then
 fi
 
 # 5. Database schema and data
-if ! console dbal:run-sql "SELECT 1 FROM doctrine_migration_versions LIMIT 1" > /dev/null 2>&1; then
-    if console dbal:run-sql "SELECT 1 FROM users LIMIT 1" > /dev/null 2>&1; then
+# (information_schema lookup instead of a failing query, which Symfony would log as CRITICAL)
+table_exists() {
+    local out
+    out=$(console dbal:run-sql "SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = '$1'")
+    grep -qE '^\s*1\s*$' <<< "$out"
+}
+if ! table_exists doctrine_migration_versions; then
+    if table_exists users; then
         # Legacy schema (sql/sql_structure.sql + sql/data.sql, or a production dump) seeded by
         # the mysql container: bring it up to the current entity mapping.
         log "Upgrading legacy database schema"

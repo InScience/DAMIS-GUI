@@ -12,7 +12,8 @@ doctrine:
             array: Doctrine\DBAL\Types\JsonType
 
     orm:
-        auto_generate_proxy_classes: '%kernel.debug%'
+        # PHP 8.4+ native lazy objects replace generated proxy classes
+        enable_native_lazy_objects: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: false
         resolve_target_entities:

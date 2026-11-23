@@ -668,8 +668,6 @@ class ComponentController extends AbstractController
 
                         $result = curl_exec($resource);
 
-                        curl_close($resource);
-
                         if (file_exists($temp_file)) {
                             unlink($temp_file);
                         }
@@ -809,7 +807,6 @@ class ComponentController extends AbstractController
                     curl_setopt($resource, CURLOPT_POST, 1);
                     curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
                     curl_exec($resource);
-                    curl_close($resource);
 
                     $this->addFlash('success', $this->translator->trans('File uploaded successfully', [], 'DatasetsBundle'));
                 } catch (\GuzzleHttp\Exception\RequestException $e) {

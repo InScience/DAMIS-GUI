@@ -82,7 +82,7 @@ class Parametervalue
      * @param Workflowtask $workflowtask
      * @return Parametervalue
      */
-    public function setWorkflowtask(Workflowtask $workflowtask = null)
+    public function setWorkflowtask(?Workflowtask $workflowtask = null)
     {
         $this->workflowtask = $workflowtask;
 
@@ -105,7 +105,7 @@ class Parametervalue
      * @param Parameter $parameter
      * @return Parametervalue
      */
-    public function setParameter(Parameter $parameter = null)
+    public function setParameter(?Parameter $parameter = null)
     {
         $this->parameter = $parameter;
 

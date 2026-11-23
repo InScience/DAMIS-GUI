@@ -750,9 +750,9 @@ class DatasetsController extends AbstractController
         }
 
         $fp = fopen('php://temp', 'w+');
-        fputcsv($fp, $headers);
+        fputcsv($fp, $headers, ',', '"', '\\');
         foreach ($dataRows as $row) {
-            fputcsv($fp, $row);
+            fputcsv($fp, $row, ',', '"', '\\');
         }
         rewind($fp);
         $content = stream_get_contents($fp);
@@ -854,9 +854,9 @@ class DatasetsController extends AbstractController
         }
 
         $fp = fopen('php://temp', 'w+');
-        fputcsv($fp, $headers, ' ');
+        fputcsv($fp, $headers, ' ', '"', '\\');
         foreach ($dataRows as $row) {
-            fputcsv($fp, $row, ' ');
+            fputcsv($fp, $row, ' ', '"', '\\');
         }
         rewind($fp);
         $content = stream_get_contents($fp);
@@ -928,9 +928,9 @@ class DatasetsController extends AbstractController
         }
 
         $fp = fopen('php://temp', 'w+');
-        fputcsv($fp, $headers, "\t");
+        fputcsv($fp, $headers, "\t", '"', '\\');
         foreach ($dataRows as $row) {
-            fputcsv($fp, $row, "\t");
+            fputcsv($fp, $row, "\t", '"', '\\');
         }
         rewind($fp);
         $content = stream_get_contents($fp);
@@ -1007,7 +1007,7 @@ class DatasetsController extends AbstractController
         // Write headers
         $columnIndex = 1;
         foreach ($headers as $header) {
-            $sheet->setCellValueByColumnAndRow($columnIndex, 1, $header);
+            $sheet->setCellValue([$columnIndex, 1], $header);
             $columnIndex++;
         }
 
@@ -1016,7 +1016,7 @@ class DatasetsController extends AbstractController
         foreach ($dataRows as $row) {
             $columnIndex = 1;
             foreach ($row as $cell) {
-                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cell);
+                $sheet->setCellValue([$columnIndex, $rowIndex], $cell);
                 $columnIndex++;
             }
             $rowIndex++;
@@ -1099,7 +1099,7 @@ class DatasetsController extends AbstractController
         // Write headers
         $columnIndex = 1;
         foreach ($headers as $header) {
-            $sheet->setCellValueByColumnAndRow($columnIndex, 1, $header);
+            $sheet->setCellValue([$columnIndex, 1], $header);
             $columnIndex++;
         }
 
@@ -1108,7 +1108,7 @@ class DatasetsController extends AbstractController
         foreach ($dataRows as $row) {
             $columnIndex = 1;
             foreach ($row as $cell) {
-                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cell);
+                $sheet->setCellValue([$columnIndex, $rowIndex], $cell);
                 $columnIndex++;
             }
             $rowIndex++;

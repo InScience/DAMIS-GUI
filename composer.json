@@ -18,7 +18,7 @@
         "jms/serializer-bundle": "^5.3",
         "knplabs/knp-menu-bundle": "^3.4",
         "knplabs/knp-paginator-bundle": "^6.3",
-        "phpoffice/phpspreadsheet": "^1.25",
+        "phpoffice/phpspreadsheet": "^5.10",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
         "symfony/flex": "^2.0",

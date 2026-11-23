@@ -5,7 +5,7 @@ set -euo pipefail
 shopt -s nullglob
 
 # Explicit charset: without a locale the client falls back to latin1 and double-encodes the UTF-8 files
-db() { mysql --protocol=socket --default-character-set=utf8mb4 -uroot -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}"; }
+db() { MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" mysql --protocol=socket --default-character-set=utf8mb4 -uroot "${MYSQL_DATABASE}"; }
 
 dumps=(/damis/import/*.sql /damis/import/*.sql.gz)
 

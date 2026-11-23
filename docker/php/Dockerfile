@@ -1,19 +1,20 @@
-FROM php:8.4-fpm-bookworm
+FROM php:8.5-fpm-trixie
 
 COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Node.js for the webpack encore build (Debian's nodejs 18 is too old for package-lock.json)
-COPY --from=node:22-bookworm-slim /usr/local/bin/node /usr/local/bin/node
-COPY --from=node:22-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+# Node.js for the webpack encore build (Debian's nodejs is too old for package-lock.json)
+COPY --from=node:22-trixie-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:22-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
 # git/unzip: composer, cron: experiment execution jobs
+# (OPcache is part of PHP itself since 8.5, no extension to install)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git unzip cron \
     && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions pdo_mysql intl zip soap gd bcmath opcache
+    && install-php-extensions pdo_mysql intl zip soap gd bcmath
 
 # Cron in a container: pam_loginuid fails (jobs silently never run) and cron's PATH lacks /usr/local/bin
 RUN sed -i '/pam_loginuid.so/s/^/#/' /etc/pam.d/cron \

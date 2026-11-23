@@ -118,7 +118,7 @@ class Workflowtask
      * @param Experiment $experiment
      * @return Workflowtask
      */
-    public function setExperiment(Experiment $experiment = null)
+    public function setExperiment(?Experiment $experiment = null)
     {
         $this->experiment = $experiment;
 

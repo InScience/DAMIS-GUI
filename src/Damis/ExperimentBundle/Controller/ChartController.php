@@ -46,7 +46,7 @@ class ChartController extends AbstractController
                     $sessionToken = $session->get('sessionToken');
                 } else {
                     $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                 }
                 
                 $fileinfo = pathinfo($temp_file);
@@ -67,7 +67,7 @@ class ChartController extends AbstractController
 
                     if (isset($response['type']) && $response['type'] == 'error') {
                         $session->getFlashBag()->add('error', $translator->trans($response["msgCode"], [], 'DatasetsBundle'));
-                        return $this->redirect($request->headers->get('referer'));
+                        return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                     }
 
                     $fileId = $response['file']['id'];
@@ -85,23 +85,29 @@ class ChartController extends AbstractController
                     curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
 
                     $result = curl_exec($resource);
-                    curl_close($resource);
                     
                     if (file_exists($temp_file)) unlink($temp_file);
                     
                     $session->getFlashBag()->add('success', $translator->trans('File uploaded successfully', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
 
                 } catch (\Exception $e) {
                     $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                 }
             }
+
+            return new Response('Invalid destination', Response::HTTP_BAD_REQUEST);
         } 
         else {
             $params = $request->query->all();
-            
-            $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $params['dataset_url']]);
+            $datasetId = $params['dataset_url'] ?? null;
+
+            if (!$datasetId) {
+                return new JsonResponse(['status' => 'ERROR', 'message' => 'Missing dataset_url parameter'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]);
 
             if (!$dataset) {
                  return new JsonResponse(['status' => 'ERROR', 'message' => 'Dataset not found']);

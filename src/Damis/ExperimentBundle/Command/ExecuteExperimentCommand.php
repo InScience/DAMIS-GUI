@@ -338,7 +338,7 @@ class ExecuteExperimentCommand extends Command
 
                         // After redirects, check the final HTTP status (last HTTP/x.x line in headers)
                         $finalStatus = '';
-                        foreach ($http_response_header ?? [] as $header) {
+                        foreach (http_get_last_response_headers() ?? [] as $header) {
                             if (strpos($header, 'HTTP/') === 0) {
                                 $finalStatus = $header;
                             }
