@@ -21,6 +21,8 @@ parameters:
     first_time_page: vartotojo-instrukcija
     design_style: original
     use_ssl_connections: false
+    # Needed by the twig globals, which are resolved before BaseUserBundle sets it
+    midas_url: 'https://www.midas.lt'
 base_user:
     midas_url: 'https://www.midas.lt'
 

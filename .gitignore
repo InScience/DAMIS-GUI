@@ -23,7 +23,8 @@ nbproject/*
 !/web/css/midas.css
 /run.cmd
 app/bootstrap.php.cache
-bin/
+/bin/*
+!/bin/console
 
 .phpunit.result.cache
 ###> symfony/framework-bundle ###
@@ -63,7 +64,9 @@ yarn-error.log
 
 *.o
 
-public/
+# public/ is generated (symlinks into web/, bundles, build, uploads), only the front controller is tracked
+/public/*
+!/public/index.php
 
 DamisService
 

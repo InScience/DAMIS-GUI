@@ -1,0 +1,3 @@
+# Database dumps (production data) must never be committed
+*
+!.gitignore

@@ -1,0 +1,74 @@
+# DAMIS GUI local environment: Apache -> php-fpm (Symfony + Twig) -> MySQL
+# Usage: docker compose up -d --build, then open http://localhost:8080
+# Every ${VAR:-default} below can be overridden from a .env file next to this file.
+
+name: damis
+
+services:
+  apache:
+    build: ./docker/apache
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./:/var/www/html:ro
+    depends_on:
+      - php
+    restart: unless-stopped
+
+  php:
+    build:
+      context: ./docker/php
+      args:
+        UID: ${DOCKER_UID:-1000}
+        GID: ${DOCKER_GID:-1000}
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:-local-docker-secret-change-me}
+      MAILER_DSN: ${MAILER_DSN:-null://null}
+      VAR_DUMPER_SERVER: ${VAR_DUMPER_SERVER:-127.0.0.1:9912}
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_NAME: ${MYSQL_DATABASE:-damis}
+      DATABASE_USER: ${MYSQL_USER:-damis}
+      DATABASE_PASSWORD: ${MYSQL_PASSWORD:-damis}
+      PROJECT_DOMAIN: ${PROJECT_DOMAIN:-localhost}
+      # Base URL the DAMIS computing service uses to download dataset files
+      PROJECT_FULL_HOST: ${PROJECT_FULL_HOST:-http://localhost:8080}
+    volumes:
+      - ./:/var/www/html
+      # Crontabs written from the /cron admin page survive container re-creation
+      - php_crontabs:/var/spool/cron/crontabs
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-damis}
+      MYSQL_USER: ${MYSQL_USER:-damis}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-damis}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d:ro
+      - ./docker/mysql/import:/damis/import:ro
+      - ./sql:/damis/sql:ro
+    healthcheck:
+      # TCP ping on purpose: the init phase runs with networking disabled, so this only passes once seeding is done
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  php_crontabs:
