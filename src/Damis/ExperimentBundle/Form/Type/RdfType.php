@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 class RdfType extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('r', NumberType::class, [
@@ -66,7 +66,7 @@ class RdfType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -77,7 +77,7 @@ class RdfType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'rdf_type';
     }

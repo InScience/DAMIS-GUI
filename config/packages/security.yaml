@@ -1,6 +1,5 @@
 # config/packages/security.yaml
 security:
-    enable_authenticator_manager: true
     # 1. Password Hashing
     # This tells Symfony how to hash passwords for your User entity.
     password_hashers:

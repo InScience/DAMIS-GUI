@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class KmeansType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
         ->add('maxIteration', IntegerType::class, [
@@ -48,7 +48,7 @@ class KmeansType extends AbstractType
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -59,7 +59,7 @@ class KmeansType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'kmeans_type';
     }

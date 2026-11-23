@@ -21,7 +21,7 @@ class SelectType extends AbstractType
         file_put_contents('/tmp/select_debug.log', date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $dataValidator = function ($object, ExecutionContextInterface $context) {
             $data = $_POST['select_type'] ?? null;
@@ -139,7 +139,7 @@ class SelectType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, $closure);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -150,7 +150,7 @@ class SelectType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'select_type';
     }

@@ -27,14 +27,14 @@ base_static:
 # will handle profile, registration, and change_password.
 
 fos_user_security:
-    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/security.php"
 
 fos_user_resetting:
-    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.php"
     prefix: /resetting
 
 fos_user_change_password:
-    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.php"
     prefix: /profile
 
 fos_user_registration_register:

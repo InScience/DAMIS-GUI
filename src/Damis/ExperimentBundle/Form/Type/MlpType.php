@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class MlpType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Validate parameter of qty
         // Removed 'use ($builder)' as it was not used inside the function
@@ -112,7 +112,7 @@ class MlpType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -123,7 +123,7 @@ class MlpType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'mlp_type';
     }

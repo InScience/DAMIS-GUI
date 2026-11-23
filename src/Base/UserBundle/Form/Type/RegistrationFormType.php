@@ -71,12 +71,12 @@ class RegistrationFormType extends AbstractType
             ]);
     }
 
-    public function getParent()
+    public function getParent(): ?string
     {
         return BaseType::class;
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'base_user_registration';
     }

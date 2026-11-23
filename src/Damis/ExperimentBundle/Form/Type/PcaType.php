@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 class PcaType extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $dataValidator = function ($object, ExecutionContextInterface $context) {
             $pca = $_POST['pca_type'] ?? null;
@@ -62,7 +62,7 @@ class PcaType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -73,7 +73,7 @@ class PcaType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'pca_type';
     }

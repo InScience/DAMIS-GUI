@@ -6,7 +6,7 @@ Graphical user interface for Data Analysis and Mining Infrastructure for Scienti
 Running with Docker
 =========
 
-Services: `apache` (httpd 2.4, web server) → `php` (php-fpm 8.5, Symfony 6.4 + Twig) → `mysql` (MySQL 8.4 LTS).
+Services: `apache` (httpd 2.4, web server) → `php` (php-fpm 8.5, Symfony 7.4 LTS + Twig) → `mysql` (MySQL 8.4 LTS).
 
 `docker compose up -d --build`, then open http://localhost:8080 (first start takes a few minutes, follow it with `docker compose logs -f php` until `[damis] Ready`).
 

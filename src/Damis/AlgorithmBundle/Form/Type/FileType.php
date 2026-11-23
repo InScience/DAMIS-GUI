@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FileType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('fileTitle', TextType::class, [
@@ -41,13 +41,13 @@ class FileType extends AbstractType
                 'mapped' => false,
                 'required' => true, // A file is required when creating
                 'constraints' => [
-                    new NotBlank(['message' => 'Please upload an algorithm file.']),
+                    new NotBlank(message: 'Please upload an algorithm file.'),
                 ]
             ]);
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => File::class,
