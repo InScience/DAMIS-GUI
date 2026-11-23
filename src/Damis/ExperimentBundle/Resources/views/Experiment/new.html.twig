@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/colpick.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCanvas.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCreate.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/jquery.dataTables.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -177,7 +176,7 @@
                             helper: "clone"
                         });
                         $(spec.canvas).droppable({
-                            activeClass: "active-canvas",
+                            classes: { "ui-droppable-active": "active-canvas" },
                             accept: spec.task,
                             drop: function(ev, ui) {
                                 if ($(ui.draggable).hasClass(spec.task.replace(".", ""))) {

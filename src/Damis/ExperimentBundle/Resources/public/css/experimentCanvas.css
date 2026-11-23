@@ -83,6 +83,12 @@
     border:1px dotted red;
 }
 
+/* close icon in the component info popover title */
+.component-popover-close {
+    float: right;
+    cursor: pointer;
+}
+
 ._jsPlumb_connector { z-index:4; }
 ._jsPlumb_endpoint, .endpointTargetLabel, .endpointSourceLabel{ z-index:21;cursor:pointer; }
 

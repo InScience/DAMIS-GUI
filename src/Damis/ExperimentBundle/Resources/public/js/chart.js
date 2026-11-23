@@ -341,13 +341,14 @@
 				shapeSelector.val(symbolValues[0]);
 			}
 
+			// DataTables 3 only understands camelCase options (the 1.9 "Hungarian" names were removed)
 			plotContainer.find(".render-choices, .float-cls-choices").dataTable({
-				"sScrollY": 400,
-				"bScrollCollapse": true,
-				"bInfo": false,
-				"bPaginate": false,
-				"bFilter": false,
-				"bDestroy": true
+				scrollY: 400,
+				scrollCollapse: true,
+				info: false,
+				paging: false,
+				searching: false,
+				destroy: true
 			});
 
 			formWindow.dialog("option", "buttons", window.chart.allButtons());

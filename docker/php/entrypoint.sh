@@ -77,9 +77,9 @@ fi
 console doctrine:migrations:migrate --allow-no-migration
 
 # 6. Generated assets
-if [ ! -d public/bundles ]; then
-    console assets:install public
-fi
+# Symlinks (not copies) so edits to bundle Resources/public files are served immediately;
+# always re-run because composer's post-install script replaces them with copies
+console assets:install public --symlink --relative
 console fos:js-routing:dump --format=js --target=public/js/fos_js_routes.js
 
 # 7. Cron (experiment:execute jobs are managed from the /cron admin page).

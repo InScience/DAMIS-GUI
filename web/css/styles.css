@@ -172,3 +172,20 @@ span.helptext{
 .ui-dialog-titlebar-close:hover::before {
     color: #333;
 }
+
+/* Loading overlay spinner (window.utils.showProgress), replaces spin.js */
+#spinner .damis-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: damis-spin 0.8s linear infinite;
+}
+@keyframes damis-spin {
+    to { transform: rotate(360deg); }
+}

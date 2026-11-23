@@ -3,32 +3,25 @@
 <script type="text/javascript">
 
     tinymce.init({
-        browser_spellcheck:true,
+        // TinyMCE >= 7 is used under its GPL-2.0-or-later license; without a key the editor is disabled
+        license_key: 'gpl',
+        promotion: false,
+        // appended to every plugin/theme/skin URL so browsers never mix cached files of another version
+        cache_suffix: '?v=8.9.2',
+        browser_spellcheck: true,
         selector: "textarea.tinymce_textarea",
-        plugins: [
-            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-            "searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-            "table contextmenu directionality emoticons template textcolor paste textcolor"
-        ],
-        toolbar1: " bold italic underline | undo redo | bullist numlist | link unlink table code",
-        fix_table_elements: true,
-        valid_styles : { '*' : 'margin, padding, align' },
+        // print, hr, spellchecker, template were dropped from TinyMCE; contextmenu, textcolor, paste are core now
+        plugins: "advlist autolink link image lists charmap preview anchor pagebreak searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking table directionality emoticons",
+        toolbar1: "bold italic underline | undo redo | bullist numlist | link unlink table code",
+        valid_styles: { '*': 'margin, padding, align' },
         entity_encoding: "raw",
         statusbar: false,
-        theme: 'modern',
-
-    {% if app.request.locale == 'en_US' %}
-        language: 'en',
-    {% else %}
-        language: 'lt',
-    {% endif %}
-
+        language: '{{ app.request.locale starts with 'en' ? 'en' : 'lt' }}',
         menubar: false,
-        toolbar_items_size: 'small',
-        width: "568px",
-        height: "300px",
+        width: 568,
+        height: 300,
         body_class: "tinymce_body",
-        setup : function(ed) {
+        setup: function(ed) {
             ed.on('change', function(e) {
                 unsaved = true;
             });

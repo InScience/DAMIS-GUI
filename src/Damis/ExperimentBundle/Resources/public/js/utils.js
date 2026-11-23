@@ -3,21 +3,19 @@
 		showProgress: function() {
 			var spinner = $("#spinner");
 			if (spinner.length == 0) {
-				spinner = $('<div id="spinner" style="display: none; background-color: rgba(0, 0, 0, 0.6); width:100%; height:100%; position:fixed; top:0; left:0; z-index:9999"/>');
+				// the spinning ring is pure CSS (.damis-spinner in styles.css), no spinner library needed
+				spinner = $('<div id="spinner" style="display: none; background-color: rgba(0, 0, 0, 0.6); width:100%; height:100%; position:fixed; top:0; left:0; z-index:9999"><div class="damis-spinner"></div></div>');
 				$("body").append(spinner);
 				setTimeout(function() {
 					if (spinner.length > 0) {
 						spinner.show();
-						spinner.spin("modal");
 					}
 				},
 				2000);
 			}
 		},
 		hideProgress: function() {
-			var spinner = $("#spinner");
-			spinner.spin(false);
-			spinner.remove();
+			$("#spinner").remove();
 		},
 		initDeleteConfirm: function(formSelector) {
 			$(".delete-btn").click(function() {
