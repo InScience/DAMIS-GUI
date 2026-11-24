@@ -79,6 +79,17 @@ administrator account it also runs `tests/smoke/smoke.sh`; the password is typed
 Mail: set `MAILER_DSN` in `.env` to the SMTP server given by the university IT (until then `null://null`, nothing is
 sent, and the scripts warn), then `sudo docker compose up -d php`.
 
+**Backups:** `deploy/backup.sh` (database dump, `public/uploads`, `services.yml`, `.env`, repository revisions) runs
+daily at 03:15 from `/etc/cron.d/damis-backup` (installed by `deploy.sh`) into `/var/backups/damis/daily/<timestamp>/`,
+keeps 30 days (`BACKUP_KEEP_DAYS`), log `/var/log/damis-backup.log`; a failed backup is removed, not kept half-done.
+`deploy.sh` keeps its own backups in `/var/backups/damis/<timestamp>/` (remove old ones by hand). To copy them off the
+server: `sudo rsync -a /var/backups/damis/ <elsewhere>`. Restore (B = a backup directory, in `~/DAMIS-GUI`):
+
+    sudo docker compose stop php                     # no requests or cron jobs meanwhile
+    gzip -dc $B/database.sql.gz | sudo docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot "$MYSQL_DATABASE"'
+    sudo tar -C public -xzf $B/uploads.tar.gz        # only if the uploaded files are needed too
+    sudo docker compose start php
+
 Everyday commands, in `~/DAMIS-GUI`: `sudo docker compose ps`, `sudo docker compose logs -f php`,
 `sudo docker compose exec -u www-data php bin/console <command>`.
 
