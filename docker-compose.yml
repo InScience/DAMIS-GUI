@@ -94,6 +94,8 @@ services:
     build:
       context: ${DAMIS_WEBSERVICE_DIR:-../DAMIS_WebService}
       dockerfile: docker/Dockerfile
+      args:
+        UBUNTU_VERSION: ${DAMIS_SERVICE_UBUNTU_VERSION:-26.04}
       additional_contexts:
         algorithms: ${DAMIS_ALGORITHMS_DIR:-../DAMIS}
     environment:
