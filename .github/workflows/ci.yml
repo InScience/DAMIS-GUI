@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -52,7 +52,7 @@ jobs:
       - name: composer audit
         run: composer audit --locked --abandoned=report
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -69,7 +69,7 @@ jobs:
       run:
         working-directory: DAMIS-GUI
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: DAMIS-GUI
 
@@ -89,13 +89,13 @@ jobs:
           echo "damis=$(pick DAMIS "$DAMIS_REF")" >> "$GITHUB_OUTPUT"
           echo "webservice=$(pick DAMIS_WebService "$WEBSERVICE_REF")" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: InScience/DAMIS
           ref: ${{ steps.refs.outputs.damis }}
           path: DAMIS
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: InScience/DAMIS_WebService
           ref: ${{ steps.refs.outputs.webservice }}
