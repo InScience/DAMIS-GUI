@@ -99,7 +99,9 @@ smoke_test() {
     log "smoke test: https://$site through the container"
     # php-fpm starts listening a moment after the entrypoint's "Ready"
     for i in $(seq 15); do
-        code=$(curl -s -o /dev/null -w '%{http_code}' --resolve "$site:443:127.0.0.1" "https://$site/")
+        # a curl failure (TLS, certificate) must not end the script under set -e before the retries
+        code=$(curl -s -o /dev/null -w '%{http_code}' --resolve "$site:443:127.0.0.1" "https://$site/") \
+            || code="curl error $? (see man curl, EXIT CODES)"
         [[ "$code" =~ ^(200|302)$ ]] && break
         [ "$i" -lt 15 ] || die "https://$site/ answered $code"
         sleep 2
