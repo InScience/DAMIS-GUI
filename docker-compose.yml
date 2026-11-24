@@ -28,7 +28,7 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-dev}
       APP_SECRET: ${APP_SECRET:-local-docker-secret-change-me}
-      # local mail goes to Mailpit (http://localhost:8025); production sets its real SMTP server here
+      # local mail goes to Mailpit (http://localhost:8025); production sets it in .env
       MAILER_DSN: ${MAILER_DSN:-smtp://mailpit:1025}
       VAR_DUMPER_SERVER: ${VAR_DUMPER_SERVER:-127.0.0.1:9912}
       DATABASE_HOST: mysql

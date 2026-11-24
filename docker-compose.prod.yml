@@ -2,7 +2,7 @@
 # deploy/switch-to-docker.sh, example: deploy/docker.env.example) sets COMPOSE_FILE to both files, so plain
 # "docker compose ..." in this directory uses them.
 # Differences to the local environment: APP_ENV=prod, https with the server's certificate on port 443 (http
-# redirects to it), real secrets and mail server from .env, no Mailpit, container logs rotated.
+# redirects to it), real secrets from .env, no Mailpit, container logs rotated.
 
 x-logging: &logging
   driver: json-file

@@ -45,7 +45,7 @@ Deployment (damis.midas.lt)
 
 Production runs the same Docker stack with `docker-compose.prod.yml` on top: `APP_ENV=prod`, https on port 443
 with the server's certificate (http redirects to it, except `/uploads/` and requests between the containers),
-secrets and the mail server from `.env`, no Mailpit, rotated container logs. MySQL and DamisService are published
+secrets from `.env`, no Mailpit, rotated container logs. MySQL and DamisService are published
 on localhost only. The server's `.env` (gitignored, mode 600, template `deploy/docker.env.example`) sets
 `COMPOSE_FILE`, so `sudo docker compose ...` in `~/DAMIS-GUI` always uses both files. The sibling checkouts of
 InScience/DAMIS_WebService and InScience/DAMIS next to `DAMIS-GUI` are built into the `damis-service` image.
@@ -64,7 +64,8 @@ creates `.env` (random passwords, the certificate files of the Apache https site
 dependencies and the frontend. Then, with a few minutes of downtime, it stops the host Apache, the www-data crontab
 and MySQL, imports a fresh dump into the mysql container, rewrites the host paths of the cron jobs (`/cron` page),
 starts the stack and checks https and DamisService. If anything fails after Apache was stopped, it starts the host
-installation again by itself. The host services stay installed (disabled).
+installation again by itself. The host services stay installed (disabled); on damis.midas.lt they were removed
+afterwards, so the backups below and a VM snapshot are the way back.
 
 **Updates:** `sudo deploy/deploy.sh` pulls origin/master of all three repositories (missing ones are cloned), backs up
 the database, uploads and configuration into `/var/backups/damis/<timestamp>/`, rebuilds the images, the PHP
@@ -75,9 +76,6 @@ administrator account it also runs `tests/smoke/smoke.sh`; the password is typed
 
     export SMOKE_USER=<admin>; read -rsp 'password: ' SMOKE_PASSWORD; export SMOKE_PASSWORD
     sudo --preserve-env=SMOKE_USER,SMOKE_PASSWORD deploy/deploy.sh
-
-Mail: set `MAILER_DSN` in `.env` to the SMTP server given by the university IT (until then `null://null`, nothing is
-sent, and the scripts warn), then `sudo docker compose up -d php`.
 
 **Backups:** `deploy/backup.sh` (database dump, `public/uploads`, `services.yml`, `.env`, repository revisions) runs
 daily at 03:15 from `/etc/cron.d/damis-backup` (installed by `deploy.sh`) into `/var/backups/damis/daily/<timestamp>/`,
@@ -92,15 +90,6 @@ server: `sudo rsync -a /var/backups/damis/ <elsewhere>`. Restore (B = a backup d
 
 Everyday commands, in `~/DAMIS-GUI`: `sudo docker compose ps`, `sudo docker compose logs -f php`,
 `sudo docker compose exec -u www-data php bin/console <command>`.
-
-Back to the host installation (B = the `-switch` backup directory; data changed since the switch is in the
-container database, dump it first if it is needed):
-
-    sudo docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot "$MYSQL_DATABASE"' > ~/docker-db.sql
-    sudo docker compose down && sudo mv .env $B/env.docker && cp $B/env.local .env.local
-    sudo chown -R www-data: var public/uploads
-    sudo crontab -u www-data $B/crontab-www-data && sudo cp $B/cron.d-damis-awstats /etc/cron.d/damis-awstats
-    sudo systemctl enable --now mysql apache2        # then, if wanted: sudo mysql <database> < ~/docker-db.sql
 
 Initial configuration
 =========

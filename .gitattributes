@@ -1,0 +1,2 @@
+# test input that must keep its Windows line endings
+tests/fixtures/*-crlf.arff -text

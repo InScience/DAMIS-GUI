@@ -1,0 +1,14 @@
+% 6 objects, CRLF line endings, empty lines: ARFF reader and SPLITDATA rounding (tests/smoke/damis-service.php)
+@relation iris6
+
+@attribute sepal_length real
+@attribute sepal_width real
+@attribute class {Iris-setosa,Iris-versicolor}
+
+@data
+5.1,3.5,Iris-setosa
+4.9,3.0,Iris-setosa
+4.7,3.2,Iris-setosa
+7.0,3.2,Iris-versicolor
+6.4,3.2,Iris-versicolor
+6.9,3.1,Iris-versicolor

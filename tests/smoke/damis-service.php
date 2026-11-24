@@ -4,7 +4,7 @@
 //
 //   docker compose exec -T -u www-data php php tests/smoke/damis-service.php
 //
-// The input files (tests/fixtures/iris.arff, irisc.arff) are copied to public/uploads/smoke-<pid>/ for the
+// The input files (tests/fixtures/iris.arff, irisc.arff, iris6-crlf.arff) are copied to public/uploads/smoke-<pid>/ for the
 // time of the run, so the service can download them from Apache (DAMIS_DATA_HOST). Exit code 1 on failure.
 
 $wsdl = getenv('DAMIS_SERVICE_WSDL') ?: 'http://damis-service/cgi-bin/DamisService.cgi?wsdl';
@@ -13,7 +13,7 @@ $dir = 'uploads/smoke-'.getmypid();
 $base = rtrim(getenv('DAMIS_DATA_HOST') ?: 'http://apache', '/').'/'.$dir.'/';
 
 mkdir($project.'/public/'.$dir, 0775, true);
-foreach (['iris.arff', 'irisc.arff'] as $file) {
+foreach (['iris.arff', 'irisc.arff', 'iris6-crlf.arff'] as $file) {
     copy($project.'/tests/fixtures/'.$file, $project.'/public/'.$dir.'/'.$file);
 }
 register_shutdown_function(static function () use ($project, $dir): void {
@@ -23,6 +23,7 @@ register_shutdown_function(static function () use ($project, $dir): void {
 
 $X = $base.'iris.arff';   // 4 numeric attributes, 150 objects
 $XC = $base.'irisc.arff'; // + class {A,B,C}
+$X6 = $base.'iris6-crlf.arff'; // 6 objects, 2 numeric attributes + class, CRLF line endings, empty lines
 
 ini_set('default_socket_timeout', 600);
 $client = new SoapClient($wsdl, ['trace' => 1, 'connection_timeout' => 600, 'cache_wsdl' => WSDL_CACHE_NONE]);
@@ -48,6 +49,8 @@ $calls = [
     ['SPLITDATA',      [$X, true, 70, 30, 60]],
     ['TRANSPOSEDATA',  [$X, 60]],
     ['NORMDATA',       [$X, true, 0, 1, 60]],
+    ['STATPRIMITIVES', [$X6, 60], 'CRLF file with empty lines'],
+    ['SPLITDATA',      [$X6, false, 80, 20, 60], '6 objects 80/20: 5 + 1 (both round up to 5 + 2)'],
     // expected faults
     ['PCA',            [$X, false, 0, 60], 'FAULT expected: d = 0'],
     ['PCA',            [$base.'missing.arff', false, 2, 60], 'FAULT expected: missing input file'],

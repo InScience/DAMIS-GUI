@@ -17,7 +17,9 @@ class RdfType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('r', NumberType::class, [
+            // named after the parameter slug "q" (the DF parameter of DamisService): as "r" the value was never
+            // stored and every RDF run failed with an empty q
+            ->add('q', NumberType::class, [
                 'required' => true,
                 'data' => '0.63',
                 'attr' => ['class' => 'form-control'],
