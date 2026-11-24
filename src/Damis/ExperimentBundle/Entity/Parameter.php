@@ -261,7 +261,7 @@ class Parameter
      * @param ParameterType $type
      * @return Parameter
      */
-    public function setType(ParameterType $type = null)
+    public function setType(?ParameterType $type = null)
     {
         $this->type = $type;
 
@@ -284,7 +284,7 @@ class Parameter
      * @param ParameterConnectionType $connectionType
      * @return Parameter
      */
-    public function setConnectionType(ParameterConnectionType $connectionType = null)
+    public function setConnectionType(?ParameterConnectionType $connectionType = null)
     {
         $this->connectionType = $connectionType;
 
@@ -307,7 +307,7 @@ class Parameter
      * @param Component $component
      * @return Parameter
      */
-    public function setComponent(Component $component = null)
+    public function setComponent(?Component $component = null)
     {
         $this->component = $component;
 

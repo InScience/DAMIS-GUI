@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class DatasetType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('datasetTitle', TextType::class, [
@@ -40,7 +40,7 @@ class DatasetType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Dataset::class,
@@ -49,7 +49,7 @@ class DatasetType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'datasets_newtype';
     }

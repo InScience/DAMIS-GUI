@@ -59,7 +59,7 @@ class Pvalueoutpvaluein
      * @param Parametervalue $outparametervalue
      * @return Pvalueoutpvaluein
      */
-    public function setOutparametervalue(Parametervalue $outparametervalue = null)
+    public function setOutparametervalue(?Parametervalue $outparametervalue = null)
     {
         $this->outparametervalue = $outparametervalue;
 

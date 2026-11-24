@@ -1,0 +1,160 @@
+# Tests of the DAMIS GUI on GitHub Actions:
+# - audit: known vulnerabilities in the locked PHP and JavaScript dependencies (also weekly, so new advisories
+#   for an unchanged lock file are noticed);
+# - stack: the whole Docker Compose environment (GUI, MySQL, DamisService built from InScience/DAMIS and
+#   InScience/DAMIS_WebService) is built and started, then the PHPUnit suite, the HTTP smoke test and the
+#   DamisService SOAP test run against it.
+#
+# DAMIS and DAMIS_WebService are checked out at the branch with the same name as the tested one when it
+# exists there, otherwise at their default branch; a manual run can name other refs.
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '23 5 * * 1' # Mondays 05:23 UTC
+  workflow_dispatch:
+    inputs:
+      damis_ref:
+        description: InScience/DAMIS branch, tag or commit (empty = automatic)
+        required: false
+      webservice_ref:
+        description: InScience/DAMIS_WebService branch, tag or commit (empty = automatic)
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer:v2
+          coverage: none
+
+      - name: composer validate
+        run: composer validate --no-check-publish
+
+      # vulnerabilities fail the job; abandoned packages are only listed (doctrine/annotations is still
+      # needed by APYDataGridBundle)
+      - name: composer audit
+        run: composer audit --locked --abandoned=report
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: npm audit
+        run: npm audit --package-lock-only --audit-level=high
+
+  stack:
+    name: Docker stack tests
+    # the weekly run only re-checks the dependency advisories
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: DAMIS-GUI
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: DAMIS-GUI
+
+      - name: Choose the DAMIS and DAMIS_WebService refs
+        id: refs
+        working-directory: .
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          DAMIS_REF: ${{ inputs.damis_ref }}
+          WEBSERVICE_REF: ${{ inputs.webservice_ref }}
+        run: |
+          pick() { # repository, ref given by hand
+            if [ -n "$2" ]; then echo "$2"
+            elif git ls-remote --exit-code --heads "https://github.com/InScience/$1.git" "$BRANCH" > /dev/null; then echo "$BRANCH"
+            fi # empty: default branch
+          }
+          echo "damis=$(pick DAMIS "$DAMIS_REF")" >> "$GITHUB_OUTPUT"
+          echo "webservice=$(pick DAMIS_WebService "$WEBSERVICE_REF")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          repository: InScience/DAMIS
+          ref: ${{ steps.refs.outputs.damis }}
+          path: DAMIS
+
+      - uses: actions/checkout@v4
+        with:
+          repository: InScience/DAMIS_WebService
+          ref: ${{ steps.refs.outputs.webservice }}
+          path: DAMIS_WebService
+
+      - name: Configure the stack
+        env:
+          DAMIS_REF: ${{ steps.refs.outputs.damis || '(default branch)' }}
+          WEBSERVICE_REF: ${{ steps.refs.outputs.webservice || '(default branch)' }}
+        run: |
+          # www-data in the php container gets the runner's ids, so it can write to the checkout
+          echo "DOCKER_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "DOCKER_GID=$(id -g)" >> "$GITHUB_ENV"
+          # password of the administrator created for the smoke test, new for every run
+          password="ci-$(openssl rand -hex 16)"
+          echo "::add-mask::$password"
+          echo "SMOKE_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "SMOKE_USER=ci-admin" >> "$GITHUB_ENV"
+          echo "GUI: $(git rev-parse HEAD)"
+          echo "DAMIS: $(git -C ../DAMIS rev-parse HEAD) $DAMIS_REF"
+          echo "DAMIS_WebService: $(git -C ../DAMIS_WebService rev-parse HEAD) $WEBSERVICE_REF"
+
+      - name: Build and start
+        run: docker compose up -d --build
+
+      # the php container installs the dependencies, builds the frontend and prepares the database first
+      - name: Wait for the application
+        run: |
+          for _ in $(seq 180); do
+            if docker compose logs php | grep -q '\[damis\] Ready'; then exit 0; fi
+            if [ "$(docker compose ps -a --format '{{.State}}' php)" != running ]; then break; fi
+            sleep 5
+          done
+          docker compose logs php
+          exit 1
+
+      - name: Create the smoke test administrator
+        run: |
+          console() { docker compose exec -T -u www-data php bin/console --no-interaction "$@"; }
+          console fos:user:create "$SMOKE_USER" "$SMOKE_USER@example.test" "$SMOKE_PASSWORD"
+          console fos:user:promote "$SMOKE_USER" ROLE_CONFIRMED
+          console fos:user:promote "$SMOKE_USER" ROLE_ADMIN
+
+      - name: PHPUnit
+        run: docker compose exec -T -u www-data php vendor/bin/phpunit
+
+      - name: HTTP smoke test
+        run: docker compose exec -T -u www-data -e SMOKE_USER -e SMOKE_PASSWORD php bash tests/smoke/smoke.sh
+
+      - name: DamisService SOAP test
+        run: docker compose exec -T -u www-data php php tests/smoke/damis-service.php
+
+      - name: Logs
+        if: failure()
+        run: |
+          docker compose ps -a
+          docker compose logs --tail=200
+          tail -n 200 var/log/*.log || true
+
+      - name: Stop
+        if: always()
+        run: docker compose down -v

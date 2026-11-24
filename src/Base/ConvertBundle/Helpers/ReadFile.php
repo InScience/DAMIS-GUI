@@ -56,7 +56,7 @@ class ReadFile
         }
 
         if (($handle = fopen($path, "r")) !== false) {
-            while (($data = fgetcsv($handle, null, $delimiter)) !== false) {
+            while (($data = fgetcsv($handle, null, $delimiter, '"', '\\')) !== false) {
                 if (memory_get_usage(true) > $number - 1000000) {
                     return false;
                 }

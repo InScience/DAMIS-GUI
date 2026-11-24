@@ -1,0 +1,25 @@
+# AWStats configuration of the DAMIS GUI (rendered to /etc/awstats/awstats.damis.conf by the entrypoint).
+# Defaults come from the full model configuration of the Ubuntu package; only DAMIS specifics are set here.
+Include "/etc/awstats/awstats.conf"
+
+# Daily access log files written by the apache container (docker/apache/damis.conf). Yesterday's and today's
+# file are read on every run, so the lines written between the last run of a day and midnight are not lost;
+# AWStats skips the lines it has already processed.
+LogFile="/usr/share/awstats/tools/logresolvemerge.pl /var/log/damis-apache/access.%YYYY-24-%MM-24-%DD-24.log /var/log/damis-apache/access.%YYYY-0-%MM-0-%DD-0.log |"
+LogType=W
+LogFormat=1
+
+SiteDomain="__SITE_DOMAIN__"
+HostAliases="localhost 127.0.0.1 __SITE_DOMAIN__"
+
+# no reverse DNS and no country statistics (no GeoIP plugin, section hidden); full IP addresses are kept
+DNSLookup=0
+ShowDomainsStats=0
+
+DirData="/var/lib/awstats"
+# icons are served by the application under the same URL prefix as the pages (StatisticsController)
+DirIcons="/admin/statistics/icon"
+
+# statistics are only updated by the hourly job, never from the browser
+AllowToUpdateStatsFromBrowser=0
+AllowFullYearView=2

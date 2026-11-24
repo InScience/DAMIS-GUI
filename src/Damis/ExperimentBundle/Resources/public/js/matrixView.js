@@ -104,15 +104,16 @@
 		},
 
 		initTable: function(table) {
+			// DataTables 3 only understands camelCase options (the 1.9 "Hungarian" names were removed)
 			return table.dataTable({
-				"sScrollY": 400,
-				"sScrollX": "100%",
-				"bInfo": false,
-				"bPaginate": false,
-				"bFilter": false,
-                "bSort": false,
-				"bDestroy": true,
-                "bScrollCollapse": true
+				scrollY: 400,
+				scrollX: true,
+				info: false,
+				paging: false,
+				searching: false,
+				ordering: false,
+				destroy: true,
+				scrollCollapse: true
 			});
 
 		},

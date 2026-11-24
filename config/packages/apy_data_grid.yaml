@@ -4,3 +4,9 @@ apy_data_grid:
     persistence: true
     no_data_message: No data
     no_result_message: No result
+
+services:
+    # APYDataGridBundle 7.0 still wires its metadata driver to the "annotation_reader"
+    # service, which FrameworkBundle no longer provides since Symfony 7.0
+    annotation_reader:
+        class: Doctrine\Common\Annotations\AnnotationReader

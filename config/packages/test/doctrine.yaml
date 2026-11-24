@@ -1,4 +1,5 @@
 doctrine:
     dbal:
+        # <database>_test (created by docker/mysql/initdb, schema created by tests/bootstrap.php);
         # "TEST_TOKEN" is typically set by ParaTest
-        dbname: 'main_test%env(default::TEST_TOKEN)%'
+        dbname: '%database_name%_test%env(default::TEST_TOKEN)%'

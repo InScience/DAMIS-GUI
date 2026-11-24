@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 class RelativeMdsType extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
         ->add('d', IntegerType::class, [
@@ -89,7 +89,7 @@ class RelativeMdsType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -100,7 +100,7 @@ class RelativeMdsType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'relativemds_type';
     }

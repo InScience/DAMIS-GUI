@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class NormDataType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('normMeanStd', ChoiceType::class, [
@@ -58,7 +58,7 @@ class NormDataType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $formValidator = function ($data, ExecutionContextInterface $context) {
             $method = $data['normMeanStd'] ?? null;
@@ -87,7 +87,7 @@ class NormDataType extends AbstractType
     }
 
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'normdata_type';
     }

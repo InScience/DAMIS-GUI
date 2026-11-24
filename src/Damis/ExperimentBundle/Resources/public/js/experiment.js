@@ -7,8 +7,12 @@ $(function() {
         $(el).popover({
             html:true,
             container: "body",
-            title: $(el).text() + "<i style=\"float: right; cursor: pointer;\" class=\"icon-remove\" onclick=\"$(&quot;.component-tooltip&quot;).popover(&quot;hide&quot;);\"></i>"
+            // no inline style/onclick: Bootstrap >= 3.4 sanitizes popover HTML and strips them
+            title: $(el).text() + "<i class=\"glyphicon glyphicon-remove component-popover-close\"></i>"
         });
+    });
+    $(document).on("click", ".component-popover-close", function() {
+        $(".component-tooltip").popover("hide");
     });
     tooltips.on("click", function(ev) {
 

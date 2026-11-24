@@ -1,0 +1,36 @@
+{% extends '@BaseMain/layout.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ 'statistics.title'|trans({}, 'general') }}</h1>
+
+            {% if month %}
+                <form class="form-inline" style="margin-bottom: 10px;">
+                    <div class="form-group">
+                        <label for="statistics-month">{{ 'statistics.month'|trans({}, 'general') }}</label>
+                        <select id="statistics-month" class="form-control" onchange="window.location.href = this.value;">
+                            {% for m in months %}
+                                <option value="{{ path('statistics_month', {'lang': lang, 'month': m}) }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="btn-group" role="group" style="margin-left: 15px;">
+                        {% for l in ['lt', 'en'] %}
+                            <a class="btn btn-default{% if l == lang %} active{% endif %}" href="{{ path('statistics_month', {'lang': l, 'month': month}) }}">{{ l|upper }}</a>
+                        {% endfor %}
+                    </div>
+                    <span class="help-block" style="display: inline-block; margin-left: 15px;">{{ 'statistics.updated'|trans({}, 'general') }}</span>
+                </form>
+
+                <iframe src="{{ path('statistics_file', {'lang': lang, 'month': month, 'file': 'awstats.damis.html'}) }}"
+                        title="{{ 'statistics.title'|trans({}, 'general') }}"
+                        style="width: 100%; height: 80vh; border: 1px solid #ddd;"></iframe>
+            {% else %}
+                <div class="alert alert-info">{{ 'statistics.no_data'|trans({}, 'general') }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

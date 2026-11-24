@@ -40,7 +40,7 @@ class ProfileFormType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return BaseProfileFormType::class;
     }
@@ -48,7 +48,7 @@ class ProfileFormType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'base_user_profile';
     }

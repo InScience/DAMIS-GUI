@@ -215,16 +215,18 @@ class User extends BaseUser
         $this->salt = '';
     }
 
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->email = $email;
-        parent::setEmail($email);
+
+        return parent::setEmail($email);
     }
 
-    public function setUsername($name)
+    public function setUsername($name): static
     {
         $this->username = $name;
-        parent::setUsername($name);
+
+        return parent::setUsername($name);
     }
 
     /**

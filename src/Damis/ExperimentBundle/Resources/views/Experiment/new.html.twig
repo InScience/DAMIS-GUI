@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/colpick.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCanvas.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/experimentCreate.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/damisexperiment/css/jquery.dataTables.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -35,7 +34,7 @@
                             {% for cluster in clusters %}
                                 <div id="cluster-{{ cluster.id }}-panel" {% if loop.index != 1 %}style="display:none"{% endif %}>
                                     {% for category in componentsCategories %}
-                                        {% apply spaceless %}
+                                        {% apply html_spaceless %}
                                             <h3 {% if loop.index == 1 %}class="first"{% endif %}>
                                                 {{ category.getType | trans({}, 'ExperimentBundle') }}
                                             </h3>
@@ -177,7 +176,7 @@
                             helper: "clone"
                         });
                         $(spec.canvas).droppable({
-                            activeClass: "active-canvas",
+                            classes: { "ui-droppable-active": "active-canvas" },
                             accept: spec.task,
                             drop: function(ev, ui) {
                                 if ($(ui.draggable).hasClass(spec.task.replace(".", ""))) {

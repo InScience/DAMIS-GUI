@@ -292,7 +292,7 @@ class Experiment
      * @param Experimentstatus $status
      * @return Experiment
      */
-    public function setStatus(Experimentstatus $status = null)
+    public function setStatus(?Experimentstatus $status = null)
     {
         $this->status = $status;
 
@@ -315,7 +315,7 @@ class Experiment
      * @param User $user
      * @return Experiment
      */
-    public function setUser(User $user = null)
+    public function setUser(?User $user = null)
     {
         $this->user = $user;
 

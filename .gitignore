@@ -7,8 +7,8 @@ web/bundles/*
 web/assets/*
 web/assetic/*
 web/translations/*
-web/js/*
-web/css/*
+# web/js and web/css hold the vendored frontend libraries; only the JS routes are generated
+/web/js/fos_js_routes.js
 !app/cache/.gitkeep
 !app/logs/.gitkeep
 public/uploads/*
@@ -20,10 +20,10 @@ app/config/parameters.yml
 .idea/*
 nbproject/*
 /scripts/
-!/web/css/midas.css
 /run.cmd
 app/bootstrap.php.cache
-bin/
+/bin/*
+!/bin/console
 
 .phpunit.result.cache
 ###> symfony/framework-bundle ###
@@ -63,7 +63,9 @@ yarn-error.log
 
 *.o
 
-public/
+# public/ is generated (symlinks into web/, bundles, build, uploads), only the front controller is tracked
+/public/*
+!/public/index.php
 
 DamisService
 

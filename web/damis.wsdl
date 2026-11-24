@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--(DAMIS) edited with XMLSpy by Povilas (povilas.treigys[eta]inscience.lt) InScience.LT-->
+<!--
+  Interface of DamisService.cgi. This file is the source of truth: the gSOAP stubs are generated
+  from it at build time (see Makefile) and it is served on ?wsdl. The SOAP:address below is
+  replaced at container start with SERVICE_URL. PHP SoapClient maps call arguments to the
+  message parts BY POSITION, gSOAP reads them BY NAME - keep both order and names stable.
+-->
 <definitions name="DAMIS" targetNamespace="DAMIS" xmlns:tns="DAMIS" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="DAMIS" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/" xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <schema targetNamespace="DAMIS" elementFormDefault="unqualified" attributeFormDefault="unqualified" xmlns="http://www.w3.org/2001/XMLSchema">
@@ -231,10 +237,7 @@
     <WSDL:part name="calcTime" type="xsd:double">
       <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
     </WSDL:part>
-    <WSDL:part name="algorithmErrorQuantization" type="xsd:double">
-      <WSDL:documentation>SOM gautos kvantavimo paklaidos įvertis</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="algorithmErrorMDS" type="xsd:double">
+    <WSDL:part name="algorithmError" type="xsd:double">
       <WSDL:documentation>MDS gautos paklaidos įvertis</WSDL:documentation>
     </WSDL:part>
   </WSDL:message>
@@ -248,17 +251,11 @@
     <WSDL:part name="h2pNo" type="xsd:int">
       <WSDL:documentation>Pirmojo paslėpto sluoksnio neuronų skaičius</WSDL:documentation>
     </WSDL:part>
-    <WSDL:part name="h3pNo" type="xsd:int">
-      <WSDL:documentation>Trečiojo paslėpto sluoksnio neuronų skaičius</WSDL:documentation>
+    <WSDL:part name="qty" type="xsd:double">
+      <WSDL:documentation>Jei kFoldValidation = false - mokymo duomenų dalis procentais [1; 100], kitu atveju - kryžminės patikros blokų skaičius k [2; 100]</WSDL:documentation>
     </WSDL:part>
-    <WSDL:part name="dL" type="xsd:string">
-      <WSDL:documentation>Mokymosi vektorių skaičius (optional)</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="dT" type="xsd:string">
-      <WSDL:documentation>Testavimo vektorių skaičius (optional)</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="dV" type="xsd:string">
-      <WSDL:documentation>Validavimo vektorių skaičius (optional)</WSDL:documentation>
+    <WSDL:part name="kFoldValidation" type="xsd:boolean">
+      <WSDL:documentation>Reikšmė True jei naudojama k blokų kryžminė patikra</WSDL:documentation>
     </WSDL:part>
     <WSDL:part name="maxIteration" type="xsd:int">
       <WSDL:documentation>Maksimalus iteracijų skaičius</WSDL:documentation>
@@ -281,40 +278,12 @@
       <WSDL:documentation>aGautos paklaidos įvertis (MES error)</WSDL:documentation>
     </WSDL:part>
   </WSDL:message>
-  <WSDL:message name="C45Request">
-    <WSDL:part name="X" type="xsd:string">
-      <WSDL:documentation>Kelias iki pradinių duomenų ARFF failo</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="q" type="xsd:double">
-      <WSDL:documentation>Pasikliovimo lygmuo, įvertinant klaidos tikimybėsp pasikliautinąjį intervalą</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="dL" type="xsd:double">
-      <WSDL:documentation>Mokymosi vektorių skaičius</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="dT" type="xsd:double">
-      <WSDL:documentation>Testavimo vektorių skaičius</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="maxCalcTime" type="xsd:int">
-      <WSDL:documentation>Maksimali numanoma skaičiavimo trukmė sekundėmis</WSDL:documentation>
-    </WSDL:part>
-  </WSDL:message>
-  <WSDL:message name="C45Response">
-    <WSDL:part name="Y" type="xsd:string">
-      <WSDL:documentation>Kelias iki rezultatų failo (suklasifikuoti testiniai duomenys)</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="calcTime" type="xsd:double">
-      <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="algorithmError" type="xsd:double">
-      <WSDL:documentation>Gautos paklaidos įvertis (testiniams duomenims)</WSDL:documentation>
-    </WSDL:part>
-  </WSDL:message>
   <WSDL:message name="DFRequest">
     <WSDL:part name="X" type="xsd:string">
       <WSDL:documentation>Path to source ARFF data file</WSDL:documentation>
     </WSDL:part>
-    <WSDL:part name="q" type="xsd:string">
-      <WSDL:documentation>Noise tolerance parameter (0-1), optional</WSDL:documentation>
+    <WSDL:part name="q" type="xsd:double">
+      <WSDL:documentation>Noise tolerance parameter (0-1)</WSDL:documentation>
     </WSDL:part>
     <WSDL:part name="dL" type="xsd:double">
       <WSDL:documentation>Learning data percentage</WSDL:documentation>
@@ -357,9 +326,6 @@
     </WSDL:part>
     <WSDL:part name="calcTime" type="xsd:double">
       <WSDL:documentation>Vykdymo trukmė sekundėmis</WSDL:documentation>
-    </WSDL:part>
-    <WSDL:part name="kBest" type="xsd:int">
-      <WSDL:documentation>Gautas geriausias k</WSDL:documentation>
     </WSDL:part>
   </WSDL:message>
   <WSDL:message name="STATRPRIMITIVESRequest">
@@ -528,11 +494,6 @@
       <WSDL:input message="tns:MLPRequest"/>
       <WSDL:output message="tns:MLPResponse"/>
     </WSDL:operation>
-    <WSDL:operation name="C45">
-      <WSDL:documentation>Sprendimų medžio klasifikavimo algoritmas</WSDL:documentation>
-      <WSDL:input message="tns:C45Request"/>
-      <WSDL:output message="tns:C45Response"/>
-    </WSDL:operation>
     <WSDL:operation name="DF">
       <WSDL:documentation>Random Decision Forest classification algorithm</WSDL:documentation>
       <WSDL:input message="tns:DFRequest"/>
@@ -648,15 +609,6 @@
         <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
       </WSDL:output>
     </WSDL:operation>
-    <WSDL:operation name="C45">
-      <SOAP:operation soapAction="" style="rpc"/>
-      <WSDL:input>
-        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
-      </WSDL:input>
-      <WSDL:output>
-        <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="DAMIS"/>
-      </WSDL:output>
-    </WSDL:operation>
     <WSDL:operation name="DF">
       <SOAP:operation soapAction="" style="rpc"/>
       <WSDL:input>
@@ -733,7 +685,7 @@
   <service name="DAMIS">
     <documentation>Generated service definition 2014-03-21</documentation>
     <port name="DAMIS" binding="tns:DAMIS">
-      <SOAP:address location="http://localhost:8080"/>
+      <SOAP:address location="http://localhost/cgi-bin/DamisService.cgi"/>
     </port>
   </service>
 </definitions>

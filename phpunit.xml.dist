@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<!-- https://docs.phpunit.de/en/9.6/configuration.html
+     Run in the php container: docker compose exec php vendor/bin/phpunit -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
+         failOnRisky="true"
+         failOnWarning="true"
          bootstrap="tests/bootstrap.php"
 >
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
+        <!-- e-mails are collected by the test mailer, never sent (the php container's MAILER_DSN is Mailpit) -->
+        <env name="MAILER_DSN" value="null://null" force="true" />
+        <!-- AWStats pages for tests/Functional/StatisticsTest (relative to the project directory phpunit runs in) -->
+        <env name="DAMIS_AWSTATS_DIR" value="tests/fixtures/awstats" force="true" />
+        <!-- deprecations are reported, they do not fail the run (vendor code still has some) -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0&amp;max[direct]=999999&amp;max[indirect]=999999&amp;verbose=0" />
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="DAMIS">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />

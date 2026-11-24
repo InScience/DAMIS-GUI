@@ -3,6 +3,8 @@
 namespace Damis\ExperimentBundle\Controller;
 
 use Damis\DatasetsBundle\Entity\Dataset;
+use Damis\DatasetsBundle\Security\DatasetVoter;
+use Base\MainBundle\Controller\RequestInputTrait;
 use Damis\ExperimentBundle\Helpers\Chart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,6 +19,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ChartController extends AbstractController
 {
+    use RequestInputTrait;
+
     public function __construct(
         private readonly ParameterBagInterface $params
     ) {
@@ -29,12 +33,12 @@ class ChartController extends AbstractController
     function getAction(Request $request, ManagerRegistry $doctrine, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
-            if ($request->get('dst') == 'user-computer') {
-                return $this->_downloadImage($request->get('image'), $request->get('format'));
+            if ($this->input($request, 'dst') == 'user-computer') {
+                return $this->_downloadImage($this->input($request, 'image'), $this->input($request, 'format'));
             } 
-            elseif ($request->get('dst') == 'midas') {
-                if ($request->get('format') == 'jpeg' || $request->get('format') == 'png') {
-                    $temp_file = $this->_getImageFilePath($request->get('image'), $request->get('format'));
+            elseif ($this->input($request, 'dst') == 'midas') {
+                if ($this->input($request, 'format') == 'jpeg' || $this->input($request, 'format') == 'png') {
+                    $temp_file = $this->_getImageFilePath($this->input($request, 'image'), $this->input($request, 'format'));
                 } else {
                     return new Response('Invalid format', 400);
                 }
@@ -46,15 +50,15 @@ class ChartController extends AbstractController
                     $sessionToken = $session->get('sessionToken');
                 } else {
                     $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                 }
                 
                 $fileinfo = pathinfo($temp_file);
                 $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileinfo['basename']);
                         
                 $post = [
-                    'name' => $name.'.'.$request->get('format'),
-                    'parentFolderId' => json_decode((string) $request->get('path'), true)['idCSV'],
+                    'name' => $name.'.'.$this->input($request, 'format'),
+                    'parentFolderId' => json_decode((string) $this->input($request, 'path'), true)['idCSV'],
                     'size' => filesize($temp_file),
                 ];
 
@@ -67,13 +71,13 @@ class ChartController extends AbstractController
 
                     if (isset($response['type']) && $response['type'] == 'error') {
                         $session->getFlashBag()->add('error', $translator->trans($response["msgCode"], [], 'DatasetsBundle'));
-                        return $this->redirect($request->headers->get('referer'));
+                        return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                     }
 
                     $fileId = $response['file']['id'];
                     $header = ['Content-Type: multipart/form-data', 'Authorization:'.$sessionToken];
 
-                    $file = new CURLFile($temp_file, 'image/'.$request->get('format'), $name);
+                    $file = new CURLFile($temp_file, 'image/'.$this->input($request, 'format'), $name);
                     $fields = ['slice' => $file, 'fileId' => $fileId, 'sliceNo' => 1];
 
                     $resource = curl_init();
@@ -85,25 +89,32 @@ class ChartController extends AbstractController
                     curl_setopt($resource, CURLOPT_POSTFIELDS, $fields);
 
                     $result = curl_exec($resource);
-                    curl_close($resource);
                     
                     if (file_exists($temp_file)) unlink($temp_file);
                     
                     $session->getFlashBag()->add('success', $translator->trans('File uploaded successfully', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
 
                 } catch (\Exception $e) {
                     $session->getFlashBag()->add('error', $translator->trans('Error uploading file', [], 'DatasetsBundle'));
-                    return $this->redirect($request->headers->get('referer'));
+                    return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('experiments_history'));
                 }
             }
+
+            return new Response('Invalid destination', Response::HTTP_BAD_REQUEST);
         } 
         else {
             $params = $request->query->all();
-            
-            $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $params['dataset_url']]);
+            $datasetId = $params['dataset_url'] ?? null;
 
-            if (!$dataset) {
+            if (!$datasetId) {
+                return new JsonResponse(['status' => 'ERROR', 'message' => 'Missing dataset_url parameter'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $dataset = $doctrine->getRepository(Dataset::class)->findOneBy(['datasetId' => $datasetId]);
+
+            // only the owner, administrators and inputs of experiment examples (DatasetVoter)
+            if (!$dataset || !$this->isGranted(DatasetVoter::VIEW, $dataset)) {
                  return new JsonResponse(['status' => 'ERROR', 'message' => 'Dataset not found']);
             }
 

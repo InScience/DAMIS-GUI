@@ -63,9 +63,12 @@
 					lineWidth: 2
 				},
 				hoverPaintStyle: this.getEndpointHoverStyle(),
+				// passed on to jQuery UI droppable (activeClass/hoverClass were removed in jQuery UI 1.14)
 				dropOptions: {
-					hoverClass: "hover",
-					activeClass: "active-target"
+					classes: {
+						"ui-droppable-hover": "hover",
+						"ui-droppable-active": "active-target"
+					}
 				},
 				isTarget: true
 			}

@@ -1,0 +1,65 @@
+#!/bin/bash
+# Hourly AWStats run for the DAMIS GUI:
+#  1. reads the new lines of the apache access logs into the AWStats database (/var/lib/awstats);
+#  2. rebuilds the static pages of the current month in Lithuanian and English (/var/www/awstats/<lang>/<YYYY-MM>);
+#  3. once per month, rebuilds the previous month after its last lines were read (final pages);
+#  4. deletes access log files older than LOG_RETENTION_DAYS (default 90).
+set -euo pipefail
+
+CONFIG=damis
+LOGS=/var/log/damis-apache
+DATA=/var/lib/awstats
+OUT=/var/www/awstats
+LANGS="lt en"
+AWSTATS=/usr/lib/cgi-bin/awstats.pl
+BUILD=/usr/share/awstats/tools/awstats_buildstaticpages.pl
+RETENTION="${LOG_RETENTION_DAYS:-90}"
+
+log() { echo "$(date '+%F %T') $*"; }
+
+# build <year> <month>: static pages of one month in every language, replaced atomically per language
+build() {
+    local lang dir tmp
+    for lang in $LANGS; do
+        dir="$OUT/$lang/$1-$2"
+        tmp="$OUT/$lang/.$1-$2.tmp"
+        rm -rf "$tmp"
+        mkdir -p "$tmp"
+        perl "$BUILD" -config="$CONFIG" -awstatsprog="$AWSTATS" -dir="$tmp" -lang="$lang" -year="$1" -month="$2" > /dev/null
+        rm -rf "$dir"
+        mv "$tmp" "$dir"
+    done
+    log "built pages for $1-$2 ($LANGS)"
+}
+
+log "updating statistics"
+# AWStats reads yesterday's and today's file (LogFile in awstats.damis.conf); the merge tool fails if one of them
+# does not exist yet (first day, no request yet today), so create missing ones empty
+touch -a "$LOGS/access.$(date -d '24 hours ago' +%F).log" "$LOGS/access.$(date +%F).log"
+if ! output=$(perl "$AWSTATS" -config="$CONFIG" -update 2>&1); then
+    echo "$output"
+    exit 1
+fi
+echo "$output" | grep -E '^ *(Found|Jumped|Parsed|New)' || true
+
+mkdir -p "$OUT/icon"
+cp -r /usr/share/awstats/icon/. "$OUT/icon/"
+
+year=$(date +%Y)
+month=$(date +%m)
+if [ -f "$DATA/awstats$month$year.$CONFIG.txt" ]; then
+    build "$year" "$month"
+else
+    log "no data for $year-$month yet"
+fi
+
+# the first run of a month has read the last lines of the previous month: build its final pages once
+prev_year=$(date -d "$year-$month-01 -1 day" +%Y)
+prev_month=$(date -d "$year-$month-01 -1 day" +%m)
+if [ -f "$DATA/awstats$prev_month$prev_year.$CONFIG.txt" ] && [ ! -e "$OUT/.final-$prev_year-$prev_month" ]; then
+    build "$prev_year" "$prev_month"
+    touch "$OUT/.final-$prev_year-$prev_month"
+fi
+
+deleted=$(find "$LOGS" -maxdepth 1 -type f -name 'access.*.log' -mtime +"$RETENTION" -print -delete | wc -l)
+[ "$deleted" -eq 0 ] || log "deleted $deleted access log file(s) older than $RETENTION days"

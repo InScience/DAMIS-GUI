@@ -80,9 +80,14 @@ class ExecuteExperimentCommand extends Command
                 continue;
             }
 
+            // components without a host run locally (see below); for the others DAMIS_SERVICE_WSDL may override the host
+            $wsdlHost = $component->getWsdlRunHost()
+                ? ($this->params->get('damis_service_wsdl') ?: $component->getWsdlRunHost())
+                : null;
+
             $output->writeln('==============================');
             $output->writeln('Task id : '.$task->getWorkflowtaskid());
-            $output->writeln('Wsdl host : '.$component->getWsdlRunHost());
+            $output->writeln('Wsdl host : '.$wsdlHost);
             $output->writeln('Wsdl function : '.$component->getWsdlCallFunction());
 
             // filter out un callable functions
@@ -198,8 +203,12 @@ class ExecuteExperimentCommand extends Command
             // URL-encode the filename to handle spaces and special characters
             $encodedPath = str_replace(' ', '%20', $filePath);
 
+            // the DamisService downloads X itself: DAMIS_DATA_HOST (damis_data_host) is the GUI address
+            // as seen from the service (e.g. http://apache inside docker compose), default project_full_host
+            $dataHost = $this->params->get('damis_data_host') ?: $this->params->get('project_full_host');
+
             $params = array_merge(
-                ['X' => $this->params->get('project_full_host').$encodedPath],
+                ['X' => rtrim((string) $dataHost, '/').$encodedPath],
                 $params,
                 $proc,
                 ['maxCalcTime' => $calcTime]
@@ -208,36 +217,9 @@ class ExecuteExperimentCommand extends Command
                 $params['maxCalcTime'] = 1;
             }
 
-            // Transform MLP parameters from form format to C service format
-            if ($component->getWsdlCallFunction() == 'MLP') {
-                $qty = $params['qty'] ?? 90;
-                $kFold = $params['kFoldValidation'] ?? 0;
-
-                if ($kFold == 0) {
-                    $dV = 1;
-                    $dT = max(1, floor((100 - $qty) * 0.9));
-                    $dL = 100 - $dT - $dV;
-                } else {
-                    $dL = 80;
-                    $dT = 10;
-                    $dV = 10;
-                }
-
-                $params = [
-                    'X' => $params['X'],
-                    'h1pNo' => $params['h1pNo'],
-                    'h2pNo' => $params['h2pNo'],
-                    'h3pNo' => 0,
-                    'dL' => $dL,
-                    'dT' => $dT,
-                    'dV' => $dV,
-                    'maxIteration' => $params['maxIteration'],
-                    'p' => $params['p'],
-                    'maxCalcTime' => $params['maxCalcTime']
-                ];
-            }
-
-            $output->writeln('Wsdl function parameters: '.print_r($params, true));
+            // MLP: the form stores qty and kFoldValidation, which is what the service expects (MLP update
+            // of 2014-10). A conversion to the older h3pNo/dL/dT/dV interface was added here in 2026-01;
+            // it was removed together with the WSDL fix, parameters are sent as stored.
                 
             //FOR TESTING PURPOSES ONLY
             //$params['X'] = 'http://158.129.140.146/Damis/Data/testData/test.arff';
@@ -257,20 +239,25 @@ class ExecuteExperimentCommand extends Command
                 ]
             ]);
 
-            $client = new \SoapClient(
-                $component->getWsdlRunHost(),
-                [
-                    'trace' => 1,
-                    'exception' => 0,
-                    'connection_timeout' => 3600,
-                    'cache_wsdl' => WSDL_CACHE_NONE,
-                    'stream_context' => $sslContext
-                ]
-            );
-
             $result = false;
             $error = false;
             try {
+                // the DAMIS_SERVICE_WSDL environment variable (damis_service_wsdl) overrides the
+                // per-component host stored in the database, e.g. the damis-service container
+                $client = new \SoapClient(
+                    $wsdlHost,
+                    [
+                        'trace' => 1,
+                        'exception' => 0,
+                        'connection_timeout' => 3600,
+                        'cache_wsdl' => WSDL_CACHE_NONE,
+                        'stream_context' => $sslContext
+                    ]
+                );
+
+                $params = $this->orderParamsForWsdl($client, $component->getWsdlCallFunction(), $params, $output);
+                $output->writeln('Wsdl function parameters: '.print_r($params, true));
+
                 //@TODO SSL implementation
                 $output->writeln('Starting call to wsdl function');
                 $result = @$client->__soapCall($component->getWsdlCallFunction(), $params);
@@ -338,7 +325,7 @@ class ExecuteExperimentCommand extends Command
 
                         // After redirects, check the final HTTP status (last HTTP/x.x line in headers)
                         $finalStatus = '';
-                        foreach ($http_response_header ?? [] as $header) {
+                        foreach (http_get_last_response_headers() ?? [] as $header) {
                             if (strpos($header, 'HTTP/') === 0) {
                                 $finalStatus = $header;
                             }
@@ -596,5 +583,46 @@ class ExecuteExperimentCommand extends Command
         }
 
         return (int) $parse['hours'] * 3600 + (int) $parse['mins'] * 60 + (int) $parse['secs'];
+    }
+
+    /**
+     * SoapClient::__soapCall() ignores the array keys and maps the values to the WSDL message parts
+     * by position, while the DamisService reads them by name. Put the parameters in the order of the
+     * operation's WSDL message, so the database order of the component parameters does not matter.
+     *
+     * @param array<string, mixed> $params parameters by WSDL part name
+     * @return array<string, mixed>
+     */
+    private function orderParamsForWsdl(SoapClient $client, string $function, array $params, OutputInterface $output): array
+    {
+        foreach ($client->__getFunctions() ?? [] as $signature) {
+            // e.g. "list(string $Y, double $calcTime, double $algorithmError) PCA(string $X, boolean $projType, double $d, int $maxCalcTime)"
+            if (!preg_match('/(?:^|\s)'.preg_quote($function, '/').'\(([^)]*)\)\s*$/', (string) $signature, $match)) {
+                continue;
+            }
+            preg_match_all('/\$(\w+)/', $match[1], $names);
+
+            $missing = array_diff($names[1], array_keys($params));
+            if ($missing) {
+                $output->writeln('WARNING: no value for WSDL parameter(s) '.implode(', ', $missing).' of '.$function);
+
+                return $params;
+            }
+            $unknown = array_diff(array_keys($params), $names[1]);
+            if ($unknown) {
+                $output->writeln('WARNING: parameter(s) not in the WSDL of '.$function.', not sent: '.implode(', ', $unknown));
+            }
+
+            $ordered = [];
+            foreach ($names[1] as $name) {
+                $ordered[$name] = $params[$name];
+            }
+
+            return $ordered;
+        }
+
+        $output->writeln('WARNING: operation '.$function.' not found in the WSDL, sending parameters as they are');
+
+        return $params;
     }
 }

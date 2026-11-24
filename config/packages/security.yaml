@@ -1,6 +1,5 @@
 # config/packages/security.yaml
 security:
-    enable_authenticator_manager: true
     # 1. Password Hashing
     # This tells Symfony how to hash passwords for your User entity.
     password_hashers:
@@ -40,6 +39,9 @@ security:
                 provider: fos_userbundle
                 # Where to go after a successful login.
                 default_target_path: / # Change this to your desired homepage route name if needed
+                # Validate the _csrf_token the login form sends (token id "authenticate"); it was rendered but
+                # never checked, so the login form was open to login CSRF.
+                enable_csrf: true
 
             logout:
                 # The route name for logging out.
@@ -65,6 +67,7 @@ security:
         - { path: ^/users, role: ROLE_ADMIN }
         - { path: ^/cron, role: ROLE_ADMIN }
         - { path: ^/pages, role: ROLE_ADMIN }
+        - { path: ^/admin/statistics, role: ROLE_ADMIN }
         # Protected areas - require ROLE_CONFIRMED
         - { path: ^/experiment, role: ROLE_CONFIRMED }
         - { path: ^/datasets, role: ROLE_CONFIRMED }

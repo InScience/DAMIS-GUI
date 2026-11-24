@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 class SamannType extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('d', IntegerType::class, [
@@ -90,7 +90,7 @@ class SamannType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
         
@@ -101,7 +101,7 @@ class SamannType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'samann_type';
     }

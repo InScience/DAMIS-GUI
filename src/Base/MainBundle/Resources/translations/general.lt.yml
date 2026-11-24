@@ -4,6 +4,13 @@ en_US: English
 en: English
 cron: Cron
 pages: Puslapiai
+
+# Svetainės statistika (AWStats)
+statistics.menu: Statistika
+statistics.title: Svetainės statistika
+statistics.month: Mėnuo
+statistics.updated: Atnaujinama kas valandą.
+statistics.no_data: "Statistikos dar nėra. Ji atnaujinama kas valandą pagal žiniatinklio serverio prieigos žurnalus."
 info_video_label: Informacinis filmukas
 
 # Cron Manager translations

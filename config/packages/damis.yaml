@@ -1,0 +1,16 @@
+# DAMIS computing service (DamisService.cgi) connection, see ExecuteExperimentCommand.
+parameters:
+    # WSDL URL of the service; when set it overrides component.ComponentWSDLRunHost from the database
+    # (the stored hosts point to the old servers), e.g. http://damis-service/cgi-bin/DamisService.cgi?wsdl
+    env(DAMIS_SERVICE_WSDL): ''
+    damis_service_wsdl: '%env(DAMIS_SERVICE_WSDL)%'
+
+    # base URL of this application as seen from the service, used to build the dataset URL (X) the
+    # service downloads; empty = project_full_host. Inside docker compose: http://apache
+    env(DAMIS_DATA_HOST): ''
+    damis_data_host: '%env(DAMIS_DATA_HOST)%'
+
+    # directory with the static AWStats pages (<lang>/<YYYY-MM>/awstats.damis*.html, icon/), written by the
+    # awstats container and shown to administrators under /admin/statistics; empty = statistics not installed
+    env(DAMIS_AWSTATS_DIR): ''
+    damis_awstats_dir: '%env(DAMIS_AWSTATS_DIR)%'

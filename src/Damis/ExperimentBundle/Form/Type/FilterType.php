@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 class FilterType extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('retFilteredData', ChoiceType::class, [
@@ -48,7 +48,7 @@ class FilterType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['choices', 'class']);
 
@@ -59,7 +59,7 @@ class FilterType extends AbstractType
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'filter_type';
     }

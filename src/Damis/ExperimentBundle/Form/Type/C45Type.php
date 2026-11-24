@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class C45Type extends AbstractType
 {
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('q', NumberType::class, [
@@ -69,12 +69,12 @@ class C45Type extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['translation_domain' => 'ExperimentBundle']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'c45_type';
     }

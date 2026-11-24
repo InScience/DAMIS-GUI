@@ -24,6 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultController extends AbstractController
 {
+    use RequestInputTrait;
+
     public function __construct(private readonly EntityManagerInterface $em, private readonly TranslatorInterface $translator, private readonly TokenStorageInterface $tokenStorage, private readonly EventDispatcherInterface $eventDispatcher, private readonly KernelInterface $kernel, private readonly ParameterBagInterface $params, private readonly RequestStack $requestStack)
     {
     }
@@ -37,14 +39,14 @@ class DefaultController extends AbstractController
     #[\Symfony\Component\Routing\Attribute\Route(path: '/midaslogin.html', name: 'midas_login', methods: ['POST'])]
     public function login(Request $request): Response
     {
-        $sessionToken = $request->get('sessionToken', null);
-        $sessionFinishDate = $request->get('sessionFinishDate', null);
-        $name = $request->get('name', null);
-        $surname = $request->get('surName', null);
-        $userEmail = $request->get('email', null);
-        $userId = $request->get('userId', null);
-        $timeStamp = $request->get('timeStamp', null);
-        $signature = $request->get('signature', null);
+        $sessionToken = $this->input($request, 'sessionToken', null);
+        $sessionFinishDate = $this->input($request, 'sessionFinishDate', null);
+        $name = $this->input($request, 'name', null);
+        $surname = $this->input($request, 'surName', null);
+        $userEmail = $this->input($request, 'email', null);
+        $userId = $this->input($request, 'userId', null);
+        $timeStamp = $this->input($request, 'timeStamp', null);
+        $signature = $this->input($request, 'signature', null);
 
         // DEV BYPASS START
         $skipSignature = true;

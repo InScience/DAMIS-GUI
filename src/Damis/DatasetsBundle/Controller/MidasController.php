@@ -251,7 +251,6 @@ class MidasController extends AbstractController
             curl_exec($resource);
             $curlErr = curl_error($resource);
             $curlStatus = curl_getinfo($resource);
-            curl_close($resource);
             if ($curlErr) {
                 $this->logger?->error('MIDAS slice upload curl error', ['error' => $curlErr, 'info' => $curlStatus]);
             } else {
