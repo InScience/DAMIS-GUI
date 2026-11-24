@@ -230,7 +230,8 @@ smoke_test() {
     log "smoke test: DamisService"
     local i
     for i in $(seq 10); do
-        curl -sf "$SERVICE_URL?wsdl" | grep -q '<definitions' && break
+        # not grep -q: it exits at the first match, curl then fails writing the rest and pipefail fails the check
+        curl -sf "$SERVICE_URL?wsdl" | grep '<definitions' > /dev/null && break
         [ "$i" -lt 10 ] || die "$SERVICE_URL?wsdl does not answer"
         sleep 1
     done
