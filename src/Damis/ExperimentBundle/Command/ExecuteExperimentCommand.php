@@ -147,7 +147,12 @@ class ExecuteExperimentCommand extends Command
                     $outDatasetEntities[$value->getParameter()->getSlug()] = $value;
                 }
                 if ($value->getParameter()->getConnectionType()->getId() == 3) {
-                    $params[$value->getParameter()->getSlug()] = $value->getParametervalue();
+                    // no stored value (e.g. RDF "q", which the form did not save before 2026-11): the default
+                    $paramValue = $value->getParametervalue();
+                    if ($paramValue === null || $paramValue === '') {
+                        $paramValue = $value->getParameter()->getDefault();
+                    }
+                    $params[$value->getParameter()->getSlug()] = $paramValue;
                 }
             }
 
