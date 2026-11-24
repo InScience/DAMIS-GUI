@@ -176,9 +176,6 @@ main() {
     prepare
     switch
     log "done: the site runs in Docker (sudo docker compose ps in $GUI_DIR), backup in $BACKUP_DIR"
-    grep -q '^MAILER_DSN=null://' "$GUI_DIR/.env" \
-        && log "WARNING: no mail server yet, set MAILER_DSN in $GUI_DIR/.env, then: sudo docker compose up -d php"
-    return 0
 }
 
 main "$@"

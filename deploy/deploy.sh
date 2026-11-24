@@ -119,9 +119,6 @@ main() {
     update_code
     deploy
     smoke_test
-    if grep -q '^MAILER_DSN=null://' "$GUI_DIR/.env"; then
-        log "WARNING: no mail server, the site sends no e-mail (set MAILER_DSN in $GUI_DIR/.env)"
-    fi
     log "done, backup in $BACKUP_DIR"
 }
 
