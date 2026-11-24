@@ -8,7 +8,8 @@
 #
 # The three repositories are sibling checkouts (<dir>/DAMIS-GUI, <dir>/DAMIS_WebService, <dir>/DAMIS); missing
 # ones are cloned from github.com/InScience. Every run first backs up the database, the uploaded files and the
-# configuration into /var/backups/damis/<timestamp>/, and ends with smoke tests (https, DamisService over SOAP).
+# configuration into /var/backups/damis/<timestamp>/ (deploy/backup.sh, also installed as a daily cron job), and
+# ends with smoke tests (https, DamisService over SOAP).
 # With SMOKE_USER and SMOKE_PASSWORD (an administrator) in the environment, tests/smoke/smoke.sh runs as well.
 set -euo pipefail
 
@@ -36,18 +37,10 @@ preflight() {
 
 backup() {
     log "backup into $BACKUP_DIR"
-    install -d -m 700 "$BACKUP_DIR"
-    # the password stays inside the container (MYSQL_PWD), not on a command line
-    # shellcheck disable=SC2016 # expanded by the shell in the container
-    dc exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --single-transaction --routines --no-tablespaces "$MYSQL_DATABASE"' \
-        | gzip > "$BACKUP_DIR/database.sql.gz"
-    tar -C "$GUI_DIR/public" -czf "$BACKUP_DIR/uploads.tar.gz" uploads
-    cp -a "$GUI_DIR/config/services.yml" "$BACKUP_DIR/"
-    cp -a "$GUI_DIR/.env" "$BACKUP_DIR/env"
-    local repo
-    for repo in DAMIS-GUI DAMIS_WebService DAMIS; do
-        [ ! -d "$SRC_DIR/$repo/.git" ] || echo "$repo $(git -C "$SRC_DIR/$repo" rev-parse HEAD)" >> "$BACKUP_DIR/revisions.txt"
-    done
+    "$GUI_DIR/deploy/backup.sh" "$BACKUP_DIR"
+    # daily backup of the running site (deploy/backup.sh)
+    printf '%s\n' '# DAMIS: daily backup (database, uploads, configuration), installed by deploy/deploy.sh' \
+        "15 3 * * * root $GUI_DIR/deploy/backup.sh >> /var/log/damis-backup.log 2>&1" > /etc/cron.d/damis-backup
 }
 
 update_code() {
