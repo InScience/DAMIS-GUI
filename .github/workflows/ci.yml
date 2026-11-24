@@ -125,12 +125,25 @@ jobs:
       - name: Wait for the application
         run: |
           for _ in $(seq 180); do
-            if docker compose logs php | grep -q '\[damis\] Ready'; then exit 0; fi
+            # not grep -q: steps run with pipefail, and docker compose logs failing on the closed pipe would hide the match
+            if docker compose logs php | grep '\[damis\] Ready' > /dev/null; then exit 0; fi
             if [ "$(docker compose ps -a --format '{{.State}}' php)" != running ]; then break; fi
             sleep 5
           done
           docker compose logs php
           exit 1
+
+      # docker-compose.prod.yml (damis.midas.lt) is valid and Apache accepts its https configuration
+      - name: Production configuration
+        run: |
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj /CN=localhost \
+            -keyout "$RUNNER_TEMP/key.pem" -out "$RUNNER_TEMP/cert.pem" 2> /dev/null
+          export SITE_DOMAIN=localhost SSL_CERTIFICATE="$RUNNER_TEMP/cert.pem" SSL_CERTIFICATE_KEY="$RUNNER_TEMP/key.pem" \
+            SSL_CERTIFICATE_CHAIN="$RUNNER_TEMP/cert.pem" APP_SECRET=ci MAILER_DSN=null://null \
+            MYSQL_PASSWORD=ci MYSQL_ROOT_PASSWORD=ci
+          prod() { docker compose -f docker-compose.yml -f docker-compose.prod.yml "$@"; }
+          prod config -q
+          prod run --rm --no-deps apache httpd -t -DDAMIS_SSL
 
       - name: Create the smoke test administrator
         run: |

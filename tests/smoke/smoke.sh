@@ -34,7 +34,8 @@ check "/experiments.html (anonymous -> login)" "302" "$(curl -s -o /dev/null -w 
 
 echo "== login"
 T=$(curl -s -c "$J" -b "$J" "$B/login" | grep -oE 'name="_csrf_token" value="[^"]+"' | sed -E 's/.*value="([^"]+)"/\1/')
-check "login_check" "302" "$(http --data-urlencode "_username=$SMOKE_USER" --data-urlencode "_password=$SMOKE_PASSWORD" --data-urlencode "_csrf_token=$T" "$B/login_check")"
+# the password goes through stdin, not the curl command line (visible in ps)
+check "login_check" "302" "$(printf '%s' "$SMOKE_PASSWORD" | http --data-urlencode "_username=$SMOKE_USER" --data-urlencode "_password@-" --data-urlencode "_csrf_token=$T" "$B/login_check")"
 check "logged in (/profile/)" "200" "$(http "$B/profile/")"
 
 echo "== all parameterless GET routes (administrator)"

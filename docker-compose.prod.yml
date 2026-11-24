@@ -1,0 +1,51 @@
+# Production (damis.midas.lt), on top of docker-compose.yml. The server's .env (created by
+# deploy/switch-to-docker.sh, example: deploy/docker.env.example) sets COMPOSE_FILE to both files, so plain
+# "docker compose ..." in this directory uses them.
+# Differences to the local environment: APP_ENV=prod, https with the server's certificate on port 443 (http
+# redirects to it), real secrets and mail server from .env, no Mailpit, container logs rotated.
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "5"
+
+services:
+  apache:
+    command: ["httpd-foreground", "-DDAMIS_SSL"]
+    environment:
+      DAMIS_SERVER_NAME: ${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+    ports:
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ${SSL_CERTIFICATE:?set SSL_CERTIFICATE in .env}:/usr/local/apache2/conf/ssl/server.crt:ro
+      - ${SSL_CERTIFICATE_KEY:?set SSL_CERTIFICATE_KEY in .env}:/usr/local/apache2/conf/ssl/server.key:ro
+      - ${SSL_CERTIFICATE_CHAIN:?set SSL_CERTIFICATE_CHAIN in .env}:/usr/local/apache2/conf/ssl/chain.crt:ro
+    logging: *logging
+
+  php:
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
+      MAILER_DSN: ${MAILER_DSN:?set MAILER_DSN in .env}
+      PROJECT_DOMAIN: ${SITE_DOMAIN}
+      PROJECT_FULL_HOST: https://${SITE_DOMAIN}
+    logging: *logging
+
+  mysql:
+    environment:
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
+    logging: *logging
+
+  damis-service:
+    logging: *logging
+
+  awstats:
+    environment:
+      AWSTATS_SITE_DOMAIN: ${SITE_DOMAIN}
+    logging: *logging
+
+  # local mail catcher only
+  mailpit:
+    profiles: [dev]

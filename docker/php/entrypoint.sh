@@ -15,17 +15,22 @@ console() { as_app php bin/console --no-interaction "$@"; }
 log() { echo "[damis] $*"; }
 
 # 1. Application parameters (config/services.yml is gitignored, generated from the .dist template)
+database=(
+    -e "s|^(\s*database_host:).*|\1 '${DATABASE_HOST}'|"
+    -e "s|^(\s*database_port:).*|\1 ${DATABASE_PORT}|"
+    -e "s|^(\s*database_name:).*|\1 '${DATABASE_NAME}'|"
+    -e "s|^(\s*database_user:).*|\1 '${DATABASE_USER}'|"
+    -e "s|^(\s*database_password:).*|\1 '${DATABASE_PASSWORD}'|"
+)
 if [ ! -f config/services.yml ]; then
     log "Generating config/services.yml from config/services.yml.dist"
-    sed -E \
-        -e "s|^(\s*database_host:).*|\1 '${DATABASE_HOST}'|" \
-        -e "s|^(\s*database_port:).*|\1 ${DATABASE_PORT}|" \
-        -e "s|^(\s*database_name:).*|\1 '${DATABASE_NAME}'|" \
-        -e "s|^(\s*database_user:).*|\1 '${DATABASE_USER}'|" \
-        -e "s|^(\s*database_password:).*|\1 '${DATABASE_PASSWORD}'|" \
+    sed -E "${database[@]}" \
         -e "s|^(\s*project_domain:).*|\1 '${PROJECT_DOMAIN}'|" \
         -e "s|^(\s*project_full_host:).*|\1 '${PROJECT_FULL_HOST}'|" \
         config/services.yml.dist | as_app tee config/services.yml > /dev/null
+else
+    # the database is always the mysql container of this stack, also with a services.yml of an older installation
+    as_app sed -i -E "${database[@]}" config/services.yml
 fi
 
 # 2. Web root: public/ is gitignored, static assets live in web/
@@ -85,6 +90,9 @@ console fos:js-routing:dump --format=js --target=public/js/fos_js_routes.js
 # 7. Cron (experiment:execute jobs are managed from the /cron admin page).
 # Cron jobs do not inherit the container environment, pam_env loads it from /etc/environment.
 printenv | grep -E '^(APP_|DATABASE_|MAILER_|VAR_DUMPER_|PROJECT_|DAMIS_)' > /etc/environment || true
+install -d -o www-data -g www-data /var/log/cron
+# the crontab always matches the jobs stored in the database (also after a new container or a database import)
+console app:crontab:sync || log "WARNING: crontab not synchronised, check the /cron page"
 cron
 
 log "Ready"
