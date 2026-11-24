@@ -43,44 +43,53 @@ same name when it exists, otherwise the default branch), plus `composer audit` a
 Deployment (damis.midas.lt)
 =========
 
-The server runs without Docker: Ubuntu 24.04, Apache 2.4 with mod_php 8.4, MySQL 8, OpenMPI. `deploy/deploy.sh`
-deploys this repository with its sibling checkouts of InScience/DAMIS_WebService and InScience/DAMIS
-(cloned next to it when missing):
+Production runs the same Docker stack with `docker-compose.prod.yml` on top: `APP_ENV=prod`, https on port 443
+with the server's certificate (http redirects to it, except `/uploads/` and requests between the containers),
+secrets and the mail server from `.env`, no Mailpit, rotated container logs. MySQL and DamisService are published
+on localhost only. The server's `.env` (gitignored, mode 600, template `deploy/docker.env.example`) sets
+`COMPOSE_FILE`, so `sudo docker compose ...` in `~/DAMIS-GUI` always uses both files. The sibling checkouts of
+InScience/DAMIS_WebService and InScience/DAMIS next to `DAMIS-GUI` are built into the `damis-service` image.
 
-    cd ~/DAMIS-GUI && git pull --ff-only    # only the first time, to get deploy/
-    sudo deploy/deploy.sh                    # pulls origin/master of all three repositories, then deploys
-    sudo SMOKE_USER=<admin> SMOKE_PASSWORD=<password> deploy/deploy.sh   # also runs tests/smoke/smoke.sh
+Prerequisite: Docker Engine with the compose plugin, from Docker's repository:
 
-Prerequisites: Node.js >= 22.18 (Ubuntu 24.04 ships 18, e.g. Node.js 22 LTS from NodeSource) and composer;
-the build packages (gSOAP, OpenMPI, libcurl, AWStats) are installed by the script. It refuses to run while an
-experiment is executing, and stops cron for the time of the deployment.
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
+      | sudo tee /etc/apt/sources.list.d/docker.list
+    sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-What it does:
+**Switch from the host installation (once):** `sudo deploy/switch-to-docker.sh`. While the site still runs, it backs up
+the database, uploads, `services.yml` and the www-data crontab into `/var/backups/damis/<timestamp>-switch/`,
+creates `.env` (random passwords, the certificate files of the Apache https site), builds the images, the PHP
+dependencies and the frontend. Then, with a few minutes of downtime, it stops the host Apache, the www-data crontab
+and MySQL, imports a fresh dump into the mysql container, rewrites the host paths of the cron jobs (`/cron` page),
+starts the stack and checks https and DamisService. If anything fails after Apache was stopped, it starts the host
+installation again by itself. The host services stay installed (disabled).
 
-- backs up the database, `/usr/lib/cgi-bin`, the Apache sites, `config/services.yml`, `.env.local` and the
-  current git revisions into `/var/backups/damis/<timestamp>/`;
-- GUI: `composer install` (without dev packages in prod), Encore build, migrations, assets, JS routes, cache;
-  `.env.local` gets `DAMIS_SERVICE_WSDL`, `DAMIS_DATA_HOST`, `DAMIS_AWSTATS_DIR`; `public/` gets symlinks into `web/`
-  (copies of older installations are moved to the backup); `var/` belongs to www-data, so run console commands as
-  `sudo -u www-data php bin/console ...`;
-- service: builds `Algorithms` (`/opt/damis/bin`) and `DamisService.cgi` (`/usr/lib/cgi-bin`), writes `settings.csv`,
-  `/etc/damis/damis.wsdl` and `/etc/damis/logging.conf` (log: `/var/log/damis/damis-service.log`), result files in
-  `/var/lib/damis/data`. It runs as CGI on `http://localhost:8080` only (`deploy/apache/damis-service.conf`) and
-  replaces the old standalone `damis.service` (disabled). `serve-cgi-bin` is disabled, so `/cgi-bin/` is no longer
-  public;
-- Apache: both damis.midas.lt virtual hosts get `Include /etc/apache2/damis-gui-vhost.conf`
-  (`deploy/apache/damis-gui-vhost.conf`: daily access logs for AWStats, no PHP from `uploads/`);
-- AWStats: `/etc/awstats/awstats.damis.conf` and `/usr/local/bin/damis-awstats-update` from `docker/awstats/`, run
-  hourly by `/etc/cron.d/damis-awstats` into `/var/www/awstats` (shown under `/admin/statistics`);
-- ends with `tests/smoke/damis-service.php` (every service operation through SOAP).
+**Updates:** `sudo deploy/deploy.sh` pulls origin/master of all three repositories (missing ones are cloned), backs up
+the database, uploads and configuration into `/var/backups/damis/<timestamp>/`, rebuilds the images, the PHP
+dependencies (without dev packages) and the frontend, restarts the containers (the php container migrates the
+database and rewrites the crontab on start) and ends with smoke tests (https, every DamisService operation over
+SOAP). `--no-pull` deploys the checkouts as they are. It refuses to run while an experiment is executing. With an
+administrator account it also runs `tests/smoke/smoke.sh`; the password is typed, never put on a command line:
 
-Rollback (B = the backup directory):
+    export SMOKE_USER=<admin>; read -rsp 'password: ' SMOKE_PASSWORD; export SMOKE_PASSWORD
+    sudo --preserve-env=SMOKE_USER,SMOKE_PASSWORD deploy/deploy.sh
 
-    gunzip < $B/<database>.sql.gz | sudo mysql <database>
-    sudo a2dissite damis-service && sudo a2enconf serve-cgi-bin     # frees port 8080
-    sudo tar -C /etc/apache2 -xzf $B/apache2-sites.tar.gz && sudo systemctl reload apache2
-    sudo tar -C /usr/lib -xzf $B/cgi-bin.tar.gz && sudo systemctl enable --now damis.service
-    git checkout <revision from $B/revisions.txt>, restore .env.local, then bash buildProject.sh
+Mail: set `MAILER_DSN` in `.env` to the SMTP server given by the university IT (until then `null://null`, nothing is
+sent, and the scripts warn), then `sudo docker compose up -d php`.
+
+Everyday commands, in `~/DAMIS-GUI`: `sudo docker compose ps`, `sudo docker compose logs -f php`,
+`sudo docker compose exec -u www-data php bin/console <command>`.
+
+Back to the host installation (B = the `-switch` backup directory; data changed since the switch is in the
+container database, dump it first if it is needed):
+
+    sudo docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot "$MYSQL_DATABASE"' > ~/docker-db.sql
+    sudo docker compose down && sudo mv .env $B/env.docker && cp $B/env.local .env.local
+    sudo chown -R www-data: var public/uploads
+    sudo crontab -u www-data $B/crontab-www-data && sudo cp $B/cron.d-damis-awstats /etc/cron.d/damis-awstats
+    sudo systemctl enable --now mysql apache2        # then, if wanted: sudo mysql <database> < ~/docker-db.sql
 
 Initial configuration
 =========
