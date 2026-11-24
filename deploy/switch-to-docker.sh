@@ -161,7 +161,9 @@ smoke_test() {
     log "smoke test: https://$SITE_DOMAIN through the container"
     local code i
     for i in $(seq 15); do
-        code=$(curl -s -o /dev/null -w '%{http_code}' --resolve "$SITE_DOMAIN:443:127.0.0.1" "https://$SITE_DOMAIN/")
+        # a curl failure (TLS, certificate) must not end the script under set -e before the retries
+        code=$(curl -s -o /dev/null -w '%{http_code}' --resolve "$SITE_DOMAIN:443:127.0.0.1" "https://$SITE_DOMAIN/") \
+            || code="curl error $? (see man curl, EXIT CODES)"
         [[ "$code" =~ ^(200|302)$ ]] && break
         [ "$i" -lt 15 ] || die "https://$SITE_DOMAIN/ answered $code"
         sleep 2
